@@ -1,0 +1,9 @@
+#!/bin/bash
+compiler=clang
+ivl=/data/dev/ivl2
+stdlib="-stdlib=libc++ -I/usr/local/include/c++/v1" # clang's own stl implementation
+flags="-I$ivl/include -Os -lpthread -lstdc++ -msse4.2 -std=c++11 $stdlib"
+output=$(echo $1 | sed -e 's/\..*//g')
+shift
+echo $compiler -o $output $flags $output.cpp $@
+$compiler -o $output $flags $output.cpp $@ && ./$output
