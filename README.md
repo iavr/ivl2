@@ -35,7 +35,7 @@ ivl2 constists primarily of template C++ header-only code. Non-header code refer
 
 Code under folder /test is only used for development, testing and debugging. It is subject to major updates or complete removal in the future.
 
-ivl2 uses C++11 features available in implementations only recently; for this reason it is only supported by g++ 4.8.1 or later and clang 3.3 or later. Clang is only supported with libc++, its own implementation of the C++ standrd library:
+ivl2 uses C++11 features available in implementations only recently; for this reason it is only supported by g++ 4.8.1 or later and clang 3.3 or later. Clang is only supported with libc++, its own implementation of the C++ standard library:
 
 	http://libcxx.llvm.org/
 
