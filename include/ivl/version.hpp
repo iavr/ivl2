@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 
 #define IVL_VERSION_MAJOR 0
-#define IVL_VERSION_MINOR 9
+#define IVL_VERSION_MINOR 0
 #define IVL_VERSION_PATCH 1
 
 //-----------------------------------------------------------------------------

@@ -39,13 +39,13 @@ ivl2 uses C++11 features available in implementations only recently; for this re
 
 	http://libcxx.llvm.org/
 
-There are no Makefile's or project files provided. The scripts under folder /run are the simplest way to compile and run a program using ivl2. Script run/ivl is for g++ and run/livl for clang. It is best to copy them in a folder in your path, e.g. /usr/local/bin, after adjusting folders for your local copy of ivl2 and libc++ location. In this case,
+There are no Makefile's or project files provided. The bash scripts under folder /run are the simplest way to compile and run a program using ivl2. Script /run/ivl is for g++ and /run/livl for clang. It is best to copy them in a folder in your path, e.g. /usr/local/bin, after adjusting folders for your local copy of ivl2 and libc++ location. In this case,
 
 	cd test/main/
 	ivl test
 
-compiles file test/main/test.cpp, produces binary test/main/test, and executes it unless there are compiler or linker errors.
+compiles file /test/main/test.cpp, produces binary /test/main/test, and executes it unless there are compiler or linker errors.
 
-Note that extension .cpp is not necessary for the source file; it may or may not be provided. Additional source files or compiler options may be specified as additional command-line arguments, but these extra source files need extensions.
+Note that extension .cpp is not necessary for the main source file; it may or may not be provided. Additional source files or compiler options may be specified as additional command-line arguments, but extra source files need extensions.
 
 Good luck!
