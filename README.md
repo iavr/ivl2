@@ -11,6 +11,7 @@ ivl2 is currently at its very early stage of development. There is no website, r
 More specifically, its license is dual LGPL3 + GPL2. The full license text is as follows.
 
 -----------------------------------------------------------------------
+
 ivl is free software; you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License
 version 3 as published by the Free Software Foundation.
@@ -23,9 +24,10 @@ ivl is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
+
 -----------------------------------------------------------------------
 
-ivl2 constists primarily of template C++ header-only code. Non-header code refers only test, samples, help (documentation), or modules, that will appear in the future. The current structure is:
+ivl2 constists primarily of template C++ header-only code. Non-header code refers only to test code, samples, help (documentation), or modules that will appear in the future. The current structure is:
 
 	/include    complete header-only (.hpp) source code
 	/run        simple scripts to compile and execute
