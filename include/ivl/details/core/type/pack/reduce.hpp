@@ -87,6 +87,14 @@ using contains = contains_p <T, pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename P> using all_null_p = all_p <is_null, P>;
+template <typename P> using any_null_p = any_p <is_null, P>;
+
+template <typename... E> using all_null = all_null_p <pack <E...> >;
+template <typename... E> using any_null = any_null_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
 template <size_t L>
 using eq_len_to = eq_sz_fun_to <length, L>;
 
@@ -107,25 +115,19 @@ using eq_len = eq_len_p <pack <P...> >;
 
 namespace details {
 
-template <template <typename...> class F, typename P>
+template <template <typename...> class F, typename P, bool = any_null_p <P>{}>
 struct alls_p_ :
 	public _if <embed <F, cars_p <P> >{}, alls_p_<F, cdrs_p <P> >, _false> { };
 
-template <template <typename...> class F, typename P>
+template <template <typename...> class F, typename P, bool = any_null_p <P>{}>
 struct anys_p_ :
 	public _if <embed <F, cars_p <P> >{}, _true, anys_p_<F, cdrs_p <P> > > { };
 
-template <
-	template <typename...> class F, template <typename...> class C,
-	template <typename...> class E, typename... P
->
-struct alls_p_<F, C <E <>, P...> > : public _true { };
+template <template <typename...> class F, typename P>
+struct alls_p_<F, P, true> : public _true { };
 
-template <
-	template <typename...> class F, template <typename...> class C,
-	template <typename...> class E, typename... P
->
-struct anys_p_<F, C <E <>, P...> > : public _false { };
+template <template <typename...> class F, typename P>
+struct anys_p_<F, P, true> : public _false { };
 
 }  // namespace details
 
@@ -147,23 +149,18 @@ using alls = alls_p <F, pack <P...> >;
 
 namespace details {
 
-template <typename P> struct tran_pt_;
-template <typename P> using tran_p_ = type_of <tran_pt_<P> >;
+template <typename P, bool = any_null_p <P>{}>
+struct tran_
+{
+	using type = cons <cars_p <P>, type_of <tran_<cdrs_p <P> > > >;
+};
 
 template <typename P>
-struct tran_pt_ { using type = cons <cars_p <P>, tran_p_<cdrs_p <P> > >; };
-
-template <
-	template <typename...> class C,
-	template <typename...> class E, typename... P
->
-struct tran_pt_<C <E <>, P...> > { using type = C <>; };
+struct tran_<P, true> { using type = null_of <P>; };
 
 }  // namespace details
 
-template <typename P>
-using tran_pt = _if <eq_len_p <P>{}, details::tran_pt_<P>, nat>;
-
+template <typename P> using tran_pt = details::tran_<P>;
 template <typename P> using tran_p  = type_of <tran_pt <P> >;
 
 template <typename... P> using tran_t = tran_pt <pack <P...> >;

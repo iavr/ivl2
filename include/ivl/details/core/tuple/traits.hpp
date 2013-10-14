@@ -44,17 +44,19 @@ namespace traits {
 
 namespace details {
 
-template <typename T>
-struct is_tuple_ : public _false { };
+template <typename T> struct is_tuple_ : public _false { };
+template <typename T> struct as_tuple_ : public _false { };
 
 template <typename S, typename... E>
 struct is_tuple_<collection <S, E...> > : public _true { };
 
+template <typename S, typename... E>
+struct as_tuple_<collection <S, E...> > : public _true { };
+
 }  // namespace details
 
 template <typename T> using is_tuple = details::is_tuple_<raw_type <T> >;
-
-template <typename T> struct as_tuple;
+template <typename T> using as_tuple = details::as_tuple_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 

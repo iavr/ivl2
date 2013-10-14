@@ -40,7 +40,7 @@ namespace afun_details {
 
 class tup_apply
 {
-	using A = val_of <apply_tup>;
+	static val_of <apply_tup> val;
 
 public:
 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
@@ -50,12 +50,12 @@ public:
 		return apply_tup <F&&, T&&>(fwd <F>(f), fwd <T>(t));
 	}
 
-	template <typename F, typename... T, enable_if <all <is_tuple, T...>{}> = 0>
+	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
 	inline constexpr auto
 	operator()(F&& f, T&&... t) const
-	-> decltype(A()(meta::tup(fwd <F>(f)), _zip(fwd <T>(t)...)))
+	-> decltype(val(meta::tup(fwd <F>(f)), _inner(fwd <T>(t)...)))
 	{
-		return A()(meta::tup(fwd <F>(f)), _zip(fwd <T>(t)...));
+		return val(meta::tup(fwd <F>(f)), _inner(fwd <T>(t)...));
 	}
 };
 
@@ -67,11 +67,11 @@ struct tup_loop
 	inline void
 	operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
 
-	template <typename F, typename... T, enable_if <all <is_tuple, T...>{}> = 0>
+	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
 	inline void
 	operator()(F&& f, T&&... t) const
 	{
-		_zip(fwd <T>(t)...).loop(meta::tup(fwd <F>(f)));
+		_inner(fwd <T>(t)...).loop(meta::tup(fwd <F>(f)));
 	}
 };
 
@@ -90,6 +90,23 @@ struct tup_sep_loop : public derived <D, tup_sep_loop <S, D> >
 		S&& s = fwd <S>(this->der().sep());
 		tup_loop()(meta::pre(fwd <F>(f), fwd <S>(s)), _tail(fwd <T>(t)));
 	}
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+class tup_vec : public F
+{
+	static tup_apply app;
+
+public:
+	using F::operator();
+
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
+	inline auto constexpr
+	operator()(A&&... a) const
+		-> decltype(app(*this, fwd <A>(a)...))
+		{ return app(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

@@ -36,6 +36,10 @@ namespace ivl {
 
 namespace afun_details {
 
+using join_  = der_fun <tup_join,  seq_join>;
+using zip_   = der_fun <tup_zip,   seq_zip>;
+using inner_ = der_fun <tup_inner, seq_inner>;
+
 using head_  = der_fun <tup_head, seq_head>;
 using tail_  = der_fun <tup_tail, seq_tail>;
 using flip_  = der_fun <tup_flip, seq_flip>;
@@ -47,6 +51,10 @@ using call_  = der_fun <tup_call, seq_call>;
 
 namespace afun {
 
+using join  = afun_details::join_;
+using zip   = afun_details::zip_;
+using inner = afun_details::inner_;
+
 using head  = afun_details::head_;
 using tail  = afun_details::tail_;
 using flip  = afun_details::flip_;
@@ -55,6 +63,10 @@ using call  = afun_details::call_;
 }  // namespace fun
 
 //-----------------------------------------------------------------------------
+
+static __attribute__ ((unused)) afun::join  join;
+static __attribute__ ((unused)) afun::zip   zip;
+static __attribute__ ((unused)) afun::inner inner;
 
 static __attribute__ ((unused)) afun::head  head;
 static __attribute__ ((unused)) afun::tail  tail;

@@ -38,9 +38,7 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
-using apply_  = der_fun <tup_apply, seq_apply>;
-using join_   = der_fun <tup_join,  seq_join>;
-using zip_    = der_fun <tup_zip,   seq_zip>;
+using apply_ = der_fun <tup_apply, seq_apply>;
 
 //-----------------------------------------------------------------------------
 
@@ -68,6 +66,11 @@ struct loop_ : public der_fun <tup_loop, seq_loop>
 
 //-----------------------------------------------------------------------------
 
+template <typename F>
+using vec_ = der_fun <tup_vec <F>, seq_vec <F> >;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace afun_details
 
 //-----------------------------------------------------------------------------
@@ -75,17 +78,16 @@ struct loop_ : public der_fun <tup_loop, seq_loop>
 namespace afun {
 
 using apply  = afun_details::apply_;
-using join   = afun_details::join_;
-using zip    = afun_details::zip_;
 using loop   = afun_details::loop_;
+
+template <typename F>
+using vec = afun_details::vec_<F>;
 
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) afun::apply  apply;
-static __attribute__ ((unused)) afun::join   join;
-static __attribute__ ((unused)) afun::zip    zip;
 static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------

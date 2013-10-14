@@ -43,38 +43,37 @@ namespace meta {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-struct bind : public tuple <F>, public tuple <E...>
+struct bind
 {
-	using TF = tuple <F>;
-	using TE = tuple <E...>;
+	F f;
+	tuple <E...> e;
 
 public:
-	bind(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
+	bind(F&& f, E&&... e) : f(fwd <F>(f)), e(fwd <E>(e)...) { }
 
 	template <typename... A>
 	inline constexpr auto
 	operator()(A&&... a) const
-		// TF::_() or this->TF::_() not working: using generate <F>() instead
-		-> decltype(this->TE::call(types::generate <F>(), fwd <A>(a)...))
-		{ return TE::call(fwd <F>(TF::_()), fwd <A>(a)...); }
+		-> decltype(e.call(fwd <F>(f), fwd <A>(a)...))
+		{ return e.call(fwd <F>(f), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class pre : private tuple <F>, private tuple <E...>
+class pre
 {
-	using TF = tuple <F>;
-	using TE = tuple <E...> ;
+	F f;
+	tuple <E...> e;
 
 public:
-	pre(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
+	pre(F&& f, E&&... e) : f(fwd <F>(f)), e(fwd <E>(e)...) { }
 
 	template <typename... A>
 	inline constexpr types::ret <F(A&&...)>
 	operator()(A&&... a) const
 	{
-		return TE::call(fwd <F>(TF::_())), fwd <F>(TF::_())(fwd <A>(a)...);
+		return e.call(fwd <F>(f)), fwd <F>(f)(fwd <A>(a)...);
 	}
 };
 

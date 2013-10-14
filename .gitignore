@@ -1,0 +1,15 @@
+build/kdev/ivl/CMakeFiles/CMakeDetermineCompilerABI_C.bin
+build/kdev/ivl/CMakeFiles/CMakeDetermineCompilerABI_CXX.bin
+build/kdev/ivl/CMakeFiles/CompilerIdC/a.out
+build/kdev/ivl/CMakeFiles/CompilerIdCXX/a.out
+build/kdev/ivl/const
+.ignore
+test/core/const
+test/core/op
+test/core/traits
+test/core/traits.clang
+test/core/traits.gcc
+test/main/array
+test/main/test
+test/main/tuple
+test/main/vec

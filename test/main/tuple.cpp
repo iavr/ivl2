@@ -2,7 +2,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace tup {
+namespace tuple_test {
 
 using namespace ivl;
 using namespace ivl::types;
@@ -26,7 +26,7 @@ void swap(B& a, B& b) { std::swap(a, b); ++a, ++b; }
 
 template <typename E1, typename E2>
 tuple <E1, E2>
-tup(E1&& e1, E2&& e2)
+mk_tup(E1&& e1, E2&& e2)
 {
 	return _(e1, e2);
 }
@@ -75,7 +75,7 @@ void run()
 		cout << "tuple return:" << endl;
 		int i = 4;
 		double x = 3.14;
-		tuple <double&, int> u = tup(x, i);
+		tuple <double&, int> u = mk_tup(x, i);
 		cout << u._<0>() << " " << u._<1>() << endl;
 		cout << gen_tup() << endl;
 		cout << endl;
@@ -165,7 +165,8 @@ void run()
 		int l[] = { 1, 2, 3 };
 		int* p = 0;
 
-// 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);  // TODO: array bug
+		// TODO: array bug
+// 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);
 		auto t = val(7, "hello", 56.3, a, 'c', p);
 		cout << t << endl;
 		cout << t._<sizes <0, 3, 3, 2, 0, 4, 0, 5> >() << endl;
@@ -204,17 +205,6 @@ void run()
 	}
 
 	{
-		cout << "apply unary" << endl;
-		auto t = val('a', 3.14, 2);
-		cout << apply(inc, t) << endl;
-		cout << endl;
-
-		cout << "apply binary" << endl;
-		cout << apply(afun::op::add(), t, _(1, 2, 3)) << endl;
-		cout << endl;
-	}
-
-	{
 		cout << "atom" << endl;
 		cout << _[3]() << endl;
 		cout << _[3] << endl;
@@ -227,26 +217,25 @@ void run()
 	}
 
 	{
-		cout << "atom join" << endl;
+		cout << "tup" << endl;
 		auto a = val('a', 'b', 'c', 'd');
 		auto b = val(3.14, 2.71, -3e19, 0);
-		cout << join("hello", "world", -19) << endl;
-		cout << join(a, b, _(), _(0, 1)) << endl;
-		cout << join(a, "hello", b, "world", _(), -19, _(0, 1)) << endl;
-		cout << join(a, "hello", _[b], "world", _(), -19, _[_(0, 1)]) << endl;
+		cout << tup("hello", "world", -19) << endl;
+		cout << tup(a, b, _(), _(0, 1)) << endl;
+		cout << tup(a, "hello", b, "world", _(), -19, _(0, 1)) << endl;
+		cout << tup(a, "hello", _[b], "world", _(), -19, _[_(0, 1)]) << endl;
 		cout << _(a, "hello", b, "world", _(), -19, _(0, 1)) << endl;
 		cout << _(a, "hello", _[b], "world", _(), -19, _[_(0, 1)]) << endl;
 		cout << endl;
 	}
 }
-
 //-----------------------------------------------------------------------------
 
-}  // namespace tup
+}  // namespace tuple_test
 
 //-----------------------------------------------------------------------------
 
 int main()
 {
-	tup::run();
+	tuple_test::run();
 }

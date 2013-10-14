@@ -44,6 +44,36 @@ namespace packs {
 
 namespace details {
 
+template <template <typename...> class F, typename C, typename D>
+using if_cons = _if <F <C>{}, cons_t <C, type_of <D> >, D>;
+
+template <template <typename...> class F, typename P>
+struct select_ : public if_cons <F, car <P>, select_<F, cdr <P> > > { };
+
+template <template <typename...> class F, template <typename...> class C>
+struct select_<F, C <> > { using type = C <>; };
+
+}  // namespace details
+
+template <template <typename...> class F, typename P>
+struct select_pt : public details::select_<F, P> { };
+
+template <template <typename...> class F, typename T>
+struct select_pt <F, _type <T> > : public details::select_<F, pack <T> > { };
+
+template <template <typename...> class F, typename P>
+using select_p = type_of <select_pt <F, P> >;
+
+template <template <typename...> class F, typename... E>
+using select_t = select_pt <F, pack <E...> >;
+
+template <template <typename...> class F, typename... E>
+using select = type_of <select_t <F, E...> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
 template <size_t I, typename P>
 struct pick_pt_ : public pick_pt_<I - 1, cdr <P> > { };
 
@@ -106,69 +136,52 @@ inline constexpr bool  // assumes s > 0
 in_rng(size_t B, size_t E, int s, size_t I)
 	{ return B <= I && I <= E && (I - B) % s == 0; }
 
-template <
-	size_t B, size_t E, int s, typename P,
-	size_t I = 0, bool = in_rng(B, E, s, I)
->
-struct sel_rng_r : public
-	cons_t <car <P>, type_of <sel_rng_r <B, E, s, cdr <P>, I + 1> > > { };
+template <size_t B, size_t E, int s, typename P, size_t I = 0>
+struct choose_rng_r : public if_cons <
+	given <in_rng(B, E, s, I)>::template map,
+	car <P>, choose_rng_r <B, E, s, cdr <P>, I + 1>
+> { };
 
-template <size_t B, size_t E, int s, typename P, size_t I>
-struct sel_rng_r <B, E, s, P, I, false> : public
-	sel_rng_r <B, E, s, cdr <P>, I + 1> { };
-
-template <size_t B, size_t E, int s, size_t I, template <typename...> class C>
-struct sel_rng_r <B, E, s, C <>, I, true> { using type = C <>; };
-
-template <size_t B, size_t E, int s, size_t I, template <typename...> class C>
-struct sel_rng_r <B, E, s, C <>, I, false> { using type = C <>; };
+template <size_t B, size_t E, int s, template <typename...> class C, size_t I>
+struct choose_rng_r <B, E, s, C <>, I> { using type = C <>; };
 
 template <size_t B, size_t E, int s, typename P, bool = (s > 0)>
-struct sel_rng_d : public sel_rng_r <B, E, s, P> { };
+struct choose_rng_d : public choose_rng_r <B, E, s, P> { };
 
 template <size_t B, size_t E, int s, typename P>
-struct sel_rng_d <B, E, s, P, false> :
-	public flip_pt <type_of <sel_rng_r <E, B, -s, P> > > { };
+struct choose_rng_d <B, E, s, P, false> :
+	public flip_pt <type_of <choose_rng_r <E, B, -s, P> > > { };
 
 template <size_t B, size_t E, int s, typename P>
-struct sel_rng : public sel_rng_d <B, E, s, P> { };
+struct choose_rng : public choose_rng_d <B, E, s, P> { };
 
 template <size_t B, size_t E, int s, typename T>
-struct sel_rng <B, E, s, _type <T> > :
+struct choose_rng <B, E, s, _type <T> > :
 	public repeat_t <rng_len(B, E, s), T> { };
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename P> struct select_pt;
-template <typename I, typename P> using select_p = type_of <select_pt <I, P> >;
+template <typename F, typename P> struct choose_pt;
+template <typename F, typename P> using choose_p = type_of <choose_pt <F, P> >;
 
 template <size_t I, size_t... In, typename P>
-struct select_pt <sizes <I, In...>, P> :
-	public cons_t <pick_p <I, P>, select_p <sizes <In...>, P> > { };
+struct choose_pt <sizes <I, In...>, P> :
+	public cons_t <pick_p <I, P>, choose_p <sizes <In...>, P> > { };
 
 template <typename P>
-struct select_pt <sizes <>, P> { using type = null_of <P>; };
+struct choose_pt <sizes <>, P> { using type = null_of <P>; };
 
 template <size_t B, size_t E, int s, typename P>
-struct select_pt <sz_range <B, E, s>, P> :
-	public details::sel_rng <B, E, s, P> { };
+struct choose_pt <sz_range <B, E, s>, P> :
+	public details::choose_rng <B, E, s, P> { };
 
 template <typename I, typename... E>
-using select_t = select_pt <I, pack <E...> >;
+using choose_t = choose_pt <I, pack <E...> >;
 
 template <typename I, typename... E>
-using select = type_of <select_t <I, E...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename P> struct select_it;
-template <typename I, typename P> using select_i = type_of <select_it <I, P> >;
-
-template <typename I, typename T, T... N>
-struct select_it <I, integrals <T, N...> > :
-	public select_t <I, integral <T, N>...> { };
+using choose = type_of <choose_t <I, E...> >;
 
 //-----------------------------------------------------------------------------
 

@@ -37,7 +37,7 @@ namespace ivl {
 namespace tuple_details {
 
 //-----------------------------------------------------------------------------
-// not working in either clang or g++,
+// TODO: not working in either clang or gcc,
 // but should be:               bool = is_empty <E>() && !is_final <E>()
 template <size_t I, typename E, bool = std::is_empty <E>()>
 class elem

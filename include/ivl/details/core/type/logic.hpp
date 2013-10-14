@@ -50,14 +50,14 @@ using _true = c_true ;
 static __attribute__ ((unused)) _false no;
 static __attribute__ ((unused)) _true  yes;
 
-// TODO: alias not working for report()'s static_assert in gcc
-template <typename... T> struct always : public _true { };
-template <typename... T> struct never  : public _false { };
+template <bool B> using expr = boolean <B>;
+template <bool B> using _not = expr <!B>;
 
 //-----------------------------------------------------------------------------
 
-template <bool B> using expr = boolean <B>;
-template <bool B> using _not = expr <!B>;
+// TODO: alias not working for report()'s static_assert in gcc
+template <typename... T> struct always : public _true { };
+template <typename... T> struct never  : public _false { };
 
 //-----------------------------------------------------------------------------
 

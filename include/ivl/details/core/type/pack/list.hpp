@@ -55,6 +55,12 @@ struct cdr_t <C <E, En...> > { using type = C <En...>; };
 template <typename E, template <typename...> class C, typename... En>
 struct cons_t <E, C <En...> > { using type = C <E, En...>; };
 
+template <typename T> struct car_t <_type <T> > : public id_t <T> { };
+template <typename T> struct cdr_t <_type <T> > : public _type <T> { };
+
+template <typename E, typename T>
+struct cons_t <E, _type <T> >;
+
 template <typename P>             using car  = type_of <car_t <P> >;
 template <typename P>             using cdr  = type_of <cdr_t <P> >;
 template <typename E, typename P> using cons = type_of <cons_t <E, P> >;

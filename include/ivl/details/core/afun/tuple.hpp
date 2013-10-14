@@ -45,10 +45,14 @@ template <
 >
 struct val_of
 {
-	// TODO: constexpr (now causing gcc ICE)
 	template <typename... A, enable_if <E <A...>{}> = 0>
 	inline T <F <decay <A> >...>
 	operator()(A&&... a) const { return T <F <decay <A> >...>(fwd <A>(a)...); }
+
+// 	TODO: gcc ICE: no constexpr, no F <>, no decay <>
+// 	template <typename... A, enable_if <E <A...>{}> = 0>
+// 	inline T <typename decay_t <A>::type...>
+// 	operator()(A&&... a) const { return T <typename decay_t <A>::type...>(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -102,11 +106,15 @@ using clref_ = clref_of <>;
 
 //-----------------------------------------------------------------------------
 
-using tup_join = rref_of <join_tup, wrap>;
-using tup_zip  = rref_of <zip_tup,  wrap, any_tuple>;
+using tup_join = rref_of <join_tup, id, all_tuple>;
+using tup_     = rref_of <join_tup, wrap>;
 
-static __attribute__ ((unused)) tup_join _join;
-static __attribute__ ((unused)) tup_zip  _zip;
+using tup_zip   = rref_of <zip_tup, id,   all_tuple>;
+using tup_inner = rref_of <zip_tup, wrap, any_tuple>;
+
+static __attribute__ ((unused)) tup_join  _join;
+static __attribute__ ((unused)) tup_zip   _zip;
+static __attribute__ ((unused)) tup_inner _inner;
 
 //-----------------------------------------------------------------------------
 
@@ -176,6 +184,8 @@ using rref  = afun_details::rref_;
 using lref  = afun_details::lref_;
 using clref = afun_details::clref_;
 
+using tup = afun_details::tup_;
+
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
@@ -184,6 +194,8 @@ static __attribute__ ((unused)) afun::val    val;
 static __attribute__ ((unused)) afun::rref   rref;
 static __attribute__ ((unused)) afun::lref   lref;
 static __attribute__ ((unused)) afun::clref  clref;
+
+static __attribute__ ((unused)) afun::tup    tup;
 
 //-----------------------------------------------------------------------------
 

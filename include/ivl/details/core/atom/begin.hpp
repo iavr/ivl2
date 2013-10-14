@@ -43,6 +43,8 @@ template <typename T> class atom;
 
 }
 
+using atom_details::atom;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace ivl

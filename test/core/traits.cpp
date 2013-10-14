@@ -293,9 +293,9 @@ void run()
 
 // 	{
 // 		typedef pack <int, char, double, A, B, C, D, E, F> T;
-// 		report_map <select_p, sz_range <1, 4>, T>();
-// 		report_map <select_p, sz_step_range <2, 2, 7>, T>();
-// 		report_map <select_p, sz_step_range <6, -1, 1>, T>();
+// 		report_map <choose_p, sz_range <1, 4>, T>();
+// 		report_map <choose_p, sz_step_range <2, 2, 7>, T>();
+// 		report_map <choose_p, sz_step_range <6, -1, 1>, T>();
 // 	}
 
 //-----------------------------------------------------------------------------

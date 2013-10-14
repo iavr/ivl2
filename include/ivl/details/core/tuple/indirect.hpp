@@ -40,10 +40,10 @@ namespace tuple_details {
 
 template <typename K, typename U>
 class collection <data::indirect <>, K, U> : public
-	base_tup <indirect <K, U>, select_p <K, tup_types <U> > >
+	base_tup <indirect <K, U>, choose_p <K, tup_types <U> > >
 {
 	using B = base_type_of <collection>;
-	using P = select_p <K, tup_types <U> >;
+	using P = choose_p <K, tup_types <U> >;
 
 	template <size_t J> using off = pick_i <J, K>;
 

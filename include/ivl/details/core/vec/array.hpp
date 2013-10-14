@@ -34,14 +34,12 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+// TODO
+struct seq_apply { void operator()(); };
 
 //-----------------------------------------------------------------------------
 
-// TODO
-struct seq_apply { void operator()(); };
-struct seq_join  { void operator()(); };
-struct seq_zip   { void operator()(); };
+namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
@@ -100,6 +98,12 @@ struct seq_loop : public arr_loop <seq_loop>
 			fwd <F>(f)(*i, *j);
 	}
 };
+
+//-----------------------------------------------------------------------------
+
+// TODO
+template <typename F>
+struct seq_vec { void operator()(); };
 
 //-----------------------------------------------------------------------------
 
