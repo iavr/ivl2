@@ -1,8 +1,4 @@
-build/kdev/ivl/CMakeFiles/CMakeDetermineCompilerABI_C.bin
-build/kdev/ivl/CMakeFiles/CMakeDetermineCompilerABI_CXX.bin
-build/kdev/ivl/CMakeFiles/CompilerIdC/a.out
-build/kdev/ivl/CMakeFiles/CompilerIdCXX/a.out
-build/kdev/ivl/const
+.gitignore_src
 .ignore
 test/core/const
 test/core/op
