@@ -42,11 +42,6 @@ namespace tmeta {
 
 //-----------------------------------------------------------------------------
 
-template <bool B>
-struct given { template <typename... T> using map = expr <B>; };
-
-//-----------------------------------------------------------------------------
-
 template <template <typename...> class F, typename... V>
 struct bind
 {

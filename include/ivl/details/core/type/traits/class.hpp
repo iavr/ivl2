@@ -48,7 +48,7 @@ namespace details {
 
 #if IVL_HAS_FEATURE(is_class)
 
-template <typename T> using is_class = expr <__is_class(T)>;
+template <typename T> struct is_class : public expr <__is_class(T)> { };
 
 #else
 
@@ -66,7 +66,7 @@ using is_class = expr <sfinae <is_class_test, T>() && !is_union <T>()>;
 
 #if IVL_HAS_FEATURE(is_empty)
 
-template <typename T> using is_empty = expr <__is_empty(T)>;
+template <typename T> struct is_empty : public expr <__is_empty(T)> { };
 
 #else
 
@@ -91,6 +91,11 @@ template <typename T> using is_empty = is_empty_ <T>;
 
 //-----------------------------------------------------------------------------
 
+template <typename T>
+using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
+
+//-----------------------------------------------------------------------------
+
 struct is_abstract_test : public input <c_null>
 {
 	template <typename T> static pass test(T (*)[1]);
@@ -103,7 +108,8 @@ using is_abstract = expr <!sfinae <is_abstract_test, T>() && is_class <T>()>;
 
 #if IVL_HAS_FEATURE(is_polymorphic)
 
-template <typename T> using is_polymorphic = expr <__is_polymorphic(T)>;
+template <typename T>
+struct is_polymorphic : public expr <__is_polymorphic(T)> { };
 
 #else
 
@@ -126,6 +132,7 @@ using is_polymorphic = sfinae <is_polymorphic_test, T>;
 
 using details::is_class;
 using details::is_empty;
+using details::is_base_opt;
 using details::is_abstract;
 using details::is_polymorphic;
 

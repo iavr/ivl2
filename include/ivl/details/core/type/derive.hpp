@@ -73,14 +73,14 @@ template <typename T> using derived_type_of = typename T::derived_type;
 
 //-----------------------------------------------------------------------------
 
-template <typename... F> struct der_fun;
+template <typename... F> struct der_nfun;
 
-template <> struct der_fun <> { void operator()(); };
+template <typename F> struct der_nfun <F> : public F { };
 
 template <typename F, typename... Fn>
-class der_fun <F, Fn...> : public F, public der_fun <Fn...>
+class der_nfun <F, Fn...> : public F, public der_nfun <Fn...>
 {
-	using B = der_fun <Fn...>;
+	using B = der_nfun <Fn...>;
 
 public:
 	using F::operator();
@@ -91,7 +91,7 @@ public:
 
 template <typename... F> struct der_tfun;
 
-template <> struct der_tfun <> { void _(); };
+template <typename F> struct der_tfun <F> : public F { };
 
 template <typename F, typename... Fn>
 class der_tfun <F, Fn...> : public F, public der_tfun <Fn...>
@@ -105,8 +105,8 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename... F> struct der_gfun :
-	public der_fun <F...>, public der_tfun <F...> { };
+template <typename... F> struct der_fun :
+	public der_nfun <F...>, public der_tfun <F...> { };
 
 //-----------------------------------------------------------------------------
 

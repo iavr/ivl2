@@ -60,7 +60,7 @@ struct thru { template <typename... T> thru(T&&...) { } };
 
 template <typename T>
 inline remove_ref <T>&&
-move(T&& a) { return static_cast <remove_ref <T>&&>(a); }
+mv(T&& a) { return static_cast <remove_ref <T>&&>(a); }
 
 template <typename T>
 inline constexpr T&&
@@ -78,7 +78,7 @@ fwd(remove_ref <T>&& a) { return static_cast <T&&>(a); }
 
 }  // namespace types
 
-using types::traits::move;
+using types::traits::mv;
 using types::traits::fwd;
 
 //-----------------------------------------------------------------------------

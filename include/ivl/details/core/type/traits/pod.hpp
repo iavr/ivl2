@@ -115,7 +115,7 @@ template <typename T> using is_unsigned = details::is_un_signed <T, true>;
 
 #if IVL_HAS_FEATURE(is_enum)
 
-template <typename T> using is_enum = expr <__is_enum (T)>;
+template <typename T> struct is_enum : public expr <__is_enum (T)> { };
 
 #else
 
@@ -142,7 +142,7 @@ template <typename T> using is_object = expr <
 
 #if IVL_HAS_FEATURE(is_literal)
 
-template <typename T> using is_literal = expr <__is_literal (T)>;
+template <typename T> struct is_literal : public expr <__is_literal (T)> { };
 
 #else
 
@@ -163,7 +163,7 @@ using is_literal = details::is_literal_<remove_all_ext <T> >;
 #if IVL_HAS_FEATURE(is_std_layout)
 
 template <typename T>
-using is_std_layout = expr <__is_std_layout (T)>;
+struct is_std_layout : public expr <__is_std_layout (T)> { };
 
 #else
 
@@ -176,7 +176,7 @@ using is_std_layout = expr <is_scalar <remove_all_ext <T> >{}>;
 
 #if IVL_HAS_FEATURE(is_pod)
 
-template <typename T> using is_pod = expr <__is_pod (T)>;
+template <typename T> struct is_pod : public expr <__is_pod (T)> { };
 
 #else
 

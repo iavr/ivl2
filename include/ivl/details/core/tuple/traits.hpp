@@ -58,6 +58,9 @@ struct as_tuple_<collection <S, E...> > : public _true { };
 template <typename T> using is_tuple = details::is_tuple_<raw_type <T> >;
 template <typename T> using as_tuple = details::as_tuple_<raw_type <T> >;
 
+template <typename T>
+using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
+
 //-----------------------------------------------------------------------------
 
 template <typename... A>
@@ -148,38 +151,44 @@ template <size_t I, typename P> using cltel = type_of <cltel_t <I, P> >;
 
 namespace details {
 
-template <typename C, typename T, bool = is_pack <T>() || is_tuple <T>()>
-struct tup_cons_ : public alls <is_cons, tup_types <C>, tup_types <T> > { };
+template <
+	template <typename...> class R, typename C, typename T,
+	bool = all <is_tup_type, C, T>()
+>
+struct tup_rel : public alls <R, tup_types <C>, tup_types <T> > { };
 
-template <typename C, typename T>
-struct tup_cons_<C, T, false> : public _false { };
-
-template <typename T, typename C, bool = is_pack <T>() || is_tuple <T>()>
-struct tup_conv_ : public alls <is_conv, tup_types <T>, tup_types <C> > { };
-
-template <typename T, typename C>
-struct tup_conv_<T, C, false> : public _false { };
-
-template <typename C, typename T, bool = is_pack <T>() || is_tuple <T>()>
-struct tup_assign_ : public alls <is_assign, tup_types <C>, tup_types <T> > { };
-
-template <typename C, typename T>
-struct tup_assign_<C, T, false> : public _false { };
+template <template <typename...> class R, typename C, typename T>
+struct tup_rel <R, C, T, false> : public _false { };
 
 }  // namespace details
 
-template <typename C, typename T> using tup_cons = details::tup_cons_ <C, T>;
-template <typename T, typename C> using tup_conv = details::tup_conv_ <T, C>;
+template <typename C, typename T>
+using tup_cons = details::tup_rel <is_cons, C, T>;
+
+template <typename T, typename C>
+using tup_conv = details::tup_rel <is_conv, T, C>;
 
 template <typename C, typename T>
-using tup_explicit = expr <tup_cons <C, T>() && !tup_conv <T, C>()>;
+using tup_explicit = details::tup_rel <is_explicit, C, T>;
 
 template <typename C, typename T>
-struct tup_assign : public details::tup_assign_<C, T> { };
+struct tup_assign : public details::tup_rel <is_assign, C, T> { };
 
 template <typename... E, typename... P, typename T>
 struct tup_assign <pack <pack <E...>, P...>, T> :
 	public alls <tup_assign, pack <pack <E...>, P...>, tup_types <T> > { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T, typename R = raw_type <T> >
+using thin_t_ = _if_t <is_empty <R>{}, R, T>;
+
+}  // namespace details
+
+template <typename T> using thin_t = details::thin_t_<T>;
+template <typename T> using thin = type_of <thin_t <T> >;
 
 //-----------------------------------------------------------------------------
 

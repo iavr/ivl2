@@ -40,9 +40,8 @@ namespace tuple_details {
 
 template <typename F, typename U>
 class collection <data::apply <>, F, U> : public base_tup <
-		apply_tup <F, U>,
-		map <tup_app <F>::template map, tup_types <U> >
-	>
+	apply_tup <F, U>, map <tup_app <F>::template map, tup_types <U> >
+>
 {
 	using B = base_type_of <collection>;
 	using P = map <tup_app <F>::template map, tup_types <U> >;

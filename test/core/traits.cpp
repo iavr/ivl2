@@ -9,11 +9,12 @@ struct D { virtual void f() = 0; };
 struct E { virtual void f() { } };
 struct F { typedef A base_type; };
 struct G : public A { typedef int type; };
-enum H { lala };
+enum H { a };
 struct I;
 struct J { int x; };
 struct K { float f(int x) { return sqrt(x); } };
 struct L { L (int,int) {}; };
+struct M { A a; };
 
 //-----------------------------------------------------------------------------
 
@@ -32,6 +33,7 @@ namespace trait {
 
 using namespace ivl;
 using namespace ivl::types;
+using types::thin;
 
 //-----------------------------------------------------------------------------
 
@@ -317,6 +319,20 @@ void run()
 // 		typedef pack <G, I> Y;
 // 		report_map <major, T, U, V, W, X, Y>();
 // 		report_map <minor, T, U, V, W, X, Y>();
+// 	}
+
+//-----------------------------------------------------------------------------
+
+// 	{
+// 		report_map <thin, A>();
+// 		report_map <thin, B>();
+// 		report_map <thin, C>();
+// 		report_map <thin, D>();
+// 		report_map <thin, G>();
+// 		report_map <thin, M>();
+// 		report_map <thin, int>();
+// 		report_map <thin, int&>();
+// 		report_map <thin, int*>();
 // 	}
 }
 

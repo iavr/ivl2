@@ -100,17 +100,20 @@ using embed = type_of <embed_t <F, P> >;
 //-----------------------------------------------------------------------------
 
 template <template <typename...> class F, typename P> struct apply_t;
+template <template <typename...> class F, typename P> struct map_t;
 
 template <
 	template <typename...> class F,
 	template <typename...> class C, typename... E
 > struct apply_t <F, C <E...> > { using type = C <type_of <F <E> >...>; };
 
-template <template <typename...> class F, typename P>
-using apply = type_of <apply_t <F, P> >;
+template <
+	template <typename...> class F,
+	template <typename...> class C, typename... E
+> struct map_t <F, C <E...> > { using type = C <F <E>...>; };
 
 template <template <typename...> class F, typename P>
-using map_t = apply_t <hold <F>::template map, P>;
+using apply = type_of <apply_t <F, P> >;
 
 template <template <typename...> class F, typename P>
 using map = type_of <map_t <F, P> >;

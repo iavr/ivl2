@@ -56,10 +56,11 @@ namespace types {
 
 namespace traits {
 
-template <typename T> using is_union     = expr <__is_union(T)>;
-template <typename T> using is_trivial   = expr <__is_trivial(T)>;
-template <typename T> using is_final     = expr <__is_final(T)>;
-template <typename T> using alignment_of = size <__alignof__(T)>;
+// no aliases: built-in traits not allowed in function sugnatures
+template <typename T> struct is_union     : public expr <__is_union(T)> { };
+template <typename T> struct is_trivial   : public expr <__is_trivial(T)> { };
+template <typename T> struct is_final     : public expr <__is_final(T)> { };
+template <typename T> struct alignment_of : public size <__alignof__(T)> { };
 
 }  // namespace traits
 

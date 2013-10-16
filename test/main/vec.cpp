@@ -30,7 +30,15 @@ shift;
 
 afun::op::add add;
 
-afun_details::tup_vec <afun::op::add> Add;
+afun::vec <afun::op::add> Add;
+
+struct P
+{
+	template <typename T>
+	void operator()(const T& x) { cout << x << " "; }
+};
+
+afun::vec <P> print;
 
 //-----------------------------------------------------------------------------
 
@@ -103,6 +111,13 @@ void run()
 		cout << t + _(1, 2, 3, 4) << endl;
 		cout << t + _(1, 2, 3, 4, 5, 6) << endl;
 		cout << t + _(1, 2, 3, _(4, 5, 6, _(7, 8))) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "void vec function" << endl;
+		print(_(1, 2, 3, _(4, 5, 6, _(7, 8))));
+		cout << endl;
 		cout << endl;
 	}
 }

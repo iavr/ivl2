@@ -44,28 +44,35 @@ using types::any_tuple;
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP(NAME)                                                     \
-                                                                             \
-namespace fun { namespace op { using NAME = afun::vec <afun::op::NAME>; } }  \
-namespace op { static __attribute__ ((unused)) fun::op::NAME NAME; }         \
+#define IVL_VEC_OP(NAME)                                 \
+                                                         \
+namespace fun {                                          \
+namespace op {                                           \
+	using NAME = afun::vec_apply <afun::op::NAME>;        \
+}                                                        \
+}                                                        \
+                                                         \
+namespace op {                                           \
+	static __attribute__ ((unused)) fun::op::NAME NAME;   \
+}                                                        \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP1(NAME, OP)                          \
-                                                       \
-IVL_VEC_OP(NAME)                                       \
-                                                       \
-namespace op {                                         \
-                                                       \
-template <typename A, enable_if <is_tuple <A>{}> = 0>  \
-inline constexpr auto                                  \
-operator OP (A&& a)                                    \
-	-> decltype(op::NAME(fwd <A>(a)))                   \
-	{ return op::NAME(fwd <A>(a)); }                    \
-                                                       \
-}                                                      \
-                                                       \
-using op::operator OP;                                 \
+#define IVL_VEC_OP1(NAME, OP)          \
+                                       \
+IVL_VEC_OP(NAME)                       \
+                                       \
+namespace op {                         \
+                                       \
+template <typename A>                  \
+inline constexpr auto                  \
+operator OP (A&& a)                    \
+	-> decltype(op::NAME(fwd <A>(a)))   \
+	{ return op::NAME(fwd <A>(a)); }    \
+                                       \
+}                                      \
+                                       \
+using op::operator OP;                 \
 
 //-----------------------------------------------------------------------------
 
@@ -95,21 +102,21 @@ using op::operator OP;                                 \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP2(NAME, OP)                                          \
-                                                                       \
-IVL_VEC_OP(NAME)                                                       \
-                                                                       \
-namespace op {                                                         \
-                                                                       \
-template <typename A, typename B, enable_if <any_tuple <A, B>{}> = 0>  \
-inline constexpr auto                                                  \
-operator OP (A&& a, B&& b)                                             \
-	-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))                       \
-	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }                        \
-                                                                       \
-}                                                                      \
-                                                                       \
-using op::operator OP;                                                 \
+#define IVL_VEC_OP2(NAME, OP)                      \
+                                                   \
+IVL_VEC_OP(NAME)                                   \
+                                                   \
+namespace op {                                     \
+                                                   \
+template <typename A, typename B>                  \
+inline constexpr auto                              \
+operator OP (A&& a, B&& b)                         \
+	-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))   \
+	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }    \
+                                                   \
+}                                                  \
+                                                   \
+using op::operator OP;                             \
 
 //-----------------------------------------------------------------------------
 

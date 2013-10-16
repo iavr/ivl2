@@ -49,7 +49,7 @@ namespace details {
 #if IVL_HAS_FEATURE(is_base_of)
 
 template <typename B, typename D>
-using is_base_eq = expr <__is_base_of(B, D)>;
+struct is_base_eq : public expr <__is_base_of(B, D)> { };
 
 #else
 
@@ -87,7 +87,7 @@ using is_related = expr <is_base_eq <A, B>() || is_base_eq <B, A>()>;
 #if IVL_HAS_FEATURE(is_convertible_to)
 
 template <typename S, typename D>
-using is_conv = expr <__is_convertible_to(S, D)>;
+struct is_conv : public expr <__is_convertible_to(S, D)> { };
 
 template <typename S, typename D> using is_conv_ = is_conv <S, D>;
 

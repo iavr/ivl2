@@ -62,15 +62,15 @@ template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
 namespace details {
 
 template <typename T, bool = as_tuple <T>{}>
-struct wrap_t_ : public id_t <T> { };
+struct atom_of_t_ : public id_t <T> { };
 
 template <typename T>
-struct wrap_t_<T, false> { using type = atom <T>; };
+struct atom_of_t_<T, false> { using type = atom <T>; };
 
 }  // namespace details
 
-template <typename T> using wrap_t = details::wrap_t_<T>;
-template <typename T> using wrap   = type_of <wrap_t <T> >;
+template <typename T> using atom_of_t = details::atom_of_t_<T>;
+template <typename T> using atom_of   = type_of <atom_of_t <T> >;
 
 //-----------------------------------------------------------------------------
 

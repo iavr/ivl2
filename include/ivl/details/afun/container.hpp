@@ -36,14 +36,14 @@ namespace ivl {
 
 namespace afun_details {
 
-using join_  = der_fun <tup_join,  seq_join>;
-using zip_   = der_fun <tup_zip,   seq_zip>;
-using inner_ = der_fun <tup_inner, seq_inner>;
+using join_  = der_nfun <tup_join,  seq_join>;
+using zip_   = der_nfun <tup_zip,   seq_zip>;
+using inner_ = der_nfun <tup_inner, seq_inner>;
 
-using head_  = der_fun <tup_head, seq_head>;
-using tail_  = der_fun <tup_tail, seq_tail>;
-using flip_  = der_fun <tup_flip, seq_flip>;
-using call_  = der_fun <tup_call, seq_call>;
+using head_  = der_nfun <tup_head, seq_head>;
+using tail_  = der_nfun <tup_tail, seq_tail>;
+using flip_  = der_nfun <tup_flip, seq_flip>;
+using call_  = der_nfun <tup_call, seq_call>;
 
 }  // namespace afun_details
 

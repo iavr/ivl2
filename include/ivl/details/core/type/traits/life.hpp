@@ -101,6 +101,11 @@ struct is_cons_<false, T[], A...> : public _false { };
 
 //-----------------------------------------------------------------------------
 
+template <typename T, typename A>
+using is_explicit = expr <is_cons <T, A>() && !is_conv <A, T>()>;
+
+//-----------------------------------------------------------------------------
+
 struct is_assign_test : public input <>
 {
 	template <typename T, typename A> static
@@ -115,6 +120,7 @@ using is_assign = sfinae <is_assign_test, T, A>;
 }  // namespace details
 
 using details::is_cons;
+using details::is_explicit;
 using details::is_assign;
 
 //-----------------------------------------------------------------------------

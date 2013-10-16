@@ -42,7 +42,8 @@ template <typename A>
 class store : public base_tup <atom <A>, _type <A> >
 {
 	using P = _type <A>;
-	friend base_type_of <store>;
+	using B = base_type_of <store>;
+	friend B;
 	A a;
 
 //-----------------------------------------------------------------------------
@@ -54,8 +55,13 @@ class store : public base_tup <atom <A>, _type <A> >
 //-----------------------------------------------------------------------------
 
 public:
-	template <typename T, enable_if <is_cons <A, T>{}> = 0>
+	using B::operator=;
+
+	template <typename T, enable_if <is_conv <T, A>{}> = 0>
 	inline constexpr store(T&& a) : a(fwd <T>(a)) { }
+
+	template <typename T, enable_if <is_explicit <A, T>{}> = 0>
+	explicit inline constexpr store(T&& a) : a(fwd <T>(a)) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -67,7 +73,6 @@ class atom : public store <A>
 
 public:
 	using B::B;
-	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

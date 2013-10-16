@@ -43,7 +43,8 @@ class store <data::tuple <>, sizes <I...>, E...> :
 	public base_tup <tuple <E...>, pack <E...> >, public elem <I, E>...
 {
 	using P = pack <E...>;
-	friend base_type_of <store>;
+	using B = base_tup <tuple <E...>, P>;
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
@@ -74,9 +75,19 @@ class store <data::tuple <>, sizes <I...>, E...> :
 	_at() const& { return in <J>(*this); }
 
 //-----------------------------------------------------------------------------
+// always use or redefine everything public defined in B (except operator=)
 
 public:
-	explicit inline constexpr store() { }
+	using type = P;
+	using base_type = base_type_of <B>;
+	static constexpr size_t length = P::length;
+	using indices = sizes <I...>;
+	using B::idx;
+	using B::_;
+	using B::call;
+	using B::loop;
+
+//-----------------------------------------------------------------------------
 
 	template <typename... A>
 	explicit inline constexpr
@@ -98,7 +109,7 @@ class collection <data::tuple <>, E...> :
 
 public:
 	using B::base_type::operator=;
-	explicit inline constexpr collection() { }
+	explicit inline constexpr collection(const E&... e) : B(yes, e...) { }
 
 	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
 	inline constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }

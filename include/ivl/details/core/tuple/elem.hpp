@@ -37,16 +37,16 @@ namespace ivl {
 namespace tuple_details {
 
 //-----------------------------------------------------------------------------
-// TODO: not working in either clang or gcc,
-// but should be:               bool = is_empty <E>() && !is_final <E>()
-template <size_t I, typename E, bool = std::is_empty <E>()>
+
+template <size_t I, typename E, bool = is_base_opt <E>()>
 class elem
 {
 	E e;
 	elem& operator=(const elem&) = delete;
 
 public:
-	inline constexpr elem(elem&& e) : e(fwd <elem>(e).get()) { }
+	inline constexpr elem() : e() { }
+	inline constexpr elem(elem&& e) : e(mv(e).get()) { }
 	inline constexpr elem(const elem& e) : e(e.get()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
@@ -68,6 +68,10 @@ class elem <I, E, true> : private E
 	elem& operator=(const elem&) = delete;
 
 public:
+	inline constexpr elem() : E() { }
+	inline constexpr elem(elem&& e) : E(mv(e).get()) { }
+	inline constexpr elem(const elem& e) : E(e.get()) { }
+
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
 	explicit inline constexpr elem(A&& a) : E(fwd <A>(a)) { }
 

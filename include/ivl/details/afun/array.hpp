@@ -39,15 +39,15 @@ namespace afun_details {
 //-----------------------------------------------------------------------------
 
 // TODO
-struct seq_join  { void operator()(); };
-struct seq_zip   { void operator()(); };
-struct seq_inner { void operator()(); };
+struct seq_join  { void operator()(nat); };
+struct seq_zip   { void operator()(nat); };
+struct seq_inner { void operator()(nat); };
 
 // TODO
-struct seq_head { void operator()(); };
-struct seq_tail { void operator()(); };
-struct seq_flip { void operator()(); };
-struct seq_call { void operator()(); };
+struct seq_head { void operator()(nat); };
+struct seq_tail { void operator()(nat); };
+struct seq_flip { void operator()(nat); };
+struct seq_call { void operator()(nat); };
 
 //-----------------------------------------------------------------------------
 

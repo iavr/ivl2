@@ -188,7 +188,7 @@ struct ret_t <F(tmp <P...>, A...)> : public id_t <
 	decltype(generate <F>().template _<P...>(generate <A>()...))
 > { };
 
-template <typename... S> using ret = type_of <ret_t <S...> >;
+template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 

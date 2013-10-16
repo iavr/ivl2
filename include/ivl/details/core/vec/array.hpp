@@ -34,12 +34,12 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-// TODO
-struct seq_apply { void operator()(); };
+namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+// TODO
+struct seq_apply { void operator()(nat); };
 
 //-----------------------------------------------------------------------------
 
@@ -102,8 +102,9 @@ struct seq_loop : public arr_loop <seq_loop>
 //-----------------------------------------------------------------------------
 
 // TODO
-template <typename F>
-struct seq_vec { void operator()(); };
+template <typename F> struct seq_vec_apply { void operator()(nat); };
+template <typename F> struct seq_vec_loop  { void operator()(nat); };
+template <typename F> struct seq_vec       { void operator()(nat); };
 
 //-----------------------------------------------------------------------------
 

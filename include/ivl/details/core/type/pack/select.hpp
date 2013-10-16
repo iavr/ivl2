@@ -44,11 +44,14 @@ namespace packs {
 
 namespace details {
 
+template <bool B, typename C, typename D>
+using if_cons = _if <B, cons_t <C, type_of <D> >, D>;
+
 template <template <typename...> class F, typename C, typename D>
-using if_cons = _if <F <C>{}, cons_t <C, type_of <D> >, D>;
+using if_fun_cons = if_cons <F <C>{}, C, D>;
 
 template <template <typename...> class F, typename P>
-struct select_ : public if_cons <F, car <P>, select_<F, cdr <P> > > { };
+struct select_ : public if_fun_cons <F, car <P>, select_<F, cdr <P> > > { };
 
 template <template <typename...> class F, template <typename...> class C>
 struct select_<F, C <> > { using type = C <>; };
@@ -138,8 +141,7 @@ in_rng(size_t B, size_t E, int s, size_t I)
 
 template <size_t B, size_t E, int s, typename P, size_t I = 0>
 struct choose_rng_r : public if_cons <
-	given <in_rng(B, E, s, I)>::template map,
-	car <P>, choose_rng_r <B, E, s, cdr <P>, I + 1>
+	in_rng(B, E, s, I), car <P>, choose_rng_r <B, E, s, cdr <P>, I + 1>
 > { };
 
 template <size_t B, size_t E, int s, template <typename...> class C, size_t I>

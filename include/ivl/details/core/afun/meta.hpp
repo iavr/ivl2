@@ -34,55 +34,61 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-
-//-----------------------------------------------------------------------------
-
-namespace meta {
+namespace afun_meta_details {
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-struct bind
+class bind_ : private tuple <F>, private tuple <E...>
 {
-	F f;
-	tuple <E...> e;
+	using TF = tuple <F>;
+	using TE = tuple <E...>;
 
 public:
-	bind(F&& f, E&&... e) : f(fwd <F>(f)), e(fwd <E>(e)...) { }
+	inline constexpr
+	bind_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
 
 	template <typename... A>
 	inline constexpr auto
 	operator()(A&&... a) const
-		-> decltype(e.call(fwd <F>(f), fwd <A>(a)...))
-		{ return e.call(fwd <F>(f), fwd <A>(a)...); }
+		-> decltype(this->TE::call(generate <F>(), fwd <A>(a)...))
+		{ return TE::call(fwd <F>(TF::_()), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class pre
+class pre_ : private tuple <F>, private tuple <E...>
 {
-	F f;
-	tuple <E...> e;
+	using TF = tuple <F>;
+	using TE = tuple <E...>;
 
 public:
-	pre(F&& f, E&&... e) : f(fwd <F>(f)), e(fwd <E>(e)...) { }
+	inline constexpr
+	pre_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
 
 	template <typename... A>
 	inline constexpr types::ret <F(A&&...)>
 	operator()(A&&... a) const
 	{
-		return e.call(fwd <F>(f)), fwd <F>(f)(fwd <A>(a)...);
+		return TE::call(fwd <F>(TF::_())), fwd <F>(TF::_())(fwd <A>(a)...);
 	}
 };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace meta
+}  // namespace afun_meta_details
 
 //-----------------------------------------------------------------------------
 
+namespace afun {
+namespace meta {
+
+// TODO: gcc ICE: template <typename F, typename... E>
+template <typename... T> using bind = afun_meta_details::bind_<T...>;
+template <typename... T> using pre  = afun_meta_details::pre_<T...>;
+
+}  // namespace meta
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
@@ -95,14 +101,13 @@ static __attribute__ ((unused)) afun::rref_of <afun::meta::pre>   pre;
 }  // namespace meta
 
 using meta::bind;
+namespace afun_meta_details { using ivl::bind; }
 
 //-----------------------------------------------------------------------------
 
 namespace afun_meta_details {
 
-using ivl::bind;
-
-struct tup
+struct tup_
 {
 	template <typename F>
 	inline constexpr auto operator()(F&& f) const
@@ -117,7 +122,7 @@ struct tup
 namespace afun {
 namespace meta {
 
-using tup = afun_meta_details::tup;
+using tup = afun_meta_details::tup_;
 
 }  // namespace meta
 }  // namespace afun

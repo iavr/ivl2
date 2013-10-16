@@ -38,12 +38,12 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
-using apply_ = der_fun <tup_apply, seq_apply>;
+using apply_ = der_nfun <tup_apply, seq_apply>;
 
 //-----------------------------------------------------------------------------
 
 template <typename S>
-class sep_loop : public der_fun <
+class sep_loop : public der_nfun <
 	tup_sep_loop <S, sep_loop <S> >,
 	seq_sep_loop <S, sep_loop <S> >
 >
@@ -57,7 +57,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-struct loop_ : public der_fun <tup_loop, seq_loop>
+struct loop_ : public der_nfun <tup_loop, seq_loop>
 {
 	// TODO: keys
 	template <typename S>
@@ -67,7 +67,13 @@ struct loop_ : public der_fun <tup_loop, seq_loop>
 //-----------------------------------------------------------------------------
 
 template <typename F>
-using vec_ = der_fun <tup_vec <F>, seq_vec <F> >;
+using vec_apply_ = der_nfun <tup_vec_apply <F>, seq_vec_apply <F> >;
+
+template <typename F>
+using vec_loop_ = der_nfun <tup_vec_loop <F>, seq_vec_loop <F> >;
+
+template <typename F>
+using vec_ = der_nfun <tup_vec <F>, seq_vec <F> >;
 
 //-----------------------------------------------------------------------------
 
@@ -80,8 +86,9 @@ namespace afun {
 using apply  = afun_details::apply_;
 using loop   = afun_details::loop_;
 
-template <typename F>
-using vec = afun_details::vec_<F>;
+template <typename F> using vec_apply = afun_details::vec_apply_<F>;
+template <typename F> using vec_loop  = afun_details::vec_loop_<F>;
+template <typename F> using vec       = afun_details::vec_<F>;
 
 }  // namespace afun
 

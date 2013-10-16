@@ -32,7 +32,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-struct uscore : public afun::rref
+struct uscore : public afun::thin
 {
 	template <typename A>
 	inline constexpr atom <A&&>
