@@ -4,11 +4,11 @@ ivl2 is an effort to re-implement C++ template library [ivl](http://image.ntua.g
 
 The library is currently at its very early stage of development. There is no website, release, installation or documentation yet. The only available information on the project is currently restricted to this file.
 
-## Licence
+### Licence
 
 ivl has a dual LGPLv3 + GPLv2 license. See file LICENSE for the complete license text; further explanations are provided [here](http://image.ntua.gr/ivl/license.php).
 
-## Directory structure
+### Directory structure
 
 ivl constists primarily of template C++ header-only code. Non-header code refers only to test code, samples, help (documentation), or modules that will appear in the future. The current structure is:
 
@@ -19,11 +19,11 @@ ivl constists primarily of template C++ header-only code. Non-header code refers
 
 Code under folder /test is only used for development, testing and debugging. It is subject to major updates or complete removal in the future.
 
-## Requirements
+### Requirements
 
 ivl uses C++11 features available in implementations only recently; for this reason it is only supported by [g++ 4.8.1](http://gcc.gnu.org/gcc-4.8/) or later and [clang 3.3](http://llvm.org/releases/download.html#3.3) or later. Clang is only supported with [libc++](http://libcxx.llvm.org/), its own implementation of the C++ standard library.
 
-## Building
+### Building
 
 There is no Makefile or project file provided. The bash scripts under folder `/run` are the simplest way to compile and run a program using ivl. Script `/run/ivl` is for g++ and `/run/livl` for clang. It is best to copy them in a folder in your path, e.g. `/usr/local/bin`, after adjusting folders for your local copy of ivl and libc++ location. In this case,
 
