@@ -1,51 +1,37 @@
-ivl2 is an effort to re-implement C++ template library ivl
+# [ivl2](https://github.com/iavr/ivl2)
 
-	http://image.ntua.gr/ivl/
+ivl2 is an effort to re-implement C++ template library [ivl](http://image.ntua.gr/ivl/) in C++11. We refer to ivl2 as ivl in the sequel.
 
-in C++11.
+The library is currently at its very early stage of development. There is no website, release, installation or documentation yet. The only available information on the project is currently restricted to this file.
 
-ivl2 is currently at its very early stage of development. There is no website, release, installation or documentation yet, but it has the same licence as ivl:
+## Licence
 
-	http://image.ntua.gr/ivl/license.php
+ivl has a dual LGPLv3 + GPLv2 license. See file LICENSE for the complete license text; further explanations are provided [here](http://image.ntua.gr/ivl/license.php).
 
-More specifically, its license is dual LGPL3 + GPL2. The full license text is as follows.
+## Directory structure
 
------------------------------------------------------------------------
+ivl constists primarily of template C++ header-only code. Non-header code refers only to test code, samples, help (documentation), or modules that will appear in the future. The current structure is:
 
-ivl is free software; you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License
-version 3 as published by the Free Software Foundation.
-
-Alternatively, you can redistribute it and/or modify it under the terms
-of the GNU General Public License version 2 as published by the Free
-Software Foundation.
-
-ivl is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
------------------------------------------------------------------------
-
-ivl2 constists primarily of template C++ header-only code. Non-header code refers only to test code, samples, help (documentation), or modules that will appear in the future. The current structure is:
-
+	/doc        documentation: currently only license files
 	/include    complete header-only (.hpp) source code
 	/run        simple scripts to compile and execute
 	/test       primitive test code (.cpp)
 
 Code under folder /test is only used for development, testing and debugging. It is subject to major updates or complete removal in the future.
 
-ivl2 uses C++11 features available in implementations only recently; for this reason it is only supported by g++ 4.8.1 or later and clang 3.3 or later. Clang is only supported with libc++, its own implementation of the C++ standard library:
+## Requirements
 
-	http://libcxx.llvm.org/
+ivl uses C++11 features available in implementations only recently; for this reason it is only supported by [g++ 4.8.1](http://gcc.gnu.org/gcc-4.8/) or later and [clang 3.3](http://llvm.org/releases/download.html#3.3) or later. Clang is only supported with [libc++](http://libcxx.llvm.org/), its own implementation of the C++ standard library.
 
-There are no Makefile's or project files provided. The bash scripts under folder /run are the simplest way to compile and run a program using ivl2. Script /run/ivl is for g++ and /run/livl for clang. It is best to copy them in a folder in your path, e.g. /usr/local/bin, after adjusting folders for your local copy of ivl2 and libc++ location. In this case,
+## Building
+
+There is no Makefile or project file provided. The bash scripts under folder `/run` are the simplest way to compile and run a program using ivl. Script `/run/ivl` is for g++ and `/run/livl` for clang. It is best to copy them in a folder in your path, e.g. `/usr/local/bin`, after adjusting folders for your local copy of ivl and libc++ location. In this case,
 
 	cd test/main/
 	ivl test
 
-compiles file /test/main/test.cpp, produces binary /test/main/test, and executes it unless there are compiler or linker errors.
+compiles file `/test/main/test.cpp`, produces binary `/test/main/test`, and executes it unless there are compiler or linker errors.
 
-Note that extension .cpp is not necessary for the main source file; it may or may not be provided. Additional source files or compiler options may be specified as additional command-line arguments, but extra source files need extensions.
+Extension `.cpp` is not necessary for the main source file. Additional source files or compiler options may be specified as additional command-line arguments, but extensions are needed for extra source files.
 
-Good luck!
+*Good luck!*
