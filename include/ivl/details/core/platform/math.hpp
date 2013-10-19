@@ -49,7 +49,7 @@ namespace math {
 
 // bit scan reverse instruction, or count leading zeros (CLZ)
 template <typename T>
-inline auto BSR(T x)
+INLINE auto BSR(T x)
 	-> decltype(sizeof(T) >= 8 ?
 		_BitScanReverse64(&out, x) : _BitScanReverse(&out, x))
 {
@@ -61,7 +61,7 @@ inline auto BSR(T x)
 
 // population count instruction (number of bits set)
 template <typename T>
-inline auto POPCNT(T x)
+INLINE auto POPCNT(T x)
 	-> decltype(sizeof(T) >= 8 ? __popcnt64(x) : __popcnt(x))
 	{ return sizeof(T) >= 8 ? __popcnt64(x) : __popcnt(x); }
 
@@ -73,14 +73,14 @@ inline auto POPCNT(T x)
 
 // bit scan reverse instruction, or count leading zeros (CLZ)
 template <typename T>
-inline auto BSR(T x)
+INLINE auto BSR(T x)
 	-> decltype(sizeof(T) >= 8 ? __builtin_clzll(x) : __builtin_clz(x))
 	{ return sizeof(T) >= 8 ? __builtin_clzll(x) : __builtin_clz(x); }
 
 // population count instruction (number of bits set)
 // gcc/clang require -msse4.2 flag
 template <typename T>
-inline auto POPCNT(T x)
+INLINE auto POPCNT(T x)
 	-> decltype(sizeof(T) >= 8 ?
 		__builtin_popcountll(x) : __builtin_popcount(x))
 {
@@ -96,13 +96,13 @@ inline auto POPCNT(T x)
 
 // number of bits for given integer type
 template <typename T>
-inline auto bits()
+INLINE auto bits()
 	-> decltype(sizeof(T) << 3)
 	{ return (sizeof(T) << 3); }
 
 // most significant bit position for given integer type
 template <typename T>
-inline auto msb()
+INLINE auto msb()
 	-> decltype(bits <T>() - 1)
 	{ return bits <T>() - 1; }
 
@@ -110,7 +110,7 @@ inline auto msb()
 
 // log2 for integer type
 template <typename T>
-inline auto log2(T x)
+INLINE auto log2(T x)
 	-> decltype(msb <T>() - BSR(x))
 {
 	CHECK(x > 0, e_domain);
@@ -119,7 +119,7 @@ inline auto log2(T x)
 
 // previous power of 2 for integer type
 template <typename T>
-inline auto prev_pow2(T x)
+INLINE auto prev_pow2(T x)
 	-> decltype(1 << (msb <T>() - BSR(x)))
 {
 	CHECK(x > 0, e_domain);
@@ -128,7 +128,7 @@ inline auto prev_pow2(T x)
 
 // next power of 2 for integer type
 template <typename T>
-inline auto next_pow2(T x)
+INLINE auto next_pow2(T x)
 	-> decltype(1 << (bits <T>() - BSR(x)))
 {
 	CHECK(x > 0, e_domain);
@@ -137,7 +137,7 @@ inline auto next_pow2(T x)
 
 // is power of 2 for integer type
 template <typename T>
-inline bool is_pow_of2(T x)
+INLINE bool is_pow_of2(T x)
 {
 	return POPCNT(x) == 1;
 }

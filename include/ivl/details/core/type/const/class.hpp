@@ -50,7 +50,7 @@ struct c_cons <C, A...> : public c_cons <C(A...)> { };
 template <typename C, typename... A>
 struct c_cons <C(A...)> : public constant <C, c_cons <C(A...)> >
 {
-	inline constexpr operator C() const { return C(A()()...); }
+	INLINE constexpr operator C() const { return C(A()()...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ struct c_cons_list <C, A...> : public c_cons_list <C(A...)> { };
 template <typename C, typename... A>
 struct c_cons_list <C(A...)> : public constant <C, c_cons_list <C(A...)> >
 {
-	inline constexpr operator C() const { return C{A()()...}; }
+	INLINE constexpr operator C() const { return C{A()()...}; }
 };
 
 //-----------------------------------------------------------------------------

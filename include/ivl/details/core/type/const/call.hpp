@@ -52,26 +52,26 @@ struct c_call_base;
 template <typename R, typename F, typename... A, typename D>
 struct c_call_base <R, F(A...), D, false> : public constant <R, D>
 {
-	inline constexpr operator R() const { return F()()(A()()...); }
+	INLINE constexpr operator R() const { return F()()(A()()...); }
 };
 
 template <typename R, typename F, typename... A, typename D>
 struct c_call_base <R, F(A...), D, true> : public constant <void, D>
 {
-	inline void operator()() const { F()()(A()()...); }
+	INLINE void operator()() const { F()()(A()()...); }
 };
 
 template <typename R, typename F, typename... P, typename... A, typename D>
 struct c_call_base <R, F(tmp <P...>, A...), D, false> : public constant <R, D>
 {
-	inline constexpr
+	INLINE constexpr
 	operator R() const { return F()().template _<P...>(A()()...); }
 };
 
 template <typename R, typename F, typename... P, typename... A, typename D>
 struct c_call_base <R, F(tmp <P...>, A...), D, true> : public constant <void, D>
 {
-	inline void operator()() const { F()().template _<P...>(A()()...); }
+	INLINE void operator()() const { F()().template _<P...>(A()()...); }
 };
 
 //-----------------------------------------------------------------------------

@@ -44,18 +44,18 @@ class tup_apply
 
 public:
 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-	inline constexpr apply_tup <F&&, T&&>
+	INLINE constexpr apply_tup <F&&, T&&>
 	operator()(F&& f, T&& t) const
 	{
 		return apply_tup <F&&, T&&>(fwd <F>(f), fwd <T>(t));
 	}
 
 	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-	inline constexpr auto
+	INLINE constexpr auto
 	operator()(F&& f, T&&... t) const
-	-> decltype(val()(meta::tup(fwd <F>(f)), _inner(fwd <T>(t)...)))
+	-> decltype(val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...)))
 	{
-		return val()(meta::tup(fwd <F>(f)), _inner(fwd <T>(t)...));
+		return val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...));
 	}
 };
 
@@ -64,14 +64,14 @@ public:
 struct tup_loop
 {
 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-	inline void
+	INLINE void
 	operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
 
 	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-	inline void
+	INLINE void
 	operator()(F&& f, T&&... t) const
 	{
-		_inner(fwd <T>(t)...).loop(meta::tup(fwd <F>(f)));
+		_inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f)));
 	}
 };
 
@@ -81,14 +81,14 @@ template <typename S, typename D>
 struct tup_sep_loop : public derived <D, tup_sep_loop <S, D> >
 {
 	template <typename F, typename T, enable_if <tup_empty <T>{}> = 0>
-	inline void operator()(F&& f, T&& t) const { };
+	INLINE void operator()(F&& f, T&& t) const { };
 
 	template <typename F, typename T, enable_if <tup_non_empty<T>{}> = 0>
-	inline void operator()(F&& f, T&& t) const
+	INLINE void operator()(F&& f, T&& t) const
 	{
 		fwd <F>(f)(_head(fwd <T>(t)));
 		S&& s = fwd <S>(this->der().sep());
-		tup_loop()(meta::pre(fwd <F>(f), fwd <S>(s)), _tail(fwd <T>(t)));
+		tup_loop()(pre_fun(fwd <F>(f), fwd <S>(s)), _tail(fwd <T>(t)));
 	}
 };
 
@@ -100,14 +100,16 @@ class tup_vec_apply
 	using apply = tup_apply;
 
 public:
-	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	inline constexpr auto
+	// not using operator! to avoid recursion with yet-to-be-defined
+	// vec-operator! (see fun/op.hpp)
+	template <typename... A, enable_if <_not <any_tuple <A...>{}>{}> = 0>
+	INLINE constexpr auto
 	operator()(A&&... a) const
 		-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	inline constexpr auto
+	INLINE constexpr auto
 	operator()(A&&... a) const
 		-> decltype(apply()(*this, fwd <A>(a)...))
 		{ return apply()(*this, fwd <A>(a)...); }
@@ -122,10 +124,10 @@ class tup_vec_loop
 
 public:
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	inline void operator()(A&&... a) const { F()(fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) const { F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	inline void operator()(A&&... a) const { loop()(*this, fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) const { loop()(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -138,19 +140,19 @@ class tup_vec
 
 public:
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	inline constexpr auto
+	INLINE constexpr auto
 	operator()(A&&... a) const
 		-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_non_void <F(A...)>{}> = 0>
-	inline constexpr auto
+	INLINE constexpr auto
 	operator()(A&&... a) const
 		-> decltype(apply()(*this, fwd <A>(a)...))
 		{ return apply()(*this, fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_void <F(A...)>{}> = 0>
-	inline void operator()(A&&... a) const { loop()(*this, fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) const { loop()(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

@@ -38,10 +38,6 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace tmeta {
-
-//-----------------------------------------------------------------------------
-
 template <template <typename...> class F, typename... V>
 struct bind
 {
@@ -71,7 +67,7 @@ using eq_sz_fun_to = eq_int_fun_to <F, size_t, N>;
 //-----------------------------------------------------------------------------
 
 template <template <typename...> class F, template <typename...> class G>
-struct comp
+struct compose
 {
 	template <typename... A>
 	using map = F <G <A...> >;
@@ -79,7 +75,7 @@ struct comp
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class F> using hold = comp <id_t, F>;
+template <template <typename...> class F> using hold = compose <id_t, F>;
 
 //-----------------------------------------------------------------------------
 
@@ -89,12 +85,6 @@ struct neg
 	template <typename... A>
 	using map = _not <F <A...>{}>;
 };
-
-//-----------------------------------------------------------------------------
-
-}  // namespace tmeta
-
-using namespace tmeta;
 
 //-----------------------------------------------------------------------------
 

@@ -43,6 +43,7 @@ namespace logic {
 //-----------------------------------------------------------------------------
 
 template <bool B> using boolean = c_boolean <B>;
+template <bool B> using expr    = boolean <B>;
 
 using _false = c_false;
 using _true = c_true ;
@@ -50,8 +51,12 @@ using _true = c_true ;
 static __attribute__ ((unused)) _false no;
 static __attribute__ ((unused)) _true  yes;
 
-template <bool B> using expr = boolean <B>;
-template <bool B> using _not = expr <!B>;
+//-----------------------------------------------------------------------------
+
+// not using operator! to avoid recursion of vec-operator!
+// (see core/vec/tuple.hpp)
+template <bool B> struct _not        : public _true  { };
+template <>       struct _not <true> : public _false { };
 
 //-----------------------------------------------------------------------------
 

@@ -56,6 +56,8 @@ template <typename T> struct tup_args_t <T> : public tup_types_t <T> { };
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... T> struct tup_ret_t;
+template <typename F, typename... T>
+using tup_ret = type_of <tup_ret_t <F, T...> >;
 
 namespace details {
 
@@ -63,8 +65,7 @@ template <typename S>       struct tup_ret_p;
 template <typename S, bool> struct tup_ret_s;
 
 template <typename F, typename... T>
-struct tup_ret_p <F(pack <T...>)> :
-	public pack <type_of <tup_ret_t <F(T)> >...> { };
+struct tup_ret_p <F(pack <T...>)> : public pack <tup_ret <F(T)>...> { };
 
 template <typename F, typename... T>
 struct tup_ret_s <F(T...), true> : public tup_ret_p <F(tup_args <T...>)> { };
@@ -83,9 +84,6 @@ struct tup_ret_t <F(T...)> :
 
 template <typename F, typename... T>
 struct tup_ret_t <F(pack <T...>)> : public tup_ret_t <F(T...)> { };
-
-template <typename F, typename... T>
-using tup_ret = type_of <tup_ret_t <F, T...> >;
 
 //-----------------------------------------------------------------------------
 

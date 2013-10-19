@@ -38,6 +38,7 @@ namespace atom_details {
 
 using namespace types;
 using tuple_details::base_tup;
+using tuple_details::elem;
 
 template <typename T> class atom;
 

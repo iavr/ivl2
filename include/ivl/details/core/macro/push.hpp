@@ -52,16 +52,22 @@
 
 //-----------------------------------------------------------------------------
 
+#ifdef DEBUG
+#pragma push_macro("DEBUG")
+#undef DEBUG
+#define IVL_POP_DEBUG
+#endif
+
 #ifdef CHECK
 #pragma push_macro("CHECK")
 #undef CHECK
 #define IVL_POP_CHECK
 #endif
 
-#ifdef DEBUG
-#pragma push_macro("DEBUG")
-#undef DEBUG
-#define IVL_POP_DEBUG
+#ifdef INLINE
+#pragma push_macro("INLINE")
+#undef INLINE
+#define IVL_POP_INLINE
 #endif
 
 //-----------------------------------------------------------------------------

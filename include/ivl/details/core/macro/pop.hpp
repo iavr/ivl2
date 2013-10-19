@@ -32,14 +32,19 @@
 
 //-----------------------------------------------------------------------------
 
-#ifdef IVL_POP_DEBUG
-#pragma pop_macro("DEBUG")
-#undef IVL_POP_DEBUG
+#ifdef IVL_POP_INLINE
+#pragma pop_macro("INLINE")
+#undef IVL_POP_INLINE
 #endif
 
 #ifdef IVL_POP_CHECK
 #pragma pop_macro("CHECK")
 #undef IVL_POP_CHECK
+#endif
+
+#ifdef IVL_POP_DEBUG
+#pragma pop_macro("DEBUG")
+#undef IVL_POP_DEBUG
 #endif
 
 //-----------------------------------------------------------------------------

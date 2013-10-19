@@ -42,37 +42,35 @@ template <typename... U>
 class collection <data::join <>, U...> :
 	public base_tup <join_tup <U...>, join <tup_types <U>...> >
 {
-	using B = base_type_of <collection>;
 	using P = join <tup_types <U>...>;
 	using M = major <tup_types <U>...>;
 	using m = minor <tup_types <U>...>;
-	using T = tuple <U...>;
+	using B = base_tup <join_tup <U...>, P>;
 
 	template <size_t J> using majr = pick_i <J, M>;
 	template <size_t J> using minr = pick_i <J, m>;
 
-	friend B;
-	T t;
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	inline rtel <J, P>
-	_at() && { return at._<minr <J>{}>(at._<majr <J>{}>(fwd <T>(t))); }
+	INLINE rtel <J, P>
+	_at() && { return at._<minr <J>{}>(mv(*this).B::template get <majr <J>{}>()); }
 
 	template <size_t J>
-	inline ltel <J, P>
-	_at() & { return at._<minr <J>{}>(at._<majr <J>{}>(t)); }
+	INLINE ltel <J, P>
+	_at() & { return at._<minr <J>{}>(B::template get <majr <J>{}>()); }
 
 	template <size_t J>
-	inline constexpr cltel <J, P>
-	_at() const& { return at._<minr <J>{}>(at._<majr <J>{}>(t)); }
+	INLINE constexpr cltel <J, P>
+	_at() const& { return at._<minr <J>{}>(B::template get <majr <J>{}>()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using B::operator=;
-	explicit inline constexpr collection(U&&... u) : t(fwd <U>(u)...) { }
+	using B::base_type::operator=;
+	explicit INLINE constexpr collection(U&&... u) : B(fwd <U>(u)...) { }
 };
 
 //-----------------------------------------------------------------------------

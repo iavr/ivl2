@@ -52,12 +52,12 @@ class c_int_array : public sequence <sizeof...(N)>,
 	{
 		T a[sizeof...(N)];
 	public:
-		inline store() : a{N...} { }
-		static inline V data() { static store s; return s.a; }
+		INLINE store() : a{N...} { }
+		static INLINE V data() { static store s; return s.a; }
 	};
 
 public:
-	inline constexpr operator V() const { return store::data(); }
+	INLINE constexpr operator V() const { return store::data(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -74,12 +74,12 @@ class c_array_cons : public sequence <sizeof...(A)>,
 	{
 		T a[sizeof...(A)];
 	public:
-		inline store() : a{embed <C, cons <T, A> >()...} { }
-		static inline V data() { static store s; return s.a; }
+		INLINE store() : a{embed <C, cons <T, A> >()...} { }
+		static INLINE V data() { static store s; return s.a; }
 	};
 
 public:
-	inline constexpr operator V() const { return store::data(); }
+	INLINE constexpr operator V() const { return store::data(); }
 };
 
 }  // namespace details
@@ -97,7 +97,7 @@ using c_array_list = details::c_array_cons <c_cons_list, T, A...>;
 template<const char* F(void)>
 struct c_string : public constant <const char*, c_string <F> >
 {
-	inline constexpr operator const char*() const { return F(); }
+	INLINE constexpr operator const char*() const { return F(); }
 };
 
 //-----------------------------------------------------------------------------

@@ -42,15 +42,15 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> inline add_rref <T> generate();
+template <typename T> add_rref <T> generate();
 
 template <typename T>
-struct convertible { inline operator add_rref <T>() &&; };
+struct converts { operator add_rref <T>() &&; };
 
 template <typename T>
-inline convertible <T> convert() { return convertible <T>(); }
+INLINE converts <T> convert() { return converts <T>(); }
 
-template <typename T> inline bool convert(T);
+template <typename T> bool convert(T);
 
 struct flexi { flexi(...); };
 
@@ -58,17 +58,37 @@ struct thru { template <typename... T> thru(T&&...) { } };
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-inline remove_ref <T>&&
-mv(T&& a) { return static_cast <remove_ref <T>&&>(a); }
-
-template <typename T>
-inline constexpr T&&
-fwd(remove_ref <T>& a) { return static_cast <T&&>(a); }
+template <typename A>
+INLINE remove_ref <A>&&
+mv(A&& a) { return static_cast <remove_ref <A>&&>(a); }
 
 template <typename T, enable_if <!is_lref <T>()> = 0>
-inline constexpr T&&
+INLINE constexpr T&&
 fwd(remove_ref <T>&& a) { return static_cast <T&&>(a); }
+
+template <typename T>
+INLINE constexpr T&&
+fwd(remove_ref <T>& a) { return static_cast <T&&>(a); }
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename A, enable_if <!is_lref <A>()> = 0>
+INLINE constexpr T&&
+as(A&& a) { return static_cast <T&&>(a); }
+
+template <
+	typename T, typename A,
+	enable_if <is_lref <A>() && !is_const <remove_ref <A> >()> = 0
+>
+INLINE constexpr T&
+as(A&& a) { return static_cast <T&>(a); }
+
+template <
+	typename T, typename A,
+	enable_if <is_lref <A>() && is_const <remove_ref <A> >()> = 0
+>
+INLINE constexpr const T&
+as(A&& a) { return static_cast <const T&>(a); }
 
 //-----------------------------------------------------------------------------
 
@@ -80,6 +100,7 @@ fwd(remove_ref <T>&& a) { return static_cast <T&&>(a); }
 
 using types::traits::mv;
 using types::traits::fwd;
+using types::traits::as;
 
 //-----------------------------------------------------------------------------
 

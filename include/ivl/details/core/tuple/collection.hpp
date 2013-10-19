@@ -36,17 +36,21 @@ namespace ivl {
 
 namespace tuple_details {
 
+//-----------------------------------------------------------------------------
+
 template <typename S, typename... A> struct store;
 template <typename S, typename... A> struct collection;
 
 template <typename D, typename P>
 using base_tup = collection <data::base <>, D, P>;
 
+//-----------------------------------------------------------------------------
+
 template <typename... E>
 using tuple = collection <data::tuple <>, E...>;
 
 template <typename K, typename U>
-using indirect = collection <data::indirect <>, K, U>;
+using indirect_tup = collection <data::indirect <>, K, U>;
 
 template <typename F, typename U>
 using apply_tup = collection <data::apply <>, F, U>;
@@ -57,20 +61,16 @@ using zip_tup = collection <data::zip <>, U...>;
 template <typename... U>
 using join_tup = collection <data::join <>, U...>;
 
+//-----------------------------------------------------------------------------
+
 }  // namespace tuple_details
 
 using tuple_details::collection;
 using tuple_details::tuple;
-
-//-----------------------------------------------------------------------------
-
-namespace afun_details {
-
+using tuple_details::indirect_tup;
 using tuple_details::apply_tup;
 using tuple_details::zip_tup;
 using tuple_details::join_tup;
-
-}  // namespace afun_details
 
 //-----------------------------------------------------------------------------
 

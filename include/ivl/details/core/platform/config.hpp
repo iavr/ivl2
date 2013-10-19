@@ -23,23 +23,21 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_BEGIN_HPP
-#define IVL_DETAILS_CORE_AFUN_BEGIN_HPP
-
-#include <ivl/ivl>
+#ifndef IVL_DETAILS_CORE_PLATFORM_CONFIG_HPP
+#define IVL_DETAILS_CORE_PLATFORM_CONFIG_HPP
 
 //-----------------------------------------------------------------------------
 
-namespace ivl {
+#if defined(_MSC_VER)
+
+#define INLINE __forceinline
+
+#else // _MSC_VER
+
+#define INLINE __attribute__((always_inline))
+
+#endif  //_MSC_VER
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details { using namespace types; }
-
-//-----------------------------------------------------------------------------
-
-}  // namespace ivl
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_DETAILS_CORE_AFUN_BEGIN_HPP
+#endif  // IVL_DETAILS_CORE_PLATFORM_CONFIG_HPP

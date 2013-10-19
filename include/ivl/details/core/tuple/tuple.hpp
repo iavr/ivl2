@@ -40,62 +40,35 @@ namespace tuple_details {
 
 template <size_t... I, typename... E>
 class store <data::tuple <>, sizes <I...>, E...> :
-	public base_tup <tuple <E...>, pack <E...> >, public elem <I, E>...
+	public base_tup <tuple <E...>, pack <E...> >
 {
 	using P = pack <E...>;
 	using B = base_tup <tuple <E...>, P>;
+
 	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J, typename F>
-	inline static F&&
-	in(elem <J, F>&& e) { return fwd <elem <J, F> >(e).get(); }
+	template <size_t J>
+	INLINE rtel <J, P>
+	_at() && { return mv(*this).B::template get <J>(); }
 
-	template <size_t J, typename F>
-	inline static F&
-	in(elem <J, F>& e) { return e.get(); }
+	template <size_t J>
+	INLINE ltel <J, P>
+	_at() & { return B::template get <J>(); }
 
-	template <size_t J, typename F>
-	inline static const F&
-	in(const elem <J, F>& e) { return e.get(); }
+	template <size_t J>
+	INLINE constexpr cltel <J, P>
+	_at() const& { return B::template get <J>(); }
 
 //-----------------------------------------------------------------------------
-
-	template <size_t J>
-	inline rtel <J, P>
-	_at() && { return in <J>(fwd <store>(*this)); }
-
-	template <size_t J>
-	inline ltel <J, P>
-	_at() & { return in <J>(*this); }
-
-	template <size_t J>
-	inline constexpr cltel <J, P>
-	_at() const& { return in <J>(*this); }
-
-//-----------------------------------------------------------------------------
-// always use or redefine everything public defined in B (except operator=)
 
 public:
-	using type = P;
-	using base_type = base_type_of <B>;
-	static constexpr size_t length = P::length;
-	using indices = sizes <I...>;
-	using B::idx;
-	using B::_;
-	using B::call;
-	using B::loop;
-
-//-----------------------------------------------------------------------------
-
 	template <typename... A>
-	explicit inline constexpr
-	store(_true, A&&... a) : elem <I, E>(fwd <A>(a))... { }
+	explicit INLINE constexpr store(_true, A&&... a) : B(fwd <A>(a)...) { }
 
 	template <typename T>
-	inline constexpr
-	store(T&& t) : elem <I, E>(at._<I>(fwd <T>(t)))... { }
+	INLINE constexpr store(T&& t) : B(at._<I>(fwd <T>(t))...) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -109,19 +82,19 @@ class collection <data::tuple <>, E...> :
 
 public:
 	using B::base_type::operator=;
-	explicit inline constexpr collection(const E&... e) : B(yes, e...) { }
+	explicit INLINE constexpr collection(const E&... e) : B(yes, e...) { }
 
 	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
-	inline constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
+	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
 	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
-	explicit inline constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
+	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
 	template <typename T, enable_if <tup_conv <T, P>{}> = 0>
-	inline constexpr collection(T&& t) : B(fwd <T>(t)) { }
+	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 
 	template <typename T, enable_if <tup_explicit <P, T>{}> = 0>
-	explicit inline constexpr collection(T&& t) : B(fwd <T>(t)) { }
+	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 };
 
 //-----------------------------------------------------------------------------

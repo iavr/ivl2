@@ -180,6 +180,35 @@ struct tup_assign <pack <pack <E...>, P...>, T> :
 
 //-----------------------------------------------------------------------------
 
+template <typename T> struct tup_under_t : public pack <> { };
+template <typename T> using  tup_under = type_of <tup_under_t <T> >;
+
+template <typename... E>
+struct tup_under_t <tuple <E...> > : public pack <E...> { };
+
+template <typename K, typename U>
+struct tup_under_t <indirect_tup <K, U> > : public pack <U> { };
+
+template <typename F, typename U>
+struct tup_under_t <apply_tup <F, U> > : public pack <F, U> { };
+
+template <typename... U>
+struct tup_under_t <zip_tup <U...> > : public pack <U...> { };
+
+template <typename... U>
+struct tup_under_t <join_tup <U...> > : public pack <U...> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+struct tup_app
+{
+	template <typename... E>
+	using map = F(pack <E...>);
+};
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
 template <typename T, typename R = raw_type <T> >
@@ -200,19 +229,6 @@ template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
 //-----------------------------------------------------------------------------
 
 }  // namespace traits
-
-//-----------------------------------------------------------------------------
-
-namespace tmeta {
-
-template <typename F>
-struct tup_app
-{
-	template <typename... E>
-	using map = F(pack <E...>);
-};
-
-}  // namespace tmeta
 
 //-----------------------------------------------------------------------------
 

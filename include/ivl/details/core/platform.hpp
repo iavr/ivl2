@@ -29,6 +29,8 @@
 //-----------------------------------------------------------------------------
 
 #include "platform/msc.hpp"
+#include "platform/export.hpp"
+#include "platform/config.hpp"
 #include "platform/math.hpp"
 
 //-----------------------------------------------------------------------------

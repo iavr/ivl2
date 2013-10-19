@@ -60,7 +60,7 @@ public:
 	struct function :
 		public fun_constant <R (*)(A...), function <F> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <function>() const { return F; }
 	};
 
@@ -70,7 +70,7 @@ public:
 	struct method :
 		public fun_constant <R (C::*)(A...), method <C, M> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <method>() const { return M; }
 	};
 
@@ -78,7 +78,7 @@ public:
 	struct cmethod :
 		public fun_constant <R (C::*)(A...) const, cmethod <C, M> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <cmethod>() const { return M; }
 	};
 
@@ -90,7 +90,7 @@ public:
 	struct lmethod :
 		public fun_constant <R (C::*)(A...) &, lmethod <C, M> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <lmethod>() const { return M; }
 	};
 
@@ -98,7 +98,7 @@ public:
 	struct rmethod :
 		public fun_constant <R (C::*)(A...) &&, rmethod <C, M> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <rmethod>() const { return M; }
 	};
 
@@ -106,7 +106,7 @@ public:
 	struct clmethod :
 		public fun_constant <R (C::*)(A...) const&, clmethod <C, M> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <clmethod>() const { return M; }
 	};
 
@@ -114,7 +114,7 @@ public:
 	struct crmethod :
 		public fun_constant <R (C::*)(A...) const&&, crmethod <C, M> >
 	{
-		inline constexpr
+		INLINE constexpr
 		operator value_type_of <crmethod>() const { return M; }
 	};
 

@@ -46,9 +46,9 @@ struct based : public B
 protected:
 	using B::B;
 
-	inline B&&       base() &&      { return static_cast <B&&>      (*this); }
-	inline B&        base() &       { return static_cast <B&>       (*this); }
-	inline constexpr
+	INLINE B&&       base() &&      { return static_cast <B&&>      (*this); }
+	INLINE B&        base() &       { return static_cast <B&>       (*this); }
+	INLINE constexpr
 	       const B&  base() const&  { return static_cast <const B&> (*this); }
 };
 
@@ -60,9 +60,9 @@ struct derived
 	using derived_type = D;
 
 protected:
-	inline D&&       der() &&      { return static_cast <D&&>      (*this); }
-	inline D&        der() &       { return static_cast <D&>       (*this); }
-	inline constexpr
+	INLINE D&&       der() &&      { return static_cast <D&&>      (*this); }
+	INLINE D&        der() &       { return static_cast <D&>       (*this); }
+	INLINE constexpr
 	       const D&  der() const&  { return static_cast <const D&> (*this); }
 };
 

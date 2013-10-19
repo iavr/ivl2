@@ -47,7 +47,7 @@ template <
 struct rref_tran_of
 {
 	template <typename... A, enable_if <E <A...>{}> = 0>
-	inline constexpr T <F <R <A&&> >...>
+	INLINE constexpr T <F <R <A&&> >...>
 	operator()(A&&... a) const { return T <F <R <A&&> >...>(fwd <A>(a)...); }
 };
 
@@ -84,7 +84,7 @@ template <
 struct lref_of
 {
 	template <typename... A, enable_if <all <E, A...>{}> = 0>
-	inline constexpr T <F <A&>...>
+	INLINE constexpr T <F <A&>...>
 	operator()(A&... a) const { return T <F <A&>...>(a...); }
 };
 
@@ -98,7 +98,7 @@ template <
 struct clref_of
 {
 	template <typename... A, enable_if <all <E, A...>{}> = 0>
-	inline constexpr T <F <const A&>...>
+	INLINE constexpr T <F <const A&>...>
 	operator()(const A&... a) const { return T <F <const A&>...>(a...); }
 };
 
@@ -127,7 +127,7 @@ static __attribute__ ((unused)) tup_inner _inner;
 struct tup_head
 {
 	template <typename T, enable_if <as_tup_non_empty <T>{}> = 0>
-	inline constexpr auto operator()(T&& t) const
+	INLINE constexpr auto operator()(T&& t) const
 		-> decltype(at._<0>(fwd <T>(t)))
 		{ return at._<0>(fwd <T>(t)); }
 };
@@ -137,7 +137,7 @@ struct tup_head
 struct tup_tail
 {
 	template <typename T, enable_if <as_tup_non_empty <T>{}> = 0>
-	inline constexpr auto operator()(T&& t) const
+	INLINE constexpr auto operator()(T&& t) const
 		-> decltype(at._<sz_range <1, tup_len <T>() - 1> >(fwd <T>(t)))
 		{ return at._<sz_range <1, tup_len <T>() - 1> >(fwd <T>(t)); }
 };
@@ -147,10 +147,10 @@ struct tup_tail
 struct tup_flip
 {
 	template <typename T, enable_if <tup_empty <T>{} || is_atom <T>{}> = 0>
-	inline constexpr T&& operator()(T&& t) const { return fwd <T>(t); }
+	INLINE constexpr T&& operator()(T&& t) const { return fwd <T>(t); }
 
 	template <typename T, enable_if <tup_non_empty <T>{}> = 0>
-	inline constexpr auto operator()(T&& t) const
+	INLINE constexpr auto operator()(T&& t) const
 		-> decltype(at._<sz_range <tup_len <T>() - 1, 0, -1> >(fwd <T>(t)))
 		{ return at._<sz_range <tup_len <T>() - 1, 0, -1> >(fwd <T>(t)); }
 };
@@ -160,7 +160,7 @@ struct tup_flip
 struct tup_call
 {
 	template <typename F, typename T>
-	inline constexpr auto operator()(F&& f, T&& t) const
+	INLINE constexpr auto operator()(F&& f, T&& t) const
 		-> decltype(fwd <T>(t).call(fwd <F>(f)))
 		{ return fwd <T>(t).call(fwd <F>(f)); }
 };

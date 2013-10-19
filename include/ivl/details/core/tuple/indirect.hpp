@@ -40,35 +40,35 @@ namespace tuple_details {
 
 template <typename K, typename U>
 class collection <data::indirect <>, K, U> : public
-	base_tup <indirect <K, U>, choose_p <K, tup_types <U> > >
+	base_tup <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
 {
-	using B = base_type_of <collection>;
+	using E = elem <0, U>;
 	using P = choose_p <K, tup_types <U> >;
+	using B = base_tup <indirect_tup <K, U>, P>;
 
 	template <size_t J> using off = pick_i <J, K>;
 
-	friend B;
-	U u;
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	inline rtel <J, P>
-	_at() && { return at._<off <J>{}>(fwd <U>(u)); }
+	INLINE rtel <J, P>
+	_at() && { return at._<off <J>{}>(mv(*this).B::template get <0>()); }
 
 	template <size_t J>
-	inline ltel <J, P>
-	_at() & { return at._<off <J>{}>(u); }
+	INLINE ltel <J, P>
+	_at() & { return at._<off <J>{}>(B::template get <0>()); }
 
 	template <size_t J>
-	inline constexpr cltel <J, P>
-	_at() const& { return at._<off <J>{}>(u); }
+	INLINE constexpr cltel <J, P>
+	_at() const& { return at._<off <J>{}>(B::template get <0>()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using B::operator=;
-	explicit inline constexpr collection(U&& u) : u(fwd <U>(u)) { }
+	using B::base_type::operator=;
+	explicit INLINE constexpr collection(U&& u) : B(fwd <U>(u)) { }
 };
 
 //-----------------------------------------------------------------------------

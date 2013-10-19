@@ -43,35 +43,33 @@ class collection <data::apply <>, F, U> : public base_tup <
 	apply_tup <F, U>, map <tup_app <F>::template map, tup_types <U> >
 >
 {
-	using B = base_type_of <collection>;
 	using P = map <tup_app <F>::template map, tup_types <U> >;
+	using B = base_tup <apply_tup <F, U>, P>;
 
-	friend B;
-	F f;
-	U u;
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	inline rtel <J, P>
-	_at() && { return fwd <F>(f)(at._<J>(fwd <U>(u))); }
+	INLINE rtel <J, P>
+	_at() && { return mv(*this).B::template get <0>()(at._<J>(mv(*this).B::template get <1>())); }
 
 	template <size_t J>
-	inline ltel <J, P>
-	_at() & { return fwd <F>(f)(at._<J>(u)); }
+	INLINE ltel <J, P>
+	_at() & { return B::template get <0>()(at._<J>(B::template get <1>())); }
 
 	template <size_t J>
-	inline constexpr cltel <J, P>
-	_at() const& { return fwd <F>(f)(at._<J>(u)); }
+	INLINE constexpr cltel <J, P>
+	_at() const& { return B::template get <0>()(at._<J>(B::template get <1>())); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using B::operator=;
+	using B::base_type::operator=;
 
 	template <typename G, typename V>
-	explicit inline constexpr collection(G&& g, V&& v) :
-		f(fwd <G>(g)), u(fwd <V>(v)) { }
+	explicit INLINE constexpr collection(G&& g, V&& v) :
+		B(fwd <G>(g), fwd <V>(v)) { }
 };
 
 //-----------------------------------------------------------------------------

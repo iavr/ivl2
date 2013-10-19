@@ -38,24 +38,52 @@ namespace mem {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> T* vary(const T* p) { return const_cast <T*>(p); }
-template <typename T> T& vary(const T& r) { return const_cast <T&>(r); }
+template <typename T>
+INLINE T* vary(const T* p) { return const_cast <T*>(p); }
 
-template <typename T>       void* away(T&       r) { return reinterpret_cast <void*>      (r); }
-template <typename T> const void* away(const T& r) { return reinterpret_cast <const void*>(r); }
+template <typename T>
+INLINE T& vary(const T& r) { return const_cast <T&>(r); }
 
-template <typename T>       void* away(T*       p) { return static_cast <void*>      (p); }
-template <typename T> const void* away(const T* p) { return static_cast <const void*>(p); }
-template <typename T>       void* ref (T&       r) { return away(&r); }
-template <typename T> const void* ref (const T& r) { return away(&r); }
+//-----------------------------------------------------------------------------
 
-template <typename T>       T* back (void*       p) { return static_cast <T*>      (p); }
-template <typename T> const T* back (const void* p) { return static_cast <const T*>(p); }
-template <typename T>       T& deref(void*       p) { return *back <T>(p); }
-template <typename T> const T& deref(const void* p) { return *back <T>(p); }
+template <typename T>
+INLINE       void* away(T&       r) { return reinterpret_cast <void*>      (r); }
 
-inline void*       peek(void*       p) { return deref <void*>      (p); }
-inline const void* peek(const void* p) { return deref <const void*>(p); }
+template <typename T>
+INLINE const void* away(const T& r) { return reinterpret_cast <const void*>(r); }
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+INLINE       void* away(T*       p) { return static_cast <void*>      (p); }
+
+template <typename T>
+INLINE const void* away(const T* p) { return static_cast <const void*>(p); }
+
+template <typename T>
+INLINE       void* ref (T&       r) { return away(&r); }
+
+template <typename T>
+INLINE const void* ref (const T& r) { return away(&r); }
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+INLINE       T* back (void*       p) { return static_cast <T*>      (p); }
+
+template <typename T>
+INLINE const T* back (const void* p) { return static_cast <const T*>(p); }
+
+template <typename T>
+INLINE       T& deref(void*       p) { return *back <T>(p); }
+
+template <typename T>
+INLINE const T& deref(const void* p) { return *back <T>(p); }
+
+//-----------------------------------------------------------------------------
+
+INLINE void*       peek(void*       p) { return deref <void*>      (p); }
+INLINE const void* peek(const void* p) { return deref <const void*>(p); }
 
 //-----------------------------------------------------------------------------
 

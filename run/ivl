@@ -2,7 +2,7 @@
 compiler=g++
 ivl=/data/dev/ivl2
 
-flags="-I$ivl/include -Os -lpthread -lstdc++ -msse4.2 -std=c++11 $stdlib"
+flags="-I$ivl/include -Os -lpthread -lstdc++ -msse4.2 -std=c++11 -Wno-attributes"
 output=$(echo $1 | sed -e 's/\..*//g')
 shift
 echo $compiler -o $output $flags $output.cpp $@

@@ -44,14 +44,14 @@ namespace constants {
 
 struct c_null : public constant <nullptr_t, c_null>
 {
-	inline constexpr operator nullptr_t() const { return nullptr; }
+	INLINE constexpr operator nullptr_t() const { return nullptr; }
 };
 
 template <typename T, T V>
 struct c_integral : public constant <T, c_integral <T, V> >
 {
 	static constexpr T value = V;
-	inline constexpr operator T() const { return value; }
+	INLINE constexpr operator T() const { return value; }
 };
 
 template <typename T, T N> using c_enum = c_integral <T, N>;
@@ -127,7 +127,7 @@ template <typename T, typename M, typename E>
 struct c_scientific : public floating <M, E>,
 	public constant <T, c_scientific <T, M, E> >
 {
-	inline constexpr operator T() const { return M() * std::pow(T(10), E()); }
+	INLINE constexpr operator T() const { return M() * std::pow(T(10), E()); }
 };
 
 template <int M = 0, char E = '\0'>
@@ -146,7 +146,7 @@ template <typename T, typename M, typename E>
 struct c_norm_scientific : public floating <M, E>,
 	public constant <T, c_norm_scientific <T, M, E> >
 {
-	inline constexpr operator T() const
+	INLINE constexpr operator T() const
 	{
 		using namespace std;
 		return c_scientific <T, M, E>() /
@@ -169,13 +169,13 @@ using c_norm_long_double =
 template <typename T, T &R>
 struct c_ref : public constant <T&, c_ref <T, R> >
 {
-	inline constexpr operator T&() const { return R; }
+	INLINE constexpr operator T&() const { return R; }
 };
 
 template <typename T, T const &R>
 struct c_cref : public constant <T const&, c_cref <T, R> >
 {
-	inline constexpr operator T const&() const { return R; }
+	INLINE constexpr operator T const&() const { return R; }
 };
 
 //-----------------------------------------------------------------------------
@@ -183,13 +183,13 @@ struct c_cref : public constant <T const&, c_cref <T, R> >
 template <typename T, T *P>
 struct c_ptr : public constant <T*, c_ptr <T, P> >
 {
-	inline constexpr operator T*() const { return P; }
+	INLINE constexpr operator T*() const { return P; }
 };
 
 template <typename T, T const *P>
 struct c_cptr : public constant <T const*, c_cptr <T, P> >
 {
-	inline constexpr operator T const*() const { return P; }
+	INLINE constexpr operator T const*() const { return P; }
 };
 
 //-----------------------------------------------------------------------------

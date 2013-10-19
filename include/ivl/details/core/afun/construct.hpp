@@ -44,7 +44,7 @@ struct obj_construct
 	T& obj;
 
 	template <typename... A>
-	inline void operator()(A&&... a) const { new (&obj) T(fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) const { new (&obj) T(fwd <A>(a)...); }
 };
 
 template <typename T = tuple <> >
@@ -56,25 +56,25 @@ struct arg_construct <tuple <E...> > : private tuple <E...>
 	using tuple <E...>::tuple;
 
 	template <typename T>
-	inline void operator()(T& o) const { this->call(obj_construct <T>{o}); }
+	INLINE void operator()(T& o) const { this->call(obj_construct <T>{o}); }
 };
 
 //-----------------------------------------------------------------------------
 
 struct construct_
 {
-	inline constexpr arg_construct <>
+	INLINE constexpr arg_construct <>
 	operator()() const { return arg_construct <>(); }
 
 	template <typename A>
-	inline constexpr arg_construct <map <keep, tuple_of <A> > >
+	INLINE constexpr arg_construct <map <keep, tuple_of <A> > >
 	operator()(A&& a) const
 	{
 		return arg_construct <map <keep, tuple_of <A> > >(fwd <A>(a));
 	}
 
 	template <typename T, typename A>
-	inline void operator()(T& o, A&& a) const { (*this)(fwd <A>(a))(o); }
+	INLINE void operator()(T& o, A&& a) const { (*this)(fwd <A>(a))(o); }
 };
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ struct construct_
 struct destruct_
 {
 	template <typename T>
-	void operator()(T& o) const { o.~T(); }
+	INLINE void operator()(T& o) const { o.~T(); }
 };
 
 //-----------------------------------------------------------------------------

@@ -47,7 +47,7 @@ template <typename D>
 struct arr_loop : public derived <D, arr_loop <D> >
 {
 	template <typename F, typename A1, enable_if <is_array <A1>{}> = 0>
-	inline void operator()(F&& f, A1&& a1) const
+	INLINE void operator()(F&& f, A1&& a1) const
 	{
 		this->der().iter(fwd <F>(f), fwd <A1>(a1).begin(), fwd <A1>(a1).end());
 	}
@@ -56,7 +56,7 @@ struct arr_loop : public derived <D, arr_loop <D> >
 		typename F, typename A1, typename A2,
 		enable_if <is_array <A1>{} && is_array <A2>{}> = 0
 	>
-	inline void operator()(F&& f, A1&& a1, A2&& a2) const
+	INLINE void operator()(F&& f, A1&& a1, A2&& a2) const
 	{
 		this->der().iter(fwd <F>(f),
 			fwd <A1>(a1).begin(), fwd <A1>(a1).end(), fwd <A2>(a2).begin());
@@ -69,7 +69,7 @@ template <typename S, typename D>
 struct seq_sep_loop : public arr_loop <D>
 {
 	template <typename F, typename B, typename E>
-	inline void iter(F&& f, const B& b, const E& e) const
+	INLINE void iter(F&& f, const B& b, const E& e) const
 	{
 		if (b != e) f(*b);
 		for (B i = b + 1; i != e; ++i)
@@ -84,14 +84,14 @@ struct seq_loop : public arr_loop <seq_loop>
 	using arr_loop <seq_loop>::operator();
 
 	template <typename F, typename B, typename E>
-	inline void iter(F&& f, const B& b, const E& e) const
+	INLINE void iter(F&& f, const B& b, const E& e) const
 	{
 		for (B i = b; i != e; ++i)
 			fwd <F>(f)(*i);
 	}
 
 	template <typename F, typename B, typename E, typename D>
-	inline void iter(F&& f, const B& b, const E& e, const D& d) const
+	INLINE void iter(F&& f, const B& b, const E& e, const D& d) const
 	{
 		D j = d;
 		for (B i = b; i != e; ++i, ++j)

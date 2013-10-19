@@ -39,7 +39,7 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename... E>
-struct access : public derived <D> { void _(); };
+struct access : public derived <D> { INLINE void _(); };
 
 //-----------------------------------------------------------------------------
 
@@ -50,13 +50,13 @@ protected:
 	using derived <D>::der;
 
 public:
-	inline           E&&       _() &&     { return at._<0>(fwd <D>(der())); }
-	inline           E&        _() &      { return at._<0>(der()); }
-	inline constexpr const E&  _() const& { return at._<0>(der()); }
+	INLINE           E&&       _() &&     { return at._<0>(fwd <D>(der())); }
+	INLINE           E&        _() &      { return at._<0>(der()); }
+	INLINE constexpr const E&  _() const& { return at._<0>(der()); }
 
-	inline           E&&       operator()() &&     { return fwd <E>(_()); }
-	inline           E&        operator()() &      { return _(); }
-	inline constexpr const E&  operator()() const& { return _(); }
+	INLINE           E&&       operator()() &&     { return fwd <E>(_()); }
+	INLINE           E&        operator()() &      { return _(); }
+	INLINE constexpr const E&  operator()() const& { return _(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -68,15 +68,15 @@ protected:
 	using derived <D>::der;
 
 public:
-	void _();
+	INLINE void _();
 
-	inline           E0&&      fst() &&     { return at._<0>(fwd <D>(der())); }
-	inline           E0&       fst() &      { return at._<0>(der()); }
-	inline constexpr const E0& fst() const& { return at._<0>(der()); }
+	INLINE           E0&&      fst() &&     { return at._<0>(fwd <D>(der())); }
+	INLINE           E0&       fst() &      { return at._<0>(der()); }
+	INLINE constexpr const E0& fst() const& { return at._<0>(der()); }
 
-	inline           E1&&      snd() &&     { return at._<1>(fwd <D>(der())); }
-	inline           E1&       snd() &      { return at._<1>(der()); }
-	inline constexpr const E1& snd() const& { return at._<1>(der()); }
+	INLINE           E1&&      snd() &&     { return at._<1>(fwd <D>(der())); }
+	INLINE           E1&       snd() &      { return at._<1>(der()); }
+	INLINE constexpr const E1& snd() const& { return at._<1>(der()); }
 };
 
 //-----------------------------------------------------------------------------

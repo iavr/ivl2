@@ -43,29 +43,28 @@ class store <data::zip <>, sizes <I...>, U...> :
 	public base_tup <zip_tup <U...>, tran <tup_types <U>...> >
 {
 	using P = tran <tup_types <U>...>;
-	using T = tuple <U...>;
+	using B = base_tup <zip_tup <U...>, P>;
 
-	friend base_type_of <store>;
-	T t;
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	inline rtel <J, P>
-	_at() && { return rtel <J, P>(at._<J>(at._<I>(fwd <T>(t)))...); }
+	INLINE rtel <J, P>
+	_at() && { return rtel <J, P>(at._<J>(mv(*this).B::template get <I>())...); }
 
 	template <size_t J>
-	inline ltel <J, P>
-	_at() & { return ltel <J, P>(at._<J>(at._<I>(t))...); }
+	INLINE ltel <J, P>
+	_at() & { return ltel <J, P>(at._<J>(B::template get <I>())...); }
 
 	template <size_t J>
-	inline constexpr cltel <J, P>
-	_at() const& { return cltel <J, P>(at._<J>(at._<I>(t))...); }
+	INLINE constexpr cltel <J, P>
+	_at() const& { return cltel <J, P>(at._<J>(B::template get <I>())...); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	explicit inline constexpr store(U&&... u) : t(fwd <U>(u)...) { }
+	explicit INLINE constexpr store(U&&... u) : B(fwd <U>(u)...) { }
 };
 
 //-----------------------------------------------------------------------------

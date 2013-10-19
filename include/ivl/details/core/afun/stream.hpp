@@ -47,7 +47,7 @@ public:
 	out_streamer(S& s) : s(s) { }
 
 	template <typename A>
-	inline S& operator()(A&& a) const { return s << fwd <A>(a); }
+	INLINE S& operator()(A&& a) const { return s << fwd <A>(a); }
 };
 
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ public:
 struct out_stream_
 {
 	template <typename S>
-	inline constexpr out_streamer <S>
+	INLINE constexpr out_streamer <S>
 	operator()(S& s) const { return out_streamer <S>(s); }
 };
 

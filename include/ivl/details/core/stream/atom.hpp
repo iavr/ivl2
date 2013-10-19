@@ -41,14 +41,14 @@ using std::basic_ostream;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename T>
-inline basic_ostream <C, R>&
+INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, atom <T>&& a)
 {
 	return s << fwd <atom <T> >(a)();
 }
 
 template <typename C, typename R, typename T>
-inline basic_ostream <C, R>&
+INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, const atom <T>& a) { return s << a(); }
 
 //-----------------------------------------------------------------------------

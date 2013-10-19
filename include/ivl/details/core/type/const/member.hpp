@@ -45,13 +45,13 @@ namespace constants {
 template <typename T, typename C, T C::*M>
 struct c_member : public constant <T C::*, c_member <T, C, M> >
 {
-	inline constexpr operator T C::*() const { return M; }
+	INLINE constexpr operator T C::*() const { return M; }
 };
 
 template <typename T, typename C, T const C::*M>
 struct c_cmember : public constant <T const C::*, c_cmember <T, C, M> >
 {
-	inline constexpr operator T const C::*() const { return M; }
+	INLINE constexpr operator T const C::*() const { return M; }
 };
 
 //-----------------------------------------------------------------------------

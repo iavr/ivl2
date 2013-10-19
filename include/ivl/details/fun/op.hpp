@@ -65,7 +65,7 @@ IVL_VEC_OP(NAME)                       \
 namespace op {                         \
                                        \
 template <typename A>                  \
-inline constexpr auto                  \
+INLINE constexpr auto                  \
 operator OP (A&& a)                    \
 	-> decltype(op::NAME(fwd <A>(a)))   \
 	{ return op::NAME(fwd <A>(a)); }    \
@@ -81,7 +81,7 @@ using op::operator OP;                 \
 // struct NAME                              \
 // {                                        \
 // 	template <typename A>                 \
-// 	inline auto                           \
+// 	INLINE auto                           \
 // 	operator()(A&& a) const               \
 // 		-> decltype(OP fwd <A>(a))         \
 // 		{ return OP fwd <A>(a); }          \
@@ -94,7 +94,7 @@ using op::operator OP;                 \
 // struct NAME                              \
 // {                                        \
 // 	template <typename A>                 \
-// 	inline auto                           \
+// 	INLINE auto                           \
 // 	operator()(A&& a) const               \
 // 		-> decltype(fwd <A>(a) OP)         \
 // 		{ return fwd <A>(a) OP; }          \
@@ -109,7 +109,7 @@ IVL_VEC_OP(NAME)                                   \
 namespace op {                                     \
                                                    \
 template <typename A, typename B>                  \
-inline constexpr auto                              \
+INLINE constexpr auto                              \
 operator OP (A&& a, B&& b)                         \
 	-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))   \
 	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }    \
@@ -125,7 +125,7 @@ using op::operator OP;                             \
 // struct NAME                                          \
 // {                                                    \
 // 	template <typename A, typename B>                 \
-// 	inline auto                                       \
+// 	INLINE auto                                       \
 // 	operator()(A&& a, B&& b) const                    \
 // 		-> decltype(fwd <A>(a) OP fwd <B>(b))          \
 // 		{ return fwd <A>(a) OP fwd <B>(b); }           \
@@ -138,7 +138,7 @@ using op::operator OP;                             \
 // struct _##NAME##_cast                                         \
 // {                                                             \
 // 	template <typename T, typename A>                          \
-// 	inline constexpr T                                         \
+// 	INLINE constexpr T                                         \
 // 	_(A&& a) const { return NAME##_cast <T>(fwd <A>(a)); }     \
 // };
 
@@ -197,7 +197,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct ref_member
 // {
 // 	template <typename C, typename R>
-// 	inline constexpr auto operator()(C&& c, R raw_type <C>::*m) const
+// 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m) const
 // 		-> decltype(fwd <C>(c) .* m)
 // 		{ return fwd <C>(c) .* m; }
 // };
@@ -207,7 +207,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct ptr_member
 // {
 // 	template <typename C, typename R>
-// 	inline auto operator()(C&& c, R bare_type <C>::*m) const
+// 	INLINE auto operator()(C&& c, R bare_type <C>::*m) const
 // 		-> decltype(fwd <C>(c) ->* m)
 // 		{ return fwd <C>(c) ->* m; }
 // };
@@ -217,7 +217,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct ref_call
 // {
 // 	template <typename C, typename R, typename... A>
-// 	inline constexpr auto operator()(C&& c, R raw_type <C>::*m, A&&... a) const
+// 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m, A&&... a) const
 // 		-> decltype( ( fwd <C>(c) .* m ) ( fwd <A>(a)... ) )
 // 		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ) ; }
 // };
@@ -227,7 +227,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct ptr_call
 // {
 // 	template <typename C, typename R, typename... A>
-// 	inline auto operator()(C&& c, R bare_type <C>::*m, A&&... a) const
+// 	INLINE auto operator()(C&& c, R bare_type <C>::*m, A&&... a) const
 // 		-> decltype( ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ) )
 // 		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ) ; }
 // };
@@ -237,7 +237,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct call
 // {
 // 	template <typename F, typename... A>
-// 	inline constexpr auto operator()(F&& f, A&&... a) const
+// 	INLINE constexpr auto operator()(F&& f, A&&... a) const
 // 		-> decltype(fwd <F>(f) ( fwd <A>(a)... ) )
 // 		{ return fwd <F>(f) ( fwd <A>(a)... ) ; }
 // };
@@ -247,7 +247,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct bracket
 // {
 // 	template <typename A, typename B>
-// 	inline constexpr auto operator()(A&& a, B&& b) const
+// 	INLINE constexpr auto operator()(A&& a, B&& b) const
 // 		-> decltype(fwd <A>(a) [ fwd <B>(b) ] )
 // 		{ return fwd <A>(a) [ fwd <B>(b) ] ; }
 // };
@@ -257,7 +257,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct comma
 // {
 // 	template <typename A, typename B>
-// 	inline constexpr auto operator()(A&& a, B&& b) const
+// 	INLINE constexpr auto operator()(A&& a, B&& b) const
 // 		-> decltype(fwd <A>(a) , fwd <B>(b))
 // 		{ return fwd <A>(a) , fwd <B>(b); }
 // };
@@ -267,7 +267,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct cond
 // {
 // 	template <typename A, typename B, typename C>
-// 	inline constexpr auto operator()(A&& a, B&& b, C&& c) const
+// 	INLINE constexpr auto operator()(A&& a, B&& b, C&& c) const
 // 		-> decltype(fwd <A>(a) ? fwd <B>(b) : fwd <C>(c))
 // 		{ return fwd <A>(a) ? fwd <B>(b) : fwd <C>(c); }
 // };
@@ -277,17 +277,17 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct _sizeof
 // {
 // 	template <typename T>
-// 	inline constexpr size_t _() const { return sizeof(T); }
+// 	INLINE constexpr size_t _() const { return sizeof(T); }
 //
 // 	template <typename T>
-// 	inline constexpr size_t operator()(T&& v) const
+// 	INLINE constexpr size_t operator()(T&& v) const
 // 		{ return sizeof(fwd <T>(v)); }
 // };
 //
 // struct _alignof
 // {
 // 	template <typename T>
-// 	inline constexpr size_t _() const { return alignof(T); }
+// 	INLINE constexpr size_t _() const { return alignof(T); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -295,7 +295,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct conv
 // {
 // 	template <typename T, typename A>
-// 	inline constexpr T _(A&& a) const{ return (T) fwd <A>(a); }
+// 	INLINE constexpr T _(A&& a) const{ return (T) fwd <A>(a); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -310,22 +310,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct _new
 // {
 // 	template <typename C>
-// 	inline auto _() const
+// 	INLINE auto _() const
 // 		-> decltype(new C)
 // 		{ return new C; }
 //
 // 	template <typename C>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new C[n0])
 // 		{ return new C[n0]; }
 //
 // 	template <typename C, size_t n1>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new C[n0][n1])
 // 		{ return new C[n0][n1]; }
 //
 // 	template <typename C, size_t n1, size_t n2>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new C[n0][n1][n2])
 // 		{ return new C[n0][n1][n2]; }
 // };
@@ -335,22 +335,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_nothrow
 // {
 // 	template <typename C>
-// 	inline auto _() const
+// 	INLINE auto _() const
 // 		-> decltype(new (std::nothrow) C)
 // 		{ return new (std::nothrow) C; }
 //
 // 	template <typename C>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new (std::nothrow) C[n0])
 // 		{ return new (std::nothrow) C[n0]; }
 //
 // 	template <typename C, size_t n1>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new (std::nothrow) C[n0][n1])
 // 		{ return new (std::nothrow) C[n0][n1]; }
 //
 // 	template <typename C, size_t n1, size_t n2>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new (std::nothrow) C[n0][n1][n2])
 // 		{ return new (std::nothrow) C[n0][n1][n2]; }
 // };
@@ -360,19 +360,19 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct place
 // {
 // 	template <typename C>
-// 	inline void operator()(C&& c) const
+// 	INLINE void operator()(C&& c) const
 // 		{ new (fwd <C>(c)) bare_type <C>; }
 //
 // 	template <typename C>
-// 	inline void operator()(C&& c, size_t n0) const
+// 	INLINE void operator()(C&& c, size_t n0) const
 // 		{ new (fwd <C>(c)) bare_type <C>[n0]; }
 //
 // 	template <size_t n1, typename C>
-// 	inline void _(C&& c, size_t n0) const
+// 	INLINE void _(C&& c, size_t n0) const
 // 		{ new (fwd <C>(c)) bare_type <C>[n0][n1]; }
 //
 // 	template <size_t n1, size_t n2, typename C>
-// 	inline void _(C&& c, size_t n0) const
+// 	INLINE void _(C&& c, size_t n0) const
 // 		{ new (fwd <C>(c)) bare_type <C>[n0][n1][n2]; }
 // };
 //
@@ -381,22 +381,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_val
 // {
 // 	template <typename C>
-// 	inline auto _() const
+// 	INLINE auto _() const
 // 		-> decltype(new C())
 // 		{ return new C(); }
 //
 // 	template <typename C>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new C[n0]())
 // 		{ return new C[n0](); }
 //
 // 	template <typename C, size_t n1>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new C[n0][n1]())
 // 		{ return new C[n0][n1](); }
 //
 // 	template <typename C, size_t n1, size_t n2>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new C[n0][n1][n2]())
 // 		{ return new C[n0][n1][n2](); }
 // };
@@ -406,22 +406,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_nothrow_val
 // {
 // 	template <typename C>
-// 	inline auto _() const
+// 	INLINE auto _() const
 // 		-> decltype(new (std::nothrow) C())
 // 		{ return new (std::nothrow) C(); }
 //
 // 	template <typename C>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new (std::nothrow) C[n0]())
 // 		{ return new (std::nothrow) C[n0](); }
 //
 // 	template <typename C, size_t n1>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new (std::nothrow) C[n0][n1]())
 // 		{ return new (std::nothrow) C[n0][n1](); }
 //
 // 	template <typename C, size_t n1, size_t n2>
-// 	inline auto _(size_t n0) const
+// 	INLINE auto _(size_t n0) const
 // 		-> decltype(new (std::nothrow) C[n0][n1][n2]())
 // 		{ return new (std::nothrow) C[n0][n1][n2](); }
 // };
@@ -431,19 +431,19 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct place_val
 // {
 // 	template <typename C>
-// 	inline void operator()(C&& c) const
+// 	INLINE void operator()(C&& c) const
 // 		{ new (fwd <C>(c)) bare_type <C>(); }
 //
 // 	template <typename C>
-// 	inline void operator()(C&& c, size_t n0) const
+// 	INLINE void operator()(C&& c, size_t n0) const
 // 		{ new (fwd <C>(c)) bare_type <C>[n0](); }
 //
 // 	template <size_t n1, typename C>
-// 	inline void _(C&& c, size_t n0) const
+// 	INLINE void _(C&& c, size_t n0) const
 // 		{ new (fwd <C>(c)) bare_type <C>[n0][n1](); }
 //
 // 	template <size_t n1, size_t n2, typename C>
-// 	inline void _(C&& c, size_t n0) const
+// 	INLINE void _(C&& c, size_t n0) const
 // 		{ new (fwd <C>(c)) bare_type <C>[n0][n1][n2](); }
 // };
 //
@@ -452,7 +452,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_direct
 // {
 // 	template <typename C, typename... A>
-// 	inline auto _(A&&... a) const
+// 	INLINE auto _(A&&... a) const
 // 		-> decltype(new C ( fwd <A>(a)... ) )
 // 		{ return new C ( fwd <A>(a)... ) ; }
 // };
@@ -462,7 +462,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_nothrow_direct
 // {
 // 	template <typename C, typename... A>
-// 	inline auto _(A&&... a) const
+// 	INLINE auto _(A&&... a) const
 // 		-> decltype(new (std::nothrow) C ( fwd <A>(a)... ) )
 // 		{ return new (std::nothrow) C ( fwd <A>(a)... ) ; }
 // };
@@ -472,7 +472,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct place_direct
 // {
 // 	template <typename C, typename... A>
-// 	inline void operator()(C&& c, A&&... a) const
+// 	INLINE void operator()(C&& c, A&&... a) const
 // 		{ new (fwd <C>(c)) bare_type <C> ( fwd <A>(a)... ) ; }
 // };
 //
@@ -481,7 +481,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_list
 // {
 // 	template <typename C, typename... A>
-// 	inline auto _(A&&... a) const
+// 	INLINE auto _(A&&... a) const
 // 		-> decltype(new C { fwd <A>(a)... } )
 // 		{ return new C { fwd <A>(a)... } ; }
 // };
@@ -491,7 +491,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct new_nothrow_list
 // {
 // 	template <typename C, typename... A>
-// 	inline auto _(A&&... a) const
+// 	INLINE auto _(A&&... a) const
 // 		-> decltype(new (std::nothrow) C { fwd <A>(a)... } )
 // 		{ return new (std::nothrow) C { fwd <A>(a)... } ; }
 // };
@@ -501,7 +501,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct place_list
 // {
 // 	template <typename C, typename... A>
-// 	inline void operator()(C&& c, A&&... a) const
+// 	INLINE void operator()(C&& c, A&&... a) const
 // 		{ new (fwd <C>(c)) bare_type <C> { fwd <A>(a)... } ; }
 // };
 //
@@ -510,7 +510,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct _delete
 // {
 // 	template <typename C>
-// 	inline void operator()(C&& c) const { delete fwd <C>(c); }
+// 	INLINE void operator()(C&& c) const { delete fwd <C>(c); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -518,7 +518,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // struct delete_array
 // {
 // 	template <typename C>
-// 	inline void operator()(C&& c) const { delete [] fwd <C>(c); }
+// 	INLINE void operator()(C&& c) const { delete [] fwd <C>(c); }
 // };
 
 //-----------------------------------------------------------------------------

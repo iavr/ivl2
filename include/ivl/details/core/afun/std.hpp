@@ -43,14 +43,14 @@ namespace afun {
 struct swap
 {
 	template <typename T>
-	inline void operator()(T& a, T& b) const
+	INLINE void operator()(T& a, T& b) const
 	{
 		using std::swap;
 		swap(a, b);
 	}
 
 	template <class T, size_t N>
-	inline void operator()(T (&a)[N], T (&b)[N]) const
+	INLINE void operator()(T (&a)[N], T (&b)[N]) const
 	{
 		using std::swap;
 		swap(a, b);

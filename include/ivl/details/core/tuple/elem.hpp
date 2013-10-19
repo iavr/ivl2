@@ -45,19 +45,17 @@ class elem
 	elem& operator=(const elem&) = delete;
 
 public:
-	inline constexpr elem() : e() { }
-	inline constexpr elem(elem&& e) : e(mv(e).get()) { }
-	inline constexpr elem(const elem& e) : e(e.get()) { }
+	INLINE constexpr elem(elem&& e) : e(mv(e).get()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
-	explicit inline constexpr elem(A&& a) : e(fwd <A>(a)) { }
+	explicit INLINE constexpr elem(A&& a) : e(fwd <A>(a)) { }
 
 	template <typename A>
-	inline elem& operator=(A&& a) { return e = fwd <A>(a), *this; }
+	INLINE elem& operator=(A&& a) { return e = fwd <A>(a), *this; }
 
-	inline           E&&      get() &&      { return fwd <E>(e); }
-	inline           E&       get() &       { return e; }
-	inline constexpr const E& get() const&  { return e; }
+	INLINE           E&&      get() &&      { return fwd <E>(e); }
+	INLINE           E&       get() &       { return e; }
+	INLINE constexpr const E& get() const&  { return e; }
 };
 
 //-----------------------------------------------------------------------------
@@ -68,19 +66,17 @@ class elem <I, E, true> : private E
 	elem& operator=(const elem&) = delete;
 
 public:
-	inline constexpr elem() : E() { }
-	inline constexpr elem(elem&& e) : E(mv(e).get()) { }
-	inline constexpr elem(const elem& e) : E(e.get()) { }
+	INLINE constexpr elem(elem&& e) : E(mv(e).get()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
-	explicit inline constexpr elem(A&& a) : E(fwd <A>(a)) { }
+	explicit INLINE constexpr elem(A&& a) : E(fwd <A>(a)) { }
 
 	template <typename A>
-	inline elem& operator=(A&& a) { return E::operator=(fwd <A>(a)), *this; }
+	INLINE elem& operator=(A&& a) { return E::operator=(fwd <A>(a)), *this; }
 
-	inline           E&&      get() &&     { return fwd <E>(*this); }
-	inline           E&       get() &      { return *this; }
-	inline constexpr const E& get() const& { return *this; }
+	INLINE           E&&      get() &&     { return fwd <E>(*this); }
+	INLINE           E&       get() &      { return *this; }
+	INLINE constexpr const E& get() const& { return *this; }
 };
 
 //-----------------------------------------------------------------------------

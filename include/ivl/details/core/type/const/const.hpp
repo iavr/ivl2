@@ -54,14 +54,14 @@ template <typename T, typename D>
 struct constant : public value <T>,
 	public id_t <D>, public derived <D>
 {
-	inline constexpr T operator()() const { return this->der(); }
+	INLINE constexpr T operator()() const { return this->der(); }
 };
 
 template <typename D>
 struct constant <void, D> : public value <void>,
 	public id_t <D>, public derived <D>
 {
-	inline void operator()() const { this->der()(); }
+	INLINE void operator()() const { this->der()(); }
 };
 
 template <typename D>
@@ -76,7 +76,7 @@ template <typename T, typename F>
 struct fun_constant : public constant <T, F> { };
 
 template <typename S, typename T, typename D>
-inline S& operator<<(S& s, const constant <T, D>& c) { return s << c(); }
+INLINE S& operator<<(S& s, const constant <T, D>& c) { return s << c(); }
 
 //-----------------------------------------------------------------------------
 

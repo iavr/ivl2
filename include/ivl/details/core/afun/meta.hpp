@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_meta_details {
+namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
@@ -45,11 +45,11 @@ class bind_ : private tuple <F>, private tuple <E...>
 	using TE = tuple <E...>;
 
 public:
-	inline constexpr
+	INLINE constexpr
 	bind_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
 
 	template <typename... A>
-	inline constexpr auto
+	INLINE constexpr auto
 	operator()(A&&... a) const
 		-> decltype(this->TE::call(generate <F>(), fwd <A>(a)...))
 		{ return TE::call(fwd <F>(TF::_()), fwd <A>(a)...); }
@@ -58,17 +58,17 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class pre_ : private tuple <F>, private tuple <E...>
+class pre_fun_ : private tuple <F>, private tuple <E...>
 {
 	using TF = tuple <F>;
 	using TE = tuple <E...>;
 
 public:
-	inline constexpr
-	pre_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
+	INLINE constexpr
+	pre_fun_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
 
 	template <typename... A>
-	inline constexpr types::ret <F(A&&...)>
+	INLINE constexpr types::ret <F(A&&...)>
 	operator()(A&&... a) const
 	{
 		return TE::call(fwd <F>(TF::_())), fwd <F>(TF::_())(fwd <A>(a)...);
@@ -77,63 +77,46 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_meta_details
+}  // namespace afun_details
 
 //-----------------------------------------------------------------------------
 
 namespace afun {
-namespace meta {
 
 // TODO: gcc ICE: template <typename F, typename... E>
-template <typename... T> using bind = afun_meta_details::bind_<T...>;
-template <typename... T> using pre  = afun_meta_details::pre_<T...>;
+template <typename... T> using bind    = afun_details::bind_<T...>;
+template <typename... T> using pre_fun = afun_details::pre_fun_<T...>;
 
-}  // namespace meta
 }  // namespace afun
 
-//-----------------------------------------------------------------------------
+static __attribute__ ((unused)) afun::rref_of <afun::bind>    bind;
+static __attribute__ ((unused)) afun::rref_of <afun::pre_fun> pre_fun;
 
-namespace meta {
-
-static __attribute__ ((unused)) afun::rref_of <afun::meta::bind>  bind;
-static __attribute__ ((unused)) afun::rref_of <afun::meta::pre>   pre;
-
-}  // namespace meta
-
-using meta::bind;
-namespace afun_meta_details { using ivl::bind; }
+namespace afun_details { using ivl::bind; }  // not types::bind
 
 //-----------------------------------------------------------------------------
 
-namespace afun_meta_details {
+namespace afun_details {
 
-struct tup_
+struct tup_fun_
 {
 	template <typename F>
-	inline constexpr auto operator()(F&& f) const
+	INLINE constexpr auto operator()(F&& f) const
 		-> decltype(bind(_call, fwd <F>(f)))
 		{ return bind(_call, fwd <F>(f)); }
 };
 
-}  // namespace afun_meta_details
+}  // namespace afun_details
 
 //-----------------------------------------------------------------------------
 
 namespace afun {
-namespace meta {
 
-using tup = afun_meta_details::tup_;
+using tup_fun = afun_details::tup_fun_;
 
-}  // namespace meta
 }  // namespace afun
 
-//-----------------------------------------------------------------------------
-
-namespace meta {
-
-static __attribute__ ((unused)) afun::meta::tup tup;
-
-}  // namespace meta
+static __attribute__ ((unused)) afun::tup_fun tup_fun;
 
 //-----------------------------------------------------------------------------
 

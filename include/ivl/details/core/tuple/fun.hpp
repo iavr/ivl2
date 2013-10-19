@@ -41,12 +41,12 @@ namespace afun_details {
 struct at_
 {
 	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
-	inline constexpr auto _(T&& t) const
+	INLINE constexpr auto _(T&& t) const
 		-> decltype(fwd <T>(t).template _<I>())
 		{ return fwd <T>(t).template _<I>(); }
 
 	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
-	inline constexpr auto _(T&& t) const
+	INLINE constexpr auto _(T&& t) const
 		-> decltype(fwd <T>(t).template _<K>())
 		{ return fwd <T>(t).template _<K>(); }
 };

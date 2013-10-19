@@ -43,7 +43,7 @@ struct swap_fun : public afun::swap
 	using afun::swap::operator();
 
 	template <typename T, typename U, enable_if <all_tuple <T, U>{}> = 0>
-	inline void
+	INLINE void
 	operator()(T&& t, U&& u) const { loop(*this, fwd <T>(t), fwd <U>(u)); }
 };
 
@@ -52,7 +52,7 @@ struct swap_fun : public afun::swap
 // to be selected via ADL over std::swap
 
 template <typename T, typename U, enable_if <all_tuple <T, U>{}> = 0>
-inline void
+INLINE void
 swap(T&& t, U&& u) { swap_fun()(fwd <T>(t), fwd <U>(u)); }
 
 //-----------------------------------------------------------------------------

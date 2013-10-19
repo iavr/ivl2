@@ -35,7 +35,7 @@ namespace ivl {
 struct uscore : public afun::thin
 {
 	template <typename A>
-	inline constexpr atom <A&&>
+	INLINE constexpr atom <A&&>
 	operator[](A&& a) const { return atom <A&&>(fwd <A>(a)); }
 };
 

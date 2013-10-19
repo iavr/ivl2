@@ -51,8 +51,8 @@ class sep_loop : public der_nfun <
 	S&& s;
 
 public:
-	explicit inline constexpr sep_loop(S&& s) : s{fwd <S>(s)} { }
-	S&& sep() const { return fwd <S>(s); }
+	explicit INLINE constexpr sep_loop(S&& s) : s{fwd <S>(s)} { }
+	INLINE S&& sep() const { return fwd <S>(s); }
 };
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ struct loop_ : public der_nfun <tup_loop, seq_loop>
 {
 	// TODO: keys
 	template <typename S>
-	sep_loop <S> operator[](S&& s) const { return sep_loop <S>(fwd <S>(s)); }
+	INLINE sep_loop <S> operator[](S&& s) const { return sep_loop <S>(fwd <S>(s)); }
 };
 
 //-----------------------------------------------------------------------------

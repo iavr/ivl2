@@ -41,7 +41,7 @@ using std::basic_ostream;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename S, typename... A>
-inline basic_ostream <C, R>&
+INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, collection <S, A...>&& t)
 {
 	using T = collection <S, A...>;
@@ -49,7 +49,7 @@ operator<<(basic_ostream <C, R>& s, collection <S, A...>&& t)
 }
 
 template <typename C, typename R, typename S, typename... A>
-inline basic_ostream <C, R>&
+INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, const collection <S, A...>& t)
 {
 	return s << "(",  loop[", "](out_stream(s), t),  s << ")";

@@ -39,7 +39,7 @@ namespace mem {
 //-----------------------------------------------------------------------------
 
 template <typename T>
-inline T* new_(size_t l)
+INLINE T* new_(size_t l)
 {
 	void* p = ::operator new(l * sizeof(T), std::nothrow);
 	SYS_CHECK(p, e_alloc);
@@ -47,7 +47,7 @@ inline T* new_(size_t l)
 }
 
 template <typename T>
-inline void delete_(T* p) { ::operator delete(away(p)); }
+INLINE void delete_(T* p) { ::operator delete(away(p)); }
 
 //-----------------------------------------------------------------------------
 

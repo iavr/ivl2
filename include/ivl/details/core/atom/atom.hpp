@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -38,41 +38,34 @@ namespace atom_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename A>
-class store : public base_tup <atom <A>, _type <A> >
+template <typename T>
+class atom : public base_tup <atom <T>, _type <T> >
 {
-	using P = _type <A>;
-	using B = base_type_of <store>;
-	friend B;
-	A a;
+	using E = elem <0, T>;
+	using B = base_tup <atom <T>, _type <T> >;
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J> inline A&& _at() && { return fwd <A>(a); }
-	template <size_t J> inline A&  _at() &  { return a; }
-	template <size_t J> inline constexpr const A& _at() const& { return a; }
+	template <size_t J>
+	INLINE T&& _at() && { return mv(*this).B::template get <0>(); }
+
+	template <size_t J>
+	INLINE T& _at() &  { return B::template get <0>(); }
+
+	template <size_t J>
+	INLINE constexpr const T& _at() const& { return B::template get <0>(); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using B::operator=;
+	using B::base_type::operator=;
 
-	template <typename T, enable_if <is_conv <T, A>{}> = 0>
-	inline constexpr store(T&& a) : a(fwd <T>(a)) { }
+	template <typename A, enable_if <is_conv <A, T>{}> = 0>
+	INLINE constexpr atom(A&& a) : B(fwd <A>(a)) { }
 
-	template <typename T, enable_if <is_explicit <A, T>{}> = 0>
-	explicit inline constexpr store(T&& a) : a(fwd <T>(a)) { }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename A>
-class atom : public store <A>
-{
-	using B = store <A>;
-
-public:
-	using B::B;
+	template <typename A, enable_if <is_explicit <T, A>{}> = 0>
+	explicit INLINE constexpr atom(A&& a) : B(fwd <A>(a)) { }
 };
 
 //-----------------------------------------------------------------------------

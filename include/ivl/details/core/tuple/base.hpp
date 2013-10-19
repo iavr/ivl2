@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+struct J;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -39,69 +40,93 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename D, size_t... I,
-	template <typename...> class Q, typename... E
+	typename D,
+	size_t... I, template <typename...> class Q, typename... E,
+	size_t... N, typename... U
 >
-class store <data::base <>, D, sizes <I...>, Q <E...> > :
-	public Q <E...>, public access <D, E...>
+class store <
+	data::base <>, D,
+	sizes <I...>, Q <E...>,
+	sizes <N...>, pack <U...>
+> :
+	public Q <E...>, public access <D, E...>,
+	public elem <N, U>...
 {
 	using P = Q <E...>;
+	using V = pack <U...>;
 	using derived <D>::der;
+
+	template <size_t J> using under = elem <J, pick <J, U...> >;
 
 public:
 	using base_type = store;
+	using type = P;
+	static constexpr size_t length = P::length;
 
 	using indices = sizes <I...>;
-	inline constexpr indices idx() const { return indices(); }
+	INLINE constexpr indices idx() const { return indices(); }
+
+//-----------------------------------------------------------------------------
+
+	template <size_t J>
+	INLINE rtel <J, V> get() && { return mv(*this).under <J>::get(); }
+
+	template <size_t J>
+	INLINE ltel <J, V> get() & { return under <J>::get(); }
+
+	template <size_t J>
+	INLINE constexpr cltel <J, V> get() const& { return under <J>::get(); }
+
+//-----------------------------------------------------------------------------
 
 	using access <D, E...>::_;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	inline rtel <J, P>
-	_() && { return fwd <D>(der()).template _at <J>(); }
+	INLINE rtel <J, P>
+	_() && { return mv(*this).der().template _at <J>(); }
 
 	template <size_t J>
-	inline ltel <J, P>
+	INLINE ltel <J, P>
 	_() & { return der().template _at <J>(); }
 
 	template <size_t J>
-	inline constexpr cltel <J, P>
+	INLINE constexpr cltel <J, P>
 	_() const& { return der().template _at <J>(); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename K>
-	inline indirect <K, D&&>
-	_() && { return indirect <K, D&&>(fwd <D>(der())); }
+	INLINE indirect_tup <K, D&&>
+	_() && { return indirect_tup <K, D&&>(mv(*this).der()); }
 
 	template <typename K>
-	inline indirect <K, D&>
-	_() & { return indirect <K, D&>(der()); }
+	INLINE indirect_tup <K, D&>
+	_() & { return indirect_tup <K, D&>(der()); }
 
 	template <typename K>
-	inline constexpr indirect <K, const D&>
-	_() const& { return indirect <K, const D&>(der()); }
+	INLINE constexpr indirect_tup <K, const D&>
+	_() const& { return indirect_tup <K, const D&>(der()); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
-	inline ret <F(rtref <E>..., A...)>
+	INLINE ret <F(rtref <E>..., A...)>
 	call(F&& f, A&&... a) &&
 	{
-		return fwd <F>(f)(at._<I>(fwd <D>(der()))..., fwd <A>(a)...);
+		return fwd <F>(f)(at._<I>(mv(*this).der())..., fwd <A>(a)...);
 	}
 
 	template <typename F, typename... A>
-	inline ret <F(ltref <E>..., A...)>
+	INLINE ret <F(ltref <E>..., A...)>
 	call(F&& f, A&&... a) &
 	{
 		return fwd <F>(f)(at._<I>(der())..., fwd <A>(a)...);
 	}
 
 	template <typename F, typename... A>
-	inline constexpr ret <F(cltref <E>..., A...)>
+	INLINE constexpr ret <F(cltref <E>..., A...)>
 	call(F&& f, A&&... a) const&
 	{
 		return fwd <F>(f)(at._<I>(der())..., fwd <A>(a)...);
@@ -111,19 +136,22 @@ public:
 
 	// TODO: flip element order when in gcc, as a workaround to bug
 	// http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51253
-	template <typename F> inline void
-	loop(F&& f) && { thru{(fwd <F>(f)(at._<I>(fwd <D>(der()))), 0)...}; }
+	template <typename F> INLINE void
+	loop(F&& f) && { thru{(fwd <F>(f)(at._<I>(mv(*this).der())), 0)...}; }
 
-	template <typename F> inline void
+	template <typename F> INLINE void
 	loop(F&& f) & { thru{(fwd <F>(f)(at._<I>(der())), 0)...}; }
 
-	template <typename F> inline void
+	template <typename F> INLINE void
 	loop(F&& f) const& { thru{(fwd <F>(f)(at._<I>(der())), 0)...}; }
 
 //-----------------------------------------------------------------------------
 
+	template <typename... A>
+	INLINE constexpr store(A&&... a) : elem <N, U>(fwd <A>(a))... { }
+
 	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
-	inline D& operator=(T&& t)
+	INLINE D& operator=(T&& t)
 	{
 		return thru{at._<I>(der()) = at._<I>(fwd <T>(t))...}, der();
 	}
@@ -133,8 +161,19 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename D, typename P>
-class collection <data::base <>, D, P> :
-	public store <data::base <>, D, sz_rng_of_p <P>, P> { };
+struct collection <data::base <>, D, P> : public store <
+	data::base <>, D, sz_rng_of_p <P>, P,
+	sz_rng_of_p <tup_under <D> >, tup_under <D>
+>
+{
+	using U = tup_under <D>;
+	using I = sz_rng_of_p <P>;
+	using N = sz_rng_of_p <U>;
+	using B = store <data::base <>, D, I, P, N, U>;
+
+public:
+	using B::B;
+};
 
 //-----------------------------------------------------------------------------
 
