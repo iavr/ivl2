@@ -38,6 +38,21 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename A>
+constexpr T&& rcast(A&& a) { return static_cast <T&&>(a); }
+
+template <typename T, typename A>
+constexpr T& lcast(A&& a) { return static_cast <T&>(a); }
+
+template <typename T, typename A>
+constexpr const T& clcast(A&& a) { return static_cast <const T&>(a); }
+
+//-----------------------------------------------------------------------------
+
 template <typename B, typename...>
 struct based : public B
 {
@@ -46,10 +61,10 @@ struct based : public B
 protected:
 	using B::B;
 
-	INLINE B&&       base() &&      { return static_cast <B&&>      (*this); }
-	INLINE B&        base() &       { return static_cast <B&>       (*this); }
-	INLINE constexpr
-	       const B&  base() const&  { return static_cast <const B&> (*this); }
+	INLINE           B&&       base_r()      { return rcast <B>(*this); }
+	INLINE           B&&       base() &&     { return rcast <B>(*this); }
+	INLINE           B&        base() &      { return lcast <B>(*this); }
+	INLINE constexpr const B&  base() const& { return clcast <B>(*this); }
 };
 
 //-----------------------------------------------------------------------------
@@ -60,13 +75,20 @@ struct derived
 	using derived_type = D;
 
 protected:
-	INLINE D&&       der() &&      { return static_cast <D&&>      (*this); }
-	INLINE D&        der() &       { return static_cast <D&>       (*this); }
-	INLINE constexpr
-	       const D&  der() const&  { return static_cast <const D&> (*this); }
+	INLINE           D&&       der_r()      { return rcast <D>(*this); }
+	INLINE           D&&       der() &&     { return rcast <D>(*this); }
+	INLINE           D&        der() &      { return lcast <D>(*this); }
+	INLINE constexpr const D&  der() const& { return clcast <D>(*this); }
 };
 
 //-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::based;
+using details::derived;
 
 template <typename T> using base_type_of    = typename T::base_type;
 template <typename T> using derived_type_of = typename T::derived_type;

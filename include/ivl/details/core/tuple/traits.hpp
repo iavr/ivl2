@@ -180,31 +180,45 @@ struct tup_assign <pack <pack <E...>, P...>, T> :
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct tup_under_t : public pack <> { };
-template <typename T> using  tup_under = type_of <tup_under_t <T> >;
+template <typename T> struct under_t : public pack <> { };
+template <typename T> using  under = type_of <under_t <T> >;
+
+template <typename D, typename P>
+struct under_t <base_tup <D, P> > : public under_t <D> { };
 
 template <typename... E>
-struct tup_under_t <tuple <E...> > : public pack <E...> { };
+struct under_t <tuple <E...> > : public pack <E...> { };
 
 template <typename K, typename U>
-struct tup_under_t <indirect_tup <K, U> > : public pack <U> { };
+struct under_t <indirect_tup <K, U> > : public pack <U> { };
 
 template <typename F, typename U>
-struct tup_under_t <apply_tup <F, U> > : public pack <F, U> { };
+struct under_t <apply_tup <F, U> > : public pack <F, U> { };
 
 template <typename... U>
-struct tup_under_t <zip_tup <U...> > : public pack <U...> { };
+struct under_t <zip_tup <U...> > : public pack <U...> { };
 
 template <typename... U>
-struct tup_under_t <join_tup <U...> > : public pack <U...> { };
+struct under_t <join_tup <U...> > : public pack <U...> { };
+
+//-----------------------------------------------------------------------------
+
+template <size_t J, typename T>
+struct under_elem_t
+{
+	using type = tuple_details::elem <J, pick_p <J, under <T> > >;
+};
+
+template <size_t J, typename T>
+using under_elem = type_of <under_elem_t <J, T> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename F>
 struct tup_app
 {
-	template <typename... E>
-	using map = F(pack <E...>);
+	template <typename... A>
+	using map = F(pack <A...>);
 };
 
 //-----------------------------------------------------------------------------

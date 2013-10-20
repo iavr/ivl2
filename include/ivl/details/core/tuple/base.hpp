@@ -55,8 +55,11 @@ class store <
 	using P = Q <E...>;
 	using V = pack <U...>;
 	using derived <D>::der;
+	using derived <D>::der_r;
 
-	template <size_t J> using under = elem <J, pick <J, U...> >;
+	template <size_t J> using under = under_elem <J, D>;
+
+//-----------------------------------------------------------------------------
 
 public:
 	using base_type = store;
@@ -68,24 +71,30 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J>
-	INLINE rtel <J, V> get() && { return mv(*this).under <J>::get(); }
+	template <typename... A>
+	INLINE constexpr store(A&&... a) : elem <N, U>(fwd <A>(a))... { }
 
-	template <size_t J>
-	INLINE ltel <J, V> get() & { return under <J>::get(); }
-
-	template <size_t J>
-	INLINE constexpr cltel <J, V> get() const& { return under <J>::get(); }
+	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
+	INLINE D& operator=(T&& t)
+	{
+		return thru{_<I>() = at._<I>(fwd <T>(t))...}, der();
+	}
 
 //-----------------------------------------------------------------------------
 
+private:
+	template <size_t J>
+	INLINE rtel <J, P>
+	_r() { return der_r().template _at <J>(); }
+
+public:
 	using access <D, E...>::_;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_() && { return mv(*this).der().template _at <J>(); }
+	_() && { return der_r().template _at <J>(); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
@@ -99,7 +108,7 @@ public:
 
 	template <typename K>
 	INLINE indirect_tup <K, D&&>
-	_() && { return indirect_tup <K, D&&>(mv(*this).der()); }
+	_() && { return indirect_tup <K, D&&>(der_r()); }
 
 	template <typename K>
 	INLINE indirect_tup <K, D&>
@@ -113,48 +122,28 @@ public:
 
 	template <typename F, typename... A>
 	INLINE ret <F(rtref <E>..., A...)>
-	call(F&& f, A&&... a) &&
-	{
-		return fwd <F>(f)(at._<I>(mv(*this).der())..., fwd <A>(a)...);
-	}
+	call(F&& f, A&&... a) && { return fwd <F>(f)(_r <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
 	INLINE ret <F(ltref <E>..., A...)>
-	call(F&& f, A&&... a) &
-	{
-		return fwd <F>(f)(at._<I>(der())..., fwd <A>(a)...);
-	}
+	call(F&& f, A&&... a) & { return fwd <F>(f)(_<I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
 	INLINE constexpr ret <F(cltref <E>..., A...)>
-	call(F&& f, A&&... a) const&
-	{
-		return fwd <F>(f)(at._<I>(der())..., fwd <A>(a)...);
-	}
+	call(F&& f, A&&... a) const& { return fwd <F>(f)(_<I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 	// TODO: flip element order when in gcc, as a workaround to bug
 	// http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51253
 	template <typename F> INLINE void
-	loop(F&& f) && { thru{(fwd <F>(f)(at._<I>(mv(*this).der())), 0)...}; }
+	loop(F&& f) && { thru{(fwd <F>(f)(_r <I>()), 0)...}; }
 
 	template <typename F> INLINE void
-	loop(F&& f) & { thru{(fwd <F>(f)(at._<I>(der())), 0)...}; }
+	loop(F&& f) & { thru{(fwd <F>(f)(_<I>()), 0)...}; }
 
 	template <typename F> INLINE void
-	loop(F&& f) const& { thru{(fwd <F>(f)(at._<I>(der())), 0)...}; }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... A>
-	INLINE constexpr store(A&&... a) : elem <N, U>(fwd <A>(a))... { }
-
-	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
-	INLINE D& operator=(T&& t)
-	{
-		return thru{at._<I>(der()) = at._<I>(fwd <T>(t))...}, der();
-	}
+	loop(F&& f) const& { thru{(fwd <F>(f)(_<I>()), 0)...}; }
 
 };
 
@@ -163,10 +152,10 @@ public:
 template <typename D, typename P>
 struct collection <data::base <>, D, P> : public store <
 	data::base <>, D, sz_rng_of_p <P>, P,
-	sz_rng_of_p <tup_under <D> >, tup_under <D>
+	sz_rng_of_p <under <D> >, under <D>
 >
 {
-	using U = tup_under <D>;
+	using U = under <D>;
 	using I = sz_rng_of_p <P>;
 	using N = sz_rng_of_p <U>;
 	using B = store <data::base <>, D, I, P, N, U>;

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_MOVE_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_MOVE_HPP
+#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_VALUE_HPP
+#define IVL_DETAILS_CORE_TYPE_TRAITS_VALUE_HPP
 
 #include <ivl/ivl>
 
@@ -73,22 +73,22 @@ fwd(remove_ref <T>& a) { return static_cast <T&&>(a); }
 //-----------------------------------------------------------------------------
 
 template <typename T, typename A, enable_if <!is_lref <A>()> = 0>
-INLINE constexpr T&&
-as(A&& a) { return static_cast <T&&>(a); }
+INLINE constexpr raw_type <T>&&
+as(A&& a) { return static_cast <raw_type <T>&&>(a); }
 
 template <
 	typename T, typename A,
 	enable_if <is_lref <A>() && !is_const <remove_ref <A> >()> = 0
 >
-INLINE constexpr T&
-as(A&& a) { return static_cast <T&>(a); }
+INLINE constexpr raw_type <T>&
+as(A&& a) { return static_cast <raw_type <T>&>(a); }
 
 template <
 	typename T, typename A,
 	enable_if <is_lref <A>() && is_const <remove_ref <A> >()> = 0
 >
-INLINE constexpr const T&
-as(A&& a) { return static_cast <const T&>(a); }
+INLINE constexpr const raw_type <T>&
+as(A&& a) { return static_cast <const raw_type <T>&>(a); }
 
 //-----------------------------------------------------------------------------
 
@@ -108,4 +108,4 @@ using types::traits::as;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_MOVE_HPP
+#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_VALUE_HPP

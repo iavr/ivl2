@@ -75,7 +75,7 @@ template <typename T> using atom_of   = type_of <atom_of_t <T> >;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct tup_under_t <atom <T> > : public pack <T> { };
+struct under_t <atom <T> > : public pack <T> { };
 
 //-----------------------------------------------------------------------------
 

@@ -47,8 +47,9 @@ class collection <data::join <>, U...> :
 	using m = minor <tup_types <U>...>;
 	using B = base_tup <join_tup <U...>, P>;
 
-	template <size_t J> using majr = pick_i <J, M>;
-	template <size_t J> using minr = pick_i <J, m>;
+	template <size_t J> using under = under_elem <J, B>;
+	template <size_t J> using majr  = pick_i <J, M>;
+	template <size_t J> using minr  = pick_i <J, m>;
 
 	friend base_type_of <B>;
 
@@ -56,15 +57,15 @@ class collection <data::join <>, U...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<minr <J>{}>(mv(*this).B::template get <majr <J>{}>()); }
+	_at() && { return at._<minr <J>{}>(under <majr <J>{}>::get_r()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<minr <J>{}>(B::template get <majr <J>{}>()); }
+	_at() & { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<minr <J>{}>(B::template get <majr <J>{}>()); }
+	_at() const& { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
 
 //-----------------------------------------------------------------------------
 

@@ -66,6 +66,7 @@ using join_tup = collection <data::join <>, U...>;
 }  // namespace tuple_details
 
 using tuple_details::collection;
+using tuple_details::base_tup;
 using tuple_details::tuple;
 using tuple_details::indirect_tup;
 using tuple_details::apply_tup;

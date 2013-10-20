@@ -45,21 +45,20 @@ class store <data::tuple <>, sizes <I...>, E...> :
 	using P = pack <E...>;
 	using B = base_tup <tuple <E...>, P>;
 
+	template <size_t J> using under = under_elem <J, B>;
+
 	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtel <J, P>
-	_at() && { return mv(*this).B::template get <J>(); }
+	INLINE rtel <J, P> _at() && { return under <J>::get_r(); }
 
 	template <size_t J>
-	INLINE ltel <J, P>
-	_at() & { return B::template get <J>(); }
+	INLINE ltel <J, P> _at() & { return under <J>::get(); }
 
 	template <size_t J>
-	INLINE constexpr cltel <J, P>
-	_at() const& { return B::template get <J>(); }
+	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
 
 //-----------------------------------------------------------------------------
 

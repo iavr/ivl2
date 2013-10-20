@@ -53,6 +53,7 @@ public:
 	template <typename A>
 	INLINE elem& operator=(A&& a) { return e = fwd <A>(a), *this; }
 
+	INLINE           E&&      get_r()       { return fwd <E>(e); }
 	INLINE           E&&      get() &&      { return fwd <E>(e); }
 	INLINE           E&       get() &       { return e; }
 	INLINE constexpr const E& get() const&  { return e; }
@@ -74,6 +75,7 @@ public:
 	template <typename A>
 	INLINE elem& operator=(A&& a) { return E::operator=(fwd <A>(a)), *this; }
 
+	INLINE           E&&      get_r()      { return fwd <E>(*this); }
 	INLINE           E&&      get() &&     { return fwd <E>(*this); }
 	INLINE           E&       get() &      { return *this; }
 	INLINE constexpr const E& get() const& { return *this; }

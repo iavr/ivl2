@@ -46,7 +46,8 @@ class collection <data::indirect <>, K, U> : public
 	using P = choose_p <K, tup_types <U> >;
 	using B = base_tup <indirect_tup <K, U>, P>;
 
-	template <size_t J> using off = pick_i <J, K>;
+	template <size_t J> using under = under_elem <J, B>;
+	template <size_t J> using off   = pick_i <J, K>;
 
 	friend base_type_of <B>;
 
@@ -54,15 +55,15 @@ class collection <data::indirect <>, K, U> : public
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<off <J>{}>(mv(*this).B::template get <0>()); }
+	_at() && { return at._<off <J>{}>(under <0>::get_r()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<off <J>{}>(B::template get <0>()); }
+	_at() & { return at._<off <J>{}>(under <0>::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<off <J>{}>(B::template get <0>()); }
+	_at() const& { return at._<off <J>{}>(under <0>::get()); }
 
 //-----------------------------------------------------------------------------
 

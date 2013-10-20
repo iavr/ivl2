@@ -41,20 +41,21 @@ namespace atom_details {
 template <typename T>
 class atom : public base_tup <atom <T>, _type <T> >
 {
-	using E = elem <0, T>;
 	using B = base_tup <atom <T>, _type <T> >;
+	using E = under_elem <0, B>;
+
 	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE T&& _at() && { return mv(*this).B::template get <0>(); }
+	INLINE T&& _at() && { return E::get_r(); }
 
 	template <size_t J>
-	INLINE T& _at() &  { return B::template get <0>(); }
+	INLINE T& _at() &  { return E::get(); }
 
 	template <size_t J>
-	INLINE constexpr const T& _at() const& { return B::template get <0>(); }
+	INLINE constexpr const T& _at() const& { return E::get(); }
 
 //-----------------------------------------------------------------------------
 

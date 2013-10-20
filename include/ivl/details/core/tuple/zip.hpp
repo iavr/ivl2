@@ -45,21 +45,23 @@ class store <data::zip <>, sizes <I...>, U...> :
 	using P = tran <tup_types <U>...>;
 	using B = base_tup <zip_tup <U...>, P>;
 
+	template <size_t J> using under = under_elem <J, B>;
+
 	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return rtel <J, P>(at._<J>(mv(*this).B::template get <I>())...); }
+	_at() && { return rtel <J, P>(at._<J>(under <I>::get_r())...); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return ltel <J, P>(at._<J>(B::template get <I>())...); }
+	_at() & { return ltel <J, P>(at._<J>(under <I>::get())...); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return cltel <J, P>(at._<J>(B::template get <I>())...); }
+	_at() const& { return cltel <J, P>(at._<J>(under <I>::get())...); }
 
 //-----------------------------------------------------------------------------
 

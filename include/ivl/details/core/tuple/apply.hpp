@@ -38,13 +38,16 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename U>
-class collection <data::apply <>, F, U> : public base_tup <
-	apply_tup <F, U>, map <tup_app <F>::template map, tup_types <U> >
+template <typename F, typename A>
+class collection <data::apply <>, F, A> : public base_tup <
+	apply_tup <F, A>, map <tup_app <F>::template map, tup_types <A> >
 >
 {
-	using P = map <tup_app <F>::template map, tup_types <U> >;
-	using B = base_tup <apply_tup <F, U>, P>;
+	using P = map <tup_app <F>::template map, tup_types <A> >;
+	using B = base_tup <apply_tup <F, A>, P>;
+
+	using EF = under_elem <0, B>;
+	using EA = under_elem <1, B>;
 
 	friend base_type_of <B>;
 
@@ -52,24 +55,24 @@ class collection <data::apply <>, F, U> : public base_tup <
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return mv(*this).B::template get <0>()(at._<J>(mv(*this).B::template get <1>())); }
+	_at() && { return EF::get_r()(at._<J>(EA::get_r())); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return B::template get <0>()(at._<J>(B::template get <1>())); }
+	_at() & { return EF::get()(at._<J>(EA::get())); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return B::template get <0>()(at._<J>(B::template get <1>())); }
+	_at() const& { return EF::get()(at._<J>(EA::get())); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using B::base_type::operator=;
 
-	template <typename G, typename V>
-	explicit INLINE constexpr collection(G&& g, V&& v) :
-		B(fwd <G>(g), fwd <V>(v)) { }
+	template <typename G, typename B>
+	explicit INLINE constexpr collection(G&& g, B&& b) :
+		B(fwd <G>(g), fwd <B>(b)) { }
 };
 
 //-----------------------------------------------------------------------------
