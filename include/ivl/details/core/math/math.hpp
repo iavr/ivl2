@@ -42,6 +42,8 @@ namespace fun {
 
 using namespace types::traits;
 
+// TODO: all constexpr in C++1y
+
 //-----------------------------------------------------------------------------
 
 #define IVL_FUN1(NAME, FUN)      \
@@ -49,7 +51,8 @@ using namespace types::traits;
 struct NAME                      \
 {                                \
 	template <typename T>         \
-	INLINE auto operator()(T x)   \
+	INLINE auto                   \
+	operator()(T x) const         \
 		-> decltype(FUN(x))        \
 		{ return FUN(x); }         \
 };
@@ -66,7 +69,8 @@ IVL_FUN1(round, ::round)
 struct is_int
 {
 	template <typename T>
-	INLINE bool operator()(T x) { return x == floor()(x); }
+	INLINE bool
+	operator()(T x) const { return x == floor()(x); }
 };
 
 //-----------------------------------------------------------------------------
@@ -74,12 +78,12 @@ struct is_int
 struct exp
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(std::exp(x))
 		{ return std::exp(x); }
 
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x)
+	INLINE auto operator()(B base, T x) const
 		-> decltype(std::pow(base, x))
 	{
 		CHECK((base >= 0 || is_int()(x)) && (base || x > 0), e_domain);
@@ -92,7 +96,7 @@ struct exp
 struct log
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		->decltype(std::log(x))
 	{
 		CHECK(x > 0, e_domain);
@@ -100,7 +104,7 @@ struct log
 	}
 
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x)
+	INLINE auto operator()(B base, T x) const
 		-> decltype((*this)(x) / (*this)(base))
 	{
 		CHECK(base != 1, e_domain);
@@ -113,7 +117,7 @@ struct log
 struct exp2
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(is_integral <T>() ? 1 << x : exp()(2, x))
 		{ return is_integral <T>() ? 1 << x : exp()(2, x); }
 };
@@ -121,7 +125,7 @@ struct exp2
 struct log2
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(is_integral <T>() ? platform::math::log2(x) : log()(2, x))
 		{ return is_integral <T>() ? platform::math::log2(x) : log()(2, x); }
 };
@@ -131,7 +135,7 @@ struct log2
 struct exp10
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(exp()(10, x))
 		{ return exp()(10, x); }
 };
@@ -139,7 +143,7 @@ struct exp10
 struct log10
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(log()(10, x))
 		{ return log()(10, x); }
 };
@@ -149,7 +153,7 @@ struct log10
 struct prev_pow
 {
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x)
+	INLINE auto operator()(B base, T x) const
 		-> decltype(exp()(base, floor()(log()(base, x))))
 		{ return exp()(base, floor()(log()(base, x))); }
 };
@@ -157,7 +161,7 @@ struct prev_pow
 struct prev_pow2
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(is_integral <T>() ?
 			platform::math::prev_pow2(x) : prev_pow()(2, x))
 	{
@@ -169,7 +173,7 @@ struct prev_pow2
 struct prev_pow10
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(prev_pow()(10, x))
 		{ return prev_pow()(10, x); }
 };
@@ -179,7 +183,7 @@ struct prev_pow10
 struct next_pow
 {
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x)
+	INLINE auto operator()(B base, T x) const
 		-> decltype(exp()(base, floor()(log()(base, x)) + 1))
 		{ return exp()(base, floor()(log()(base, x)) + 1); }
 };
@@ -187,7 +191,7 @@ struct next_pow
 struct next_pow2
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(is_integral <T>() ?
 			platform::math::next_pow2(x) : next_pow()(2, x))
 	{
@@ -199,7 +203,7 @@ struct next_pow2
 struct next_pow10
 {
 	template <typename T>
-	INLINE auto operator()(T x)
+	INLINE auto operator()(T x) const
 		-> decltype(next_pow()(10, x))
 		{ return next_pow()(10, x); }
 };
@@ -209,14 +213,14 @@ struct next_pow10
 struct is_pow_of
 {
 	template <typename B, typename T>
-	INLINE bool operator()(B base, T x)
+	INLINE bool operator()(B base, T x) const
 		{ return x == exp()(base, floor()(log()(base, x))); }
 };
 
 struct is_pow_of2
 {
 	template <typename T>
-	INLINE bool operator()(T x)
+	INLINE bool operator()(T x) const
 	{
 		return is_integral <T>() ?
 			platform::math::is_pow_of2(x) : is_pow_of()(2, x);

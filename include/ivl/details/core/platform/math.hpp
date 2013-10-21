@@ -40,6 +40,8 @@ namespace platform {
 
 namespace math {
 
+// TODO: all constexpr in C++1y
+
 //-----------------------------------------------------------------------------
 
 #ifdef _MSC_VER
