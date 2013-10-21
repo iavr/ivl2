@@ -39,40 +39,53 @@ namespace afun_details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class bind_ : private tuple <F>, private tuple <E...>
+class bind_ : private tuple <F, tuple <E...> >
 {
-	using TF = tuple <F>;
-	using TE = tuple <E...>;
+	using T = tuple <E...>;
+	using B = tuple <F, T>;
+	using TF = under_elem <0, B>;
+	using TE = under_elem <1, B>;
 
 public:
+	template <typename G, typename... A>
 	INLINE constexpr
-	bind_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
+	bind_(G&& g, A&&... a) : B(fwd <G>(g), T(fwd <A>(a)...)) { }
 
 	template <typename... A>
-	INLINE constexpr auto
-	operator()(A&&... a) const
-		-> decltype(this->TE::call(generate <F>(), fwd <A>(a)...))
-		{ return TE::call(fwd <F>(TF::_()), fwd <A>(a)...); }
+	INLINE ret <F(E&&..., A&&...)>
+	operator()(A&&... a) &&
+		{ return TE::fwd().call(TF::fwd(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr ret <F(const E&..., A&&...)>
+	operator()(A&&... a) const&
+		{ return TE::get().call(TF::get(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class pre_fun_ : private tuple <F>, private tuple <E...>
+class pre_fun_ : private tuple <F, tuple <E...> >
 {
-	using TF = tuple <F>;
-	using TE = tuple <E...>;
+	using T = tuple <E...>;
+	using B = tuple <F, T>;
+	using TF = under_elem <0, B>;
+	using TE = under_elem <1, B>;
 
 public:
+	template <typename G, typename... A>
 	INLINE constexpr
-	pre_fun_(F&& f, E&&... e) : TF(fwd <F>(f)), TE(fwd <E>(e)...) { }
+	pre_fun_(G&& g, A&&... a) : B(fwd <G>(g), T(fwd <A>(a)...)) { }
 
 	template <typename... A>
-	INLINE constexpr types::ret <F(A&&...)>
-	operator()(A&&... a) const
-	{
-		return TE::call(fwd <F>(TF::_())), fwd <F>(TF::_())(fwd <A>(a)...);
-	}
+	INLINE ret <F(A&&...)>
+	operator()(A&&... a) &&
+		{ return TE::fwd().call(TF::fwd()), TF::fwd()(fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr ret <F(A&&...)>
+	operator()(A&&... a) const&
+		{ return TE::get().call(TF::get()), TF::get()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

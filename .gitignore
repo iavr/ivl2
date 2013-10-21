@@ -1,5 +1,9 @@
+doc/licenses/gpl-2.0.txt
+doc/licenses/gpl-3.0.txt
+doc/licenses/lgpl-3.0.txt
 .gitignore_src
 .ignore
+test/core/bind
 test/core/const
 test/core/op
 test/core/traits

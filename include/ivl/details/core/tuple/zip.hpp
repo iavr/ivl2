@@ -53,7 +53,7 @@ class store <data::zip <>, sizes <I...>, U...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return rtel <J, P>(at._<J>(under <I>::get_r())...); }
+	_at() && { return rtel <J, P>(at._<J>(under <I>::fwd())...); }
 
 	template <size_t J>
 	INLINE ltel <J, P>

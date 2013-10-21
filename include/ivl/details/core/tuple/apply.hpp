@@ -46,8 +46,8 @@ class collection <data::apply <>, F, A> : public base_tup <
 	using P = map <tup_app <F>::template map, tup_types <A> >;
 	using B = base_tup <apply_tup <F, A>, P>;
 
-	using EF = under_elem <0, B>;
-	using EA = under_elem <1, B>;
+	using UF = under_elem <0, B>;
+	using UA = under_elem <1, B>;
 
 	friend base_type_of <B>;
 
@@ -55,15 +55,15 @@ class collection <data::apply <>, F, A> : public base_tup <
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return EF::get_r()(at._<J>(EA::get_r())); }
+	_at() && { return UF::fwd()(at._<J>(UA::fwd())); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return EF::get()(at._<J>(EA::get())); }
+	_at() & { return UF::get()(at._<J>(UA::get())); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return EF::get()(at._<J>(EA::get())); }
+	_at() const& { return UF::get()(at._<J>(UA::get())); }
 
 //-----------------------------------------------------------------------------
 

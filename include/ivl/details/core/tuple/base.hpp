@@ -55,7 +55,7 @@ class store <
 	using P = Q <E...>;
 	using V = pack <U...>;
 	using derived <D>::der;
-	using derived <D>::der_r;
+	using derived <D>::der_f;
 
 	template <size_t J> using under = under_elem <J, D>;
 
@@ -85,7 +85,7 @@ public:
 private:
 	template <size_t J>
 	INLINE rtel <J, P>
-	_r() { return der_r().template _at <J>(); }
+	_f() { return der_f().template _at <J>(); }
 
 public:
 	using access <D, E...>::_;
@@ -94,7 +94,7 @@ public:
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_() && { return der_r().template _at <J>(); }
+	_() && { return der_f().template _at <J>(); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
@@ -108,7 +108,7 @@ public:
 
 	template <typename K>
 	INLINE indirect_tup <K, D&&>
-	_() && { return indirect_tup <K, D&&>(der_r()); }
+	_() && { return indirect_tup <K, D&&>(der_f()); }
 
 	template <typename K>
 	INLINE indirect_tup <K, D&>
@@ -121,15 +121,15 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
-	INLINE ret <F(rtref <E>..., A...)>
-	call(F&& f, A&&... a) && { return fwd <F>(f)(_r <I>()..., fwd <A>(a)...); }
+	INLINE ret <F(rtref <E>..., A&&...)>
+	call(F&& f, A&&... a) && { return fwd <F>(f)(_f <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE ret <F(ltref <E>..., A...)>
+	INLINE ret <F(ltref <E>..., A&&...)>
 	call(F&& f, A&&... a) & { return fwd <F>(f)(_<I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr ret <F(cltref <E>..., A...)>
+	INLINE constexpr ret <F(cltref <E>..., A&&...)>
 	call(F&& f, A&&... a) const& { return fwd <F>(f)(_<I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ public:
 	// TODO: flip element order when in gcc, as a workaround to bug
 	// http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51253
 	template <typename F> INLINE void
-	loop(F&& f) && { thru{(fwd <F>(f)(_r <I>()), 0)...}; }
+	loop(F&& f) && { thru{(fwd <F>(f)(_f <I>()), 0)...}; }
 
 	template <typename F> INLINE void
 	loop(F&& f) & { thru{(fwd <F>(f)(_<I>()), 0)...}; }

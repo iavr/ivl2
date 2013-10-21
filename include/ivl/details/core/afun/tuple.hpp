@@ -38,17 +38,20 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
+// TODO: keys + operator[] ([val], [rref], [lref], [clref])
 template <
-	template <typename...> class R,
 	template <typename...> class T = tuple,
 	template <typename...> class F = id,
 	template <typename...> class E = always
 >
-struct rref_tran_of
+struct val_of
 {
 	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <R <A&&> >...>
-	operator()(A&&... a) const { return T <F <R <A&&> >...>(fwd <A>(a)...); }
+	INLINE constexpr T <F <thin <decay <A> > >...>
+	operator()(A&&... a) const
+	{
+		return T <F <thin <decay <A> > >...>(fwd <A>(a)...);
+	}
 };
 
 //-----------------------------------------------------------------------------
@@ -58,21 +61,12 @@ template <
 	template <typename...> class F = id,
 	template <typename...> class E = always
 >
-using val_of = rref_tran_of <decay, T, F, E>;
-
-template <
-	template <typename...> class T = tuple,
-	template <typename...> class F = id,
-	template <typename...> class E = always
->
-using thin_of = rref_tran_of <thin, T, F, E>;
-
-template <
-	template <typename...> class T = tuple,
-	template <typename...> class F = id,
-	template <typename...> class E = always
->
-using rref_of = rref_tran_of <id, T, F, E>;
+struct rref_of
+{
+	template <typename... A, enable_if <E <A...>{}> = 0>
+	INLINE constexpr T <F <thin <A&&> >...>
+	operator()(A&&... a) const { return T <F <thin <A&&> >...>(fwd <A>(a)...); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -84,8 +78,8 @@ template <
 struct lref_of
 {
 	template <typename... A, enable_if <all <E, A...>{}> = 0>
-	INLINE constexpr T <F <A&>...>
-	operator()(A&... a) const { return T <F <A&>...>(a...); }
+	INLINE constexpr T <F <thin <A&> >...>
+	operator()(A&... a) const { return T <F <thin <A&> >...>(a...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -98,25 +92,27 @@ template <
 struct clref_of
 {
 	template <typename... A, enable_if <all <E, A...>{}> = 0>
-	INLINE constexpr T <F <const A&>...>
-	operator()(const A&... a) const { return T <F <const A&>...>(a...); }
+	INLINE constexpr T <F <thin <const A&> >...>
+	operator()(const A&... a) const
+	{
+		return T <F <thin <const A&> >...>(a...);
+	}
 };
 
 //-----------------------------------------------------------------------------
 
 using val_   = val_of <>;
-using thin_  = thin_of <>;
 using rref_  = rref_of <>;
 using lref_  = lref_of <>;
 using clref_ = clref_of <>;
 
 //-----------------------------------------------------------------------------
 
-using tup_join = thin_of <join_tup, id, all_tuple>;
-using tup_     = thin_of <join_tup, atom_of>;
+using tup_join = rref_of <join_tup, id, all_tuple>;
+using tup_     = rref_of <join_tup, atom_of>;
 
-using tup_zip   = thin_of <zip_tup, id,      all_tuple>;
-using tup_inner = thin_of <zip_tup, atom_of, any_tuple>;
+using tup_zip   = rref_of <zip_tup, id,      all_tuple>;
+using tup_inner = rref_of <zip_tup, atom_of, any_tuple>;
 
 static __attribute__ ((unused)) tup_join  _join;
 static __attribute__ ((unused)) tup_zip   _zip;
@@ -181,13 +177,11 @@ static __attribute__ ((unused)) tup_call _call;
 namespace afun {
 
 using afun_details::val_of;
-using afun_details::thin_of;
 using afun_details::rref_of;
 using afun_details::lref_of;
 using afun_details::clref_of;
 
 using val   = afun_details::val_;
-using thin  = afun_details::thin_;
 using rref  = afun_details::rref_;
 using lref  = afun_details::lref_;
 using clref = afun_details::clref_;
@@ -199,7 +193,6 @@ using tup = afun_details::tup_;
 //-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) afun::val    val;
-static __attribute__ ((unused)) afun::thin   thin;
 static __attribute__ ((unused)) afun::rref   rref;
 static __attribute__ ((unused)) afun::lref   lref;
 static __attribute__ ((unused)) afun::clref  clref;

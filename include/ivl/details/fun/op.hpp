@@ -64,7 +64,10 @@ IVL_VEC_OP(NAME)                       \
                                        \
 namespace op {                         \
                                        \
-template <typename A>                  \
+template <                             \
+	typename A,                         \
+	enable_if <is_tuple <A>{}> = 0      \
+>                                      \
 INLINE constexpr auto                  \
 operator OP (A&& a)                    \
 	-> decltype(op::NAME(fwd <A>(a)))   \
@@ -108,7 +111,10 @@ IVL_VEC_OP(NAME)                                   \
                                                    \
 namespace op {                                     \
                                                    \
-template <typename A, typename B>                  \
+template <                                         \
+	typename A, typename B,                         \
+	enable_if <any_tuple <A, B>{}> = 0              \
+>                                                  \
 INLINE constexpr auto                              \
 operator OP (A&& a, B&& b)                         \
 	-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))   \

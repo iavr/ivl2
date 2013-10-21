@@ -57,7 +57,7 @@ class collection <data::join <>, U...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<minr <J>{}>(under <majr <J>{}>::get_r()); }
+	_at() && { return at._<minr <J>{}>(under <majr <J>{}>::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>

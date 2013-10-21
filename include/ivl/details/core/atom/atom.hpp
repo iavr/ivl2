@@ -42,20 +42,20 @@ template <typename T>
 class atom : public base_tup <atom <T>, _type <T> >
 {
 	using B = base_tup <atom <T>, _type <T> >;
-	using E = under_elem <0, B>;
+	using U = under_elem <0, B>;
 
 	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE T&& _at() && { return E::get_r(); }
+	INLINE T&& _at() && { return U::fwd(); }
 
 	template <size_t J>
-	INLINE T& _at() &  { return E::get(); }
+	INLINE T& _at() &  { return U::get(); }
 
 	template <size_t J>
-	INLINE constexpr const T& _at() const& { return E::get(); }
+	INLINE constexpr const T& _at() const& { return U::get(); }
 
 //-----------------------------------------------------------------------------
 

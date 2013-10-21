@@ -48,13 +48,13 @@ public:
 	INLINE constexpr elem(elem&& e) : e(mv(e).get()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
-	explicit INLINE constexpr elem(A&& a) : e(fwd <A>(a)) { }
+	explicit INLINE constexpr elem(A&& a) : e(ivl::fwd <A>(a)) { }
 
 	template <typename A>
-	INLINE elem& operator=(A&& a) { return e = fwd <A>(a), *this; }
+	INLINE elem& operator=(A&& a) { return e = ivl::fwd <A>(a), *this; }
 
-	INLINE           E&&      get_r()       { return fwd <E>(e); }
-	INLINE           E&&      get() &&      { return fwd <E>(e); }
+	INLINE           E&&      fwd()         { return ivl::fwd <E>(e); }
+	INLINE           E&&      get() &&      { return ivl::fwd <E>(e); }
 	INLINE           E&       get() &       { return e; }
 	INLINE constexpr const E& get() const&  { return e; }
 };
@@ -70,13 +70,13 @@ public:
 	INLINE constexpr elem(elem&& e) : E(mv(e).get()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
-	explicit INLINE constexpr elem(A&& a) : E(fwd <A>(a)) { }
+	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
 
 	template <typename A>
-	INLINE elem& operator=(A&& a) { return E::operator=(fwd <A>(a)), *this; }
+	INLINE elem& operator=(A&& a) { return E::operator=(ivl::fwd <A>(a)), *this; }
 
-	INLINE           E&&      get_r()      { return fwd <E>(*this); }
-	INLINE           E&&      get() &&     { return fwd <E>(*this); }
+	INLINE           E&&      fwd()        { return ivl::fwd <E>(*this); }
+	INLINE           E&&      get() &&     { return ivl::fwd <E>(*this); }
 	INLINE           E&       get() &      { return *this; }
 	INLINE constexpr const E& get() const& { return *this; }
 };

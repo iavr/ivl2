@@ -102,7 +102,7 @@ class tup_vec_apply
 public:
 	// not using operator! to avoid recursion with yet-to-be-defined
 	// vec-operator! (see fun/op.hpp)
-	template <typename... A, enable_if <_not <any_tuple <A...>{}>{}> = 0>
+	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
 	INLINE constexpr auto
 	operator()(A&&... a) const
 		-> decltype(F()(fwd <A>(a)...))

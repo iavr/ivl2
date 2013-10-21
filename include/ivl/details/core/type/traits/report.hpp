@@ -72,6 +72,8 @@ void report_map_t() { static_assert (never <X...>(), "type map report"); }
 
 }  // namespace types
 
+using types::report;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace ivl

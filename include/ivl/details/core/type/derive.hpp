@@ -61,7 +61,7 @@ struct based : public B
 protected:
 	using B::B;
 
-	INLINE           B&&       base_r()      { return rcast <B>(*this); }
+	INLINE           B&&       base_f()      { return rcast <B>(*this); }
 	INLINE           B&&       base() &&     { return rcast <B>(*this); }
 	INLINE           B&        base() &      { return lcast <B>(*this); }
 	INLINE constexpr const B&  base() const& { return clcast <B>(*this); }
@@ -75,7 +75,7 @@ struct derived
 	using derived_type = D;
 
 protected:
-	INLINE           D&&       der_r()      { return rcast <D>(*this); }
+	INLINE           D&&       der_f()      { return rcast <D>(*this); }
 	INLINE           D&&       der() &&     { return rcast <D>(*this); }
 	INLINE           D&        der() &      { return lcast <D>(*this); }
 	INLINE constexpr const D&  der() const& { return clcast <D>(*this); }

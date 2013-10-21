@@ -55,7 +55,7 @@ class collection <data::indirect <>, K, U> : public
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<off <J>{}>(under <0>::get_r()); }
+	_at() && { return at._<off <J>{}>(under <0>::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>

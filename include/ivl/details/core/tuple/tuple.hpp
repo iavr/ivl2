@@ -52,7 +52,7 @@ class store <data::tuple <>, sizes <I...>, E...> :
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtel <J, P> _at() && { return under <J>::get_r(); }
+	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
 
 	template <size_t J>
 	INLINE ltel <J, P> _at() & { return under <J>::get(); }
