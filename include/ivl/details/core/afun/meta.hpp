@@ -52,12 +52,12 @@ public:
 	bind_(G&& g, A&&... a) : B(fwd <G>(g), T(fwd <A>(a)...)) { }
 
 	template <typename... A>
-	INLINE ret <F(E&&..., A&&...)>
+	INLINE ret <F(E..., A...)>
 	operator()(A&&... a) &&
 		{ return TE::fwd().call(TF::fwd(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <F(const E&..., A&&...)>
+	INLINE constexpr ret <const F&(const E&..., A...)>
 	operator()(A&&... a) const&
 		{ return TE::get().call(TF::get(), fwd <A>(a)...); }
 };
@@ -78,12 +78,12 @@ public:
 	pre_fun_(G&& g, A&&... a) : B(fwd <G>(g), T(fwd <A>(a)...)) { }
 
 	template <typename... A>
-	INLINE ret <F(A&&...)>
+	INLINE ret <F(A...)>
 	operator()(A&&... a) &&
 		{ return TE::fwd().call(TF::fwd()), TF::fwd()(fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <F(A&&...)>
+	INLINE constexpr ret <const F&(A...)>
 	operator()(A&&... a) const&
 		{ return TE::get().call(TF::get()), TF::get()(fwd <A>(a)...); }
 };

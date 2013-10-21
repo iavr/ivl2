@@ -42,12 +42,11 @@ template <typename K, typename U>
 class collection <data::indirect <>, K, U> : public
 	base_tup <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
 {
-	using E = elem <0, U>;
 	using P = choose_p <K, tup_types <U> >;
 	using B = base_tup <indirect_tup <K, U>, P>;
+	using E = elem <0, U>;
 
-	template <size_t J> using under = under_elem <J, B>;
-	template <size_t J> using off   = pick_i <J, K>;
+	template <size_t J> using off = pick_i <J, K>;
 
 	friend base_type_of <B>;
 
@@ -55,15 +54,15 @@ class collection <data::indirect <>, K, U> : public
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<off <J>{}>(under <0>::fwd()); }
+	_at() && { return at._<off <J>{}>(E::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<off <J>{}>(under <0>::get()); }
+	_at() & { return at._<off <J>{}>(E::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<off <J>{}>(under <0>::get()); }
+	_at() const& { return at._<off <J>{}>(E::get()); }
 
 //-----------------------------------------------------------------------------
 
