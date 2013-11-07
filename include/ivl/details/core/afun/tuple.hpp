@@ -47,10 +47,10 @@ template <
 struct val_of
 {
 	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <thin <decay <A> > >...>
+	INLINE constexpr T <F <base_opt <decay <A> > >...>
 	operator()(A&&... a) const
 	{
-		return T <F <thin <decay <A> > >...>(fwd <A>(a)...);
+		return T <F <base_opt <decay <A> > >...>(fwd <A>(a)...);
 	}
 };
 
@@ -64,8 +64,11 @@ template <
 struct rref_of
 {
 	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <thin <A&&> >...>
-	operator()(A&&... a) const { return T <F <thin <A&&> >...>(fwd <A>(a)...); }
+	INLINE constexpr T <F <base_opt <A&&> >...>
+	operator()(A&&... a) const
+	{
+		return T <F <base_opt <A&&> >...>(fwd <A>(a)...);
+	}
 };
 
 //-----------------------------------------------------------------------------
@@ -77,9 +80,9 @@ template <
 >
 struct lref_of
 {
-	template <typename... A, enable_if <all <E, A...>{}> = 0>
-	INLINE constexpr T <F <thin <A&> >...>
-	operator()(A&... a) const { return T <F <thin <A&> >...>(a...); }
+	template <typename... A, enable_if <E <A...>{}> = 0>
+	INLINE constexpr T <F <base_opt <A&> >...>
+	operator()(A&... a) const { return T <F <base_opt <A&> >...>(a...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -91,11 +94,11 @@ template <
 >
 struct clref_of
 {
-	template <typename... A, enable_if <all <E, A...>{}> = 0>
-	INLINE constexpr T <F <thin <const A&> >...>
+	template <typename... A, enable_if <E <A...>{}> = 0>
+	INLINE constexpr T <F <base_opt <const A&> >...>
 	operator()(const A&... a) const
 	{
-		return T <F <thin <const A&> >...>(a...);
+		return T <F <base_opt <const A&> >...>(a...);
 	}
 };
 

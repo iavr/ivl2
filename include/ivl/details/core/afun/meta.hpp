@@ -47,9 +47,9 @@ class bind_ : private tuple <F, tuple <E...> >
 	using TE = under_elem <1, B>;
 
 public:
-	template <typename G, typename... A>
+	template <typename _F, typename... A, enable_if <sizeof...(A)> = 0>
 	INLINE constexpr
-	bind_(G&& g, A&&... a) : B(fwd <G>(g), T(fwd <A>(a)...)) { }
+	bind_(_F&& f, A&&... a) : B(fwd <_F>(f), T(fwd <A>(a)...)) { }
 
 	template <typename... A>
 	INLINE ret <F(E..., A...)>
@@ -57,7 +57,7 @@ public:
 		{ return TE::fwd().call(TF::fwd(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <const F&(const E&..., A...)>
+	INLINE constexpr ret <F(E..., A...)>
 	operator()(A&&... a) const&
 		{ return TE::get().call(TF::get(), fwd <A>(a)...); }
 };
@@ -73,9 +73,9 @@ class pre_fun_ : private tuple <F, tuple <E...> >
 	using TE = under_elem <1, B>;
 
 public:
-	template <typename G, typename... A>
+	template <typename _F, typename... A, enable_if <sizeof...(A)> = 0>
 	INLINE constexpr
-	pre_fun_(G&& g, A&&... a) : B(fwd <G>(g), T(fwd <A>(a)...)) { }
+	pre_fun_(_F&& f, A&&... a) : B(fwd <_F>(f), T(fwd <A>(a)...)) { }
 
 	template <typename... A>
 	INLINE ret <F(A...)>
@@ -83,7 +83,7 @@ public:
 		{ return TE::fwd().call(TF::fwd()), TF::fwd()(fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <const F&(A...)>
+	INLINE constexpr ret <F(A...)>
 	operator()(A&&... a) const&
 		{ return TE::get().call(TF::get()), TF::get()(fwd <A>(a)...); }
 };

@@ -70,9 +70,9 @@ class collection <data::apply <>, F, A> : public base_tup <
 public:
 	using B::base_type::operator=;
 
-	template <typename G, typename B>
-	explicit INLINE constexpr collection(G&& g, B&& b) :
-		B(fwd <G>(g), fwd <B>(b)) { }
+	template <typename _F, typename _A>
+	explicit INLINE constexpr collection(_F&& f, _A&& a) :
+		B(fwd <_F>(f), fwd <_A>(a)) { }
 };
 
 //-----------------------------------------------------------------------------

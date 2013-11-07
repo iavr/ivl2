@@ -52,7 +52,7 @@ class atom : public base_tup <atom <T>, _type <T> >
 	INLINE T&& _at() && { return U::fwd(); }
 
 	template <size_t J>
-	INLINE T& _at() &  { return U::get(); }
+	INLINE T& _at() & { return U::get(); }
 
 	template <size_t J>
 	INLINE constexpr const T& _at() const& { return U::get(); }

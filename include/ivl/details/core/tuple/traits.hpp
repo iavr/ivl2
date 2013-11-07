@@ -112,8 +112,8 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 //-----------------------------------------------------------------------------
 
 template <typename T> struct rtref_t  { using type = T&&; };
-template <typename T> struct ltref_t  { using type = T&; };
-template <typename T> struct cltref_t { using type = const T&; };
+template <typename T> struct ltref_t  { using type = base_opt <T&>; };
+template <typename T> struct cltref_t { using type = base_opt <const T&>; };
 
 template <typename T> using rtref  = type_of <rtref_t <T> >;
 template <typename T> using ltref  = type_of <ltref_t <T> >;
@@ -220,18 +220,6 @@ struct tup_app
 	template <typename... A>
 	using map = F(pack <A...>);
 };
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-template <typename T, typename R = raw_type <T> >
-using thin_t_ = _if_t <is_empty <R>{}, R, T>;
-
-}  // namespace details
-
-template <typename T> using thin_t = details::thin_t_<T>;
-template <typename T> using thin = type_of <thin_t <T> >;
 
 //-----------------------------------------------------------------------------
 

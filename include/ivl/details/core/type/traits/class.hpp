@@ -91,11 +91,6 @@ template <typename T> using is_empty = is_empty_ <T>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
-
-//-----------------------------------------------------------------------------
-
 struct is_abstract_test : public input <c_null>
 {
 	template <typename T> static pass test(T (*)[1]);
@@ -132,9 +127,23 @@ using is_polymorphic = sfinae <is_polymorphic_test, T>;
 
 using details::is_class;
 using details::is_empty;
-using details::is_base_opt;
 using details::is_abstract;
 using details::is_polymorphic;
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
+
+namespace details {
+
+template <typename T, typename R = raw_type <T> >
+using base_opt_t_ = _if_t <is_base_opt <R>{}, R, T>;
+
+}  // namespace details
+
+template <typename T> using base_opt_t = details::base_opt_t_<T>;
+template <typename T> using base_opt = type_of <base_opt_t <T> >;
 
 //-----------------------------------------------------------------------------
 
