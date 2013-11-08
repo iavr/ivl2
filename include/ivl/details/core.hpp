@@ -43,7 +43,6 @@
 #include "core/atom.hpp"
 #include "core/afun.hpp"
 #include "core/vec.hpp"
-#include "core/uscore.hpp"
 #include "core/mem.hpp"
 
 //-----------------------------------------------------------------------------

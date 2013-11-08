@@ -47,15 +47,30 @@ namespace details {
 template <typename T>
 struct is_atom_ : public _false { };
 
-template <typename T>
-struct is_atom_<atom <T> > : public _true { };
+template <typename T, typename S>
+struct is_atom_<atom <T, S> > : public _true { };
 
-template <typename T>
-struct as_tuple_<atom <T> > : public _true { };
+template <typename T, typename S>
+struct as_tuple_<atom <T, S> > : public _true { };
 
 }  // namespace details
 
 template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T, typename R = raw_type <T> >
+using is_atom_fun_ = expr <is_class <R>() || is_fun <R>()>;
+
+}  // namespace details
+
+template <typename T, typename S>
+struct is_atom_fun : public _false { };
+
+template <typename T>
+struct is_atom_fun <T, data::fun <> > : public details::is_atom_fun_<T> { };
 
 //-----------------------------------------------------------------------------
 
@@ -74,8 +89,8 @@ template <typename T> using atom_of   = type_of <atom_of_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-struct under_t <atom <T> > : public pack <T> { };
+template <typename T, typename S>
+struct under_t <atom <T, S> > : public pack <T> { };
 
 //-----------------------------------------------------------------------------
 

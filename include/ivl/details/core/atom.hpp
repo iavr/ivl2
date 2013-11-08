@@ -30,6 +30,7 @@
 
 #include "atom/begin.hpp"
 #include "atom/data.hpp"
+#include "atom/atoms.hpp"
 #include "atom/traits.hpp"
 #include "atom/atom.hpp"
 

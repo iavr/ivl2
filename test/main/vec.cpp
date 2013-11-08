@@ -40,6 +40,9 @@ struct P
 
 afun::vec <P> print;
 
+template <typename T>
+T dist(int a, const T& x, const T& y) { return a * abs(x - y); }
+
 //-----------------------------------------------------------------------------
 
 void run()
@@ -120,6 +123,24 @@ void run()
 		cout << endl;
 		cout << endl;
 	}
+
+	{
+		cout << "vec functor instance" << endl;
+		auto t = val('a', 3.14, 2);
+		cout << _[shift](t, 'X', _(1, 2, 3, 4)) << endl;
+		cout << _[shift](_('a', 3.14, 2), 'X', _(1, 2, 3, 4)) << endl;
+		cout << shift(_('a', 3.14, 2), 'X', _(1, 2, 3, 4)) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "vec function instance" << endl;
+		cout << _[dist <double>](_(1, 2, 4, 8), 6, _(5, 6, 7, 8)) << endl;
+		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
+			(_(1, 2, 4, 8), 6, _(5, 6, 7, 8)) << endl;
+		cout << endl;
+	}
+
 }
 //-----------------------------------------------------------------------------
 

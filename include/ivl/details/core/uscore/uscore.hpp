@@ -35,8 +35,8 @@ namespace ivl {
 struct uscore : public afun::rref
 {
 	template <typename A>
-	INLINE constexpr atom <A&&>
-	operator[](A&& a) const { return atom <A&&>(fwd <A>(a)); }
+	INLINE constexpr fun_atom <A&&>
+	operator[](A&& a) const { return fun_atom <A&&>(fwd <A>(a)); }
 };
 
 static __attribute__ ((unused)) uscore _;

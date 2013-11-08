@@ -38,10 +38,10 @@ namespace atom_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-class atom : public base_tup <atom <T>, _type <T> >
+template <typename T, typename S, bool = is_atom_fun <T, S>()>
+class store : public base_tup <atom <T, S>, _type <T> >
 {
-	using B = base_tup <atom <T>, _type <T> >;
+	using B = base_tup <atom <T, S>, _type <T> >;
 	using U = under_elem <0, B>;
 
 	friend base_type_of <B>;
@@ -61,19 +61,30 @@ class atom : public base_tup <atom <T>, _type <T> >
 
 public:
 	using B::base_type::operator=;
+	explicit INLINE constexpr store() { }
 
 	template <typename A, enable_if <is_conv <A, T>{}> = 0>
-	INLINE constexpr atom(A&& a) : B(fwd <A>(a)) { }
+	INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
 
 	template <typename A, enable_if <is_explicit <T, A>{}> = 0>
-	explicit INLINE constexpr atom(A&& a) : B(fwd <A>(a)) { }
+	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename S>
+class atom : public store <T, S>
+{
+	using B = store <T, S>;
+
+public:
+	using B::B;
+	using B::operator=;
 };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace atom_details
-
-using atom_details::atom;
 
 //-----------------------------------------------------------------------------
 

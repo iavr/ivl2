@@ -66,14 +66,9 @@ struct loop_ : public der_nfun <tup_loop, seq_loop>
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-using vec_apply_ = der_nfun <tup_vec_apply <F>, seq_vec_apply <F> >;
-
-template <typename F>
-using vec_loop_ = der_nfun <tup_vec_loop <F>, seq_vec_loop <F> >;
-
-template <typename F>
-using vec_ = der_nfun <tup_vec <F>, seq_vec <F> >;
+template <typename F> using vec_apply_ = seq_vec_apply <F>;
+template <typename F> using vec_loop_  = seq_vec_loop <F>;
+template <typename F> using vec_       = seq_vec <F>;
 
 //-----------------------------------------------------------------------------
 

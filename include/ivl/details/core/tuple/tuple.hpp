@@ -81,7 +81,7 @@ class collection <data::tuple <>, E...> :
 
 public:
 	using B::base_type::operator=;
-	explicit INLINE constexpr collection(const E&... e) : B(yes, e...) { }
+	explicit INLINE constexpr collection() : B(yes) { }
 
 	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
 	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }

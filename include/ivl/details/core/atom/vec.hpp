@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,29 +23,32 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_HPP
-#define IVL_DETAILS_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_ATOM_VEC_HPP
+#define IVL_DETAILS_CORE_ATOM_VEC_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "array/data.hpp"
-#include "array/array.hpp"
-#include "core/vec/array.hpp"
-#include "core/vec/vec.hpp"
-#include "core/atom/vec.hpp"
-#include "core/uscore.hpp"
+namespace atom_details {
 
-#include "array/heap.hpp"
-#include "core/stream.hpp"
+template <typename T, typename S>
+struct store <T, S, true> : public afun::vec <T>
+{
+	using afun::vec <T>::vec;
+	using afun::vec <T>::operator=;
+};
 
-//-----------------------------------------------------------------------------
-
-#include "core/macro/pop.hpp"
+}  // namespace atom_details
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_HPP
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_ATOM_VEC_HPP

@@ -71,8 +71,10 @@ public:
 
 //-----------------------------------------------------------------------------
 
+	explicit INLINE constexpr store() : elem <N, U>()... { }
+
 	template <typename... A>
-	INLINE constexpr store(A&&... a) : elem <N, U>(fwd <A>(a))... { }
+	explicit INLINE constexpr store(A&&... a) : elem <N, U>(fwd <A>(a))... { }
 
 	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
 	INLINE D& operator=(T&& t)

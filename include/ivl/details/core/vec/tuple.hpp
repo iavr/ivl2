@@ -100,8 +100,6 @@ class tup_vec_apply
 	using apply = tup_apply;
 
 public:
-	// not using operator! to avoid recursion with yet-to-be-defined
-	// vec-operator! (see fun/op.hpp)
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
 	INLINE constexpr auto
 	operator()(A&&... a) const
@@ -133,17 +131,21 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class tup_vec
+class tup_vec : public atom <F>
 {
+	using B = atom <F>;
+	using UF = under_elem <0, B>;
+
 	using apply = tup_apply;
 	using loop  = tup_loop;
 
 public:
+	using B::B;
+
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE constexpr auto
+	INLINE constexpr ret <F(A...)>
 	operator()(A&&... a) const
-		-> decltype(F()(fwd <A>(a)...))
-		{ return F()(fwd <A>(a)...); }
+		{ return UF::get()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_non_void <F(A...)>{}> = 0>
 	INLINE constexpr auto

@@ -33,7 +33,7 @@ namespace trait {
 
 using namespace ivl;
 using namespace ivl::types;
-using types::thin;
+using types::base_opt;
 
 //-----------------------------------------------------------------------------
 
@@ -311,16 +311,17 @@ void run()
 //-----------------------------------------------------------------------------
 
 	{
-		report_map <thin, A>();
-		report_map <thin, B>();
-		report_map <thin, C>();
-		report_map <thin, D>();
-		report_map <thin, G>();
-		report_map <thin, M>();
-		report_map <thin, int>();
-		report_map <thin, int&>();
-		report_map <thin, int*>();
+		report_map <base_opt, A>();
+		report_map <base_opt, B>();
+		report_map <base_opt, C>();
+		report_map <base_opt, D>();
+		report_map <base_opt, G>();
+		report_map <base_opt, M>();
+		report_map <base_opt, int>();
+		report_map <base_opt, int&>();
+		report_map <base_opt, int*>();
 	}
+
 }
 
 //-----------------------------------------------------------------------------

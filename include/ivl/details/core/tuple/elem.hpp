@@ -45,6 +45,7 @@ class elem
 	elem& operator=(const elem&) = delete;
 
 public:
+	INLINE constexpr elem() : e() { }
 	INLINE constexpr elem(elem&& e) : e(e.fwd()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
@@ -67,13 +68,17 @@ class elem <I, E, true> : private E
 	elem& operator=(const elem&) = delete;
 
 public:
+	INLINE constexpr elem() : E() { }
 	INLINE constexpr elem(elem&& e) : E(e.fwd()) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
 	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
 
 	template <typename A>
-	INLINE elem& operator=(A&& a) { return E::operator=(ivl::fwd <A>(a)), *this; }
+	INLINE elem& operator=(A&& a)
+	{
+		return E::operator=(ivl::fwd <A>(a)), *this;
+	}
 
 	INLINE           E&& fwd()        { return ivl::fwd <E>(*this); }
 	INLINE           E&& get() &&     { return ivl::fwd <E>(*this); }

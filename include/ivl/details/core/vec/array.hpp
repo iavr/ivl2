@@ -102,9 +102,14 @@ struct seq_loop : public arr_loop <seq_loop>
 //-----------------------------------------------------------------------------
 
 // TODO
-template <typename F> struct seq_vec_apply { void operator()(nat); };
-template <typename F> struct seq_vec_loop  { void operator()(nat); };
-template <typename F> struct seq_vec       { void operator()(nat); };
+template <typename F> struct seq_vec_apply :
+	public tup_vec_apply <F> { using tup_vec_apply <F>::tup_vec_apply; };
+
+template <typename F> struct seq_vec_loop :
+	public tup_vec_loop <F> { using tup_vec_loop <F>::tup_vec_loop; };
+
+template <typename F> struct seq_vec :
+	public tup_vec <F> { using tup_vec <F>::tup_vec; };
 
 //-----------------------------------------------------------------------------
 

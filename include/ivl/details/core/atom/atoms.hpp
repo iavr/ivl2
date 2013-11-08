@@ -23,29 +23,32 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_HPP
-#define IVL_DETAILS_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_ATOM_ATOMS_HPP
+#define IVL_DETAILS_CORE_ATOM_ATOMS_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "array/data.hpp"
-#include "array/array.hpp"
-#include "core/vec/array.hpp"
-#include "core/vec/vec.hpp"
-#include "core/atom/vec.hpp"
-#include "core/uscore.hpp"
+namespace atom_details {
 
-#include "array/heap.hpp"
-#include "core/stream.hpp"
+template <typename T, typename S = data::atom <> > class atom;
 
-//-----------------------------------------------------------------------------
+template <typename T> using fun_atom = atom <T, data::fun <> >;
 
-#include "core/macro/pop.hpp"
+}
+
+using atom_details::atom;
+using atom_details::fun_atom;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_HPP
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_ATOM_ATOMS_HPP
