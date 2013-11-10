@@ -117,18 +117,18 @@ void run()
 
 //-----------------------------------------------------------------------------
 
-	report_map <keep, int>();
-	report_map <keep, int&>();
-	report_map <keep, int&&>();
-	report_map <keep, int*>();
-	report_map <keep, int* const>();
-	report_map <keep, int[]>();
-	report_map <keep, const int>();
-	report_map <keep, const int&>();
-	report_map <keep, const int&&>();
-	report_map <keep, const int*>();
-	report_map <keep, const int* const>();
-	report_map <keep, const int[]>();
+	report_map <reuse, int>();
+	report_map <reuse, int&>();
+	report_map <reuse, int&&>();
+	report_map <reuse, int*>();
+	report_map <reuse, int* const>();
+	report_map <reuse, int[]>();
+	report_map <reuse, const int>();
+	report_map <reuse, const int&>();
+	report_map <reuse, const int&&>();
+	report_map <reuse, const int*>();
+	report_map <reuse, const int* const>();
+	report_map <reuse, const int[]>();
 
 	report_map <check_t, int>();
 	report_map <check_t, nat>();

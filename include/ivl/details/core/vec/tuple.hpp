@@ -44,19 +44,13 @@ class tup_apply
 
 public:
 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-	INLINE constexpr apply_tup <F&&, T&&>
-	operator()(F&& f, T&& t) const
-	{
-		return apply_tup <F&&, T&&>(fwd <F>(f), fwd <T>(t));
-	}
+	INLINE constexpr apply_tup <F&&, T&&> operator()(F&& f, T&& t) const
+		{ return apply_tup <F&&, T&&>(fwd <F>(f), fwd <T>(t)); }
 
 	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-	INLINE constexpr auto
-	operator()(F&& f, T&&... t) const
+	INLINE constexpr auto operator()(F&& f, T&&... t) const
 	-> decltype(val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...)))
-	{
-		return val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...));
-	}
+		{ return val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...)); }
 };
 
 //-----------------------------------------------------------------------------
@@ -64,15 +58,11 @@ public:
 struct tup_loop
 {
 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-	INLINE void
-	operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
+	INLINE void operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
 
 	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-	INLINE void
-	operator()(F&& f, T&&... t) const
-	{
-		_inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f)));
-	}
+	INLINE void operator()(F&& f, T&&... t) const
+		{ _inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f))); }
 };
 
 //-----------------------------------------------------------------------------
@@ -101,15 +91,13 @@ class tup_vec_apply
 
 public:
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr auto
-	operator()(A&&... a) const
-		-> decltype(F()(fwd <A>(a)...))
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE constexpr auto
-	operator()(A&&... a) const
-		-> decltype(apply()(*this, fwd <A>(a)...))
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(apply()(*this, fwd <A>(a)...))
 		{ return apply()(*this, fwd <A>(a)...); }
 };
 
@@ -130,6 +118,45 @@ public:
 
 //-----------------------------------------------------------------------------
 
+template <typename F, size_t I = 0>
+class tup_vec_mut
+{
+	using loop = tup_loop;
+
+public:
+	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
+	INLINE auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
+		{ return F()(fwd <A>(a)...); }
+
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
+	INLINE pick <I, A...>&& operator()(A&&... a) const
+		{ return loop()(*this, fwd <A>(a)...), get <I>(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F, size_t I = 0>
+class tup_vec_copy
+{
+	using loop = tup_loop;
+
+public:
+	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
+	INLINE auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
+		{ return F()(fwd <A>(a)...); }
+
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
+	INLINE create <pick <I, A...> > operator()(A&&... a) const
+	{
+		create <pick <I, A...> > b = get <I>(fwd <A>(a)...);
+		return loop()(*this, fwd <A>(a)...), b;
+	}
+};
+
+//-----------------------------------------------------------------------------
+
 template <typename F>
 class tup_vec : public atom <F>
 {
@@ -143,14 +170,12 @@ public:
 	using B::B;
 
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE constexpr ret <F(A...)>
-	operator()(A&&... a) const
+	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
 		{ return UF::get()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_non_void <F(A...)>{}> = 0>
-	INLINE constexpr auto
-	operator()(A&&... a) const
-		-> decltype(apply()(*this, fwd <A>(a)...))
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(apply()(*this, fwd <A>(a)...))
 		{ return apply()(*this, fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_void <F(A...)>{}> = 0>

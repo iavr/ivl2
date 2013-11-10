@@ -47,11 +47,8 @@ template <
 struct val_of
 {
 	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <base_opt <decay <A> > >...>
-	operator()(A&&... a) const
-	{
-		return T <F <base_opt <decay <A> > >...>(fwd <A>(a)...);
-	}
+	INLINE constexpr T <F <decay <A> >...>
+	operator()(A&&... a) const { return T <F <decay <A> >...>(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

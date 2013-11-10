@@ -42,34 +42,48 @@ namespace packs {
 
 //-----------------------------------------------------------------------------
 
-template <typename P>
-struct _and_p : public _if <car <P>{}, _and_p <cdr <P> >, _false> { };
+namespace details {
 
-template <typename P>
-struct _or_p : public _if <car <P>{}, _true, _or_p <cdr <P> > > { };
+template <typename P, bool = is_null <P>{}>
+struct _and_p_ : public _if <car <P>{}, _and_p_<cdr <P> >, _false> { };
 
-template <template <typename...> class C>
-struct _and_p <C <> > : public _true  { };
+template <typename P, bool = is_null <P>{}>
+struct _or_p_ : public _if <car <P>{}, _true, _or_p_<cdr <P> > > { };
 
-template <template <typename...> class C>
-struct _or_p  <C <> > : public _false { };
+template <typename P> struct _and_p_<P, true> : public _true  { };
+template <typename P> struct _or_p_ <P, true> : public _false { };
+
+}  // namespace details
+
+template <typename P> using _and_p = details::_and_p_<P>;
+template <typename P> using _or_p  = details::_or_p_<P>;
 
 template <typename... E> using _and = _and_p <pack <E...> >;
 template <typename... E> using _or  = _or_p  <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class F, typename P>
-struct all_p : public _if <F <car <P> >{}, all_p <F, cdr <P> >, _false> { };
+namespace details {
+
+template <template <typename...> class F, typename P, bool = is_null <P>{}>
+struct all_p_ : public _if <F <car <P> >{}, all_p_<F, cdr <P> >, _false> { };
+
+template <template <typename...> class F, typename P, bool = is_null <P>{}>
+struct any_p_ : public _if <F <car <P> >{}, _true, any_p_<F, cdr <P> > > { };
 
 template <template <typename...> class F, typename P>
-struct any_p : public _if <F <car <P> >{}, _true, any_p <F, cdr <P> > > { };
+struct all_p_ <F, P, true> : public _true  { };
 
-template <template <typename...> class F, template <typename...> class C>
-struct all_p <F, C <> > : public _true  { };
+template <template <typename...> class F, typename P>
+struct any_p_ <F, P, true> : public _false { };
 
-template <template <typename...> class F, template <typename...> class C>
-struct any_p  <F, C <> > : public _false { };
+}  // namespace details
+
+template <template <typename...> class F, typename P>
+using all_p = details::all_p_<F, P>;
+
+template <template <typename...> class F, typename P>
+using any_p = details::any_p_<F, P>;
 
 template <template <typename...> class F, typename... E>
 using all = all_p <F, pack <E...> >;

@@ -197,22 +197,34 @@ template <typename T> using bare_type   = type_of <bare_type_t <T> >;
 
 namespace details {
 
+// extended elsewhere
 template <typename T>
-using decay_t_ = _if <is_arr <T>{}, id_t <remove_ext <T>*>,
+struct create_rec : public id_t <T> { };
+
+template <typename T>
+struct create_t_ : public _if <is_arr <T>{}, id_t <remove_ext <T>*>,
+	_if <is_fun <T>{}, add_ptr_t <T>, create_rec <remove_cv <T> > >
+> { };
+
+template <typename T>
+struct decay_t_ : public _if <is_arr <T>{}, id_t <remove_ext <T>*>,
 	_if <is_fun <T>{}, add_ptr_t <T>, remove_cv_t <T> >
->;
+> { };
 
 }  // namespace details
 
+template <typename T> using create_t = details::create_t_ <remove_ref <T> >;
+template <typename T> using create = type_of <create_t <T> >;
+
 template <typename T> using decay_t = details::decay_t_ <remove_ref <T> >;
-template <typename T> using decay   = type_of <decay_t <T> >;
+template <typename T> using decay = type_of <decay_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct keep_t       { using type = T; };
-template <typename T> struct keep_t <T&&> { using type = add_const <T>&; };
+template <typename T> struct reuse_t       { using type = T; };
+template <typename T> struct reuse_t <T&&> { using type = add_const <T>&; };
 
-template <typename T> using keep = type_of <keep_t <T> >;
+template <typename T> using reuse = type_of <reuse_t <T> >;
 
 //-----------------------------------------------------------------------------
 

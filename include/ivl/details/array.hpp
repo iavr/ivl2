@@ -40,7 +40,6 @@
 #include "core/uscore.hpp"
 
 #include "array/heap.hpp"
-#include "core/stream.hpp"
 
 //-----------------------------------------------------------------------------
 

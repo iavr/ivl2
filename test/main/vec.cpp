@@ -2,7 +2,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace vec_test {
+namespace test {
 
 using namespace ivl;
 using namespace ivl::types;
@@ -42,6 +42,8 @@ afun::vec <P> print;
 
 template <typename T>
 T dist(int a, const T& x, const T& y) { return a * abs(x - y); }
+
+void fprint(int x) { cout << x << " "; }
 
 //-----------------------------------------------------------------------------
 
@@ -138,17 +140,19 @@ void run()
 		cout << _[dist <double>](_(1, 2, 4, 8), 6, _(5, 6, 7, 8)) << endl;
 		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
 			(_(1, 2, 4, 8), 6, _(5, 6, 7, 8)) << endl;
+		_[fprint](_(1, 2, 3, 4));
+		cout << endl;
 		cout << endl;
 	}
 
 }
 //-----------------------------------------------------------------------------
 
-}  // namespace vec_test
+}  // namespace test
 
 //-----------------------------------------------------------------------------
 
 int main()
 {
-	vec_test::run();
+	test::run();
 }

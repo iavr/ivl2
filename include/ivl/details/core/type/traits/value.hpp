@@ -92,6 +92,15 @@ as(A&& a) { return static_cast <const raw_type <T>&>(a); }
 
 //-----------------------------------------------------------------------------
 
+template <size_t I, typename A, typename... An, enable_if <I> = 0>
+pick <I - 1, An...>&&
+get(A&& a, An&&... an) { return get <I - 1>(fwd <An>(an)...); }
+
+template <size_t I, typename A, typename... An, enable_if <!I> = 0>
+A&& get(A&& a, An&&... an) { return fwd <A>(a); }
+
+//-----------------------------------------------------------------------------
+
 }  // namespace traits
 
 //-----------------------------------------------------------------------------
@@ -101,6 +110,7 @@ as(A&& a) { return static_cast <const raw_type <T>&>(a); }
 using types::traits::mv;
 using types::traits::fwd;
 using types::traits::as;
+using types::traits::get;
 
 //-----------------------------------------------------------------------------
 

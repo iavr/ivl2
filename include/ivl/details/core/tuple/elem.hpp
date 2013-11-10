@@ -69,7 +69,7 @@ class elem <I, E, true> : private E
 
 public:
 	INLINE constexpr elem() : E() { }
-	INLINE constexpr elem(elem&& e) : E(e.fwd()) { }
+	INLINE constexpr elem(elem&& e) : E(mv(e)) { }
 
 	template <typename A, enable_if <is_cons <E, A>{}> = 0>
 	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
@@ -80,10 +80,10 @@ public:
 		return E::operator=(ivl::fwd <A>(a)), *this;
 	}
 
-	INLINE           E&& fwd()        { return ivl::fwd <E>(*this); }
-	INLINE           E&& get() &&     { return ivl::fwd <E>(*this); }
-	INLINE           E   get() &      { return *this; }
-	INLINE constexpr E   get() const& { return *this; }
+	INLINE           E fwd()        { return mv(*this); }
+	INLINE           E get() &&     { return mv(*this); }
+	INLINE           E get() &      { return *this; }
+	INLINE constexpr E get() const& { return *this; }
 };
 
 //-----------------------------------------------------------------------------

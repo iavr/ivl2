@@ -42,11 +42,21 @@ namespace numeric {
 
 //-----------------------------------------------------------------------------
 
-template <typename> struct num_sequence;
+template <typename P> struct length_t;
+template <typename P> using  length = type_of <length_t <P> >;
 
-template <template <typename T, T...> class C, typename T, T... N>
-struct num_sequence <C <T, N...> > :
-	public id_t <C <T, N...> >, public sequence <sizeof...(N)> { };
+//-----------------------------------------------------------------------------
+
+template <size_t L> struct sequence { static constexpr size_t length = L; };
+
+template <typename T>
+struct type_sequence : public id_t <T>, public sequence <length <T>{}> { };
+
+template <typename T>
+struct _type : public type_sequence <_type <T> > { };
+
+template <size_t L, typename T>
+struct repeat : public type_sequence <repeat <L, T> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +64,7 @@ template <typename T, T N> using integral = c_integral <T, N>;
 
 template <typename T, T... N>
 struct integrals : public value <T>,
-	public num_sequence <integrals <T, N...> > { };
+	public type_sequence <integrals <T, N...> > { };
 
 template <typename T> using empty = integrals <T>;
 
@@ -126,12 +136,13 @@ using sz_rng  = type_of <sz_rng_t <B, E, s> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct length_t;
-template <typename P> using  length    = type_of <length_t <P> >;
-template <typename P> using  length_of = size <P::length>;
+template <typename P> using length_of = size <P::length>;
 
 template <template <typename...> class C, typename... E>
 struct length_t <C <E...> > : public size <sizeof...(E)> { };
+
+template <size_t L, typename T>
+struct length_t <repeat <L, T> > : public size <L> { };
 
 template <typename T, T... N>
 struct length_t <integrals <T, N...> > : public size <sizeof...(N)> { };

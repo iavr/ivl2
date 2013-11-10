@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_CONSTRUCT_HPP
-#define IVL_DETAILS_CORE_AFUN_CONSTRUCT_HPP
+#ifndef IVL_DETAILS_CORE_STREAM_TRAITS_HPP
+#define IVL_DETAILS_CORE_STREAM_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -34,74 +34,23 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-struct obj_construct
-{
-	T& obj;
-
-	template <typename... A>
-	INLINE void operator()(A&&... a) const { new (&obj) T(fwd <A>(a)...); }
-};
-
-template <typename T = tuple <> >
-struct arg_construct;
-
-template <typename... E>
-struct arg_construct <tuple <E...> > : private tuple <E...>
-{
-	using tuple <E...>::tuple;
-
-	template <typename T>
-	INLINE void operator()(T& o) const { this->call(obj_construct <T>{o}); }
-};
+namespace traits {
 
 //-----------------------------------------------------------------------------
 
-struct construct_
-{
-	INLINE constexpr arg_construct <>
-	operator()() const { return arg_construct <>(); }
-
-	template <typename A>
-	INLINE constexpr arg_construct <map <reuse, tuple_of <A> > >
-	operator()(A&& a) const
-	{
-		return arg_construct <map <reuse, tuple_of <A> > >(fwd <A>(a));
-	}
-
-	template <typename T, typename A>
-	INLINE void operator()(T& o, A&& a) const { (*this)(fwd <A>(a))(o); }
-};
+template <typename T> using is_stream = is_base <std::ios_base, raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
-struct destruct_
-{
-	template <typename T>
-	INLINE void operator()(T& o) const { o.~T(); }
-};
+}  // namespace traits
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
-
-//-----------------------------------------------------------------------------
-
-namespace afun {
-
-using construct = afun_details::construct_;
-using destruct  = afun_details::destruct_;
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::construct    construct;
-static __attribute__ ((unused)) afun::destruct     destruct;
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -109,4 +58,4 @@ static __attribute__ ((unused)) afun::destruct     destruct;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_CONSTRUCT_HPP
+#endif  // IVL_DETAILS_CORE_STREAM_TRAITS_HPP

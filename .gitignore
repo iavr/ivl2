@@ -13,3 +13,4 @@ test/main/array
 test/main/test
 test/main/tuple
 test/main/vec
+test/main/vec_op

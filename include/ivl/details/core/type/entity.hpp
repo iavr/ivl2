@@ -48,21 +48,6 @@ template <typename... T> using id = type_of <id_t <T...> >;
 
 //-----------------------------------------------------------------------------
 
-template <size_t L> struct sequence { static constexpr size_t length = L; };
-
-template <typename> struct type_sequence;
-
-template <template <typename...> class C, typename... E>
-struct type_sequence <C <E...> > :
-	public id_t <C <E...> >, public sequence <sizeof...(E)> { };
-
-//-----------------------------------------------------------------------------
-
-template <typename T>
-struct _type : public type_sequence <_type <T> > { };
-
-//-----------------------------------------------------------------------------
-
 template <typename D>
 struct der { using der_type = D; };
 

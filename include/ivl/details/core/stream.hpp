@@ -28,6 +28,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include "stream/traits.hpp"
 #include "stream/tuple.hpp"
 #include "stream/atom.hpp"
 #include "stream/array.hpp"

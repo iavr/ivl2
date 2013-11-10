@@ -37,6 +37,7 @@ namespace ivl {
 namespace op {
 
 using types::enable_if;
+using types::is_stream;
 using types::is_tuple;
 using types::any_tuple;
 
@@ -44,98 +45,171 @@ using types::any_tuple;
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP(NAME)                                 \
-                                                         \
-namespace fun {                                          \
-namespace op {                                           \
-	using NAME = afun::vec_apply <afun::op::NAME>;        \
-}                                                        \
-}                                                        \
-                                                         \
-namespace op {                                           \
-	static __attribute__ ((unused)) fun::op::NAME NAME;   \
-}                                                        \
+#define IVL_VEC_OP(NAME)                                     \
+                                                             \
+namespace fun {                                              \
+namespace op {                                               \
+	using NAME = afun::vec_apply <afun::op::NAME>;            \
+}                                                            \
+}                                                            \
+                                                             \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP1(NAME, OP)          \
-                                       \
-IVL_VEC_OP(NAME)                       \
-                                       \
-namespace op {                         \
-                                       \
-template <                             \
-	typename A,                         \
-	enable_if <is_tuple <A>{}> = 0      \
->                                      \
-INLINE constexpr auto                  \
-operator OP (A&& a)                    \
-	-> decltype(op::NAME(fwd <A>(a)))   \
-	{ return op::NAME(fwd <A>(a)); }    \
-                                       \
-}                                      \
-                                       \
-using op::operator OP;                 \
+#define IVL_VEC_OP_MUT(NAME)                                 \
+                                                             \
+namespace fun {                                              \
+namespace op {                                               \
+	using NAME = afun::vec_mut <afun::op::NAME>;              \
+}                                                            \
+}                                                            \
+                                                             \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
 
 //-----------------------------------------------------------------------------
 
-// #define IVL_OP1_PRE(NAME, OP)            \
-//                                          \
-// struct NAME                              \
-// {                                        \
-// 	template <typename A>                 \
-// 	INLINE auto                           \
-// 	operator()(A&& a) const               \
-// 		-> decltype(OP fwd <A>(a))         \
-// 		{ return OP fwd <A>(a); }          \
-// };
+#define IVL_VEC_OP_COPY(NAME)                                \
+                                                             \
+namespace fun {                                              \
+namespace op {                                               \
+	using NAME = afun::vec_copy <afun::op::NAME>;             \
+}                                                            \
+}                                                            \
+                                                             \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
 
 //-----------------------------------------------------------------------------
 
-// #define IVL_OP1_POST(NAME, OP)           \
-//                                          \
-// struct NAME                              \
-// {                                        \
-// 	template <typename A>                 \
-// 	INLINE auto                           \
-// 	operator()(A&& a) const               \
-// 		-> decltype(fwd <A>(a) OP)         \
-// 		{ return fwd <A>(a) OP; }          \
-// };
+#define IVL_VEC_OP1(NAME, OP)                  \
+                                               \
+IVL_VEC_OP(NAME)                               \
+                                               \
+namespace op {                                 \
+                                               \
+template <                                     \
+	typename A,                                 \
+	enable_if <is_tuple <A>{}> = 0              \
+>                                              \
+INLINE constexpr auto                          \
+operator OP(A&& a)                             \
+-> decltype(op::NAME(fwd <A>(a)))              \
+	{ return op::NAME(fwd <A>(a)); }            \
+                                               \
+}                                              \
+                                               \
+using op::operator OP;                         \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP2(NAME, OP)                      \
-                                                   \
-IVL_VEC_OP(NAME)                                   \
-                                                   \
-namespace op {                                     \
-                                                   \
-template <                                         \
-	typename A, typename B,                         \
-	enable_if <any_tuple <A, B>{}> = 0              \
->                                                  \
-INLINE constexpr auto                              \
-operator OP (A&& a, B&& b)                         \
-	-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))   \
-	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }    \
-                                                   \
-}                                                  \
-                                                   \
-using op::operator OP;                             \
+#define IVL_VEC_OP1_PRE(NAME, OP)              \
+                                               \
+IVL_VEC_OP_MUT(NAME)                           \
+                                               \
+namespace op {                                 \
+                                               \
+template <                                     \
+	typename A,                                 \
+	enable_if <is_tuple <A>{}> = 0              \
+>                                              \
+INLINE auto                                    \
+operator OP(A&& a)                             \
+-> decltype(op::NAME(fwd <A>(a)))              \
+	{ return op::NAME(fwd <A>(a)); }            \
+                                               \
+}                                              \
+                                               \
+using op::operator OP;                         \
 
 //-----------------------------------------------------------------------------
 
-// #define IVL_OP2_MUT(NAME, OP)                        \
-//                                                      \
-// struct NAME                                          \
-// {                                                    \
-// 	template <typename A, typename B>                 \
-// 	INLINE auto                                       \
-// 	operator()(A&& a, B&& b) const                    \
-// 		-> decltype(fwd <A>(a) OP fwd <B>(b))          \
-// 		{ return fwd <A>(a) OP fwd <B>(b); }           \
-// };
+#define IVL_VEC_OP1_POST(NAME, OP)             \
+                                               \
+IVL_VEC_OP_COPY(NAME)                          \
+                                               \
+namespace op {                                 \
+                                               \
+template <                                     \
+	typename A,                                 \
+	enable_if <is_tuple <A>{}> = 0              \
+>                                              \
+INLINE auto                                    \
+operator OP(A&& a, int)                        \
+-> decltype(op::NAME(fwd <A>(a)))              \
+	{ return op::NAME(fwd <A>(a)); }            \
+                                               \
+}                                              \
+                                               \
+using op::operator OP;                         \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_VEC_OP2(NAME, OP)                              \
+                                                           \
+IVL_VEC_OP(NAME)                                           \
+                                                           \
+namespace op {                                             \
+                                                           \
+template <                                                 \
+	typename A, typename B,                                 \
+	enable_if <any_tuple <A, B>{}> = 0                      \
+>                                                          \
+INLINE constexpr auto                                      \
+operator OP(A&& a, B&& b)                                  \
+-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))              \
+	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }            \
+                                                           \
+}                                                          \
+                                                           \
+using op::operator OP;                                     \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_VEC_OP2_MUT(NAME, OP)                          \
+                                                           \
+IVL_VEC_OP_MUT(NAME)                                       \
+                                                           \
+namespace op {                                             \
+                                                           \
+template <                                                 \
+	typename A, typename B,                                 \
+	enable_if <any_tuple <A, B>{}> = 0                      \
+>                                                          \
+INLINE auto                                                \
+operator OP(A&& a, B&& b)                                  \
+-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))              \
+	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }            \
+                                                           \
+}                                                          \
+                                                           \
+using op::operator OP;                                     \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_VEC_OP2_SHIFT(NAME, OP)                        \
+                                                           \
+IVL_VEC_OP(NAME)                                           \
+                                                           \
+namespace op {                                             \
+                                                           \
+template <                                                 \
+	typename A, typename B,                                 \
+	enable_if <any_tuple <A, B>() && !is_stream <A>()> = 0  \
+>                                                          \
+INLINE auto                                                \
+operator OP(A&& a, B&& b)                                  \
+-> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))              \
+	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }            \
+                                                           \
+}                                                          \
+                                                           \
+using op::operator OP;                                     \
 
 //-----------------------------------------------------------------------------
 
@@ -153,10 +227,10 @@ using op::operator OP;                             \
 IVL_VEC_OP1(plus,  +)
 IVL_VEC_OP1(minus, -)
 
-// IVL_VEC_OP1_PRE(inc_, ++)
-// IVL_VEC_OP1_PRE(dec_, --)
-// IVL_VEC_OP1_POST(_inc, ++)
-// IVL_VEC_OP1_POST(_dec, --)
+IVL_VEC_OP1_PRE(inc_, ++)
+IVL_VEC_OP1_PRE(dec_, --)
+IVL_VEC_OP1_POST(_inc, ++)
+IVL_VEC_OP1_POST(_dec, --)
 
 IVL_VEC_OP2(add, +)
 IVL_VEC_OP2(sub, -)
@@ -179,24 +253,24 @@ IVL_VEC_OP1(bit_not, ~)
 IVL_VEC_OP2(bit_and, &)
 IVL_VEC_OP2(bit_or,  |)
 IVL_VEC_OP2(bit_xor, ^)
-// IVL_VEC_OP2_MUT(left,  <<)
-// IVL_VEC_OP2_MUT(right, >>)
+IVL_VEC_OP2_SHIFT(left,  <<)
+IVL_VEC_OP2_SHIFT(right, >>)
 
-// IVL_VEC_OP2_MUT(assign, =)
-// IVL_VEC_OP2_MUT(add_as, +=)
-// IVL_VEC_OP2_MUT(sub_as, -=)
-// IVL_VEC_OP2_MUT(mul_as, *=)
-// IVL_VEC_OP2_MUT(div_as, /=)
-// IVL_VEC_OP2_MUT(mod_as, %=)
+// IVL_VEC_OP2_MUT(assign, =)  // member of tuple, only vec'd on right argument
+IVL_VEC_OP2_MUT(add_as, +=)
+IVL_VEC_OP2_MUT(sub_as, -=)
+IVL_VEC_OP2_MUT(mul_as, *=)
+IVL_VEC_OP2_MUT(div_as, /=)
+IVL_VEC_OP2_MUT(mod_as, %=)
 
-// IVL_VEC_OP2_MUT(and_as,   &=)
-// IVL_VEC_OP2_MUT(or_as,    |=)
-// IVL_VEC_OP2_MUT(xor_as,   ^=)
-// IVL_VEC_OP2_MUT(left_as,  <<=)
-// IVL_VEC_OP2_MUT(right_as, >>=)
+IVL_VEC_OP2_MUT(and_as,   &=)
+IVL_VEC_OP2_MUT(or_as,    |=)
+IVL_VEC_OP2_MUT(xor_as,   ^=)
+IVL_VEC_OP2_MUT(left_as,  <<=)
+IVL_VEC_OP2_MUT(right_as, >>=)
 
-// IVL_VEC_OP1_PRE(deref, *)
-// IVL_VEC_OP1_PRE(addr,  &)
+IVL_VEC_OP1(deref, *)
+IVL_VEC_OP1(addr,  &)
 
 // //-----------------------------------------------------------------------------
 //
@@ -204,7 +278,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename R>
 // 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m) const
-// 		-> decltype(fwd <C>(c) .* m)
+// 	-> decltype(fwd <C>(c) .* m)
 // 		{ return fwd <C>(c) .* m; }
 // };
 //
@@ -214,7 +288,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename R>
 // 	INLINE auto operator()(C&& c, R bare_type <C>::*m) const
-// 		-> decltype(fwd <C>(c) ->* m)
+// 	-> decltype(fwd <C>(c) ->* m)
 // 		{ return fwd <C>(c) ->* m; }
 // };
 //
@@ -224,8 +298,8 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename R, typename... A>
 // 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m, A&&... a) const
-// 		-> decltype( ( fwd <C>(c) .* m ) ( fwd <A>(a)... ) )
-// 		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ) ; }
+// 	-> decltype(( fwd <C>(c) .* m ) ( fwd <A>(a)... ))
+// 		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -234,8 +308,8 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename R, typename... A>
 // 	INLINE auto operator()(C&& c, R bare_type <C>::*m, A&&... a) const
-// 		-> decltype( ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ) )
-// 		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ) ; }
+// 	-> decltype(( fwd <C>(c) ->* m ) ( fwd <A>(a)... ))
+// 		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -244,8 +318,8 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename F, typename... A>
 // 	INLINE constexpr auto operator()(F&& f, A&&... a) const
-// 		-> decltype(fwd <F>(f) ( fwd <A>(a)... ) )
-// 		{ return fwd <F>(f) ( fwd <A>(a)... ) ; }
+// 	-> decltype(fwd <F>(f) ( fwd <A>(a)... ))
+// 		{ return fwd <F>(f) ( fwd <A>(a)... ); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -254,8 +328,8 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename A, typename B>
 // 	INLINE constexpr auto operator()(A&& a, B&& b) const
-// 		-> decltype(fwd <A>(a) [ fwd <B>(b) ] )
-// 		{ return fwd <A>(a) [ fwd <B>(b) ] ; }
+// 	-> decltype(fwd <A>(a) [ fwd <B>(b) ])
+// 		{ return fwd <A>(a) [ fwd <B>(b) ]; }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -264,7 +338,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename A, typename B>
 // 	INLINE constexpr auto operator()(A&& a, B&& b) const
-// 		-> decltype(fwd <A>(a) , fwd <B>(b))
+// 	-> decltype(fwd <A>(a) , fwd <B>(b))
 // 		{ return fwd <A>(a) , fwd <B>(b); }
 // };
 //
@@ -274,7 +348,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename A, typename B, typename C>
 // 	INLINE constexpr auto operator()(A&& a, B&& b, C&& c) const
-// 		-> decltype(fwd <A>(a) ? fwd <B>(b) : fwd <C>(c))
+// 	-> decltype(fwd <A>(a) ? fwd <B>(b) : fwd <C>(c))
 // 		{ return fwd <A>(a) ? fwd <B>(b) : fwd <C>(c); }
 // };
 //
@@ -317,22 +391,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C>
 // 	INLINE auto _() const
-// 		-> decltype(new C)
+// 	-> decltype(new C)
 // 		{ return new C; }
 //
 // 	template <typename C>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new C[n0])
+// 	-> decltype(new C[n0])
 // 		{ return new C[n0]; }
 //
 // 	template <typename C, size_t n1>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new C[n0][n1])
+// 	-> decltype(new C[n0][n1])
 // 		{ return new C[n0][n1]; }
 //
 // 	template <typename C, size_t n1, size_t n2>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new C[n0][n1][n2])
+// 	-> decltype(new C[n0][n1][n2])
 // 		{ return new C[n0][n1][n2]; }
 // };
 //
@@ -342,22 +416,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C>
 // 	INLINE auto _() const
-// 		-> decltype(new (std::nothrow) C)
+// 	-> decltype(new (std::nothrow) C)
 // 		{ return new (std::nothrow) C; }
 //
 // 	template <typename C>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new (std::nothrow) C[n0])
+// 	-> decltype(new (std::nothrow) C[n0])
 // 		{ return new (std::nothrow) C[n0]; }
 //
 // 	template <typename C, size_t n1>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new (std::nothrow) C[n0][n1])
+// 	-> decltype(new (std::nothrow) C[n0][n1])
 // 		{ return new (std::nothrow) C[n0][n1]; }
 //
 // 	template <typename C, size_t n1, size_t n2>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new (std::nothrow) C[n0][n1][n2])
+// 	-> decltype(new (std::nothrow) C[n0][n1][n2])
 // 		{ return new (std::nothrow) C[n0][n1][n2]; }
 // };
 //
@@ -388,22 +462,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C>
 // 	INLINE auto _() const
-// 		-> decltype(new C())
+// 	-> decltype(new C())
 // 		{ return new C(); }
 //
 // 	template <typename C>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new C[n0]())
+// 	-> decltype(new C[n0]())
 // 		{ return new C[n0](); }
 //
 // 	template <typename C, size_t n1>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new C[n0][n1]())
+// 	-> decltype(new C[n0][n1]())
 // 		{ return new C[n0][n1](); }
 //
 // 	template <typename C, size_t n1, size_t n2>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new C[n0][n1][n2]())
+// 	-> decltype(new C[n0][n1][n2]())
 // 		{ return new C[n0][n1][n2](); }
 // };
 //
@@ -413,22 +487,22 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C>
 // 	INLINE auto _() const
-// 		-> decltype(new (std::nothrow) C())
+// 	-> decltype(new (std::nothrow) C())
 // 		{ return new (std::nothrow) C(); }
 //
 // 	template <typename C>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new (std::nothrow) C[n0]())
+// 	-> decltype(new (std::nothrow) C[n0]())
 // 		{ return new (std::nothrow) C[n0](); }
 //
 // 	template <typename C, size_t n1>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new (std::nothrow) C[n0][n1]())
+// 	-> decltype(new (std::nothrow) C[n0][n1]())
 // 		{ return new (std::nothrow) C[n0][n1](); }
 //
 // 	template <typename C, size_t n1, size_t n2>
 // 	INLINE auto _(size_t n0) const
-// 		-> decltype(new (std::nothrow) C[n0][n1][n2]())
+// 	-> decltype(new (std::nothrow) C[n0][n1][n2]())
 // 		{ return new (std::nothrow) C[n0][n1][n2](); }
 // };
 //
@@ -459,7 +533,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename... A>
 // 	INLINE auto _(A&&... a) const
-// 		-> decltype(new C ( fwd <A>(a)... ) )
+// 	-> decltype(new C ( fwd <A>(a)... ) )
 // 		{ return new C ( fwd <A>(a)... ) ; }
 // };
 //
@@ -469,7 +543,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename... A>
 // 	INLINE auto _(A&&... a) const
-// 		-> decltype(new (std::nothrow) C ( fwd <A>(a)... ) )
+// 	-> decltype(new (std::nothrow) C ( fwd <A>(a)... ) )
 // 		{ return new (std::nothrow) C ( fwd <A>(a)... ) ; }
 // };
 //
@@ -488,7 +562,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename... A>
 // 	INLINE auto _(A&&... a) const
-// 		-> decltype(new C { fwd <A>(a)... } )
+// 	-> decltype(new C { fwd <A>(a)... } )
 // 		{ return new C { fwd <A>(a)... } ; }
 // };
 //
@@ -498,7 +572,7 @@ IVL_VEC_OP2(bit_xor, ^)
 // {
 // 	template <typename C, typename... A>
 // 	INLINE auto _(A&&... a) const
-// 		-> decltype(new (std::nothrow) C { fwd <A>(a)... } )
+// 	-> decltype(new (std::nothrow) C { fwd <A>(a)... } )
 // 		{ return new (std::nothrow) C { fwd <A>(a)... } ; }
 // };
 //

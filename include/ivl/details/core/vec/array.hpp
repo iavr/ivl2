@@ -108,6 +108,12 @@ template <typename F> struct seq_vec_apply :
 template <typename F> struct seq_vec_loop :
 	public tup_vec_loop <F> { using tup_vec_loop <F>::tup_vec_loop; };
 
+template <typename F, size_t I = 0> struct seq_vec_mut :
+	public tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
+
+template <typename F, size_t I = 0> struct seq_vec_copy :
+	public tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
+
 template <typename F> struct seq_vec :
 	public tup_vec <F> { using tup_vec <F>::tup_vec; };
 

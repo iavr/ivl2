@@ -50,6 +50,7 @@ struct is_atom_ : public _false { };
 template <typename T, typename S>
 struct is_atom_<atom <T, S> > : public _true { };
 
+// extending definition under tuple/traits
 template <typename T, typename S>
 struct as_tuple_<atom <T, S> > : public _true { };
 
@@ -89,8 +90,23 @@ template <typename T> using atom_of   = type_of <atom_of_t <T> >;
 
 //-----------------------------------------------------------------------------
 
+// extending definition under tuple/traits
 template <typename T, typename S>
 struct under_t <atom <T, S> > : public pack <T> { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+// extending definition under type/traits
+template <typename T, typename S>
+struct create_rec <atom <T, S> > :
+	public create_rec <type_of <atom <T, S> > > { };
+
+template <typename T>
+struct create_rec <_type <T> > { using type = atom <create <T> >; };
+
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 

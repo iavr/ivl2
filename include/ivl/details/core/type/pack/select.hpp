@@ -50,11 +50,11 @@ using if_cons = _if <B, cons_t <C, type_of <D> >, D>;
 template <template <typename...> class F, typename C, typename D>
 using if_fun_cons = if_cons <F <C>{}, C, D>;
 
-template <template <typename...> class F, typename P>
+template <template <typename...> class F, typename P, bool = is_null <P>{}>
 struct select_ : public if_fun_cons <F, car <P>, select_<F, cdr <P> > > { };
 
-template <template <typename...> class F, template <typename...> class C>
-struct select_<F, C <> > { using type = C <>; };
+template <template <typename...> class F, typename P>
+struct select_<F, P, true> { using type = P; };
 
 }  // namespace details
 
@@ -91,6 +91,9 @@ struct pick_pt : public details::pick_pt_<I, T> { };
 template <size_t I, typename T>
 struct pick_pt <I, _type <T> > { using type = T; };
 
+template <size_t I, size_t L, typename T>
+struct pick_pt <I, repeat <L, T> > : public _if_t <(I < L), T, nat> { };
+
 template <size_t I, typename P> using pick_p = type_of <pick_pt <I, P> >;
 
 template <size_t I, typename... E> using pick_t = pick_pt <I, pack <E...> >;
@@ -122,14 +125,14 @@ template <typename... E> using snd = pick <1, E...>;
 
 //-----------------------------------------------------------------------------
 
-template <size_t N, typename T> struct repeat_t;
-template <size_t N, typename T> using repeat = type_of <repeat_t <N, T> >;
+template <size_t N, typename T> struct rep_t;
+template <size_t N, typename T> using rep = type_of <rep_t <N, T> >;
 
 template <size_t N, typename T>
-struct repeat_t : public cons_t <T, repeat <N-1, T> > { };
+struct rep_t : public cons_t <T, rep <N-1, T> > { };
 
 template <typename T>
-struct repeat_t <0, T> { using type = pack <>; };
+struct rep_t <0, T> { using type = pack <>; };
 
 //-----------------------------------------------------------------------------
 
@@ -139,13 +142,16 @@ inline constexpr bool  // assumes s > 0
 in_rng(size_t B, size_t E, int s, size_t I)
 	{ return B <= I && I <= E && (I - B) % s == 0; }
 
-template <size_t B, size_t E, int s, typename P, size_t I = 0>
+template <
+	size_t B, size_t E, int s, typename P,
+	size_t I = 0, bool = is_null <P>{}
+>
 struct choose_rng_r : public if_cons <
 	in_rng(B, E, s, I), car <P>, choose_rng_r <B, E, s, cdr <P>, I + 1>
 > { };
 
-template <size_t B, size_t E, int s, template <typename...> class C, size_t I>
-struct choose_rng_r <B, E, s, C <>, I> { using type = C <>; };
+template <size_t B, size_t E, int s, typename P, size_t I>
+struct choose_rng_r <B, E, s, P, I, true> { using type = P; };
 
 template <size_t B, size_t E, int s, typename P, bool = (s > 0)>
 struct choose_rng_d : public choose_rng_r <B, E, s, P> { };
@@ -159,7 +165,7 @@ struct choose_rng : public choose_rng_d <B, E, s, P> { };
 
 template <size_t B, size_t E, int s, typename T>
 struct choose_rng <B, E, s, _type <T> > :
-	public repeat_t <rng_len(B, E, s), T> { };
+	public rep_t <rng_len(B, E, s), T> { };
 
 }  // namespace details
 

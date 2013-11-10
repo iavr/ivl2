@@ -40,10 +40,10 @@ namespace tuple_details {
 
 template <typename F, typename A>
 class collection <data::apply <>, F, A> : public base_tup <
-	apply_tup <F, A>, map <tup_app <F>::template map, tup_types <A> >
+	apply_tup <F, A>, map <tup_applier <F>::template map, tup_types <A> >
 >
 {
-	using P = map <tup_app <F>::template map, tup_types <A> >;
+	using P = map <tup_applier <F>::template map, tup_types <A> >;
 	using B = base_tup <apply_tup <F, A>, P>;
 
 	using UF = under_elem <0, B>;

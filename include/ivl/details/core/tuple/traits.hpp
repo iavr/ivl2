@@ -50,6 +50,7 @@ template <typename T> struct as_tuple_ : public _false { };
 template <typename S, typename... E>
 struct is_tuple_<collection <S, E...> > : public _true { };
 
+// extended elsewhere
 template <typename S, typename... E>
 struct as_tuple_<collection <S, E...> > : public _true { };
 
@@ -85,7 +86,7 @@ using as_tup_non_empty = expr <as_tuple <T>() && tup_len <T>()>;
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D>
-using tup_tx_t = tx_lref_t <S, tx_cv <remove_ref <S>, D> >;
+using tup_tx_t = base_opt_t <tx_lref <S, tx_cv <remove_ref <S>, D> > >;
 
 template <typename S, typename D> using tup_tx = type_of <tup_tx_t <S, D> >;
 
@@ -97,7 +98,7 @@ struct tup_types_t :
 	public apply_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
 
 template <typename... E>
-struct tup_types_t <pack <E...> > { using type = pack <E...>; };
+struct tup_types_t <pack <E...> > : public pack <E...> { };
 
 template <typename T> using tup_types = type_of <tup_types_t <T> >;
 
@@ -111,7 +112,7 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct rtref_t  { using type = T&&; };
+template <typename T> struct rtref_t  { using type = base_opt <T&&>; };
 template <typename T> struct ltref_t  { using type = base_opt <T&>; };
 template <typename T> struct cltref_t { using type = base_opt <const T&>; };
 
@@ -180,6 +181,15 @@ struct tup_assign <pack <pack <E...>, P...>, T> :
 
 //-----------------------------------------------------------------------------
 
+// TODO: redesign--only used for array construction now along with reuse <>
+template <typename T>
+using tuple_of_t = _if <is_tuple <T>{}, raw_type_t <T>, id_t <tuple <T> > >;
+
+template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+// extended elsewhere
 template <typename T> struct under_t : public pack <> { };
 template <typename T> using  under = type_of <under_t <T> >;
 
@@ -215,7 +225,7 @@ using under_elem = type_of <under_elem_t <J, T> >;
 //-----------------------------------------------------------------------------
 
 template <typename F>
-struct tup_app
+struct tup_applier
 {
 	template <typename... A>
 	using map = F(pack <A...>);
@@ -223,10 +233,20 @@ struct tup_app
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-using tuple_of_t = _if <is_tuple <T>{}, raw_type_t <T>, id_t <tuple <T> > >;
+namespace details {
 
-template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
+// extending definition under type/traits
+template <typename S, typename... A>
+struct create_rec <collection <S, A...> > :
+	public create_rec <type_of <collection <S, A...> > > { };
+
+template <typename... E>
+struct create_rec <pack <E...> > { using type = tuple <create <E>...>; };
+
+template <typename F, typename... E>
+struct create_rec <F(pack <E...>)>  { using type = create <ret <F(E...)> >; };
+
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 

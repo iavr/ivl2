@@ -70,6 +70,9 @@ template <typename F> using vec_apply_ = seq_vec_apply <F>;
 template <typename F> using vec_loop_  = seq_vec_loop <F>;
 template <typename F> using vec_       = seq_vec <F>;
 
+template <typename F, size_t I = 0> using vec_mut_   = seq_vec_mut <F, I>;
+template <typename F, size_t I = 0> using vec_copy_  = seq_vec_copy <F, I>;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace afun_details
@@ -84,6 +87,12 @@ using loop   = afun_details::loop_;
 template <typename F> using vec_apply = afun_details::vec_apply_<F>;
 template <typename F> using vec_loop  = afun_details::vec_loop_<F>;
 template <typename F> using vec       = afun_details::vec_<F>;
+
+template <typename F, size_t I = 0>
+using vec_mut = afun_details::vec_mut_<F, I>;
+
+template <typename F, size_t I = 0>
+using vec_copy = afun_details::vec_copy_<F, I>;
 
 }  // namespace afun
 

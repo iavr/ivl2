@@ -44,6 +44,12 @@ struct
 }
 inc;
 
+struct int_ref
+{
+	int& i;
+	int_ref(int& i) : i(i) { }
+};
+
 //-----------------------------------------------------------------------------
 
 void run()
@@ -131,6 +137,8 @@ void run()
 		double x = 3.14;
 		_(x, i) = _(-2.27, 8);
 		cout << x << " " << i << endl;
+		_(x, i) = 4;
+		cout << _(x, i) << endl;
 		cout << endl;
 	}
 

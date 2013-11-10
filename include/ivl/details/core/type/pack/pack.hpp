@@ -58,20 +58,13 @@ struct pack_of_t <C <E...> > { using type = pack <E...>; };
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct is_pure : public _false { };
-
-template <template <typename...> class C, typename... E>
-struct is_pure <C <E...> > : public _true { };
-
-template <typename T>
-struct is_pure <_type <T> > : public _false { };
-
-//-----------------------------------------------------------------------------
-
 template <typename P> struct is_null : public _false { };
 
 template <template <typename...> class C>
 struct is_null <C <> > : public _true { };
+
+template <typename T>
+struct is_null <repeat <0, T> > : public _true { };
 
 //-----------------------------------------------------------------------------
 

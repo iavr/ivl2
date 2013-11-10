@@ -58,8 +58,17 @@ struct cons_t <E, C <En...> > { using type = C <E, En...>; };
 template <typename T> struct car_t <_type <T> > : public id_t <T> { };
 template <typename T> struct cdr_t <_type <T> > : public _type <T> { };
 
-template <typename E, typename T>
-struct cons_t <E, _type <T> >;
+template <typename T> struct car_t <repeat <0, T> >;
+template <typename T> struct cdr_t <repeat <0, T> >;
+
+template <size_t L, typename T>
+struct car_t <repeat <L, T> > : public id_t <T> { };
+
+template <size_t L, typename T>
+struct cdr_t <repeat <L, T> > : public repeat <L - 1, T> { };
+
+template <typename E, typename T>           struct cons_t <E, _type <T> >;
+template <typename E, size_t L, typename T> struct cons_t <E, repeat <L, T> >;
 
 template <typename P>             using car  = type_of <car_t <P> >;
 template <typename P>             using cdr  = type_of <cdr_t <P> >;
@@ -67,48 +76,57 @@ template <typename E, typename P> using cons = type_of <cons_t <E, P> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct cars_pt;
-template <typename P> struct cdrs_pt;
-template <typename A, typename P> struct conses_pt;
+namespace details {
+
+template <typename P,             bool = is_null <P>{}> struct cars_pt_;
+template <typename P,             bool = is_null <P>{}> struct cdrs_pt_;
+template <typename E, typename P, bool = is_null <P>{}> struct conses_pt_;
+
+template <typename P>             using cars_p_   = type_of <cars_pt_<P> >;
+template <typename P>             using cdrs_p_   = type_of <cdrs_pt_<P> >;
+template <typename E, typename P> using conses_p_ = type_of <conses_pt_<E, P> >;
+
+template <typename P, bool>
+struct cars_pt_ { using type = cons <car <car <P> >, cars_p_<cdr <P> > >; };
+
+template <typename P, bool>
+struct cdrs_pt_ { using type = cons <cdr <car <P> >, cdrs_p_<cdr <P> > >; };
+
+template <typename E, typename P, bool>
+struct conses_pt_
+{
+	using type = cons <cons <car <E>, car <P> >, conses_p_<cdr <E>, cdr <P> > >;
+};
+
+template <typename P> struct cars_pt_<P, true> { using type = P; };
+template <typename P> struct cdrs_pt_<P, true> { using type = P; };
+
+template <typename E, typename P>
+struct conses_pt_<E, P, true> { using type = P; };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using cars_pt = details::cars_pt_<P>;
+template <typename P> using cdrs_pt = details::cdrs_pt_<P>;
+template <typename E, typename P> using conses_pt = details::conses_pt_<E, P>;
 
 template <typename P>             using cars_p   = type_of <cars_pt <P> >;
 template <typename P>             using cdrs_p   = type_of <cdrs_pt <P> >;
-template <typename A, typename P> using conses_p = type_of <conses_pt <A, P> >;
-
-template <typename P>
-struct cars_pt { using type = cons <car <car <P> >, cars_p <cdr <P> > >; };
-
-template <typename P>
-struct cdrs_pt { using type = cons <cdr <car <P> >, cdrs_p <cdr <P> > >; };
-
-template <typename A, typename P>
-struct conses_pt
-{
-	using type = cons <cons <car <A>, car <P> >, conses_p <cdr <A>, cdr <P> > >;
-};
-
-template <template <typename...> class C>
-struct cars_pt <C <> > { using type = C <>; };
-
-template <template <typename...> class C>
-struct cdrs_pt <C <> > { using type = C <>; };
-
-template <typename A, template <typename...> class C>
-struct conses_pt <A, C <> > { using type = C <>; };
-
-//-----------------------------------------------------------------------------
+template <typename E, typename P> using conses_p = type_of <conses_pt <E, P> >;
 
 template <typename... P> using cars_t = cars_pt <pack <P...> >;
 template <typename... P> using cdrs_t = cdrs_pt <pack <P...> >;
 
-template <typename A, typename... P>
-using conses_t = conses_pt <A, pack <P...> >;
+template <typename E, typename... P>
+using conses_t = conses_pt <E, pack <P...> >;
 
 template <typename... P> using cars = type_of <cars_t <P...> >;
 template <typename... P> using cdrs = type_of <cdrs_t <P...> >;
 
-template <typename A, typename... P>
-using conses = type_of <conses_t <A, P...> >;
+template <typename E, typename... P>
+using conses = type_of <conses_t <E, P...> >;
 
 //-----------------------------------------------------------------------------
 

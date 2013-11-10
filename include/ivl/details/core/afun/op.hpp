@@ -45,7 +45,7 @@ struct NAME                              \
 	template <typename A>                 \
 	INLINE constexpr auto                 \
 	operator()(A&& a) const               \
-		-> decltype(OP fwd <A>(a))         \
+	-> decltype(OP fwd <A>(a))            \
 		{ return OP fwd <A>(a); }          \
 };
 
@@ -58,7 +58,7 @@ struct NAME                              \
 	template <typename A>                 \
 	INLINE auto                           \
 	operator()(A&& a) const               \
-		-> decltype(OP fwd <A>(a))         \
+	-> decltype(OP fwd <A>(a))            \
 		{ return OP fwd <A>(a); }          \
 };
 
@@ -71,7 +71,7 @@ struct NAME                              \
 	template <typename A>                 \
 	INLINE auto                           \
 	operator()(A&& a) const               \
-		-> decltype(fwd <A>(a) OP)         \
+	-> decltype(fwd <A>(a) OP)            \
 		{ return fwd <A>(a) OP; }          \
 };
 
@@ -84,7 +84,7 @@ struct NAME                                          \
 	template <typename A, typename B>                 \
 	INLINE constexpr auto                             \
 	operator()(A&& a, B&& b) const                    \
-		-> decltype(fwd <A>(a) OP fwd <B>(b))          \
+	-> decltype(fwd <A>(a) OP fwd <B>(b))             \
 		{ return fwd <A>(a) OP fwd <B>(b); }           \
 };
 
@@ -97,7 +97,7 @@ struct NAME                                          \
 	template <typename A, typename B>                 \
 	INLINE auto                                       \
 	operator()(A&& a, B&& b) const                    \
-		-> decltype(fwd <A>(a) OP fwd <B>(b))          \
+	-> decltype(fwd <A>(a) OP fwd <B>(b))             \
 		{ return fwd <A>(a) OP fwd <B>(b); }           \
 };
 
@@ -159,8 +159,8 @@ IVL_OP2_MUT(xor_as,   ^=)
 IVL_OP2_MUT(left_as,  <<=)
 IVL_OP2_MUT(right_as, >>=)
 
-IVL_OP1_PRE(deref, *)
-IVL_OP1_PRE(addr,  &)
+IVL_OP1(deref, *)
+IVL_OP1(addr,  &)
 
 //-----------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ struct ref_member
 {
 	template <typename C, typename R>
 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m) const
-		-> decltype(fwd <C>(c) .* m)
+	-> decltype(fwd <C>(c) .* m)
 		{ return fwd <C>(c) .* m; }
 };
 
@@ -178,7 +178,7 @@ struct ptr_member
 {
 	template <typename C, typename R>
 	INLINE auto operator()(C&& c, R bare_type <C>::*m) const
-		-> decltype(fwd <C>(c) ->* m)
+	-> decltype(fwd <C>(c) ->* m)
 		{ return fwd <C>(c) ->* m; }
 };
 
@@ -188,8 +188,8 @@ struct ref_call
 {
 	template <typename C, typename R, typename... A>
 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m, A&&... a) const
-		-> decltype( ( fwd <C>(c) .* m ) ( fwd <A>(a)... ) )
-		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ) ; }
+	-> decltype(( fwd <C>(c) .* m ) ( fwd <A>(a)... ))
+		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ); }
 };
 
 //-----------------------------------------------------------------------------
@@ -198,8 +198,8 @@ struct ptr_call
 {
 	template <typename C, typename R, typename... A>
 	INLINE auto operator()(C&& c, R bare_type <C>::*m, A&&... a) const
-		-> decltype( ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ) )
-		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ) ; }
+	-> decltype(( fwd <C>(c) ->* m ) ( fwd <A>(a)... ))
+		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ); }
 };
 
 //-----------------------------------------------------------------------------
@@ -208,8 +208,8 @@ struct call
 {
 	template <typename F, typename... A>
 	INLINE constexpr auto operator()(F&& f, A&&... a) const
-		-> decltype(fwd <F>(f) ( fwd <A>(a)... ) )
-		{ return fwd <F>(f) ( fwd <A>(a)... ) ; }
+	-> decltype(fwd <F>(f) ( fwd <A>(a)... ))
+		{ return fwd <F>(f) ( fwd <A>(a)... ); }
 };
 
 //-----------------------------------------------------------------------------
@@ -218,8 +218,8 @@ struct bracket
 {
 	template <typename A, typename B>
 	INLINE constexpr auto operator()(A&& a, B&& b) const
-		-> decltype(fwd <A>(a) [ fwd <B>(b) ] )
-		{ return fwd <A>(a) [ fwd <B>(b) ] ; }
+	-> decltype(fwd <A>(a) [ fwd <B>(b) ])
+		{ return fwd <A>(a) [ fwd <B>(b) ]; }
 };
 
 //-----------------------------------------------------------------------------
@@ -228,7 +228,7 @@ struct comma
 {
 	template <typename A, typename B>
 	INLINE constexpr auto operator()(A&& a, B&& b) const
-		-> decltype(fwd <A>(a) , fwd <B>(b))
+	-> decltype(fwd <A>(a) , fwd <B>(b))
 		{ return fwd <A>(a) , fwd <B>(b); }
 };
 
@@ -238,7 +238,7 @@ struct cond
 {
 	template <typename A, typename B, typename C>
 	INLINE constexpr auto operator()(A&& a, B&& b, C&& c) const
-		-> decltype(fwd <A>(a) ? fwd <B>(b) : fwd <C>(c))
+	-> decltype(fwd <A>(a) ? fwd <B>(b) : fwd <C>(c))
 		{ return fwd <A>(a) ? fwd <B>(b) : fwd <C>(c); }
 };
 
@@ -281,22 +281,22 @@ struct _new
 {
 	template <typename C>
 	INLINE auto _() const
-		-> decltype(new C)
+	-> decltype(new C)
 		{ return new C; }
 
 	template <typename C>
 	INLINE auto _(size_t n0) const
-		-> decltype(new C[n0])
+	-> decltype(new C[n0])
 		{ return new C[n0]; }
 
 	template <typename C, size_t n1>
 	INLINE auto _(size_t n0) const
-		-> decltype(new C[n0][n1])
+	-> decltype(new C[n0][n1])
 		{ return new C[n0][n1]; }
 
 	template <typename C, size_t n1, size_t n2>
 	INLINE auto _(size_t n0) const
-		-> decltype(new C[n0][n1][n2])
+	-> decltype(new C[n0][n1][n2])
 		{ return new C[n0][n1][n2]; }
 };
 
@@ -306,22 +306,22 @@ struct new_nothrow
 {
 	template <typename C>
 	INLINE auto _() const
-		-> decltype(new (std::nothrow) C)
+	-> decltype(new (std::nothrow) C)
 		{ return new (std::nothrow) C; }
 
 	template <typename C>
 	INLINE auto _(size_t n0) const
-		-> decltype(new (std::nothrow) C[n0])
+	-> decltype(new (std::nothrow) C[n0])
 		{ return new (std::nothrow) C[n0]; }
 
 	template <typename C, size_t n1>
 	INLINE auto _(size_t n0) const
-		-> decltype(new (std::nothrow) C[n0][n1])
+	-> decltype(new (std::nothrow) C[n0][n1])
 		{ return new (std::nothrow) C[n0][n1]; }
 
 	template <typename C, size_t n1, size_t n2>
 	INLINE auto _(size_t n0) const
-		-> decltype(new (std::nothrow) C[n0][n1][n2])
+	-> decltype(new (std::nothrow) C[n0][n1][n2])
 		{ return new (std::nothrow) C[n0][n1][n2]; }
 };
 
@@ -352,22 +352,22 @@ struct new_val
 {
 	template <typename C>
 	INLINE auto _() const
-		-> decltype(new C())
+	-> decltype(new C())
 		{ return new C(); }
 
 	template <typename C>
 	INLINE auto _(size_t n0) const
-		-> decltype(new C[n0]())
+	-> decltype(new C[n0]())
 		{ return new C[n0](); }
 
 	template <typename C, size_t n1>
 	INLINE auto _(size_t n0) const
-		-> decltype(new C[n0][n1]())
+	-> decltype(new C[n0][n1]())
 		{ return new C[n0][n1](); }
 
 	template <typename C, size_t n1, size_t n2>
 	INLINE auto _(size_t n0) const
-		-> decltype(new C[n0][n1][n2]())
+	-> decltype(new C[n0][n1][n2]())
 		{ return new C[n0][n1][n2](); }
 };
 
@@ -377,22 +377,22 @@ struct new_nothrow_val
 {
 	template <typename C>
 	INLINE auto _() const
-		-> decltype(new (std::nothrow) C())
+	-> decltype(new (std::nothrow) C())
 		{ return new (std::nothrow) C(); }
 
 	template <typename C>
 	INLINE auto _(size_t n0) const
-		-> decltype(new (std::nothrow) C[n0]())
+	-> decltype(new (std::nothrow) C[n0]())
 		{ return new (std::nothrow) C[n0](); }
 
 	template <typename C, size_t n1>
 	INLINE auto _(size_t n0) const
-		-> decltype(new (std::nothrow) C[n0][n1]())
+	-> decltype(new (std::nothrow) C[n0][n1]())
 		{ return new (std::nothrow) C[n0][n1](); }
 
 	template <typename C, size_t n1, size_t n2>
 	INLINE auto _(size_t n0) const
-		-> decltype(new (std::nothrow) C[n0][n1][n2]())
+	-> decltype(new (std::nothrow) C[n0][n1][n2]())
 		{ return new (std::nothrow) C[n0][n1][n2](); }
 };
 
@@ -423,7 +423,7 @@ struct new_direct
 {
 	template <typename C, typename... A>
 	INLINE auto _(A&&... a) const
-		-> decltype(new C ( fwd <A>(a)... ) )
+	-> decltype(new C ( fwd <A>(a)... ) )
 		{ return new C ( fwd <A>(a)... ) ; }
 };
 
@@ -433,7 +433,7 @@ struct new_nothrow_direct
 {
 	template <typename C, typename... A>
 	INLINE auto _(A&&... a) const
-		-> decltype(new (std::nothrow) C ( fwd <A>(a)... ) )
+	-> decltype(new (std::nothrow) C ( fwd <A>(a)... ) )
 		{ return new (std::nothrow) C ( fwd <A>(a)... ) ; }
 };
 
@@ -452,7 +452,7 @@ struct new_list
 {
 	template <typename C, typename... A>
 	INLINE auto _(A&&... a) const
-		-> decltype(new C { fwd <A>(a)... } )
+	-> decltype(new C { fwd <A>(a)... } )
 		{ return new C { fwd <A>(a)... } ; }
 };
 
@@ -462,7 +462,7 @@ struct new_nothrow_list
 {
 	template <typename C, typename... A>
 	INLINE auto _(A&&... a) const
-		-> decltype(new (std::nothrow) C { fwd <A>(a)... } )
+	-> decltype(new (std::nothrow) C { fwd <A>(a)... } )
 		{ return new (std::nothrow) C { fwd <A>(a)... } ; }
 };
 

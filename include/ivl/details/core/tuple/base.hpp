@@ -54,17 +54,19 @@ class store <
 {
 	using P = Q <E...>;
 	using V = pack <U...>;
-	using derived <D>::der;
-	using derived <D>::der_f;
+	static constexpr size_t L = P::length;
 
 	template <size_t J> using under = under_elem <J, D>;
+
+	using derived <D>::der;
+	using derived <D>::der_f;
 
 //-----------------------------------------------------------------------------
 
 public:
 	using base_type = store;
 	using type = P;
-	static constexpr size_t length = P::length;
+	static constexpr size_t length = L;
 
 	using indices = sizes <I...>;
 	INLINE constexpr indices idx() const { return indices(); }
@@ -75,6 +77,12 @@ public:
 
 	template <typename... A>
 	explicit INLINE constexpr store(A&&... a) : elem <N, U>(fwd <A>(a))... { }
+
+	template <typename A, enable_if <tup_assign <P, rep <L, A> >{}> = 0>
+	INLINE D& operator=(A&& a)
+	{
+		return thru{_<I>() = fwd <A>(a)...}, der();
+	}
 
 	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
 	INLINE D& operator=(T&& t)
