@@ -52,8 +52,8 @@ using tuple = collection <data::tuple <>, E...>;
 template <typename K, typename U>
 using indirect_tup = collection <data::indirect <>, K, U>;
 
-template <typename F, typename U>
-using apply_tup = collection <data::apply <>, F, U>;
+template <typename F, typename... A>
+using apply_tup = collection <data::apply <>, F, A...>;
 
 template <typename... U>
 using zip_tup = collection <data::zip <>, U...>;

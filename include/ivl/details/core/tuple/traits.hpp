@@ -60,7 +60,7 @@ template <typename T> using is_tuple = details::is_tuple_<raw_type <T> >;
 template <typename T> using as_tuple = details::as_tuple_<raw_type <T> >;
 
 template <typename T>
-using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
+using is_tup_type = expr <is_pack <T>() || as_tuple <T>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -202,8 +202,8 @@ struct under_t <tuple <E...> > : public pack <E...> { };
 template <typename K, typename U>
 struct under_t <indirect_tup <K, U> > : public pack <U> { };
 
-template <typename F, typename U>
-struct under_t <apply_tup <F, U> > : public pack <F, U> { };
+template <typename F, typename... A>
+struct under_t <apply_tup <F, A...> > : public pack <F, A...> { };
 
 template <typename... U>
 struct under_t <zip_tup <U...> > : public pack <U...> { };
@@ -224,12 +224,27 @@ using under_elem = type_of <under_elem_t <J, T> >;
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
 template <typename F>
-struct tup_applier
+class tup_applier
 {
 	template <typename... A>
-	using map = F(pack <A...>);
+	struct map_t { using type = F(pack <A...>); };
+
+	template <typename... A>
+	struct map_t <pack <A...> > : public map_t <A...> { };
+
+public:
+	template <typename... A>
+	using map = type_of <map_t <A...> >;
 };
+
+}  // namespace details
+
+template <typename F, typename... A>
+using tup_apply_types =
+	map <details::tup_applier <F>::template map, tran <tup_types <A>...> >;
 
 //-----------------------------------------------------------------------------
 

@@ -38,19 +38,12 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
-class tup_apply
+// TODO: cleanup (working currently)
+struct tup_apply
 {
-	using val = val_of <apply_tup>;
-
-public:
-	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-	INLINE constexpr apply_tup <F&&, T&&> operator()(F&& f, T&& t) const
-		{ return apply_tup <F&&, T&&>(fwd <F>(f), fwd <T>(t)); }
-
-	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-	INLINE constexpr auto operator()(F&& f, T&&... t) const
-	-> decltype(val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...)))
-		{ return val()(tup_fun(fwd <F>(f)), _inner(fwd <T>(t)...)); }
+	template <typename F, typename... A, enable_if <any_tuple <A...>{}> = 0>
+	INLINE constexpr apply_tup <base_opt <F>, atom_of <base_opt <A&&> >...> operator()(F&& f, A&&... a) const
+		{ return apply_tup <base_opt <F>, atom_of <base_opt <A&&> >...>(fwd <F>(f), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -67,6 +60,11 @@ struct tup_loop
 
 //-----------------------------------------------------------------------------
 
+static __attribute__ ((unused)) tup_apply  _apply;
+static __attribute__ ((unused)) tup_loop   _loop;
+
+//-----------------------------------------------------------------------------
+
 template <typename S, typename D>
 struct tup_sep_loop : public derived <D, tup_sep_loop <S, D> >
 {
@@ -78,18 +76,15 @@ struct tup_sep_loop : public derived <D, tup_sep_loop <S, D> >
 	{
 		fwd <F>(f)(_head(fwd <T>(t)));
 		S&& s = fwd <S>(this->der().sep());
-		tup_loop()(pre_fun(fwd <F>(f), fwd <S>(s)), _tail(fwd <T>(t)));
+		_loop(pre_fun(fwd <F>(f), fwd <S>(s)), _tail(fwd <T>(t)));
 	}
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class tup_vec_apply
+struct tup_vec_apply
 {
-	using apply = tup_apply;
-
-public:
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
 	INLINE constexpr auto operator()(A&&... a) const
 	-> decltype(F()(fwd <A>(a)...))
@@ -97,33 +92,27 @@ public:
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
 	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(apply()(*this, fwd <A>(a)...))
-		{ return apply()(*this, fwd <A>(a)...); }
+	-> decltype(_apply(*this, fwd <A>(a)...))
+		{ return _apply(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class tup_vec_loop
+struct tup_vec_loop
 {
-	using loop = tup_loop;
-
-public:
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
 	INLINE void operator()(A&&... a) const { F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE void operator()(A&&... a) const { loop()(*this, fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) const { _loop(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, size_t I = 0>
-class tup_vec_mut
+struct tup_vec_mut
 {
-	using loop = tup_loop;
-
-public:
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
 	INLINE auto operator()(A&&... a) const
 	-> decltype(F()(fwd <A>(a)...))
@@ -131,17 +120,14 @@ public:
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
 	INLINE pick <I, A...>&& operator()(A&&... a) const
-		{ return loop()(*this, fwd <A>(a)...), get <I>(fwd <A>(a)...); }
+		{ return _loop(*this, fwd <A>(a)...), get <I>(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, size_t I = 0>
-class tup_vec_copy
+struct tup_vec_copy
 {
-	using loop = tup_loop;
-
-public:
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
 	INLINE auto operator()(A&&... a) const
 	-> decltype(F()(fwd <A>(a)...))
@@ -151,7 +137,7 @@ public:
 	INLINE create <pick <I, A...> > operator()(A&&... a) const
 	{
 		create <pick <I, A...> > b = get <I>(fwd <A>(a)...);
-		return loop()(*this, fwd <A>(a)...), b;
+		return _loop(*this, fwd <A>(a)...), b;
 	}
 };
 
@@ -163,9 +149,6 @@ class tup_vec : public atom <F>
 	using B = atom <F>;
 	using UF = under_elem <0, B>;
 
-	using apply = tup_apply;
-	using loop  = tup_loop;
-
 public:
 	using B::B;
 
@@ -175,11 +158,11 @@ public:
 
 	template <typename... A, enable_if <tup_non_void <F(A...)>{}> = 0>
 	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(apply()(*this, fwd <A>(a)...))
-		{ return apply()(*this, fwd <A>(a)...); }
+	-> decltype(_apply(*this, fwd <A>(a)...))
+		{ return _apply(*this, fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_void <F(A...)>{}> = 0>
-	INLINE void operator()(A&&... a) const { loop()(*this, fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) const { _loop(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

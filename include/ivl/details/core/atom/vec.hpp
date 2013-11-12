@@ -40,7 +40,6 @@ template <typename T, typename S>
 struct store <T, S, true> : public afun::vec <T>
 {
 	using afun::vec <T>::vec;
-	using afun::vec <T>::operator=;
 };
 
 }  // namespace atom_details

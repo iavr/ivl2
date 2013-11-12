@@ -90,8 +90,10 @@ void run()
 	{
 		cout << "empty tuple:" << endl;
 		tuple <> e;
+		const tuple <> ec;
 		tuple <> e2 = e;
-		tuple <> e3 = _();
+		tuple <> e3 = ec;
+		tuple <> e4 = _();
 		cout << endl;
 	}
 

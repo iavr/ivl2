@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+struct A;
 struct J;
 namespace ivl {
 
@@ -60,6 +61,9 @@ class store <
 
 	using derived <D>::der;
 	using derived <D>::der_f;
+
+// 	using ket = afun::op::bracket;
+// 	template <typename T> using bra = apply_tup <ket&&, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -154,6 +158,20 @@ public:
 
 	template <typename F> INLINE void
 	loop(F&& f) const& { thru{(fwd <F>(f)(_<I>()), 0)...}; }
+
+//-----------------------------------------------------------------------------
+
+// 	template <typename A, enable_if <!is_tuple <A>{}> = 0>
+// 	INLINE bra <D&&>
+// 	operator[](A&& a) && { return bra <D&&>(ket(), der_f()) ; }
+//
+// 	template <typename A, enable_if <!is_tuple <A>{}> = 0>
+// 	INLINE bra <D&>
+// 	operator[](A&& a) & { return bra <D&>(ket(), der()) ; }
+//
+// 	template <typename A, enable_if <!is_tuple <A>{}> = 0>
+// 	INLINE constexpr bra <const D&>
+// 	operator[](A&& a) const& { return bra <const D&>(ket(), der()) ; }
 
 };
 

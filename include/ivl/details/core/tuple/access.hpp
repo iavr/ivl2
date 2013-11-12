@@ -48,15 +48,18 @@ class access <D, E> : public derived <D>
 {
 protected:
 	using derived <D>::der;
+	using derived <D>::der_f;
+
+	INLINE           rtref <E>  _f()       { return at._<0>(der_f()); }
 
 public:
-	INLINE           E&&       _() &&     { return at._<0>(fwd <D>(der())); }
-	INLINE           E&        _() &      { return at._<0>(der()); }
-	INLINE constexpr const E&  _() const& { return at._<0>(der()); }
+	INLINE           rtref <E>  _() &&     { return at._<0>(der_f()); }
+	INLINE           ltref <E>  _() &      { return at._<0>(der()); }
+	INLINE constexpr cltref <E> _() const& { return at._<0>(der()); }
 
-	INLINE           E&&       operator()() &&     { return fwd <E>(_()); }
-	INLINE           E&        operator()() &      { return _(); }
-	INLINE constexpr const E&  operator()() const& { return _(); }
+	INLINE           rtref <E>  operator()() &&     { return _f(); }
+	INLINE           ltref <E>  operator()() &      { return _(); }
+	INLINE constexpr cltref <E> operator()() const& { return _(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -66,17 +69,18 @@ class access <D, E0, E1> : public derived <D>
 {
 protected:
 	using derived <D>::der;
+	using derived <D>::der_f;
 
 public:
 	INLINE void _();
 
-	INLINE           E0&&      fst() &&     { return at._<0>(fwd <D>(der())); }
-	INLINE           E0&       fst() &      { return at._<0>(der()); }
-	INLINE constexpr const E0& fst() const& { return at._<0>(der()); }
+	INLINE           rtref <E0>  fst() &&     { return at._<0>(der_f()); }
+	INLINE           ltref <E0>  fst() &      { return at._<0>(der()); }
+	INLINE constexpr cltref <E0> fst() const& { return at._<0>(der()); }
 
-	INLINE           E1&&      snd() &&     { return at._<1>(fwd <D>(der())); }
-	INLINE           E1&       snd() &      { return at._<1>(der()); }
-	INLINE constexpr const E1& snd() const& { return at._<1>(der()); }
+	INLINE           rtref <E1>  snd() &&     { return at._<1>(der_f()); }
+	INLINE           ltref <E1>  snd() &      { return at._<1>(der()); }
+	INLINE constexpr cltref <E1> snd() const& { return at._<1>(der()); }
 };
 
 //-----------------------------------------------------------------------------

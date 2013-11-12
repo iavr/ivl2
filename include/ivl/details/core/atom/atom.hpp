@@ -41,6 +41,7 @@ namespace atom_details {
 template <typename T, typename S, bool = is_atom_fun <T, S>()>
 class store : public base_tup <atom <T, S>, _type <T> >
 {
+	using P = pack <T>;
 	using B = base_tup <atom <T, S>, _type <T> >;
 	using U = under_elem <0, B>;
 
@@ -49,18 +50,17 @@ class store : public base_tup <atom <T, S>, _type <T> >
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE T&& _at() && { return U::fwd(); }
+	INLINE rtref <T> _at() && { return U::fwd(); }
 
 	template <size_t J>
-	INLINE T& _at() & { return U::get(); }
+	INLINE ltref <T> _at() & { return U::get(); }
 
 	template <size_t J>
-	INLINE constexpr const T& _at() const& { return U::get(); }
+	INLINE constexpr cltref <T> _at() const& { return U::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using B::base_type::operator=;
 	explicit INLINE constexpr store() { }
 
 	template <typename A, enable_if <is_conv <A, T>{}> = 0>
@@ -68,6 +68,12 @@ public:
 
 	template <typename A, enable_if <is_explicit <T, A>{}> = 0>
 	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
+
+	template <typename A, enable_if <tup_conv <A, P>{}> = 0>
+	INLINE constexpr store(A&& a) : B(fwd <A>(a)()) { }
+
+	template <typename A, enable_if <tup_explicit <P, A>{}> = 0>
+	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)()) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -79,7 +85,7 @@ class atom : public store <T, S>
 
 public:
 	using B::B;
-	using B::operator=;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

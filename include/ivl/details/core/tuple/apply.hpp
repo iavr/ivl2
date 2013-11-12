@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_APPLY_HPP
-#define IVL_DETAILS_CORE_TUPLE_APPLY_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_APPLY_ZIP_HPP
+#define IVL_DETAILS_CORE_TUPLE_APPLY_ZIP_HPP
 
 #include <ivl/ivl>
 
@@ -38,16 +38,15 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename A>
-class collection <data::apply <>, F, A> : public base_tup <
-	apply_tup <F, A>, map <tup_applier <F>::template map, tup_types <A> >
->
+template <typename F, size_t... I, typename... A>
+class store <data::apply <>, F, sizes <I...>, A...> :
+	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >
 {
-	using P = map <tup_applier <F>::template map, tup_types <A> >;
-	using B = base_tup <apply_tup <F, A>, P>;
+	using P = tup_apply_types <F, A...>;
+	using B = base_tup <apply_tup <F, A...>, P>;
 
 	using UF = under_elem <0, B>;
-	using UA = under_elem <1, B>;
+	template <size_t J> using UA = under_elem <J + 1, B>;
 
 	friend base_type_of <B>;
 
@@ -55,24 +54,38 @@ class collection <data::apply <>, F, A> : public base_tup <
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return UF::fwd()(at._<J>(UA::fwd())); }
+	_at() && { return UF::fwd()(at._<J>(UA <I>::fwd())...); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return UF::get()(at._<J>(UA::get())); }
+	_at() & { return UF::get()(at._<J>(UA <I>::get())...); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return UF::get()(at._<J>(UA::get())); }
+	_at() const& { return UF::get()(at._<J>(UA <I>::get())...); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using B::base_type::operator=;
+	template <typename _F, typename... _A>
+	explicit INLINE constexpr store(_F&& f, _A&&... a) :
+		B(fwd <_F>(f), fwd <_A>(a)...) { }
+};
 
-	template <typename _F, typename _A>
-	explicit INLINE constexpr collection(_F&& f, _A&& a) :
-		B(fwd <_F>(f), fwd <_A>(a)) { }
+//-----------------------------------------------------------------------------
+
+template <typename F>
+class collection <data::apply <>, F>;
+
+template <typename F, typename... A>
+class collection <data::apply <>, F, A...> :
+	public store <data::apply <>, F, sz_rng_of <A...>, A...>
+{
+	using B = store <data::apply <>, F, sz_rng_of <A...>, A...>;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------
@@ -85,4 +98,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_APPLY_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_APPLY_ZIP_HPP

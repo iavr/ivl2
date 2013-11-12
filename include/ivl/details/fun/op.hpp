@@ -99,8 +99,8 @@ template <                                     \
 >                                              \
 INLINE constexpr auto                          \
 operator OP(A&& a)                             \
--> decltype(op::NAME(fwd <A>(a)))              \
-	{ return op::NAME(fwd <A>(a)); }            \
+-> decltype(NAME(fwd <A>(a)))                  \
+	{ return NAME(fwd <A>(a)); }                \
                                                \
 }                                              \
                                                \
@@ -120,8 +120,8 @@ template <                                     \
 >                                              \
 INLINE auto                                    \
 operator OP(A&& a)                             \
--> decltype(op::NAME(fwd <A>(a)))              \
-	{ return op::NAME(fwd <A>(a)); }            \
+-> decltype(NAME(fwd <A>(a)))                  \
+	{ return NAME(fwd <A>(a)); }                \
                                                \
 }                                              \
                                                \
@@ -141,8 +141,8 @@ template <                                     \
 >                                              \
 INLINE auto                                    \
 operator OP(A&& a, int)                        \
--> decltype(op::NAME(fwd <A>(a)))              \
-	{ return op::NAME(fwd <A>(a)); }            \
+-> decltype(NAME(fwd <A>(a)))                  \
+	{ return NAME(fwd <A>(a)); }                \
                                                \
 }                                              \
                                                \
@@ -162,8 +162,8 @@ template <                                                 \
 >                                                          \
 INLINE constexpr auto                                      \
 operator OP(A&& a, B&& b)                                  \
--> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))              \
-	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }            \
+-> decltype(NAME(fwd <A>(a), fwd <B>(b)))                  \
+	{ return NAME(fwd <A>(a), fwd <B>(b)); }                \
                                                            \
 }                                                          \
                                                            \
@@ -183,8 +183,8 @@ template <                                                 \
 >                                                          \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \
--> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))              \
-	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }            \
+-> decltype(NAME(fwd <A>(a), fwd <B>(b)))                  \
+	{ return NAME(fwd <A>(a), fwd <B>(b)); }                \
                                                            \
 }                                                          \
                                                            \
@@ -200,12 +200,12 @@ namespace op {                                             \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	enable_if <any_tuple <A, B>() && !is_stream <A>()> = 0  \
->                                                          \
+	enable_if <any_tuple <A, B>() && !is_stream <A>()>      \
+= 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \
--> decltype(op::NAME(fwd <A>(a), fwd <B>(b)))              \
-	{ return op::NAME(fwd <A>(a), fwd <B>(b)); }            \
+-> decltype(NAME(fwd <A>(a), fwd <B>(b)))                  \
+	{ return NAME(fwd <A>(a), fwd <B>(b)); }                \
                                                            \
 }                                                          \
                                                            \
@@ -322,6 +322,24 @@ IVL_VEC_OP1(addr,  &)
 // 		{ return fwd <F>(f) ( fwd <A>(a)... ); }
 // };
 //
+// //-----------------------------------------------------------------------------
+
+IVL_VEC_OP(bracket)
+
+// namespace op {
+//
+// template <
+// 	typename A, typename B,
+// 	enable_if <any_tuple <A, B>{}> = 0
+// >
+// INLINE constexpr auto
+//
+// op_bracket(A&& a, B&& b)
+// -> decltype(bracket(fwd <A>(a), fwd <B>(b)))
+// 	{ return bracket(fwd <A>(a), fwd <B>(b)); }
+//
+// }
+
 // //-----------------------------------------------------------------------------
 //
 // struct bracket

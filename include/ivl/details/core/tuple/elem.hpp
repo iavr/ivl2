@@ -42,13 +42,11 @@ template <size_t I, typename E, bool = is_base_opt <E>()>
 class elem
 {
 	E e;
-	elem& operator=(const elem&) = delete;
 
 public:
 	INLINE constexpr elem() : e() { }
-	INLINE constexpr elem(elem&& e) : e(e.fwd()) { }
 
-	template <typename A, enable_if <is_cons <E, A>{}> = 0>
+	template <typename A>
 	explicit INLINE constexpr elem(A&& a) : e(ivl::fwd <A>(a)) { }
 
 	template <typename A>
@@ -63,22 +61,16 @@ public:
 //-----------------------------------------------------------------------------
 
 template <size_t I, typename E>
-class elem <I, E, true> : private E
+struct elem <I, E, true> : private E
 {
-	elem& operator=(const elem&) = delete;
-
-public:
 	INLINE constexpr elem() : E() { }
-	INLINE constexpr elem(elem&& e) : E(mv(e)) { }
 
-	template <typename A, enable_if <is_cons <E, A>{}> = 0>
+	template <typename A>
 	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
 
 	template <typename A>
 	INLINE elem& operator=(A&& a)
-	{
-		return E::operator=(ivl::fwd <A>(a)), *this;
-	}
+		{ return E::operator=(ivl::fwd <A>(a)), *this; }
 
 	INLINE           E fwd()        { return mv(*this); }
 	INLINE           E get() &&     { return mv(*this); }

@@ -87,16 +87,14 @@ template <typename P>             using cdrs_p_   = type_of <cdrs_pt_<P> >;
 template <typename E, typename P> using conses_p_ = type_of <conses_pt_<E, P> >;
 
 template <typename P, bool>
-struct cars_pt_ { using type = cons <car <car <P> >, cars_p_<cdr <P> > >; };
+struct cars_pt_ : public cons_t <car <car <P> >, cars_p_<cdr <P> > > { };
 
 template <typename P, bool>
-struct cdrs_pt_ { using type = cons <cdr <car <P> >, cdrs_p_<cdr <P> > >; };
+struct cdrs_pt_ : public cons_t <cdr <car <P> >, cdrs_p_<cdr <P> > > { };
 
 template <typename E, typename P, bool>
-struct conses_pt_
-{
-	using type = cons <cons <car <E>, car <P> >, conses_p_<cdr <E>, cdr <P> > >;
-};
+struct conses_pt_ :
+	public cons_t <cons <car <E>, car <P> >, conses_p_<cdr <E>, cdr <P> > > { };
 
 template <typename P> struct cars_pt_<P, true> { using type = P; };
 template <typename P> struct cdrs_pt_<P, true> { using type = P; };

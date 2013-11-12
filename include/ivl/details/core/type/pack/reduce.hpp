@@ -164,17 +164,20 @@ using alls = alls_p <F, pack <P...> >;
 namespace details {
 
 template <typename P, bool = any_null_p <P>{}>
-struct tran_
-{
-	using type = cons <cars_p <P>, type_of <tran_<cdrs_p <P> > > >;
-};
+struct tran_ : public cons_t <cars_p <P>, type_of <tran_<cdrs_p <P> > > > { };
 
 template <typename P>
 struct tran_<P, true> { using type = null_of <P>; };
 
+template <typename P, size_t = length <P>()>
+struct tran_opt : public tran_<P> { };
+
+template <typename P> struct tran_opt <P, 1> : public car_t <P> { };
+template <typename P> struct tran_opt <P, 0>;
+
 }  // namespace details
 
-template <typename P> using tran_pt = details::tran_<P>;
+template <typename P> using tran_pt = details::tran_opt <P>;
 template <typename P> using tran_p  = type_of <tran_pt <P> >;
 
 template <typename... P> using tran_t = tran_pt <pack <P...> >;
