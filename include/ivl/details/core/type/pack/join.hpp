@@ -50,7 +50,7 @@ struct fuse <_type, D> { template <typename... E> using map = D <E...>; };
 
 template <>
 struct fuse <_type, _type>
-{ template <typename... E> using map = pack <E...>; };
+	{ template <typename... E> using map = pack <E...>; };
 
 //-----------------------------------------------------------------------------
 

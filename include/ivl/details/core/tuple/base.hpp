@@ -59,6 +59,9 @@ class store <
 
 	template <size_t J> using under = under_elem <J, D>;
 
+//-----------------------------------------------------------------------------
+
+protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
@@ -158,6 +161,12 @@ public:
 
 	template <typename F> INLINE void
 	loop(F&& f) const& { thru{(fwd <F>(f)(_<I>()), 0)...}; }
+
+//-----------------------------------------------------------------------------
+
+	INLINE void loop() &&     { thru{_f <I>()...}; }
+	INLINE void loop() &      { thru{_<I>()...}; }
+	INLINE void loop() const& { thru{_<I>()...}; }
 
 //-----------------------------------------------------------------------------
 

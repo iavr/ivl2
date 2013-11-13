@@ -53,10 +53,7 @@ static __attribute__ ((unused)) _true  yes;
 
 //-----------------------------------------------------------------------------
 
-// not using operator! to avoid recursion of vec-operator!
-// (see core/vec/tuple.hpp)
-template <bool B> struct _not        : public _true  { };
-template <>       struct _not <true> : public _false { };
+template <bool B> using _not = expr <!B>;
 
 //-----------------------------------------------------------------------------
 
@@ -73,7 +70,7 @@ template <typename A>
 struct eq <A, A> : public _true { };
 
 template <typename A, typename B> using is_eq = eq <A, B>;
-template <typename A, typename B> using neq   = _not <eq <A, B>{}>;
+template <typename A, typename B> using neq   = expr <!eq <A, B>()>;
 
 //-----------------------------------------------------------------------------
 

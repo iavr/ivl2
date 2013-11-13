@@ -39,53 +39,73 @@ namespace afun_details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class bind_ : private tuple <F, tuple <E...> >
+class bind_ : private tuple <F, E...>
 {
-	using T = tuple <E...>;
-	using B = tuple <F, T>;
-	using UF = under_elem <0, B>;
-	using UE = under_elem <1, B>;
+	using B = tuple <F, E...>;
+	using B::der;
+	using B::der_f;
 
 public:
-	template <typename _F, typename... A, enable_if <sizeof...(A)> = 0>
-	INLINE constexpr
-	bind_(_F&& f, A&&... a) : B(fwd <_F>(f), T(fwd <A>(a)...)) { }
+	using B::B;
 
 	template <typename... A>
 	INLINE ret <F(E..., A...)>
 	operator()(A&&... a) &&
-		{ return UE::fwd().call(UF::fwd(), fwd <A>(a)...); }
+		{ return _tail(der_f()).call(_head(der_f()), fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE constexpr ret <F(E..., A...)>
 	operator()(A&&... a) const&
-		{ return UE::get().call(UF::get(), fwd <A>(a)...); }
+		{ return _tail(der()).call(_head(der()), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... E>
-class pre_fun_ : private tuple <F, tuple <E...> >
+class pre_fun_ : private tuple <F, E...>
 {
-	using T = tuple <E...>;
-	using B = tuple <F, T>;
-	using UF = under_elem <0, B>;
-	using UE = under_elem <1, B>;
+	using B = tuple <F, E...>;
+	using B::der;
+	using B::der_f;
 
 public:
-	template <typename _F, typename... A, enable_if <sizeof...(A)> = 0>
-	INLINE constexpr
-	pre_fun_(_F&& f, A&&... a) : B(fwd <_F>(f), T(fwd <A>(a)...)) { }
+	using B::B;
 
 	template <typename... A>
 	INLINE ret <F(A...)>
 	operator()(A&&... a) &&
-		{ return UE::fwd().call(UF::fwd()), UF::fwd()(fwd <A>(a)...); }
+	{
+		return _tail(der_f()).call(_head(der_f())),
+		       _head(der_f())(fwd <A>(a)...);
+	}
 
 	template <typename... A>
 	INLINE constexpr ret <F(A...)>
 	operator()(A&&... a) const&
-		{ return UE::get().call(UF::get()), UF::get()(fwd <A>(a)...); }
+	{
+		return _tail(der()).call(_head(der())),
+		       _head(der())(fwd <A>(a)...);
+	}
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+class unvoid_ : private tuple <F>
+{
+	using B = tuple <F>;
+	using U = under_elem <0, B>;
+
+public:
+	using B::B;
+
+	template <typename... A>
+	INLINE int
+	operator()(A&&... a) && { return U::fwd()(fwd <A>(a)...), 0; }
+
+	template <typename... A>
+	INLINE constexpr int
+	operator()(A&&... a) const& { return U::get()(fwd <A>(a)...), 0; }
 };
 
 //-----------------------------------------------------------------------------
@@ -99,11 +119,13 @@ namespace afun {
 // TODO: gcc ICE: template <typename F, typename... E>
 template <typename... T> using bind    = afun_details::bind_<T...>;
 template <typename... T> using pre_fun = afun_details::pre_fun_<T...>;
+// unvoid <> defined @afun/begin
 
 }  // namespace afun
 
 static __attribute__ ((unused)) afun::rref_of <afun::bind>    bind;
 static __attribute__ ((unused)) afun::rref_of <afun::pre_fun> pre_fun;
+static __attribute__ ((unused)) afun::rref_of <afun::unvoid>  unvoid;
 
 namespace afun_details { using ivl::bind; }  // not types::bind
 

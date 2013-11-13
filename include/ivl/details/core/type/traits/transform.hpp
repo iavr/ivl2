@@ -187,6 +187,14 @@ template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename T>
+using is_clref = expr <is_lref <T>() && is_const <remove_ref <T> >()>;
+
+template <typename T> using add_clref_t = add_lref_t <add_const <T> >;
+template <typename T> using add_clref   = type_of <add_clref_t <T> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename T> using raw_type_t = remove_cv_t <remove_ref <T> >;
 template <typename T> using raw_type   = type_of <raw_type_t <T> >;
 

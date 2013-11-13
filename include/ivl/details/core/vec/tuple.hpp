@@ -38,24 +38,32 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
+// TODO: remove (gcc bug)
+#if defined(__clang__)
+	using tup_apply  = rref_of <apply_tuple, any_tuple>;
+	using tup_looper = rref_of <loop_tuple,  any_tuple>;
+#else
+	using tup_apply  = rref_of_gcc <apply_tuple_gcc, any_tuple>;
+	using tup_looper = rref_of_gcc <loop_tuple_gcc,  any_tuple>;
+#endif
+
 // TODO: cleanup (working currently)
-struct tup_apply
-{
-	template <typename F, typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE constexpr apply_tup <base_opt <F>, atom_of <base_opt <A&&> >...> operator()(F&& f, A&&... a) const
-		{ return apply_tup <base_opt <F>, atom_of <base_opt <A&&> >...>(fwd <F>(f), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
 struct tup_loop
 {
-	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-	INLINE void operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
+// 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
+// 	INLINE void operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
+//
+// 	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
+// 	INLINE void operator()(F&& f, T&&... t) const
+// 		{ _inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f))); }
 
-	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-	INLINE void operator()(F&& f, T&&... t) const
-		{ _inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f))); }
+// 	template <typename F, typename... T>
+// 	INLINE void operator()(F&& f, T&&... t) const
+// 		{ _inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f))); }
+
+	template <typename... T>
+	INLINE void operator()(T&&... t) const
+		{ tup_looper()(fwd <T>(t)...).loop(); }
 };
 
 //-----------------------------------------------------------------------------

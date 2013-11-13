@@ -38,66 +38,70 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
+// TODO: remove (gcc bug)
+template <
+	template <typename...> class T,
+	template <typename...> class E = always
+>
+struct rref_of_gcc
+{
+	template <typename... A> using F = type_of <T <base_opt <A&&>...> >;
+
+	template <typename... A, enable_if <E <A...>{}> = 0>
+	INLINE constexpr F <A...>
+	operator()(A&&... a) const { return F <A...>(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
 // TODO: keys + operator[] ([val], [rref], [lref], [clref])
 template <
-	template <typename...> class T = tuple,
-	template <typename...> class F = id,
-	template <typename...> class E = always
+	template <typename...> class F,
+	template <typename...> class T,
+	template <typename...> class... E
 >
-struct val_of
+struct collect : public collect <F, T, all_cond <E...>::template map> { };
+
+template <
+	template <typename...> class F,
+	template <typename...> class T,
+	template <typename...> class E
+>
+class collect <F, T, E>
 {
+	template <typename... A> using R = T <F <A&&>...>;
+
+public:
 	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <decay <A> >...>
-	operator()(A&&... a) const { return T <F <decay <A> >...>(fwd <A>(a)...); }
+	INLINE constexpr R <A...>
+	operator()(A&&... a) const { return R <A...>(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
 	template <typename...> class T = tuple,
-	template <typename...> class F = id,
 	template <typename...> class E = always
 >
-struct rref_of
-{
-	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <base_opt <A&&> >...>
-	operator()(A&&... a) const
-	{
-		return T <F <base_opt <A&&> >...>(fwd <A>(a)...);
-	}
-};
-
-//-----------------------------------------------------------------------------
+using val_of = collect <decay, T, E>;
 
 template <
 	template <typename...> class T = tuple,
-	template <typename...> class F = id,
 	template <typename...> class E = always
 >
-struct lref_of
-{
-	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <base_opt <A&> >...>
-	operator()(A&... a) const { return T <F <base_opt <A&> >...>(a...); }
-};
-
-//-----------------------------------------------------------------------------
+using rref_of = collect <base_opt, T, E>;
 
 template <
 	template <typename...> class T = tuple,
-	template <typename...> class F = id,
 	template <typename...> class E = always
 >
-struct clref_of
-{
-	template <typename... A, enable_if <E <A...>{}> = 0>
-	INLINE constexpr T <F <base_opt <const A&> >...>
-	operator()(const A&... a) const
-	{
-		return T <F <base_opt <const A&> >...>(a...);
-	}
-};
+using lref_of = collect <base_opt, T, E, all_lref>;
+
+template <
+	template <typename...> class T = tuple,
+	template <typename...> class E = always
+>
+using clref_of = collect <base_opt, T, E, all_clref>;
 
 //-----------------------------------------------------------------------------
 
@@ -108,11 +112,11 @@ using clref_ = clref_of <>;
 
 //-----------------------------------------------------------------------------
 
-using tup_join = rref_of <join_tup, id, all_tuple>;
-using tup_     = rref_of <join_tup, atom_of>;
+using tup_join = rref_of <join_tup, all_tuple>;
+using tup_     = rref_of <join_tuple>;
 
-using tup_zip   = rref_of <zip_tup, id,      all_tuple>;
-using tup_inner = rref_of <zip_tup, atom_of, any_tuple>;
+using tup_zip   = rref_of <zip_tup,   all_tuple>;
+using tup_inner = rref_of <zip_tuple, any_tuple>;
 
 static __attribute__ ((unused)) tup_join  _join;
 static __attribute__ ((unused)) tup_zip   _zip;

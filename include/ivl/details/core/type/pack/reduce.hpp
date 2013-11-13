@@ -109,6 +109,28 @@ template <typename... E> using any_null = any_null_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
+template <template <typename...> class... C> struct all_cond;
+template <template <typename...> class... C> struct any_cond;
+
+template <> struct all_cond <> { template <typename... T> using map = _true; };
+template <> struct any_cond <> { template <typename... T> using map = _false; };
+
+template <template <typename...> class C, template <typename...> class... D>
+struct all_cond <C, D...>
+{
+	template <typename... T> using map =
+		_and <C <T...>, typename all_cond <D...>::template map <T...> >;
+};
+
+template <template <typename...> class C, template <typename...> class... D>
+struct any_cond <C, D...>
+{
+	template <typename... T> using map =
+		_or <C <T...>, typename all_cond <D...>::template map <T...> >;
+};
+
+//-----------------------------------------------------------------------------
+
 template <size_t L>
 using eq_len_to = eq_sz_fun_to <length, L>;
 

@@ -72,6 +72,16 @@ using any_tuple = any <is_tuple, A...>;
 
 //-----------------------------------------------------------------------------
 
+template <typename P> using all_rref_p  = all_p <is_rref, P>;
+template <typename P> using all_lref_p  = all_p <is_lref, P>;
+template <typename P> using all_clref_p = all_p <is_clref, P>;
+
+template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
+template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
+template <typename... E> using all_clref = all_clref_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename T> using tup_len = length_of <raw_type <T> >;
 
 template <typename T>

@@ -83,7 +83,7 @@ template <template <typename...> class F>
 struct neg
 {
 	template <typename... A>
-	using map = _not <F <A...>{}>;
+	using map = expr <!F <A...>()>;
 };
 
 //-----------------------------------------------------------------------------
