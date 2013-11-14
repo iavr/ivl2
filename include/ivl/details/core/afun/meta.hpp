@@ -90,26 +90,6 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-class unvoid_ : private tuple <F>
-{
-	using B = tuple <F>;
-	using U = under_elem <0, B>;
-
-public:
-	using B::B;
-
-	template <typename... A>
-	INLINE int
-	operator()(A&&... a) && { return U::fwd()(fwd <A>(a)...), 0; }
-
-	template <typename... A>
-	INLINE constexpr int
-	operator()(A&&... a) const& { return U::get()(fwd <A>(a)...), 0; }
-};
-
-//-----------------------------------------------------------------------------
-
 }  // namespace afun_details
 
 //-----------------------------------------------------------------------------
@@ -119,13 +99,11 @@ namespace afun {
 // TODO: gcc ICE: template <typename F, typename... E>
 template <typename... T> using bind    = afun_details::bind_<T...>;
 template <typename... T> using pre_fun = afun_details::pre_fun_<T...>;
-// unvoid <> defined @afun/begin
 
 }  // namespace afun
 
 static __attribute__ ((unused)) afun::rref_of <afun::bind>    bind;
 static __attribute__ ((unused)) afun::rref_of <afun::pre_fun> pre_fun;
-static __attribute__ ((unused)) afun::rref_of <afun::unvoid>  unvoid;
 
 namespace afun_details { using ivl::bind; }  // not types::bind
 

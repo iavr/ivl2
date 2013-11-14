@@ -34,19 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
-
-using namespace types;
-
-template <typename F> class unvoid_;
-
-}  // namespace afun_details
-
-namespace afun {
-
-template <typename F> using unvoid = afun_details::unvoid_<F>;
-
-}  // namespace afun
+namespace afun_details { using namespace types; }
 
 //-----------------------------------------------------------------------------
 

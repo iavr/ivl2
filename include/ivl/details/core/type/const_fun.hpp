@@ -28,6 +28,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include "const/static.hpp"
 #include "const/array.hpp"
 #include "const/call.hpp"
 #include "const/op.hpp"

@@ -23,26 +23,50 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_HPP
-#define IVL_DETAILS_CORE_TUPLE_HPP
+#ifndef IVL_DETAILS_CORE_TYPE_CONST_STATIC_HPP
+#define IVL_DETAILS_CORE_TYPE_CONST_STATIC_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "tuple/begin.hpp"
-#include "tuple/data.hpp"
-#include "tuple/collection.hpp"
-#include "tuple/elem.hpp"
-#include "tuple/traits.hpp"
-#include "tuple/fun.hpp"
-#include "tuple/access.hpp"
-#include "tuple/base.hpp"
-#include "tuple/tuple.hpp"
-#include "tuple/indirect.hpp"
-#include "tuple/apply.hpp"
-#include "tuple/loop.hpp"
-#include "tuple/zip.hpp"
-#include "tuple/join.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_HPP
+namespace types {
+
+//-----------------------------------------------------------------------------
+
+namespace constants {
+
+//-----------------------------------------------------------------------------
+
+template <typename C>
+class c_static : public C
+{
+	using T = value_type_of <C>;
+
+	INLINE static T&       val()   { static T v = C(); return v; }
+
+public:
+	INLINE static constexpr T&&      rref()  { return fwd <T>(val()); }
+	INLINE static constexpr T&       lref()  { return val(); }
+	INLINE static constexpr const T& clref() { return val(); }
+};
+
+//-----------------------------------------------------------------------------
+
+}  // namespace constants
+
+//-----------------------------------------------------------------------------
+
+}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_TYPE_CONST_STATIC_HPP

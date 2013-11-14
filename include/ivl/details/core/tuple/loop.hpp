@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
-#define IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_LOOP_HPP
+#define IVL_DETAILS_CORE_TUPLE_LOOP_HPP
 
 #include <ivl/ivl>
 
@@ -38,44 +38,60 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename... A> struct store;
-template <typename S, typename... A> struct collection;
+template <typename F, size_t... I, typename... A>
+class store <data::loop <>, F, sizes <I...>, A...> :
+	public base_tup <loop_tup <F, A...>, rep <tup_len <car_l <A...> >{}, bool> >
+{
+	using S = c_static <_true>;
+	using P = rep <tup_len <car_l <A...> >{}, bool>;
+	using B = base_tup <loop_tup <F, A...>, P>;
 
-template <typename D, typename P>
-using base_tup = collection <data::base <>, D, P>;
+	using UF = under_elem <0, B>;
+	template <size_t J> using UA = under_elem <J + 1, B>;
+
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-using tuple = collection <data::tuple <>, E...>;
+	template <size_t J>
+	INLINE rtel <J, P>
+	_at() && { return UF::fwd()(at._<J>(UA <I>::fwd())...), S::rref(); }
 
-template <typename K, typename U>
-using indirect_tup = collection <data::indirect <>, K, U>;
+	template <size_t J>
+	INLINE ltel <J, P>
+	_at() & { return UF::get()(at._<J>(UA <I>::get())...), S::lref(); }
+
+	template <size_t J>
+	INLINE constexpr cltel <J, P>
+	_at() const& { return UF::get()(at._<J>(UA <I>::get())...), S::clref(); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	template <typename _F, typename... _A>
+	explicit INLINE constexpr store(_F&& f, _A&&... a) :
+		B(fwd <_F>(f), fwd <_A>(a)...) { }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+class collection <data::loop <>, F>;
 
 template <typename F, typename... A>
-using apply_tup = collection <data::apply <>, F, A...>;
+class collection <data::loop <>, F, A...> :
+	public store <data::loop <>, F, sz_rng_of <A...>, A...>
+{
+	using B = store <data::loop <>, F, sz_rng_of <A...>, A...>;
 
-template <typename F, typename... A>
-using loop_tup = collection <data::loop <>, F, A...>;
-
-template <typename... U>
-using zip_tup = collection <data::zip <>, U...>;
-
-template <typename... U>
-using join_tup = collection <data::join <>, U...>;
+public:
+	using B::B;
+	using B::base_type::operator=;
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace tuple_details
-
-using tuple_details::collection;
-using tuple_details::base_tup;
-using tuple_details::tuple;
-using tuple_details::indirect_tup;
-using tuple_details::apply_tup;
-using tuple_details::loop_tup;
-using tuple_details::zip_tup;
-using tuple_details::join_tup;
 
 //-----------------------------------------------------------------------------
 
@@ -83,4 +99,4 @@ using tuple_details::join_tup;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_LOOP_HPP

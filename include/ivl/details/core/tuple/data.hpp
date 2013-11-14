@@ -42,6 +42,7 @@ template <typename... D> struct base { };
 template <typename... D> struct tuple { };
 template <typename... D> struct indirect { };
 template <typename... D> struct apply { };
+template <typename... D> struct loop { };
 template <typename... D> struct zip { };
 template <typename... D> struct join { };
 

@@ -95,10 +95,7 @@ template <typename F, typename... A>
 struct apply_tuple_gcc { using type = apply_tup <F, atom_of <A>...>; };
 
 template <typename F, typename... A>
-struct loop_tuple_gcc
-{
-	using type = apply_tup <afun::unvoid <F>, atom_of <A>...>;
-};
+struct loop_tuple_gcc { using type = loop_tup <F, atom_of <A>...>; };
 
 //-----------------------------------------------------------------------------
 
@@ -106,7 +103,7 @@ template <typename F, typename... A>
 using apply_tuple = apply_tup <F, atom_of <A>...>;
 
 template <typename F, typename... A>
-using loop_tuple = apply_tup <afun::unvoid <F>, atom_of <A>...>;
+using loop_tuple = loop_tup <F, atom_of <A>...>;
 
 template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
 template <typename... U> using join_tuple = join_tup <atom_of <U>...>;

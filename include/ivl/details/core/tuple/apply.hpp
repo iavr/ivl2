@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_APPLY_ZIP_HPP
-#define IVL_DETAILS_CORE_TUPLE_APPLY_ZIP_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_APPLY_HPP
+#define IVL_DETAILS_CORE_TUPLE_APPLY_HPP
 
 #include <ivl/ivl>
 
@@ -98,4 +98,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_APPLY_ZIP_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_APPLY_HPP

@@ -52,8 +52,12 @@ template <size_t L> struct sequence { static constexpr size_t length = L; };
 template <typename T>
 struct type_sequence : public id_t <T>, public sequence <length <T>{}> { };
 
+}  // namespace numeric
+
 template <typename T>
-struct _type : public type_sequence <_type <T> > { };
+struct _type : public numeric::type_sequence <_type <T> > { };
+
+namespace numeric {
 
 template <size_t L, typename T>
 struct repeat : public type_sequence <repeat <L, T> > { };

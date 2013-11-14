@@ -76,6 +76,17 @@ template <typename E, typename P> using cons = type_of <cons_t <E, P> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename E, typename... En>
+struct car_lt { using type = E; };
+
+template <typename E, typename... En>
+struct cdr_lt { using type = pack <En...>; };
+
+template <typename... E> using car_l = type_of <car_lt <E...> >;
+template <typename... E> using cdr_l = type_of <cdr_lt <E...> >;
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
 template <typename P,             bool = is_null <P>{}> struct cars_pt_;

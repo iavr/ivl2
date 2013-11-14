@@ -47,20 +47,8 @@ namespace afun_details {
 	using tup_looper = rref_of_gcc <loop_tuple_gcc,  any_tuple>;
 #endif
 
-// TODO: cleanup (working currently)
 struct tup_loop
 {
-// 	template <typename F, typename T, enable_if <is_tuple <T>{}> = 0>
-// 	INLINE void operator()(F&& f, T&& t) const { fwd <T>(t).loop(fwd <F>(f)); }
-//
-// 	template <typename F, typename... T, enable_if <any_tuple <T...>{}> = 0>
-// 	INLINE void operator()(F&& f, T&&... t) const
-// 		{ _inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f))); }
-
-// 	template <typename F, typename... T>
-// 	INLINE void operator()(F&& f, T&&... t) const
-// 		{ _inner(fwd <T>(t)...).loop(tup_fun(fwd <F>(f))); }
-
 	template <typename... T>
 	INLINE void operator()(T&&... t) const
 		{ tup_looper()(fwd <T>(t)...).loop(); }

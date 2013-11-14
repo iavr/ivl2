@@ -215,6 +215,9 @@ struct under_t <indirect_tup <K, U> > : public pack <U> { };
 template <typename F, typename... A>
 struct under_t <apply_tup <F, A...> > : public pack <F, A...> { };
 
+template <typename F, typename... A>
+struct under_t <loop_tup <F, A...> > : public pack <F, A...> { };
+
 template <typename... U>
 struct under_t <zip_tup <U...> > : public pack <U...> { };
 
