@@ -25,7 +25,7 @@ ivl uses C++11 features available in implementations only recently; for this rea
 
 ### Building
 
-ivl is a header-only template library; as such, no building is needed. There is no Makefile or project file provided. The bash scripts under folder `/run` are the simplest way to compile and run a program using ivl. Script `/run/ivl` is for g++ and `/run/livl` for clang. It is best to copy them in a folder in your path, e.g. `/usr/local/bin`, after adjusting folders for your local copy of ivl and libc++ location. In this case,
+There is no Makefile or project file provided. The bash scripts under folder `/run` are the simplest way to compile and run a program using ivl. Script `/run/ivl` is for g++ and `/run/livl` for clang. It is best to copy them in a folder in your path, e.g. `/usr/local/bin`, after adjusting folders for your local copy of ivl and libc++ location. In this case,
 
 	cd test/main/
 	ivl test
