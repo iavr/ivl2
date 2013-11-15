@@ -38,20 +38,40 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
+// TODO: remove (gcc bug)
+#if !defined(__clang__)
+
+template <
+	template <typename...> class T,
+	template <typename...> class E = always
+>
+struct rref_of_gcc
+{
+	template <typename... A> using F = type_of <T <base_opt <A&&>...> >;
+
+	template <typename... A, enable_if <E <A...>{}> = 0>
+	INLINE constexpr F <A...>
+	operator()(A&&... a) const { return F <A...>(fwd <A>(a)...); }
+};
+
+#endif  // !defined(__clang__)
+
+//-----------------------------------------------------------------------------
+
 // TODO: keys + operator[] ([val], [rref], [lref], [clref])
 template <
 	template <typename...> class F,
 	template <typename...> class T,
 	template <typename...> class... E
 >
-struct assemble : public assemble <F, T, all_cond <E...>::template map> { };
+struct collect : public collect <F, T, all_cond <E...>::template map> { };
 
 template <
 	template <typename...> class F,
 	template <typename...> class T,
 	template <typename...> class E
 >
-class assemble <F, T, E>
+class collect <F, T, E>
 {
 	template <typename... A> using R = T <F <A&&>...>;
 
@@ -67,25 +87,25 @@ template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using val_of = assemble <decay, T, E>;
+using val_of = collect <decay, T, E>;
 
 template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using rref_of = assemble <base_opt, T, E>;
+using rref_of = collect <base_opt, T, E>;
 
 template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using lref_of = assemble <base_opt, T, E, all_lref>;
+using lref_of = collect <base_opt, T, E, all_lref>;
 
 template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using clref_of = assemble <base_opt, T, E, all_clref>;
+using clref_of = collect <base_opt, T, E, all_clref>;
 
 //-----------------------------------------------------------------------------
 

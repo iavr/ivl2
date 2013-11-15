@@ -45,7 +45,7 @@ class store <data::tuple <>, sizes <I...>, E...> :
 	using P = pack <E...>;
 	using B = base_tup <tuple <E...>, P>;
 
-	template <size_t J> using under = elem_at <J, E...>;
+	template <size_t J> using under = under_elem <J, B>;
 
 	friend base_type_of <B>;
 
