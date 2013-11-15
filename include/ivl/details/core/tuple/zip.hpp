@@ -45,7 +45,7 @@ class store <data::zip <>, sizes <I...>, U...> :
 	using P = tran <tup_types <U>...>;
 	using B = base_tup <zip_tup <U...>, P>;
 
-	template <size_t J> using under = under_elem <J, B>;
+	template <size_t J> using under = elem_at <J, U...>;
 
 	friend base_type_of <B>;
 

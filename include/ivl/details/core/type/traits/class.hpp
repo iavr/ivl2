@@ -135,15 +135,11 @@ using details::is_polymorphic;
 template <typename T>
 using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
 
-namespace details {
+template <typename T, typename R = raw_type <T> >
+using base_opt_t = _if_t <is_base_opt <R>{}, R, T>;
 
 template <typename T, typename R = raw_type <T> >
-using base_opt_t_ = _if_t <is_base_opt <R>{}, R, T>;
-
-}  // namespace details
-
-template <typename T> using base_opt_t = details::base_opt_t_<T>;
-template <typename T> using base_opt = type_of <base_opt_t <T> >;
+using base_opt = type_of <base_opt_t <T, R> >;
 
 //-----------------------------------------------------------------------------
 

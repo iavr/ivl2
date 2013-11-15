@@ -43,7 +43,7 @@ class store : public base_tup <atom <T, S>, _type <T> >
 {
 	using P = pack <T>;
 	using B = base_tup <atom <T, S>, _type <T> >;
-	using U = under_elem <0, B>;
+	using U = elem_at <0, T>;
 
 	friend base_type_of <B>;
 

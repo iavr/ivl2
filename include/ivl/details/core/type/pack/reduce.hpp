@@ -207,6 +207,80 @@ template <typename... P> using tran   = type_of <tran_t <P...> >;
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename A>
+INLINE constexpr A min_(A a, A b) { return a < b ? a : b; }
+
+template <typename A>
+INLINE constexpr A max_(A a, A b) { return a > b ? a : b; }
+
+template <
+	typename T, template <typename...> class F,
+	typename P, bool = is_null <P>{}
+>
+struct int_min_ : public integral <T,
+	min_(F <car <P> >{}(), int_min_<T, F, cdr <P> >{}())
+> {};
+
+template <
+	typename T, template <typename...> class F,
+	typename P, bool = is_null <P>{}
+>
+struct int_max_ : public integral <T,
+	max_(F <car <P> >{}(), int_max_<T, F, cdr <P> >{}())
+> {};
+
+template <typename T, template <typename...> class F, typename P>
+struct int_min_<T, F, P, true> :
+	public integral <T, std::numeric_limits <T>::max()> {};
+
+template <typename T, template <typename...> class F, typename P>
+struct int_max_<T, F, P, true> :
+	public integral <T, std::numeric_limits <T>::min()> {};
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+template <typename T, template <typename...> class F, typename P>
+using integral_min_p = details::int_min_<T, F, P>;
+
+template <typename T, template <typename...> class F, typename P>
+using integral_max_p = details::int_max_<T, F, P>;
+
+template <typename T, template <typename...> class F, typename... E>
+using integral_min = integral_min_p <T, F, pack <E...> >;
+
+template <typename T, template <typename...> class F, typename... E>
+using integral_max = integral_max_p <T, F, pack <E...> >;
+
+template <template <typename...> class F, typename P>
+using num_min_p = integral_min_p <int, F, P>;
+
+template <template <typename...> class F, typename P>
+using num_max_p = integral_max_p <int, F, P>;
+
+template <template <typename...> class F, typename... E>
+using num_min = integral_min <int, F, E...>;
+
+template <template <typename...> class F, typename... E>
+using num_max = integral_max <int, F, E...>;
+
+template <template <typename...> class F, typename P>
+using sz_min_p = integral_min_p <size_t, F, P>;
+
+template <template <typename...> class F, typename P>
+using sz_max_p = integral_max_p <size_t, F, P>;
+
+template <template <typename...> class F, typename... E>
+using sz_min = integral_min <size_t, F, E...>;
+
+template <template <typename...> class F, typename... E>
+using sz_max = integral_max <size_t, F, E...>;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace packs
 
 //-----------------------------------------------------------------------------

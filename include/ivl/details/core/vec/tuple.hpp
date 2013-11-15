@@ -36,16 +36,8 @@ namespace ivl {
 
 namespace afun_details {
 
-//-----------------------------------------------------------------------------
-
-// TODO: remove (gcc bug)
-#if defined(__clang__)
-	using tup_apply  = rref_of <apply_tuple, any_tuple>;
-	using tup_looper = rref_of <loop_tuple,  any_tuple>;
-#else
-	using tup_apply  = rref_of_gcc <apply_tuple_gcc, any_tuple>;
-	using tup_looper = rref_of_gcc <loop_tuple_gcc,  any_tuple>;
-#endif
+using tup_apply  = rref_of <apply_tuple, any_tuple>;
+using tup_looper = rref_of <loop_tuple,  any_tuple>;
 
 struct tup_loop
 {
@@ -143,14 +135,14 @@ template <typename F>
 class tup_vec : public atom <F>
 {
 	using B = atom <F>;
-	using UF = under_elem <0, B>;
+	using fun = elem_at <0, F>;
 
 public:
 	using B::B;
 
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
 	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
-		{ return UF::get()(fwd <A>(a)...); }
+		{ return fun::get()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <tup_non_void <F(A...)>{}> = 0>
 	INLINE constexpr auto operator()(A&&... a) const

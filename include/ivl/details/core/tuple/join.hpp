@@ -47,7 +47,7 @@ class collection <data::join <>, U...> :
 	using m = minor <tup_types <U>...>;
 	using B = base_tup <join_tup <U...>, P>;
 
-	template <size_t J> using under = under_elem <J, B>;
+	template <size_t J> using under = elem_at <J, U...>;
 	template <size_t J> using majr  = pick_i <J, M>;
 	template <size_t J> using minr  = pick_i <J, m>;
 
