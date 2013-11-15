@@ -194,31 +194,26 @@ struct tup_assign <pack <pack <E...>, P...>, T> :
 
 //-----------------------------------------------------------------------------
 
-// TODO: remove (gcc bug)
-#if !defined(__clang__)
+template <typename F, typename... A>
+struct apply_tuple_t { using type = apply_tup <F, atom_of <A>...>; };
 
 template <typename F, typename... A>
-struct apply_tuple_gcc { using type = apply_tup <F, atom_of <A>...>; };
+struct loop_tuple_t { using type = loop_tup <F, atom_of <A>...>; };
 
-template <typename F, typename... A>
-struct loop_tuple_gcc { using type = loop_tup <F, atom_of <A>...>; };
+template <typename... U>
+struct zip_tuple_t { using type = zip_tup <atom_of <U>...>; };
 
-#endif  // !defined(__clang__)
+template <typename... U>
+struct join_tuple_t { using type = join_tup <atom_of <U>...>; };
+
+template <typename... U> using apply_tuple = type_of <apply_tuple_t <U...> >;
+template <typename... U> using loop_tuple  = type_of <loop_tuple_t <U...> >;
+template <typename... U> using zip_tuple   = type_of <zip_tuple_t <U...> >;
+template <typename... U> using join_tuple  = type_of <join_tuple_t <U...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-using apply_tuple = apply_tup <F, atom_of <A>...>;
-
-template <typename F, typename... A>
-using loop_tuple = loop_tup <F, atom_of <A>...>;
-
-template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
-template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
-
-//-----------------------------------------------------------------------------
-
-// TODO: redesign--only used for array construction now along with reuse <>
+// TODO: redesign; only used for array construction now along with reuse <>
 template <typename T>
 using tuple_of_t = _if <is_tuple <T>{}, raw_type_t <T>, id_t <tuple <T> > >;
 
@@ -247,37 +242,25 @@ struct create_rec <F(pack <E...>)>  { using type = create <ret <F(E...)> >; };
 template <typename T> struct under_t : public pack <> { };
 template <typename T> using  under = type_of <under_t <T> >;
 
+template <typename S, typename... A>
+struct under_t <collection <S, A...> > : public pack <A...> { };
+
 template <typename D, typename P>
 struct under_t <base_tup <D, P> > : public under_t <D> { };
-
-template <typename... E>
-struct under_t <tuple <E...> > : public pack <E...> { };
 
 template <typename K, typename U>
 struct under_t <indirect_tup <K, U> > : public pack <U> { };
 
-template <typename F, typename... A>
-struct under_t <apply_tup <F, A...> > : public pack <F, A...> { };
-
-template <typename F, typename... A>
-struct under_t <loop_tup <F, A...> > : public pack <F, A...> { };
-
-template <typename... U>
-struct under_t <zip_tup <U...> > : public pack <U...> { };
-
-template <typename... U>
-struct under_t <join_tup <U...> > : public pack <U...> { };
-
 //-----------------------------------------------------------------------------
 
-template <size_t J, typename T>
-struct under_elem_t
-{
-	using type = tuple_details::elem <J, pick_p <J, under <T> > >;
-};
+template <size_t J, typename P>
+using elem_at_p = tuple_details::elem <J, pick_p <J, P> >;
+
+template <size_t J, typename... E>
+using elem_at = elem_at_p <J, pack <E...> >;
 
 template <size_t J, typename T>
-using under_elem = type_of <under_elem_t <J, T> >;
+using under_elem_at = elem_at_p <J, under <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -302,6 +285,18 @@ public:
 template <typename F, typename... A>
 using tup_apply_types =
 	map <details::tup_applier <F>::template map, tran <tup_types <A>...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename... U>
+struct zip_len :
+	public sz_min_p <length_of, select <is_pack, tup_types <U>...> > { };
+
+template <typename U>
+struct zip_len <U> : public tup_len <U> { };
+
+template <typename F, typename... A>
+using tup_loop_types = rep <zip_len <A...>{}, bool>;
 
 //-----------------------------------------------------------------------------
 

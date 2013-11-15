@@ -38,16 +38,16 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, size_t... I, typename... A>
-class store <data::loop <>, F, sizes <I...>, A...> :
-	public base_tup <loop_tup <F, A...>, rep <tup_len <car_l <A...> >{}, bool> >
+template <size_t... I, typename F, typename... A>
+class store <data::loop <>, sizes <I...>, F, A...> :
+	public base_tup <loop_tup <F, A...>, tup_loop_types <F, A...> >
 {
 	using S = c_static <_true>;
-	using P = rep <tup_len <car_l <A...> >{}, bool>;
+	using P = tup_loop_types <F, A...>;
 	using B = base_tup <loop_tup <F, A...>, P>;
 
-	using UF = under_elem <0, B>;
-	template <size_t J> using UA = under_elem <J + 1, B>;
+	using fun = elem_at <0, F, A...>;
+	template <size_t J> using arg = elem_at <J + 1, F, A...>;
 
 	friend base_type_of <B>;
 
@@ -55,22 +55,20 @@ class store <data::loop <>, F, sizes <I...>, A...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return UF::fwd()(at._<J>(UA <I>::fwd())...), S::rref(); }
+	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...), S::rref(); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return UF::get()(at._<J>(UA <I>::get())...), S::lref(); }
+	_at() & { return fun::get()(at._<J>(arg <I>::get())...), S::lref(); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return UF::get()(at._<J>(UA <I>::get())...), S::clref(); }
+	_at() const& { return fun::get()(at._<J>(arg <I>::get())...), S::clref(); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	template <typename _F, typename... _A>
-	explicit INLINE constexpr store(_F&& f, _A&&... a) :
-		B(fwd <_F>(f), fwd <_A>(a)...) { }
+	using B::B;
 };
 
 //-----------------------------------------------------------------------------
@@ -80,9 +78,9 @@ class collection <data::loop <>, F>;
 
 template <typename F, typename... A>
 class collection <data::loop <>, F, A...> :
-	public store <data::loop <>, F, sz_rng_of <A...>, A...>
+	public store <data::loop <>, sz_rng_of <A...>, F, A...>
 {
-	using B = store <data::loop <>, F, sz_rng_of <A...>, A...>;
+	using B = store <data::loop <>, sz_rng_of <A...>, F, A...>;
 
 public:
 	using B::B;

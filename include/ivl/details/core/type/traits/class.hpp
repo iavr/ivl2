@@ -135,14 +135,13 @@ using details::is_polymorphic;
 template <typename T>
 using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
 
-namespace details {
+// TODO: merge into base_opt with R = raw_type <T> (gcc too slow)
+template <typename T, typename R>
+using raw_opt_t = _if_t <is_base_opt <R>{}, R, T>;
 
-template <typename T, typename R = raw_type <T> >
-using base_opt_t_ = _if_t <is_base_opt <R>{}, R, T>;
+template <typename T, typename R> using raw_opt  = type_of <raw_opt_t <T, R> >;
 
-}  // namespace details
-
-template <typename T> using base_opt_t = details::base_opt_t_<T>;
+template <typename T> using base_opt_t = raw_opt_t <T, raw_type <T> >;
 template <typename T> using base_opt = type_of <base_opt_t <T> >;
 
 //-----------------------------------------------------------------------------

@@ -38,15 +38,15 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, size_t... I, typename... A>
-class store <data::apply <>, F, sizes <I...>, A...> :
+template <size_t... I, typename F, typename... A>
+class store <data::apply <>, sizes <I...>, F, A...> :
 	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >
 {
 	using P = tup_apply_types <F, A...>;
 	using B = base_tup <apply_tup <F, A...>, P>;
 
-	using UF = under_elem <0, B>;
-	template <size_t J> using UA = under_elem <J + 1, B>;
+	using fun = elem_at <0, F, A...>;
+	template <size_t J> using arg = elem_at <J + 1, F, A...>;
 
 	friend base_type_of <B>;
 
@@ -54,22 +54,20 @@ class store <data::apply <>, F, sizes <I...>, A...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return UF::fwd()(at._<J>(UA <I>::fwd())...); }
+	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return UF::get()(at._<J>(UA <I>::get())...); }
+	_at() & { return fun::get()(at._<J>(arg <I>::get())...); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return UF::get()(at._<J>(UA <I>::get())...); }
+	_at() const& { return fun::get()(at._<J>(arg <I>::get())...); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	template <typename _F, typename... _A>
-	explicit INLINE constexpr store(_F&& f, _A&&... a) :
-		B(fwd <_F>(f), fwd <_A>(a)...) { }
+	using B::B;
 };
 
 //-----------------------------------------------------------------------------
@@ -79,9 +77,9 @@ class collection <data::apply <>, F>;
 
 template <typename F, typename... A>
 class collection <data::apply <>, F, A...> :
-	public store <data::apply <>, F, sz_rng_of <A...>, A...>
+	public store <data::apply <>, sz_rng_of <A...>, F, A...>
 {
-	using B = store <data::apply <>, F, sz_rng_of <A...>, A...>;
+	using B = store <data::apply <>, sz_rng_of <A...>, F, A...>;
 
 public:
 	using B::B;

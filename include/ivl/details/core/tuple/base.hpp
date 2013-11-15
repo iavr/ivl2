@@ -57,7 +57,7 @@ class store <
 	using V = pack <U...>;
 	static constexpr size_t L = P::length;
 
-	template <size_t J> using under = under_elem <J, D>;
+	template <size_t J> using under = elem_at <J, U...>;
 
 //-----------------------------------------------------------------------------
 
@@ -84,15 +84,11 @@ public:
 
 	template <typename A, enable_if <tup_assign <P, rep <L, A> >{}> = 0>
 	INLINE D& operator=(A&& a)
-	{
-		return thru{_<I>() = fwd <A>(a)...}, der();
-	}
+		{ return thru{_<I>() = fwd <A>(a)...}, der(); }
 
 	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
 	INLINE D& operator=(T&& t)
-	{
-		return thru{_<I>() = at._<I>(fwd <T>(t))...}, der();
-	}
+		{ return thru{_<I>() = at._<I>(fwd <T>(t))...}, der(); }
 
 //-----------------------------------------------------------------------------
 
@@ -168,108 +164,50 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
-
-//-----------------------------------------------------------------------------
-
 	using bracket = afun::op::bracket;
 	using _call   = afun::op::call;
 
-	static constexpr bool O = all_opt <E...>();
-	template <typename T>    using opt = _if <O, raw_type <T>, T>;
+	template <typename T, typename R = raw_type <T> >
+	struct opt_t : public raw_opt_t <T, R> { };
 
-// TODO: remove (gcc bug)
-#if defined(__clang__)
+	template <typename T>
+	struct opt_t <T, D> : public _if_t <all_opt <E...>{}, D, T> { };
 
-	template <typename... T> using app = apply_tuple <opt <T&&>...>;
-
-	template <typename... A>
-	INLINE static constexpr app <A...>
-	apply(A&&... a) { return app <A...>(fwd <A>(a)...); }
-
-#else  // defined(__clang__)
-
-	template <typename... T> using app_gcc = apply_tuple_gcc <opt <T&&>...>;
+	template <typename T>    using opt     = type_of <opt_t <T> >;
+	template <typename... T> using applier = apply_tuple <opt <T&&>...>;
 
 	template <typename... A>
-	INLINE static constexpr type_of <app_gcc <A...> >
-	apply_gcc(A&&... a) { return type_of <app_gcc <A...> >(fwd <A>(a)...); }
-
-#endif  // defined(__clang__)
+	INLINE static constexpr applier <A...>
+	app(A&&... a) { return applier <A...>(fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 public:
-
-//-----------------------------------------------------------------------------
-
-// TODO: remove (gcc bug)
-#if defined(__clang__)
-
-//-----------------------------------------------------------------------------
+	template <typename A>
+	INLINE applier <bracket, D, A>
+	operator[](A&& a) && { return app(bracket(), der_f(), fwd <A>(a)); }
 
 	template <typename A>
-	INLINE app <bracket, D, A>
-	operator[](A&& a) && { return apply(bracket(), der_f(), fwd <A>(a)) ; }
+	INLINE applier <bracket, D&, A>
+	operator[](A&& a) & { return app(bracket(), der(), fwd <A>(a)); }
 
 	template <typename A>
-	INLINE app <bracket, D&, A>
-	operator[](A&& a) & { return apply(bracket(), der(), fwd <A>(a)) ; }
-
-	template <typename A>
-	INLINE constexpr app <bracket, const D&, A>
-	operator[](A&& a) const& { return apply(bracket(), der(), fwd <A>(a)) ; }
+	INLINE constexpr applier <bracket, const D&, A>
+	operator[](A&& a) const& { return app(bracket(), der(), fwd <A>(a)); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE app <_call, D, A...>
-	operator()(A&&... a) && { return apply(_call(), der_f(), fwd <A>(a)...) ; }
+	INLINE applier <_call, D, A...>
+	operator()(A&&... a) && { return app(_call(), der_f(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE app <_call, D&, A...>
-	operator()(A&&... a) & { return apply(_call(), der(), fwd <A>(a)...) ; }
+	INLINE applier <_call, D&, A...>
+	operator()(A&&... a) & { return app(_call(), der(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr app <_call, const D&, A...>
-	operator()(A&&... a) const& { return apply(_call(), der(), fwd <A>(a)...) ; }
-
-//-----------------------------------------------------------------------------
-
-#else  // defined(__clang__)
-
-//-----------------------------------------------------------------------------
-
-	template <typename A>
-	INLINE type_of <app_gcc <bracket, D, A> >
-	operator[](A&& a) && { return apply_gcc(bracket(), der_f(), fwd <A>(a)) ; }
-
-	template <typename A>
-	INLINE type_of <app_gcc <bracket, D&, A> >
-	operator[](A&& a) & { return apply_gcc(bracket(), der(), fwd <A>(a)) ; }
-
-	template <typename A>
-	INLINE constexpr type_of <app_gcc <bracket, const D&, A> >
-	operator[](A&& a) const& { return apply_gcc(bracket(), der(), fwd <A>(a)) ; }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... A>
-	INLINE type_of <app_gcc <_call, D, A...> >
-	operator()(A&&... a) && { return apply_gcc(_call(), der_f(), fwd <A>(a)...) ; }
-
-	template <typename... A>
-	INLINE type_of <app_gcc <_call, D&, A...> >
-	operator()(A&&... a) & { return apply_gcc(_call(), der(), fwd <A>(a)...) ; }
-
-	template <typename... A>
-	INLINE constexpr type_of <app_gcc <_call, const D&, A...> >
-	operator()(A&&... a) const& { return apply_gcc(_call(), der(), fwd <A>(a)...) ; }
-
-//-----------------------------------------------------------------------------
-
-#endif  // defined(__clang__)
-
-//-----------------------------------------------------------------------------
+	INLINE constexpr applier <_call, const D&, A...>
+	operator()(A&&... a) const& { return app(_call(), der(), fwd <A>(a)...); }
 
 };
 
