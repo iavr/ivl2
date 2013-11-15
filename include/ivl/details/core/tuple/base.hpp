@@ -65,9 +65,6 @@ protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
-// 	using ket = afun::op::bracket;
-// 	template <typename T> using bra = apply_tup <ket&&, T>;
-
 //-----------------------------------------------------------------------------
 
 public:
@@ -170,17 +167,109 @@ public:
 
 //-----------------------------------------------------------------------------
 
-// 	template <typename A, enable_if <!is_tuple <A>{}> = 0>
-// 	INLINE bra <D&&>
-// 	operator[](A&& a) && { return bra <D&&>(ket(), der_f()) ; }
-//
-// 	template <typename A, enable_if <!is_tuple <A>{}> = 0>
-// 	INLINE bra <D&>
-// 	operator[](A&& a) & { return bra <D&>(ket(), der()) ; }
-//
-// 	template <typename A, enable_if <!is_tuple <A>{}> = 0>
-// 	INLINE constexpr bra <const D&>
-// 	operator[](A&& a) const& { return bra <const D&>(ket(), der()) ; }
+private:
+
+//-----------------------------------------------------------------------------
+
+	using bracket = afun::op::bracket;
+	using _call   = afun::op::call;
+
+	static constexpr bool O = all_opt <E...>();
+	template <typename T>    using opt = _if <O, raw_type <T>, T>;
+
+// TODO: remove (gcc bug)
+#if defined(__clang__)
+
+	template <typename... T> using app = apply_tuple <opt <T&&>...>;
+
+	template <typename... A>
+	INLINE static constexpr app <A...>
+	apply(A&&... a) { return app <A...>(fwd <A>(a)...); }
+
+#else  // defined(__clang__)
+
+	template <typename... T> using app_gcc = apply_tuple_gcc <opt <T&&>...>;
+
+	template <typename... A>
+	INLINE static constexpr type_of <app_gcc <A...> >
+	apply_gcc(A&&... a) { return type_of <app_gcc <A...> >(fwd <A>(a)...); }
+
+#endif  // defined(__clang__)
+
+//-----------------------------------------------------------------------------
+
+public:
+
+//-----------------------------------------------------------------------------
+
+// TODO: remove (gcc bug)
+#if defined(__clang__)
+
+//-----------------------------------------------------------------------------
+
+	template <typename A>
+	INLINE app <bracket, D, A>
+	operator[](A&& a) && { return apply(bracket(), der_f(), fwd <A>(a)) ; }
+
+	template <typename A>
+	INLINE app <bracket, D&, A>
+	operator[](A&& a) & { return apply(bracket(), der(), fwd <A>(a)) ; }
+
+	template <typename A>
+	INLINE constexpr app <bracket, const D&, A>
+	operator[](A&& a) const& { return apply(bracket(), der(), fwd <A>(a)) ; }
+
+//-----------------------------------------------------------------------------
+
+	template <typename... A>
+	INLINE app <_call, D, A...>
+	operator()(A&&... a) && { return apply(_call(), der_f(), fwd <A>(a)...) ; }
+
+	template <typename... A>
+	INLINE app <_call, D&, A...>
+	operator()(A&&... a) & { return apply(_call(), der(), fwd <A>(a)...) ; }
+
+	template <typename... A>
+	INLINE constexpr app <_call, const D&, A...>
+	operator()(A&&... a) const& { return apply(_call(), der(), fwd <A>(a)...) ; }
+
+//-----------------------------------------------------------------------------
+
+#else  // defined(__clang__)
+
+//-----------------------------------------------------------------------------
+
+	template <typename A>
+	INLINE type_of <app_gcc <bracket, D, A> >
+	operator[](A&& a) && { return apply_gcc(bracket(), der_f(), fwd <A>(a)) ; }
+
+	template <typename A>
+	INLINE type_of <app_gcc <bracket, D&, A> >
+	operator[](A&& a) & { return apply_gcc(bracket(), der(), fwd <A>(a)) ; }
+
+	template <typename A>
+	INLINE constexpr type_of <app_gcc <bracket, const D&, A> >
+	operator[](A&& a) const& { return apply_gcc(bracket(), der(), fwd <A>(a)) ; }
+
+//-----------------------------------------------------------------------------
+
+	template <typename... A>
+	INLINE type_of <app_gcc <_call, D, A...> >
+	operator()(A&&... a) && { return apply_gcc(_call(), der_f(), fwd <A>(a)...) ; }
+
+	template <typename... A>
+	INLINE type_of <app_gcc <_call, D&, A...> >
+	operator()(A&&... a) & { return apply_gcc(_call(), der(), fwd <A>(a)...) ; }
+
+	template <typename... A>
+	INLINE constexpr type_of <app_gcc <_call, const D&, A...> >
+	operator()(A&&... a) const& { return apply_gcc(_call(), der(), fwd <A>(a)...) ; }
+
+//-----------------------------------------------------------------------------
+
+#endif  // defined(__clang__)
+
+//-----------------------------------------------------------------------------
 
 };
 

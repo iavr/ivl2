@@ -70,10 +70,10 @@ public:
 	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
 
 	template <typename A, enable_if <tup_conv <A, P>{}> = 0>
-	INLINE constexpr store(A&& a) : B(fwd <A>(a)()) { }
+	INLINE constexpr store(A&& a) : B(fwd <A>(a)._()) { }
 
 	template <typename A, enable_if <tup_explicit <P, A>{}> = 0>
-	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)()) { }
+	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)._()) { }
 };
 
 //-----------------------------------------------------------------------------

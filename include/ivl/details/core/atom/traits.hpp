@@ -85,34 +85,8 @@ struct atom_of_t_<T, false> { using type = atom <T>; };
 
 }  // namespace details
 
-template <typename T> using atom_of_t = details::atom_of_t_<T>;
-template <typename T> using atom_of   = type_of <atom_of_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-// TODO: remove (gcc bug)
-template <typename F, typename... A>
-struct apply_tuple_gcc { using type = apply_tup <F, atom_of <A>...>; };
-
-template <typename F, typename... A>
-struct loop_tuple_gcc { using type = loop_tup <F, atom_of <A>...>; };
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... A>
-using apply_tuple = apply_tup <F, atom_of <A>...>;
-
-template <typename F, typename... A>
-using loop_tuple = loop_tup <F, atom_of <A>...>;
-
-template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
-template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
-
-//-----------------------------------------------------------------------------
-
-// extending definition under tuple/traits
-template <typename T, typename S>
-struct under_t <atom <T, S> > : public pack <T> { };
+template <typename T> struct atom_of_t : public details::atom_of_t_<T> { };
+// atom_of <> defined @tuple/begin
 
 //-----------------------------------------------------------------------------
 
@@ -127,6 +101,12 @@ template <typename T>
 struct create_rec <_type <T> > { using type = atom <create <T> >; };
 
 }  // namespace details
+
+//-----------------------------------------------------------------------------
+
+// extending definition under tuple/traits
+template <typename T, typename S>
+struct under_t <atom <T, S> > : public pack <T> { };
 
 //-----------------------------------------------------------------------------
 

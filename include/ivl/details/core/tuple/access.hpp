@@ -50,16 +50,10 @@ protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
-	INLINE           rtref <E>  _f()       { return at._<0>(der_f()); }
-
 public:
 	INLINE           rtref <E>  _() &&     { return at._<0>(der_f()); }
 	INLINE           ltref <E>  _() &      { return at._<0>(der()); }
 	INLINE constexpr cltref <E> _() const& { return at._<0>(der()); }
-
-	INLINE           rtref <E>  operator()() &&     { return _f(); }
-	INLINE           ltref <E>  operator()() &      { return _(); }
-	INLINE constexpr cltref <E> operator()() const& { return _(); }
 };
 
 //-----------------------------------------------------------------------------

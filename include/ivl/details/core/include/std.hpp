@@ -39,6 +39,9 @@
 #include <iostream>
 #include <iomanip>
 
+// TODO: remove
+#include <vector>
+
 //-----------------------------------------------------------------------------
 
 #endif // IVL_DETAILS_CORE_INCLUDE_STD_HPP

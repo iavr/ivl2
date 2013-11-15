@@ -44,12 +44,12 @@ template <typename C, typename R, typename T>
 INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, atom <T>&& a)
 {
-	return s << fwd <atom <T> >(a)();
+	return s << fwd <atom <T> >(a)._();
 }
 
 template <typename C, typename R, typename T>
 INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, const atom <T>& a) { return s << a(); }
+operator<<(basic_ostream <C, R>& s, const atom <T>& a) { return s << a._(); }
 
 //-----------------------------------------------------------------------------
 

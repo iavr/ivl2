@@ -80,6 +80,9 @@ template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
 template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
 template <typename... E> using all_clref = all_clref_p <pack <E...> >;
 
+template <typename P>    using all_opt_p = all_p <is_base_opt, P>;
+template <typename... E> using all_opt   = all_opt_p <pack <E...> >;
+
 //-----------------------------------------------------------------------------
 
 template <typename T> using tup_len = length_of <raw_type <T> >;
@@ -191,11 +194,52 @@ struct tup_assign <pack <pack <E...>, P...>, T> :
 
 //-----------------------------------------------------------------------------
 
+// TODO: remove (gcc bug)
+#if !defined(__clang__)
+
+template <typename F, typename... A>
+struct apply_tuple_gcc { using type = apply_tup <F, atom_of <A>...>; };
+
+template <typename F, typename... A>
+struct loop_tuple_gcc { using type = loop_tup <F, atom_of <A>...>; };
+
+#endif  // !defined(__clang__)
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... A>
+using apply_tuple = apply_tup <F, atom_of <A>...>;
+
+template <typename F, typename... A>
+using loop_tuple = loop_tup <F, atom_of <A>...>;
+
+template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
+template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
+
+//-----------------------------------------------------------------------------
+
 // TODO: redesign--only used for array construction now along with reuse <>
 template <typename T>
 using tuple_of_t = _if <is_tuple <T>{}, raw_type_t <T>, id_t <tuple <T> > >;
 
 template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+// extending definition under type/traits
+template <typename S, typename... A>
+struct create_rec <collection <S, A...> > :
+	public create_rec <type_of <collection <S, A...> > > { };
+
+template <typename... E>
+struct create_rec <pack <E...> > { using type = tuple <create <E>...>; };
+
+template <typename F, typename... E>
+struct create_rec <F(pack <E...>)>  { using type = create <ret <F(E...)> >; };
+
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 
@@ -258,23 +302,6 @@ public:
 template <typename F, typename... A>
 using tup_apply_types =
 	map <details::tup_applier <F>::template map, tran <tup_types <A>...> >;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-// extending definition under type/traits
-template <typename S, typename... A>
-struct create_rec <collection <S, A...> > :
-	public create_rec <type_of <collection <S, A...> > > { };
-
-template <typename... E>
-struct create_rec <pack <E...> > { using type = tuple <create <E>...>; };
-
-template <typename F, typename... E>
-struct create_rec <F(pack <E...>)>  { using type = create <ret <F(E...)> >; };
-
-}  // namespace details
 
 //-----------------------------------------------------------------------------
 

@@ -126,9 +126,9 @@ void run()
 		cout << endl;
 
 		auto w = val(_(x));
-		w() = _(8);
+		w._() = _(8);
 		cout << x << endl;
-		w()() = 3;
+		w._()._() = 3;
 		cout << x << endl;
 		cout << endl;
 	}
@@ -216,7 +216,7 @@ void run()
 
 	{
 		cout << "atom" << endl;
-		cout << _[3]() << endl;
+		cout << _[3]._() << endl;
 		cout << _[3] << endl;
 		cout << _[3]._<sizes <5, 7, 9> >() << endl;
 		cout << _[3]._<sz_range <5, 9> >() << endl;

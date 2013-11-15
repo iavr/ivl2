@@ -256,7 +256,7 @@ IVL_VEC_OP2(bit_xor, ^)
 IVL_VEC_OP2_SHIFT(left,  <<)
 IVL_VEC_OP2_SHIFT(right, >>)
 
-// IVL_VEC_OP2_MUT(assign, =)  // member of tuple, only vec'd on right argument
+IVL_VEC_OP(assign)  //  a = b  // member operator; only vectorized on b
 IVL_VEC_OP2_MUT(add_as, +=)
 IVL_VEC_OP2_MUT(sub_as, -=)
 IVL_VEC_OP2_MUT(mul_as, *=)
@@ -313,63 +313,12 @@ IVL_VEC_OP1(addr,  &)
 // };
 //
 // //-----------------------------------------------------------------------------
-//
-// struct call
-// {
-// 	template <typename F, typename... A>
-// 	INLINE constexpr auto operator()(F&& f, A&&... a) const
-// 	-> decltype(fwd <F>(f) ( fwd <A>(a)... ))
-// 		{ return fwd <F>(f) ( fwd <A>(a)... ); }
-// };
-//
-// //-----------------------------------------------------------------------------
 
-IVL_VEC_OP(bracket)
+IVL_VEC_OP(call)     //  t ( a... )  // member operator
+IVL_VEC_OP(bracket)  //  t [ a ]     // member operator
+IVL_VEC_OP(comma)    //  a , b       // do not overload
+IVL_VEC_OP(cond)     //  c ? a : b   // non-overloadable
 
-// namespace op {
-//
-// template <
-// 	typename A, typename B,
-// 	enable_if <any_tuple <A, B>{}> = 0
-// >
-// INLINE constexpr auto
-//
-// op_bracket(A&& a, B&& b)
-// -> decltype(bracket(fwd <A>(a), fwd <B>(b)))
-// 	{ return bracket(fwd <A>(a), fwd <B>(b)); }
-//
-// }
-
-// //-----------------------------------------------------------------------------
-//
-// struct bracket
-// {
-// 	template <typename A, typename B>
-// 	INLINE constexpr auto operator()(A&& a, B&& b) const
-// 	-> decltype(fwd <A>(a) [ fwd <B>(b) ])
-// 		{ return fwd <A>(a) [ fwd <B>(b) ]; }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct comma
-// {
-// 	template <typename A, typename B>
-// 	INLINE constexpr auto operator()(A&& a, B&& b) const
-// 	-> decltype(fwd <A>(a) , fwd <B>(b))
-// 		{ return fwd <A>(a) , fwd <B>(b); }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct cond
-// {
-// 	template <typename A, typename B, typename C>
-// 	INLINE constexpr auto operator()(A&& a, B&& b, C&& c) const
-// 	-> decltype(fwd <A>(a) ? fwd <B>(b) : fwd <C>(c))
-// 		{ return fwd <A>(a) ? fwd <B>(b) : fwd <C>(c); }
-// };
-//
 // //-----------------------------------------------------------------------------
 //
 // struct _sizeof

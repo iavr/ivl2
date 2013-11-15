@@ -39,6 +39,8 @@ namespace afun_details {
 //-----------------------------------------------------------------------------
 
 // TODO: remove (gcc bug)
+#if !defined(__clang__)
+
 template <
 	template <typename...> class T,
 	template <typename...> class E = always
@@ -51,6 +53,8 @@ struct rref_of_gcc
 	INLINE constexpr F <A...>
 	operator()(A&&... a) const { return F <A...>(fwd <A>(a)...); }
 };
+
+#endif  // !defined(__clang__)
 
 //-----------------------------------------------------------------------------
 
