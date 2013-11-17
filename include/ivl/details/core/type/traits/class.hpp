@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+struct M;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -73,13 +74,12 @@ template <typename T> struct is_empty : public expr <__is_empty(T)> { };
 struct is_empty_test : public input <>
 {
 	struct plain { int x; };
-	template <typename T> struct derived : public T { int x; };
 
 	template <typename T> static
-	pass_if <sizeof(derived <T>) == sizeof(plain)> test(int);
+	pass_if <sizeof(derive <T, plain>) == sizeof(plain)> test(int);
 };
 
-template <typename T, bool = is_class <T>{}>
+template <typename T, bool = is_class <T>() && !is_final <T>()>
 struct is_empty_ : public _false { };
 
 template <typename T>
@@ -143,29 +143,6 @@ template <typename T, typename R> using raw_opt  = type_of <raw_opt_t <T, R> >;
 
 template <typename T> using base_opt_t = raw_opt_t <T, raw_type <T> >;
 template <typename T> using base_opt = type_of <base_opt_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-#define IVL_HAS_TYPE(TYPE)                                                  \
-                                                                            \
-namespace details {                                                         \
-                                                                            \
-	struct has_##TYPE##_test : public input <>                               \
-	{                                                                        \
-		template <typename T> static                                          \
-		target <sizeof(typename T::TYPE)> test(int);                          \
-	};                                                                       \
-                                                                            \
-}                                                                           \
-                                                                            \
-template <typename T>                                                       \
-using has_##TYPE = sfinae <details::has_##TYPE##_test, remove_cv <T> >;     \
-
-//-----------------------------------------------------------------------------
-
-IVL_HAS_TYPE(type)
-IVL_HAS_TYPE(base_type)
-IVL_HAS_TYPE(value_type)
 
 //-----------------------------------------------------------------------------
 

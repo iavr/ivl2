@@ -109,6 +109,7 @@ using details::sfinae;
 }  // namespace tests
 
 namespace details { using namespace tests; }
+
 using details::sfinae;
 
 //-----------------------------------------------------------------------------

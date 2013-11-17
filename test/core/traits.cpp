@@ -15,6 +15,8 @@ struct J { int x; };
 struct K { float f(int x) { return sqrt(x); } };
 struct L { L (int,int) {}; };
 struct M { A a; };
+struct N { void f(); int f(int); };
+struct O { int J::* a; };
 
 //-----------------------------------------------------------------------------
 
@@ -26,6 +28,16 @@ struct func
 	template <typename A, typename B>
 	tup <A, B> operator()(A, B);
 };
+
+//-----------------------------------------------------------------------------
+
+namespace ivl {
+namespace types {
+namespace traits {
+IVL_HAS_MEMBER(x)
+IVL_HAS_MEMBER(a)
+IVL_HAS_MEMBER(f)
+} } }
 
 //-----------------------------------------------------------------------------
 
@@ -240,10 +252,6 @@ void run()
 // 	report_pred <is_conv, C, A>();
 // 	report_pred <is_conv, G, A>();
 //
-// 	report_pred <has_base_type, A>();
-// 	report_pred <has_base_type, F>();
-// 	report_pred <has_type, G>();
-//
 // 	report_pred <is_cons, int>();
 // 	report_pred <is_cons, int, float>();
 // 	report_pred <is_cons, int, float, float>();
@@ -251,6 +259,57 @@ void run()
 // 	report_pred <is_cons, L, int>();
 // 	report_pred <is_cons, L, int, int>();
 // 	report_pred <is_cons, L, int, int, int>();
+//
+// //-----------------------------------------------------------------------------
+//
+// 	report_pred <has__base_type, A>();
+// 	report_pred <has__base_type, F>();
+// 	report_pred <has__type, G>();
+// 	report_pred <has__type, H>();
+//
+// 	report_pred <has_member__a, A>();
+// 	report_pred <has_member__a, M>();
+// 	report_pred <has_member__x, A>();
+// 	report_pred <has_member__x, J>();
+//
+// 	report_pred <has_member__begin, A>();
+// 	report_pred <has_member__begin, array <int> >();
+// 	report_pred <has_member__size, J>();
+// 	report_pred <has_member__size, array <int> >();
+//
+// 	report_pred <has_unique__a, A>();
+// 	report_pred <has_unique__a, M>();
+// 	report_pred <has_unique__x, A>();
+// 	report_pred <has_unique__x, J>();
+//
+// 	report_pred <has_member__f, K>();
+// 	report_pred <has_unique__f, K>();
+// 	report_pred <has_member__f, N>();
+// 	report_pred <has_unique__f, N>();
+//
+// 	report_pred <has_member_ptr__f, K, void (K::*)()>();
+// 	report_pred <has_member_ptr__f, K, float (K::*)(int)>();
+// 	report_pred <has_member_ptr__f, K, float (K::*)(int)&&>();
+// 	report_pred <has_member_ptr__f, N, void (N::*)()>();
+// 	report_pred <has_member_ptr__f, N, void (N::*)(int)>();
+// 	report_pred <has_member_ptr__f, N, int (N::*)(int)>();
+//
+// 	report_pred <has_member__f, K, void ()>();
+// 	report_pred <has_member__f, K, float (int)>();
+// 	report_pred <has_member__f, K&&, float (int)>();
+// 	report_pred <has_member__f, N, void ()>();
+// 	report_pred <has_member__f, N, void (int)>();
+// 	report_pred <has_member__f, N, int (int)>();
+//
+// 	report_map <member_type__a, M>();
+// 	report_map <member_type__x, J>();
+// 	report_map <member_type__f, D>();
+// 	report_map <member_type__f, K>();
+//
+// 	report_map <member_ptr, N, void (N::*)(int)>();
+// 	report_map <member_ptr, N, void (int)>();
+// 	report_map <member_ptr, N const, void (int)>();
+// 	report_map <member_ptr, N const&&, void (int)>();
 //
 // //-----------------------------------------------------------------------------
 //

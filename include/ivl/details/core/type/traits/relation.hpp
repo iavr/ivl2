@@ -70,7 +70,7 @@ struct is_base_eq_test : public input <>
 };
 
 template <typename B, typename D>
-using is_base_eq = expr <!sfinae <is_base_eq_test, B, D>() && is_class <B>()>;
+using is_base_eq = _not <sfinae <is_base_eq_test, B, D>() && is_class <B>{}>;
 
 #endif  // IVL_HAS_FEATURE(is_base_of)
 
