@@ -2,18 +2,35 @@
 
 //-----------------------------------------------------------------------------
 
+namespace ivl {
+namespace types {
+namespace traits {
+IVL_HAS_MEMBER(x)
+IVL_HAS_MEMBER(a)
+IVL_HAS_MEMBER(f)
+} } }
+
+//-----------------------------------------------------------------------------
+
+namespace trait {
+
+using namespace ivl;
+using namespace ivl::types;
+
+//-----------------------------------------------------------------------------
+
 struct A { };
 struct B { operator A() const { return A(); } };
 union  C final { int x; };
 struct D { virtual void f() = 0; };
 struct E { virtual void f() { } };
-struct F { typedef A base_type; };
-struct G : public A { typedef int type; };
+struct F { using base_type = A; };
+struct G : public A { using type = int; };
 enum H { a };
 struct I;
 struct J { int x; };
 struct K { float f(int x) { return sqrt(x); } };
-struct L { L (int,int) {}; };
+struct L { L(int,int) {} void operator=(int) {} };
 struct M { A a; };
 struct N { void f(); int f(int); };
 struct O { int J::* a; };
@@ -31,26 +48,9 @@ struct func
 
 //-----------------------------------------------------------------------------
 
-namespace ivl {
-namespace types {
-namespace traits {
-IVL_HAS_MEMBER(x)
-IVL_HAS_MEMBER(a)
-IVL_HAS_MEMBER(f)
-} } }
-
-//-----------------------------------------------------------------------------
-
-namespace trait {
-
-using namespace ivl;
-using namespace ivl::types;
-using types::base_opt;
-
-//-----------------------------------------------------------------------------
-
 void run()
 {
+
 // 	report_pred <is_const, int>();
 // 	report_pred <is_const, const int>();
 // 	report_pred <is_const, int const>();
@@ -190,37 +190,37 @@ void run()
 // 	report_pred <is_union, D>();
 // 	report_pred <is_union, int>();
 //
-// 	report_pred <is_class, A>();
-// 	report_pred <is_class, B>();
-// 	report_pred <is_class, C>();
-// 	report_pred <is_class, D>();
-// 	report_pred <is_class, int>();
-//
-// 	report_pred <is_empty, A>();
-// 	report_pred <is_empty, C>();
-// 	report_pred <is_empty, D>();
-// 	report_pred <is_empty, int>();
-//
-// 	report_pred <is_abstract, A>();
-// 	report_pred <is_abstract, D>();
-// 	report_pred <is_abstract, E>();
-// 	report_pred <is_abstract, G>();
-//
-// 	report_pred <is_polymorphic, A>();
-// 	report_pred <is_polymorphic, D>();
-// 	report_pred <is_polymorphic, E>();
-// 	report_pred <is_polymorphic, G>();
-//
-// 	report_pred <is_complete, A>();
-// 	report_pred <is_complete, D>();
-// 	report_pred <is_complete, E>();
-// 	report_pred <is_complete, I>();
-// 	report_pred <is_complete, int>();
-//
-// 	report_pred <is_final, A>();
-// 	report_pred <is_final, B>();
-// 	report_pred <is_final, C>();
-// 	report_pred <is_final, int>();
+	report_pred <is_class, A>();
+	report_pred <is_class, B>();
+	report_pred <is_class, C>();
+	report_pred <is_class, D>();
+	report_pred <is_class, int>();
+
+	report_pred <is_empty, A>();
+	report_pred <is_empty, C>();
+	report_pred <is_empty, D>();
+	report_pred <is_empty, int>();
+
+	report_pred <is_abstract, A>();
+	report_pred <is_abstract, D>();
+	report_pred <is_abstract, E>();
+	report_pred <is_abstract, G>();
+
+	report_pred <is_polymorphic, A>();
+	report_pred <is_polymorphic, D>();
+	report_pred <is_polymorphic, E>();
+	report_pred <is_polymorphic, G>();
+
+	report_pred <is_complete, A>();
+	report_pred <is_complete, D>();
+	report_pred <is_complete, E>();
+	report_pred <is_complete, I>();
+	report_pred <is_complete, int>();
+
+	report_pred <is_final, A>();
+	report_pred <is_final, B>();
+	report_pred <is_final, C>();
+	report_pred <is_final, int>();
 //
 // //-----------------------------------------------------------------------------
 //
@@ -259,6 +259,16 @@ void run()
 // 	report_pred <is_cons, L, int>();
 // 	report_pred <is_cons, L, int, int>();
 // 	report_pred <is_cons, L, int, int, int>();
+//
+// 	report_pred <is_assign, int, float>();
+// 	report_pred <is_assign, int, L>();
+// 	report_pred <is_assign, int&, float>();
+// 	report_pred <is_assign, int&, L>();
+// 	report_pred <is_assign, L, int>();
+// 	report_pred <is_assign, L, L&&>();
+// 	report_pred <is_assign, L, L&>();
+// 	report_pred <is_assign, L, const L&>();
+// 	report_pred <is_assign, L, A>();
 //
 // //-----------------------------------------------------------------------------
 //
@@ -314,8 +324,8 @@ void run()
 // //-----------------------------------------------------------------------------
 //
 // 	{
-// 		typedef pack <double&, int&&> C;
-// 		typedef tuple <double&, int> T;
+// 		using C = pack <double&, int&&>;
+// 		using T = tuple <double&, int>;
 // 		report_map <tup_types, C>();
 // 		report_map <tup_types, T>();
 // 		report_pred <tup_cons, C, T>();
@@ -326,7 +336,7 @@ void run()
 // //-----------------------------------------------------------------------------
 //
 // 	{
-// 		typedef tuple <int, double&, const char, volatile long&, int&&> T;
+// 		using T = tuple <int, double&, const char, volatile long&, int&&>;
 // 		report_map <tup_types, T>();
 // 		report_map <tup_types, const T>();
 // 		report_map <tup_types, volatile T>();
@@ -340,7 +350,7 @@ void run()
 // //-----------------------------------------------------------------------------
 //
 // 	{
-// 		typedef pack <int, char, double, A, B, C, D, E, F> T;
+// 		using T = pack <int, char, double, A, B, C, D, E, F>;
 // 		report_map <choose_p, sz_range <1, 4>, T>();
 // 		report_map <choose_p, sz_range <2, 7, 2>, T>();
 // 		report_map <choose_p, sz_range <6, 1, -1>, T>();
@@ -349,33 +359,33 @@ void run()
 // //-----------------------------------------------------------------------------
 //
 // 	{
-// 		typedef pack <A, B, C> T;
-// 		typedef pack <int, char, double> S;
+// 		using T = pack <A, B, C>;
+// 		using S = pack <int, char, double>;
 // 		report_map <tran, T, S>();
 // 	}
 //
 // //-----------------------------------------------------------------------------
 //
 // 	{
-// 		typedef pack <int, char, float> T;
-// 		typedef pack <A, B> U;
-// 		typedef pack <C, D, E> V;
-// 		typedef pack <F> W;
-// 		typedef pack <> X;
-// 		typedef pack <G, I> Y;
+// 		using T = pack <int, char, float>;
+// 		using U = pack <A, B>;
+// 		using V = pack <C, D, E>;
+// 		using W = pack <F>;
+// 		using X = pack <>;
+// 		using Y = pack <G, I>;
 // 		report_map <major, T, U, V, W, X, Y>();
 // 		report_map <minor, T, U, V, W, X, Y>();
 // 	}
 //
-// //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 //
 // 	{
-// 		report_map <base_opt, A>();
-// 		report_map <base_opt, B>();
-// 		report_map <base_opt, C>();
-// 		report_map <base_opt, D>();
-// 		report_map <base_opt, G>();
-// 		report_map <base_opt, M>();
+// 		report_map <base_opt, A&&>();
+// 		report_map <base_opt, B&&>();
+// 		report_map <base_opt, C&&>();
+// 		report_map <base_opt, D&>();
+// 		report_map <base_opt, G&>();
+// 		report_map <base_opt, M&>();
 // 		report_map <base_opt, int>();
 // 		report_map <base_opt, int&>();
 // 		report_map <base_opt, int*>();
@@ -385,11 +395,11 @@ void run()
 
 //-----------------------------------------------------------------------------
 
-}  // namespace trait
+struct I { };
 
 //-----------------------------------------------------------------------------
 
-struct I { };
+}  // namespace trait
 
 //-----------------------------------------------------------------------------
 

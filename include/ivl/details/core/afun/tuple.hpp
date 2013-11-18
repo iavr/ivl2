@@ -44,14 +44,14 @@ template <
 	template <typename...> class T,
 	template <typename...> class... E
 >
-struct assemble : public assemble <F, T, all_cond <E...>::template map> { };
+struct collect : public collect <F, T, all_cond <E...>::template map> { };
 
 template <
 	template <typename...> class F,
 	template <typename...> class T,
 	template <typename...> class E
 >
-class assemble <F, T, E>
+class collect <F, T, E>
 {
 	template <typename... A> using R = T <F <A&&>...>;
 
@@ -67,25 +67,25 @@ template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using val_of = assemble <decay, T, E>;
+using val_of = collect <decay, T, E>;
 
 template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using rref_of = assemble <base_opt, T, E>;
+using rref_of = collect <base_opt, T, E>;
 
 template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using lref_of = assemble <base_opt, T, E, all_lref>;
+using lref_of = collect <base_opt, T, E, all_lref>;
 
 template <
 	template <typename...> class T = tuple,
 	template <typename...> class E = always
 >
-using clref_of = assemble <base_opt, T, E, all_clref>;
+using clref_of = collect <base_opt, T, E, all_clref>;
 
 //-----------------------------------------------------------------------------
 

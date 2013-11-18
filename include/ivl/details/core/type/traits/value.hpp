@@ -44,13 +44,9 @@ namespace traits {
 
 template <typename T> add_rref <T> generate();
 
-template <typename T>
-struct converts { operator add_rref <T>() &&; };
-
-template <typename T>
-INLINE converts <T> convert() { return converts <T>(); }
-
 template <typename T> bool convert(T);
+
+template <size_t N> struct sized { char arr[N]; };
 
 struct flexi { flexi(...); };
 

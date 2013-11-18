@@ -42,75 +42,66 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-namespace tests {
-
-//-----------------------------------------------------------------------------
-
-template <size_t N> struct sz { char arr[N]; };
-
-using pass = sz <1>;
-using fail = sz <0>;
-
-template <bool C> using pass_if = enable_if <C, pass>;
-template <bool C> using fail_if = enable_if <C, fail>;
-
-template <size_t> using target = pass;
-
-//-----------------------------------------------------------------------------
-
-template <typename C = number <0> >
-struct input
-{
-	template <typename S, typename T, typename... Tn>
-	static constexpr bool in() { return S::sz(C()()); }
-};
-
-template <template <typename...> class C>
-struct input <temp <C> >
-{
-	template <typename S, typename T, typename... Tn>
-	static constexpr bool in() { return S::sz(C <T>()); }
-};
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-struct fallback : public F
+// TODO: replace with always <> when made an alias (gcc issue; see types/logic)
+template <typename...> using pass = _true;
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class F, typename P, size_t = length <P>{}>
+struct map_test
 {
-	using F::test;
-	template <typename... T> static fail test(...);
+	template <typename T, typename... A>
+	static pass <F <T, A...> > test(int);
 };
 
-template <typename F, typename... T>
-struct size
+template <template <typename...> class F, typename P>
+struct map_test <F, P, 1>
 {
-	template <typename D>
-	static constexpr bool sz(D&& d)
-	{
-		return sizeof(fallback <F>::template test <T...>(fwd <D>(d))) != 0;
-	}
+	template <typename T> static pass <F <T> > test(int);
 };
 
-template <typename F, typename... T>
-struct sfinae : public expr <F::template in <size <F, T...>, T...>()> { };
+template <template <typename...> class F, typename P>
+struct map_test <F, P, 2>
+{
+	template <typename T, typename A> static pass <F <T, A> > test(int);
+};
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class F>
+struct conv_test { template <typename T> static _true test(F <T>); };
+
+template <typename S>
+struct fallback : public S
+{
+	using S::test;
+	template <typename... T> static _false test(...);
+};
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class F, typename... A>
+using sfinae =
+	decltype(fallback <map_test <F, pack <A...> > >::template test <A...>(0));
+
+template <typename S, template <typename...> class F, typename A>
+using conv_sfinae =
+	decltype(fallback <conv_test <F> >::template test <A>(generate <S>()));
+
+template <template <typename...> class F, typename A>
+using null_sfinae = conv_sfinae <nullptr_t, F, A>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
 using details::sfinae;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace tests
-
-namespace details { using namespace tests; }
-
-using details::sfinae;
+using details::conv_sfinae;
+using details::null_sfinae;
 
 //-----------------------------------------------------------------------------
 

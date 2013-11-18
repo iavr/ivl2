@@ -53,15 +53,23 @@ template <typename T> struct is_class : public expr <__is_class(T)> { };
 
 #else
 
-struct is_class_test : public input <c_null>
-{
-	template <typename T> static pass test(int T::*);
-};
+template <typename T> using is_class_test = int T::*;
 
 template <typename T>
-using is_class = expr <sfinae <is_class_test, T>() && !is_union <T>()>;
+using is_class = expr <null_sfinae <is_class_test, T>() && !is_union <T>()>;
 
 #endif  // IVL_HAS_FEATURE(is_class)
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+using is_derive = expr <is_class <T>() && !is_final <T>()>;
+
+template <typename T, typename B, bool = is_derive <T>{}>
+struct derive : public T, public B { };
+
+template <typename T, typename B>
+struct derive <T, B, false>;
 
 //-----------------------------------------------------------------------------
 
@@ -71,33 +79,18 @@ template <typename T> struct is_empty : public expr <__is_empty(T)> { };
 
 #else
 
-struct is_empty_test : public input <>
-{
-	struct plain { int x; };
-
-	template <typename T> static
-	pass_if <sizeof(derive <T, plain>) == sizeof(plain)> test(int);
-};
-
-template <typename T, bool = is_class <T>() && !is_final <T>()>
-struct is_empty_ : public _false { };
-
 template <typename T>
-struct is_empty_ <T, true> : public sfinae <is_empty_test, T> { };
+using is_empty_test = enable_if <sizeof(derive <T, sized <1> >) == 1>;
 
-template <typename T> using is_empty = is_empty_ <T>;
+template <typename T> using is_empty = sfinae <is_empty_test, T>;
 
 #endif  // IVL_HAS_FEATURE(is_empty)
 
 //-----------------------------------------------------------------------------
 
-struct is_abstract_test : public input <c_null>
-{
-	template <typename T> static pass test(T (*)[1]);
-};
-
-template <typename T>
-using is_abstract = expr <!sfinae <is_abstract_test, T>() && is_class <T>()>;
+template <typename T> using is_abstract_test = T (*)[1];
+template <typename T> using is_abstract =
+	expr <!null_sfinae <is_abstract_test, T>() && is_class <T>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -108,16 +101,10 @@ struct is_polymorphic : public expr <__is_polymorphic(T)> { };
 
 #else
 
-struct is_polymorphic_test : public input <>
-{
-	using V = const volatile void;
+template <typename T> using is_polymorphic_test =
+	decltype((T*) dynamic_cast <const volatile void*>(generate <T*>()));
 
-	template <typename T> static
-	pass_if <sizeof((T*) dynamic_cast <V*>(generate <T*>())) != 0> test(int);
-};
-
-template <typename T>
-using is_polymorphic = sfinae <is_polymorphic_test, T>;
+template <typename T> using is_polymorphic = sfinae <is_polymorphic_test, T>;
 
 #endif  // IVL_HAS_FEATURE(is_polymorphic)
 

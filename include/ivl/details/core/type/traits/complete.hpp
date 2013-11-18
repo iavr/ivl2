@@ -46,77 +46,74 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct is_complete_test : public input <>
-{
-	template <typename T> static target <sizeof(T)> test(int);
-};
+template <typename T> using is_complete_test = size <sizeof(T)>;
 
 //-----------------------------------------------------------------------------
 
 template <typename... T> struct is_complete_;
 
 template <typename H, typename T, typename... Tn>
-struct is_complete_ <H, T, Tn...> :
-	public is_complete_ <H>, public is_complete_ <T, Tn...> { };
+struct is_complete_<H, T, Tn...> :
+	public is_complete_<H>, public is_complete_<T, Tn...> { };
 
-template <>           struct is_complete_ <>     : public _true { };
-template <>           struct is_complete_ <void> : public _true { };
-template <typename H> struct is_complete_ <H, H> : public is_complete_ <H> { };
+template <>           struct is_complete_<>     : public _true { };
+template <>           struct is_complete_<void> : public _true { };
+template <typename H> struct is_complete_<H, H> : public is_complete_<H> { };
 
-template <typename T> struct is_complete_ <T> :
+template <typename T> struct is_complete_<T> :
 	public sfinae <is_complete_test, remove_ref <T> > { };
 
 template <typename R, typename... A>
-struct is_complete_ <R (*)(A...)> : public is_complete_ <R> { };
+struct is_complete_<R (*)(A...)> : public is_complete_<R> { };
 
 template <typename R, typename... A>
-struct is_complete_ <R (A...)> : public is_complete_ <R> { };
+struct is_complete_<R (A...)> : public is_complete_<R> { };
 
 template <typename R, typename C>
-struct is_complete_ <R C::*> : public is_complete_ <C> { };
+struct is_complete_<R C::*> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...)> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...)> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) const> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) const> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) volatile> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) volatile> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) const volatile> :
-	public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) const volatile> :
+	public is_complete_<C> { };
 
 //-----------------------------------------------------------------------------
 
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) &> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) &> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) const&> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) const&> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) volatile&> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) volatile&> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) const volatile&> :
-	public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) const volatile&> :
+	public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) &&> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) &&> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) const&&> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) const&&> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) volatile&&> : public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) volatile&&> : public is_complete_<C> { };
 
 template <typename R, typename C, typename... A>
-struct is_complete_ <R (C::*)(A...) const volatile&&> :
-	public is_complete_ <C> { };
+struct is_complete_<R (C::*)(A...) const volatile&&> :
+	public is_complete_<C> { };
 
 #endif  // IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
@@ -124,7 +121,7 @@ struct is_complete_ <R (C::*)(A...) const volatile&&> :
 
 }  // namespace details
 
-template <typename T> using is_complete = details::is_complete_ <T>;
+template <typename T> using is_complete = details::is_complete_<T>;
 
 //-----------------------------------------------------------------------------
 

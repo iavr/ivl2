@@ -47,11 +47,8 @@ namespace details {
 //-----------------------------------------------------------------------------
 // is_cons: arbitrary types and functions
 
-struct is_cons_test : public input <>
-{
-	template <typename T, typename... A> static
-	target <sizeof(T(generate <A>()...))> test(int);
-};
+template <typename T, typename... A>
+using is_cons_test = decltype(T(generate <A>()...));
 
 template <bool, typename T, typename... A>  // bool: T is scalar or ref
 struct is_cons_ : public sfinae <is_cons_test, T, A...> { };
@@ -106,11 +103,8 @@ using is_explicit = expr <is_cons <T, A>() && !is_conv <A, T>()>;
 
 //-----------------------------------------------------------------------------
 
-struct is_assign_test : public input <>
-{
-	template <typename T, typename A> static
-	target <sizeof(generate <T>() = generate <A>())> test(int);
-};
+template <typename T, typename A>
+using is_assign_test = decltype(generate <T>() = generate <A>());
 
 template <typename T, typename A>
 using is_assign = sfinae <is_assign_test, T, A>;

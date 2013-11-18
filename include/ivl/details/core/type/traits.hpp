@@ -42,6 +42,7 @@
 #include "traits/life.hpp"
 #include "traits/complete.hpp"
 #include "traits/member.hpp"
+#include "traits/has_member.hpp"
 #include "traits/result.hpp"
 #include "traits/report.hpp"
 

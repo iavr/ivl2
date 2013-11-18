@@ -53,7 +53,7 @@ struct is_base_eq : public expr <__is_base_of(B, D)> { };
 
 #else
 
-struct is_base_eq_test : public input <>
+namespace is_base_eq_test
 {
 	template <class T>
 	struct base { base(const volatile T&); };
@@ -65,12 +65,13 @@ struct is_base_eq_test : public input <>
 		template <class U> operator const base <U>&();
 	};
 
-	template <class B, class D> static
-	target <sizeof(base <B>(generate <der <D> >()))> test(int);
-};
+	template <class B, class D>
+	using map = decltype(base <B>(generate <der <D> >()));
+}
 
 template <typename B, typename D>
-using is_base_eq = _not <sfinae <is_base_eq_test, B, D>() && is_class <B>{}>;
+using is_base_eq =
+	_not <sfinae <is_base_eq_test::map, B, D>() && is_class <B>{}>;
 
 #endif  // IVL_HAS_FEATURE(is_base_of)
 
@@ -89,15 +90,7 @@ using is_related = expr <is_base_eq <A, B>() || is_base_eq <B, A>()>;
 template <typename S, typename D>
 struct is_conv : public expr <__is_convertible_to(S, D)> { };
 
-template <typename S, typename D> using is_conv_ = is_conv <S, D>;
-
 #else
-
-struct is_conv_test : public input <>
-{
-	template <typename S, typename D> static
-	target <sizeof(convert <D>(generate <S>()))> test(int);
-};
 
 template <
 	typename S, typename D,
@@ -107,7 +100,7 @@ struct is_conv_ : public is_void <D> { };
 
 template <typename S, typename D>
 struct is_conv_ <S, D, false> :
-	public expr <sfinae <is_conv_test, S, D>() && !is_abstract <D>()> { };
+	public expr <conv_sfinae <S, id, D>() && !is_abstract <D>()> { };
 
 template <typename S, typename D> using is_conv = is_conv_ <S, D>;
 
