@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS__HAS_MEMBER__HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS__HAS_MEMBER__HPP
+#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_MEMBERS_HPP
+#define IVL_DETAILS_CORE_TYPE_TRAITS_MEMBERS_HPP
 
 #include <ivl/ivl>
 
@@ -46,11 +46,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class F, typename T>
-using type_sfinae = sfinae <F, remove_cv <T> >;
+template <template <typename...> class F, typename C>
+using type_sfinae = sfinae <F, remove_cv <C> >;
 
-template <template <typename...> class F, typename T, typename... A>
-using member_sfinae = sfinae <F, raw_type <T>, A...>;
+template <template <typename...> class F, typename C, typename... T>
+using member_sfinae = sfinae <F, raw_type <C>, T...>;
 
 //-----------------------------------------------------------------------------
 
@@ -152,4 +152,4 @@ IVL_HAS_MEMBER(size)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS__HAS_MEMBER__HPP
+#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_MEMBERS_HPP

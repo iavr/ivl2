@@ -269,6 +269,9 @@ void run()
 // 	report_pred <is_assign, L, L&>();
 // 	report_pred <is_assign, L, const L&>();
 // 	report_pred <is_assign, L, A>();
+// 	report_pred <is_assign, void, int>();
+// 	report_pred <is_assign, int&, void>();
+// 	report_pred <is_assign, void, void>();
 //
 // //-----------------------------------------------------------------------------
 //

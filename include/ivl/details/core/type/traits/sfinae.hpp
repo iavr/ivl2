@@ -84,13 +84,14 @@ struct fallback : public S
 
 //-----------------------------------------------------------------------------
 
+template <typename S, typename T, typename... A>
+using sfinae_apply = decltype(fallback <T>::template test <A...>(generate <S>()));
+
 template <template <typename...> class F, typename... A>
-using sfinae =
-	decltype(fallback <map_test <F, pack <A...> > >::template test <A...>(0));
+using sfinae = sfinae_apply <int, map_test <F, pack <A...> >, A...>;
 
 template <typename S, template <typename...> class F, typename A>
-using conv_sfinae =
-	decltype(fallback <conv_test <F> >::template test <A>(generate <S>()));
+using conv_sfinae = sfinae_apply <S, conv_test <F>, A>;
 
 template <template <typename...> class F, typename A>
 using null_sfinae = conv_sfinae <nullptr_t, F, A>;
