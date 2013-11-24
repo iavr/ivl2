@@ -48,6 +48,10 @@ template <typename... T> using id = type_of <id_t <T...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename... P> struct tmp { };
+
+//-----------------------------------------------------------------------------
+
 template <typename D>
 struct der { using der_type = D; };
 

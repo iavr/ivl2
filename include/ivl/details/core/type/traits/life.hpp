@@ -48,7 +48,7 @@ namespace details {
 // is_cons: arbitrary types and functions
 
 template <typename T, typename... A>
-using is_cons_test = decltype(T(generate <A>()...));
+using is_cons_test = decltype(T(gen <A>()...));
 
 template <bool, typename T, typename... A>  // bool: T is scalar or ref
 struct is_cons_ : public sfinae <is_cons_test, T, A...> { };
@@ -104,7 +104,7 @@ using is_explicit = expr <is_cons <T, A>() && !is_conv <A, T>()>;
 //-----------------------------------------------------------------------------
 
 template <typename T, typename A>
-using is_assign_test = decltype(generate <T>() = generate <A>());
+using is_assign_test = decltype(gen <T>() = gen <A>());
 
 template <typename T, typename A>
 using is_assign = sfinae <is_assign_test, T, A>;

@@ -54,38 +54,42 @@ template <typename...> using pass = _true;
 template <template <typename...> class F, typename P, size_t = length <P>{}>
 struct map_test
 {
-	template <typename T, typename... A>
-	static pass <F <T, A...> > test(int);
+	template <typename... T>             static _false              _(...);
+	template <typename T, typename... A> static pass <F <T, A...> > _(int);
 };
 
 template <template <typename...> class F, typename P>
 struct map_test <F, P, 1>
 {
-	template <typename T> static pass <F <T> > test(int);
+	template <typename... T> static _false        _(...);
+	template <typename T>    static pass <F <T> > _(int);
 };
 
 template <template <typename...> class F, typename P>
 struct map_test <F, P, 2>
 {
-	template <typename T, typename A> static pass <F <T, A> > test(int);
+	template <typename... T>          static _false           _(...);
+	template <typename T, typename A> static pass <F <T, A> > _(int);
 };
 
-//-----------------------------------------------------------------------------
+template <template <typename...> class F>
+struct conv_test
+{
+	template <typename... T> static _false _(...);
+	template <typename T>    static _true  _(F <T>);
+};
 
 template <template <typename...> class F>
-struct conv_test { template <typename T> static _true test(F <T>); };
-
-template <typename S>
-struct fallback : public S
+struct ret_test
 {
-	using S::test;
-	template <typename... T> static _false test(...);
+	template <typename... A> nat      operator()(...);
+	template <typename... A> F <A...> operator()(A&&... a);
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename S, typename T, typename... A>
-using sfinae_apply = decltype(fallback <T>::template test <A...>(generate <S>()));
+using sfinae_apply = decltype(T::template _<A...>(gen <S>()));
 
 template <template <typename...> class F, typename... A>
 using sfinae = sfinae_apply <int, map_test <F, pack <A...> >, A...>;
@@ -96,6 +100,9 @@ using conv_sfinae = sfinae_apply <S, conv_test <F>, A>;
 template <template <typename...> class F, typename A>
 using null_sfinae = conv_sfinae <nullptr_t, F, A>;
 
+template <template <typename...> class F, typename... A>
+using ret_sfinae = check_t <decltype(ret_test <F>()(gen <A>()...))>;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace details
@@ -103,6 +110,7 @@ using null_sfinae = conv_sfinae <nullptr_t, F, A>;
 using details::sfinae;
 using details::conv_sfinae;
 using details::null_sfinae;
+using details::ret_sfinae;
 
 //-----------------------------------------------------------------------------
 

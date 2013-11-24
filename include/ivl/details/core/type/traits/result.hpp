@@ -38,10 +38,6 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
-template <typename... P> struct tmp { };
-
-//-----------------------------------------------------------------------------
-
 namespace traits {
 
 //-----------------------------------------------------------------------------
@@ -50,100 +46,50 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <bool MEM = false>
-struct invoker
-{
-	template <typename... A>
-	auto operator()(flexi, A&&... a) -> nat;
+template <typename F, typename... A>
+using fun_test = decltype(tmp_call()(gen <F>(), gen <A>()...));
 
-	template <typename F, typename... A>
-	auto operator()(F&& f, A&&... a)
-		-> decltype(fwd <F>(f)(fwd <A>(a)...));
+template <typename C, typename M, typename... A>
+using method_test = decltype((gen <C>().*gen <M>())(gen <A>()...));
 
-	template <typename F, typename... P, typename... A>
-	auto operator()(F&& f, tmp <P...>, A&&... a)
-		-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...));
-};
+template <typename C, typename M>
+using prop_test = decltype((gen <C>().*gen <M>()));
 
 //-----------------------------------------------------------------------------
 
-template <>
-struct invoker <true>
-{
-	template <typename F, typename A, typename C, bool M, bool I, bool = false>
-	struct ok : public ok <remove_ref <F>, remove_ref <A>, C, M, I, true> { };
+template <typename S> struct res_fun;
 
-	template <typename F, typename A, typename C, bool M, bool I>
-	struct ok <F, A, C, M, I, true> : public expr <
-		(M ? is_method_ptr <F>{} : is_prop_ptr <F>{}) &&
-		(I ^ is_base_eq <C, A>{})
-	> { };
+template <typename F, typename... A>
+struct res_fun <F(A...)> : public ret_sfinae <fun_test, F, A...> { };
 
 //-----------------------------------------------------------------------------
 
-	template <typename... An>
-	auto operator()(flexi, An&&... an) -> nat;
+template <typename F, typename S, bool = is_method_ptr <F>()>
+struct res_member : public nat { };
 
-	template <
-		typename F, typename A, typename... An,
-		enable_if <ok <F, A, member_class <F>, true, false>{}> = 0
-	>
-	auto operator()(F&& f, A&& a, An&&... an)
-		-> decltype((fwd <A>(a).*f)(fwd <An>(an)...));
+template <typename F, typename M, typename C, typename... A>
+struct res_member <F, M(C, A...), true> :
+	public ret_sfinae <method_test, ptr2ref <C>, M, A...> { };
 
-	template <
-		typename F, typename A, typename... An,
-		enable_if <ok <F, A, member_class <F>, true, true>{}> = 0
-	>
-	auto operator()(F&& f, A&& a, An&&... an)
-		-> decltype(((*fwd <A>(a)).*f)(fwd <An>(an)...));
-
-	template <
-		typename F, typename A,
-		enable_if <ok <F, A, member_class <F>, false, false>{}> = 0
-	>
-	auto operator()(F&& f, A&& a) -> decltype(fwd<A>(a).*f);
-
-	template <
-		typename F, typename A,
-		enable_if <ok <F, A, member_class <F>, false, true>{}> = 0
-	>
-	auto operator()(F&& f, A&& a) -> decltype((*fwd<A>(a)).*f);
-};
+template <typename F, typename M, typename C>
+struct res_member <F, M(C), false> :
+	public ret_sfinae <prop_test, ptr2ref <C>, M> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, bool M, bool C> struct invoke_fun;
+template <typename F, typename S, bool = is_member_ptr <F>()>
+struct res_choose : public res_fun <S> { };
 
-template <typename F, typename... A, bool M>
-struct invoke_fun <F(A...), M, true> : public check_t <
-	decltype(invoker <M>()(generate <F>(), generate <A>()...))
-> { };
-
-template <typename F, typename... P, typename... A, bool M>
-struct invoke_fun <F(tmp <P...>, A...), M, true> : public check_t <
-	decltype(invoker <M>()(generate <F>(), tmp <P...>(), generate <A>()...))
-> { };
-
-template <typename F, typename... A, bool M>
-struct invoke_fun <F(A...), M, false> : public nat { };
-
-template <typename F, typename... P, typename... A, bool M>
-struct invoke_fun <F(tmp <P...>, A...), M, false> : public nat { };
+template <typename F, typename S>
+struct res_choose <F, S, true> : public res_member <F, S> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, bool M = false> struct invoke_t;
+template <typename F, typename S, bool = is_complete <F>()>
+struct res_complete : public res_choose <F, S> { };
 
-template <typename F, typename... A, bool M>
-struct invoke_t <F(A...), M> :
-	public invoke_fun <F(A...), M, is_complete <F>{}> { };
-
-template <typename S> using fun_result_t_ = invoke_t <S>;
-template <typename S> using mem_result_t_ = invoke_t <S, true>;
-
-template <typename S>
-using result_t_ = if_nat <fun_result_t_<S>, mem_result_t_<S> >;
+template <typename F, typename S>
+struct res_complete <F, S, false> : public nat { };
 
 //-----------------------------------------------------------------------------
 
@@ -152,26 +98,13 @@ using result_t_ = if_nat <fun_result_t_<S>, mem_result_t_<S> >;
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-struct fun_result_t : public fun_result_t <F(A...)> { };
-
-template <typename F, typename... A>
-struct fun_result_t <F(A...)> : public details::fun_result_t_<F(A...)> { };
-
-template <typename F, typename... A>
-struct mem_result_t : public mem_result_t <F(A...)> { };
-
-template <typename F, typename... A>
-struct mem_result_t <F(A...)> : public details::mem_result_t_<F(A...)> { };
-
-template <typename F, typename... A>
 struct result_t : public result_t <F(A...)> { };
 
 template <typename F, typename... A>
-struct result_t <F(A...)> : public details::result_t_<F(A...)> { };
+struct result_t <F(A...)> :
+	public details::res_complete <remove_ref <F>, F(A...)> { };
 
-template <typename... S> using fun_result = type_of <fun_result_t <S...> >;
-template <typename... S> using mem_result = type_of <mem_result_t <S...> >;
-template <typename... S> using result     = type_of <result_t <S...> >;
+template <typename... S> using result = type_of <result_t <S...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -179,14 +112,8 @@ template <typename F, typename... A>
 struct ret_t : public ret_t <F(A...)> { };
 
 template <typename F, typename... A>
-struct ret_t <F(A...)> : public id_t <
-	decltype(generate <F>()(generate <A>()...))
-> { };
-
-template <typename F, typename... P, typename... A>
-struct ret_t <F(tmp <P...>, A...)> : public id_t <
-	decltype(generate <F>().template _<P...>(generate <A>()...))
-> { };
+struct ret_t <F(A...)> :
+	public id_t <decltype(tmp_call()(gen <F>(), gen <A>()...))> { };
 
 template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
 

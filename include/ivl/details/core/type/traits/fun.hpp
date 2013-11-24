@@ -42,53 +42,77 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template<typename> struct is_fun : public _false{ };
+template <typename S> struct raw_fun_t { using type = S; };
+template <typename S> using  raw_fun = type_of <raw_fun_t <S> >;
 
-template<typename R, typename... A>
-struct is_fun <R(A...)> : public _true { };
+template <typename R, typename... A>
+struct raw_fun_t <R(A...)> { using type = R(A...); };
 
-template<typename R, typename... A>
-struct is_fun <R(A...) const> : public _true { };
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) const> { using type = R(A...); };
 
-template<typename R, typename... A>
-struct is_fun <R(A...) volatile> : public _true { };
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) volatile> { using type = R(A...); };
 
-template<typename R, typename... A>
-struct is_fun <R(A...) const volatile> : public _true { };
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) const volatile> { using type = R(A...); };
+
+//-----------------------------------------------------------------------------
+
+#if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) &> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) const&> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) volatile&> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) const volatile&> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) &&> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) const&&> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) volatile&&> { using type = R(A...); };
+
+template <typename R, typename... A>
+struct raw_fun_t <R(A...) const volatile&&> { using type = R(A...); };
+
+#endif  // IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-//-----------------------------------------------------------------------------
+template <typename T> struct is_fun_ : public _false { };
+template <typename S> struct fun_ret_;
+template <typename S> struct fun_arg_;
 
-template <typename T, template <typename...> class F>
-struct is_member_ptr_f_ : public _false { };
+template<typename R, typename... A>
+struct is_fun_<R(A...)> : public _true { };
 
-template <typename T, typename C, template <typename...> class F>
-struct is_member_ptr_f_<T C::*, F> : public F <T> { };
+template <typename R, typename... A>
+struct fun_ret_<R(A...)> { using type = R; };
 
-template <typename T, template <typename...> class F>
-struct is_member_ptr_f : public is_member_ptr_f_<remove_cv <T>, F> { };
+template <typename R, typename... A>
+struct fun_arg_<R(A...)> : public pack <A...> { };
 
-//-----------------------------------------------------------------------------
+}  // namespace details {
 
-template <typename T>
-using is_member_ptr = is_member_ptr_f <T, always>;
+template <typename T> using is_fun = details::is_fun_<raw_fun <T> >;
 
-template <typename T>
-using is_method_ptr = is_member_ptr_f <T, is_fun>;
+template <typename S> using fun_ret_t = details::fun_ret_<raw_fun <S> >;
+template <typename S> using fun_arg_t = details::fun_arg_<raw_fun <S> >;
 
-template <typename T>
-using is_prop_ptr = is_member_ptr_f <T, neg <is_fun>::map>;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace details
-
-using details::is_member_ptr;
-using details::is_method_ptr;
-using details::is_prop_ptr;
+template <typename S> using fun_ret = type_of <fun_ret_t <S> >;
+template <typename S> using fun_arg = type_of <fun_arg_t <S> >;
 
 //-----------------------------------------------------------------------------
 

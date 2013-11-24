@@ -42,13 +42,11 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> add_rref <T> generate();
+template <typename T> add_rref <T> gen();
 
 template <typename T> bool convert(T);
 
 template <size_t N> struct sized { char arr[N]; };
-
-struct flexi { flexi(...); };
 
 struct thru { template <typename... T> thru(T&&...) { } };
 
@@ -94,6 +92,19 @@ get(A&& a, An&&... an) { return get <I - 1>(fwd <An>(an)...); }
 
 template <size_t I, typename A, typename... An, enable_if <!I> = 0>
 A&& get(A&& a, An&&... an) { return fwd <A>(a); }
+
+//-----------------------------------------------------------------------------
+
+struct tmp_call
+{
+	template <typename F, typename... A>
+	auto operator()(F&& f, A&&... a)
+		-> decltype(fwd <F>(f)(fwd <A>(a)...));
+
+	template <typename F, typename... P, typename... A>
+	auto operator()(F&& f, tmp <P...>, A&&... a)
+		-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...));
+};
 
 //-----------------------------------------------------------------------------
 

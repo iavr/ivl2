@@ -29,21 +29,20 @@
 //-----------------------------------------------------------------------------
 
 #include "traits/begin.hpp"
+#include "traits/builtin.hpp"
 #include "traits/array.hpp"
 #include "traits/fun.hpp"
 #include "traits/traits.hpp"
 #include "traits/transform.hpp"
+#include "traits/member.hpp"
 #include "traits/value.hpp"
 #include "traits/sfinae.hpp"
-#include "traits/builtin.hpp"
 #include "traits/class.hpp"
 #include "traits/relation.hpp"
 #include "traits/pod.hpp"
 #include "traits/life.hpp"
-#include "traits/complete.hpp"
-#include "traits/member.hpp"
-#include "traits/members.hpp"
 #include "traits/result.hpp"
+#include "traits/members.hpp"
 #include "traits/report.hpp"
 
 //-----------------------------------------------------------------------------

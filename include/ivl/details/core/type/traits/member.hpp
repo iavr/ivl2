@@ -42,17 +42,27 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename R> struct sig_ret_t { using type = R; };
-template <typename R> struct sig_arg_t;
+namespace details {
 
-template <typename R, typename... A>
-struct sig_ret_t <R (A...)> { using type = R; };
+template <typename T, template <typename...> class F>
+struct is_member_ptr_f_ : public _false { };
 
-template <typename R, typename... A>
-struct sig_arg_t <R (A...)> : public pack <A...> { };
+template <typename T, typename C, template <typename...> class F>
+struct is_member_ptr_f_<T C::*, F> : public F <T> { };
 
-template <typename S> using sig_ret = type_of <sig_ret_t <S> >;
-template <typename S> using sig_arg = type_of <sig_arg_t <S> >;
+template <typename T, template <typename...> class F>
+struct is_member_ptr_f : public is_member_ptr_f_<remove_cv <T>, F> { };
+
+}  // namespace details
+
+template <typename T>
+using is_member_ptr = details::is_member_ptr_f <T, always>;
+
+template <typename T>
+using is_method_ptr = details::is_member_ptr_f <T, is_fun>;
+
+template <typename T>
+using is_prop_ptr = details::is_member_ptr_f <T, neg <is_fun>::map>;
 
 //-----------------------------------------------------------------------------
 
@@ -60,84 +70,59 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename T>
-struct member_parts
-{
-	using class_type = C;
-	using sig_type = T;
-	using ret_type = T;
-};
-
-template <typename C, typename R, typename... A>
-struct member_parts <C, R (A...)>
-{
-	using class_type = C;
-	using sig_type = R (A...);
-	using ret_type = R;
-	using arg_type = pack <A...>;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename M>
-struct member_ { };
+template <typename M> struct member_class_ { };
+template <typename M> struct member_type_ { };
 
 template <typename T, typename C>
-struct member_ <T C::*> : public member_parts <C, T> { };
+struct member_class_<T C::*> { using type = C; };
+
+template <typename T, typename C>
+struct member_type_<T C::*> { using type = T; };
 
 //-----------------------------------------------------------------------------
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...)> :
-	public member_parts <C, R (A...)> { };
+struct member_class_<R (C::*)(A...)> { using type = C; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) const> :
-	public member_parts <C const, R (A...)> { };
+struct member_class_<R (C::*)(A...) const> { using type = C const; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) volatile> :
-	public member_parts <C volatile, R (A...)> { };
+struct member_class_<R (C::*)(A...) volatile> { using type = C volatile; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) const volatile> :
-	public member_parts <C const volatile, R (A...)> { };
+struct member_class_<R (C::*)(A...) const volatile>
+	{ using type = C const volatile; };
 
 //-----------------------------------------------------------------------------
 
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) &> :
-	public member_parts <C&, R (A...)> { };
+struct member_class_<R (C::*)(A...) &> { using type = C&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) const&> :
-	public member_parts <C const&, R (A...)> { };
+struct member_class_<R (C::*)(A...) const&> { using type = C const&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) volatile&> :
-	public member_parts <C volatile&, R (A...)> { };
+struct member_class_<R (C::*)(A...) volatile&> { using type = C volatile&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) const volatile&> :
-	public member_parts <C const volatile&, R (A...)> { };
+struct member_class_<R (C::*)(A...) const volatile&>
+	{ using type = C const volatile&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) &&> :
-	public member_parts <C&&, R (A...)> { };
+struct member_class_<R (C::*)(A...) &&> { using type = C&&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) const&&> :
-	public member_parts <C const&&, R (A...)> { };
+struct member_class_<R (C::*)(A...) const&&> { using type = C const&&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) volatile&&> :
-	public member_parts <C volatile&&, R (A...)> { };
+struct member_class_<R (C::*)(A...) volatile&&> { using type = C volatile&&; };
 
 template <typename R, typename C, typename ...A>
-struct member_ <R (C::*)(A...) const volatile&&> :
-	public member_parts <C const volatile&&, R (A...)> { };
+struct member_class_<R (C::*)(A...) const volatile&&>
+	{ using type = C const volatile&&; };
 
 #endif  // IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
@@ -148,19 +133,19 @@ struct member_ <R (C::*)(A...) const volatile&&> :
 //-----------------------------------------------------------------------------
 
 template <typename M>
-using member = details::member_<raw_type <M> >;
+using member_class_t = details::member_class_<raw_type <M> >;
 
 template <typename M>
-using member_class = typename member <M>::class_type;
+using member_type_t = details::member_type_<raw_type <M> >;
 
-template <typename M>
-using member_sig = typename member <M>::sig_type;
+template <typename M> using member_class = type_of <member_class_t <M> >;
+template <typename M> using member_type  = type_of <member_type_t <M> >;
 
-template <typename M>
-using member_ret = typename member <M>::ret_type;
+template <typename M> using member_ret_t = fun_ret_t <member_type <M> >;
+template <typename M> using member_arg_t = fun_arg_t <member_type <M> >;
 
-template <typename M>
-using member_arg = typename member <M>::arg_type;
+template <typename M> using member_ret = type_of <member_ret_t <M> >;
+template <typename M> using member_arg = type_of <member_arg_t <M> >;
 
 //-----------------------------------------------------------------------------
 

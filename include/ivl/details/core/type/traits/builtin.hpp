@@ -30,19 +30,22 @@
 
 //-----------------------------------------------------------------------------
 
-#if defined(__clang__)
+// TODO: keep built-in features disabled for testing; enable for speed
+#define IVL_HAS_FEATURE(x) 0
 
-	#define IVL_HAS_FEATURE(x) __has_feature(x)
-
-#else  // defined(__clang__)
-
-	#define IVL_GCC_NO_is_convertible_to
-	#define IVL_GCC_NO_is_literal
-	#define IVL_GCC_NO_is_std_layout
-	#define IVL_GCC_NO_cxx_reference_qualified_functions
-	#define IVL_HAS_FEATURE(x) !defined(IVL_GCC_NO_##x)
-
-#endif  // defined(__clang__)
+// #if defined(__clang__)
+//
+// 	#define IVL_HAS_FEATURE(x) __has_feature(x)
+//
+// #else  // defined(__clang__)
+//
+// 	#define IVL_GCC_NO_is_convertible_to
+// 	#define IVL_GCC_NO_is_literal
+// 	#define IVL_GCC_NO_is_std_layout
+// 	#define IVL_GCC_NO_cxx_reference_qualified_functions
+// 	#define IVL_HAS_FEATURE(x) !defined(IVL_GCC_NO_##x)
+//
+// #endif  // defined(__clang__)
 
 //-----------------------------------------------------------------------------
 

@@ -88,6 +88,26 @@ template <typename T> using is_empty = sfinae <is_empty_test, T>;
 
 //-----------------------------------------------------------------------------
 
+template <typename T> using is_complete_test = size <sizeof(T)>;
+
+template <
+	typename T,
+	bool = is_fun <remove_ptr <T> >(), bool = is_member_ptr <T>()
+>
+struct is_complete_ : public sfinae <is_complete_test, remove_ref <T> > { };
+
+template <> struct is_complete_<void> : public _true { };
+
+template <typename T> struct is_complete_<T, true, false> :
+	public is_complete_<fun_ret <remove_ptr <T> > > { };
+
+template <typename T> struct is_complete_<T, false, true> :
+	public is_complete_<member_class <T> > { };
+
+template <typename T> using is_complete = is_complete_<T>;
+
+//-----------------------------------------------------------------------------
+
 template <typename T> using is_abstract_test = T (*)[1];
 template <typename T> using is_abstract =
 	expr <!null_sfinae <is_abstract_test, T>() && is_class <T>()>;
@@ -102,7 +122,7 @@ struct is_polymorphic : public expr <__is_polymorphic(T)> { };
 #else
 
 template <typename T> using is_polymorphic_test =
-	decltype((T*) dynamic_cast <const volatile void*>(generate <T*>()));
+	decltype((T*) dynamic_cast <const volatile void*>(gen <T*>()));
 
 template <typename T> using is_polymorphic = sfinae <is_polymorphic_test, T>;
 
@@ -113,7 +133,9 @@ template <typename T> using is_polymorphic = sfinae <is_polymorphic_test, T>;
 }  // namespace details
 
 using details::is_class;
+using details::is_derive;
 using details::is_empty;
+using details::is_complete;
 using details::is_abstract;
 using details::is_polymorphic;
 

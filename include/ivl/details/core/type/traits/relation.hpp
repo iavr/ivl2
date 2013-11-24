@@ -66,7 +66,7 @@ namespace is_base_eq_test
 	};
 
 	template <class B, class D>
-	using map = decltype(base <B>(generate <der <D> >()));
+	using map = decltype(base <B>(gen <der <D> >()));
 }
 
 template <typename B, typename D>
@@ -88,9 +88,13 @@ using is_related = expr <is_base_eq <A, B>() || is_base_eq <B, A>()>;
 #if IVL_HAS_FEATURE(is_convertible_to)
 
 template <typename S, typename D>
-struct is_conv : public expr <__is_convertible_to(S, D)> { };
+struct is_conv :
+	public expr <__is_convertible_to(S, D) && !is_abstract <D>()> { };
 
 #else
+
+template <typename S, typename D>
+using is_conv_test = decltype(convert <D>(gen <S>()));
 
 template <
 	typename S, typename D,
@@ -100,7 +104,7 @@ struct is_conv_ : public is_void <D> { };
 
 template <typename S, typename D>
 struct is_conv_ <S, D, false> :
-	public expr <conv_sfinae <S, id, D>() && !is_abstract <D>()> { };
+	public expr <sfinae <is_conv_test, S, D>() && !is_abstract <D>()> { };
 
 template <typename S, typename D> using is_conv = is_conv_ <S, D>;
 

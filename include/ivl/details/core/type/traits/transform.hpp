@@ -135,7 +135,9 @@ template <typename T> using remove_vol = type_of <remove_vol_t <T> >;
 //-----------------------------------------------------------------------------
 
 namespace details {
+
 template <typename T> struct add_cv_t_ : public add_const_t <add_vol <T> > { };
+
 }  // namespace details
 
 template <typename T> using add_cv_t = details::add_cv_t_ <T>;
@@ -184,6 +186,17 @@ template <typename S, typename D>
 using tx_cv_t = tx_vol_t <S, tx_const <S, D> >;
 
 template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+using ref2ptr_t = _if <is_ref <T>{}, add_ptr_t <remove_ref <T> >, id_t <T> >;
+
+template <typename T>
+using ptr2ref_t = _if <is_ptr <T>{}, add_lref_t <remove_ptr <T> >, id_t <T> >;
+
+template <typename T> using ref2ptr = type_of <ref2ptr_t <T> >;
+template <typename T> using ptr2ref = type_of <ptr2ref_t <T> >;
 
 //-----------------------------------------------------------------------------
 
