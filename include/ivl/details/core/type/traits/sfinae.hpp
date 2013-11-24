@@ -75,15 +75,15 @@ struct map_test <F, P, 2>
 template <template <typename...> class F>
 struct conv_test
 {
-	template <typename... T> static _false _(...);
-	template <typename T>    static _true  _(F <T>);
+	template <typename T> static _false _(...);
+	template <typename T> static _true  _(F <T>);
 };
 
 template <template <typename...> class F>
 struct ret_test
 {
-	template <typename... A> nat      operator()(...);
-	template <typename... A> F <A...> operator()(A&&... a);
+	template <typename... A> static nat      _(...);
+	template <typename... A> static F <A...> _(_type <A>...);
 };
 
 //-----------------------------------------------------------------------------
@@ -101,7 +101,7 @@ template <template <typename...> class F, typename A>
 using null_sfinae = conv_sfinae <nullptr_t, F, A>;
 
 template <template <typename...> class F, typename... A>
-using ret_sfinae = check_t <decltype(ret_test <F>()(gen <A>()...))>;
+using ret_sfinae = check_t <decltype(ret_test <F>::template _(_type <A>()...))>;
 
 //-----------------------------------------------------------------------------
 
