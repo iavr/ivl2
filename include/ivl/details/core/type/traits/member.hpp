@@ -141,9 +141,11 @@ using member_type_t = details::member_type_<raw_type <M> >;
 template <typename M> using member_class = type_of <member_class_t <M> >;
 template <typename M> using member_type  = type_of <member_type_t <M> >;
 
+template <typename M> using member_fun_t = raw_fun_t <member_type <M> >;
 template <typename M> using member_ret_t = fun_ret_t <member_type <M> >;
 template <typename M> using member_arg_t = fun_arg_t <member_type <M> >;
 
+template <typename M> using member_fun = type_of <member_fun_t <M> >;
 template <typename M> using member_ret = type_of <member_ret_t <M> >;
 template <typename M> using member_arg = type_of <member_arg_t <M> >;
 

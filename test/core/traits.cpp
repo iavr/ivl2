@@ -166,29 +166,30 @@ void run()
 // 	report_map <member_type, int J::*>();
 // 	report_map <member_type, int J::*>();
 // 	report_map <member_type, float (K::*)(int) const>();
+// 	report_map <member_fun, float (K::*)(int) const>();
 // 	report_map <member_ret, float (K::*)(int) const>();
 // 	report_map <member_arg, float (K::*)(int) const>();
-
-	report_map <result, decltype(f)&, int>();
-	report_map <result, decltype(f)&(int)>();
-	report_map <result, func(int, double)>();
-	report_map <result, func, int, double>();
-	report_map <result, func, tmp <char> >();
-	report_map <result, func(tmp <char>)>();
-	report_map <ret,    func(int, double)>();
-	report_map <ret,    func, int, double>();
-	report_map <ret,    func, tmp <char> >();
-	report_map <ret,    func(tmp <char>)>();
-
-	report_map <result, decltype(&J::x)(J)>();
-	report_map <result, decltype(&J::x)(J&)>();
-	report_map <result, decltype(&J::x)(J*)>();
-	report_pred <has__type, result_t <decltype(&J::x)(K)> >();
-	report_map <result, decltype(&K::f)(K, int)>();
-	report_map <result, decltype(&K::f)(K&, int)>();
-	report_map <result, decltype(&K::f)(K*, int)>();
-	report_pred <has__type, result_t <decltype(&K::f)(J, int)> >();
-
+//
+// 	report_map <result, decltype(f)&, int>();
+// 	report_map <result, decltype(f)&(int)>();
+// 	report_map <result, func(int, double)>();
+// 	report_map <result, func, int, double>();
+// 	report_map <result, func, tmp <char> >();
+// 	report_map <result, func(tmp <char>)>();
+// 	report_map <ret,    func(int, double)>();
+// 	report_map <ret,    func, int, double>();
+// 	report_map <ret,    func, tmp <char> >();
+// 	report_map <ret,    func(tmp <char>)>();
+//
+// 	report_map <result, decltype(&J::x)(J)>();
+// 	report_map <result, decltype(&J::x)(J&)>();
+// 	report_map <result, decltype(&J::x)(J*)>();
+// 	report_pred <has__type, result_t <decltype(&J::x)(K)> >();
+// 	report_map <result, decltype(&K::f)(K, int)>();
+// 	report_map <result, decltype(&K::f)(K&, int)>();
+// 	report_map <result, decltype(&K::f)(K*, int)>();
+// 	report_pred <has__type, result_t <decltype(&K::f)(J, int)> >();
+//
 // //-----------------------------------------------------------------------------
 //
 // 	report_pred <is_signed, int>();
