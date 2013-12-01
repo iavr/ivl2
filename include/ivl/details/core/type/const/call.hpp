@@ -42,59 +42,48 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
+template <typename... P> using c_pack = c_type <pack <P...> >;
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename R, typename S, typename D, bool V = is_void <R>()>
-struct c_call_base;
+template <typename S> struct ret_ct;
+template <typename S> using  ret_c = type_of <ret_ct <S> >;
 
-template <typename R, typename F, typename... A, typename D>
-struct c_call_base <R, F(A...), D, false> : public constant <R, D>
-{
-	INLINE constexpr operator R() const { return F()()(A()()...); }
-};
+// TODO: use value_type_of <> (gcc ICE)
+template <typename F, typename... A>
+struct ret_ct <F(A...)> :
+	public ret_t <typename F::value_type(typename A::value_type...)> { };
 
-template <typename R, typename F, typename... A, typename D>
-struct c_call_base <R, F(A...), D, true> : public constant <void, D>
-{
-	INLINE void operator()() const { F()()(A()()...); }
-};
+//-----------------------------------------------------------------------------
 
-template <typename R, typename F, typename... P, typename... A, typename D>
-struct c_call_base <R, F(tmp <P...>, A...), D, false> : public constant <R, D>
+template <typename S, typename D, typename R = ret_c <S>, bool = is_void <R>()>
+struct c_call_ret;
+
+template <typename F, typename... A, typename D, typename R>
+struct c_call_ret <F(A...), D, R, false> : public constant <R, D>
 {
 	INLINE constexpr
-	operator R() const { return F()().template _<P...>(A()()...); }
+	operator R() const { return afun::tmp_call()(F()(), A()()...); }
 };
 
-template <typename R, typename F, typename... P, typename... A, typename D>
-struct c_call_base <R, F(tmp <P...>, A...), D, true> : public constant <void, D>
+template <typename F, typename... A, typename D, typename R>
+struct c_call_ret <F(A...), D, R, true> : public constant <void, D>
 {
-	INLINE void operator()() const { F()().template _<P...>(A()()...); }
+	INLINE void
+	operator()() const { afun::tmp_call()(F()(), A()()...); }
 };
 
 //-----------------------------------------------------------------------------
 
-// TODO: replace (gcc ICE)
-template <typename T>
-struct val_ct { using type = typename T::value_type; };
-// struct val_ct { using type = value_type_of <T>; };
+template <typename T> struct arg_ct { using type = T; };
+template <typename T> using  arg_c = type_of <arg_ct <T> >;
 
 template <typename... P>
-struct val_ct <tmp <P...> > { using type = tmp <P...>; };
-
-template <typename T> using val_c = type_of <val_ct <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... A>
-struct ret_ct : public ret_ct <F(A...)> { };
-
-template <typename F, typename... A>
-struct ret_ct <F(A...)> : public ret_t <val_c <F> (val_c <A>...)> { };
-
-template <typename F, typename... A> using ret_c = type_of <ret_ct <F, A...> >;
+struct arg_ct <pack <P...> > { using type = c_pack <P...>; };
 
 //-----------------------------------------------------------------------------
 
@@ -103,7 +92,7 @@ struct c_call : public c_call <F(A...)> { };
 
 template <typename F, typename... A>
 struct c_call <F(A...)> :
-	public c_call_base <ret_c <F(A...)>, F(A...), c_call <F(A...)> > { };
+	public c_call_ret <F(arg_c <A>...), c_call <F(A...)>> { };
 
 //-----------------------------------------------------------------------------
 

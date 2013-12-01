@@ -42,10 +42,13 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-struct c_null : public constant <nullptr_t, c_null>
+template <typename T>
+struct c_type : public constant <T, c_type <T> >
 {
-	INLINE constexpr operator nullptr_t() const { return nullptr; }
+	INLINE constexpr operator T() const { return T(); }
 };
+
+using c_null = c_type <nullptr_t>;
 
 template <typename T, T V>
 struct c_integral : public constant <T, c_integral <T, V> >

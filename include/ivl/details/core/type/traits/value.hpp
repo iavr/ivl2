@@ -95,19 +95,6 @@ A&& get(A&& a, An&&... an) { return fwd <A>(a); }
 
 //-----------------------------------------------------------------------------
 
-struct tmp_call
-{
-	template <typename F, typename... A>
-	auto operator()(F&& f, A&&... a)
-		-> decltype(fwd <F>(f)(fwd <A>(a)...));
-
-	template <typename F, typename... P, typename... A>
-	auto operator()(F&& f, tmp <P...>, A&&... a)
-		-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...));
-};
-
-//-----------------------------------------------------------------------------
-
 }  // namespace traits
 
 //-----------------------------------------------------------------------------
@@ -118,6 +105,29 @@ using types::traits::mv;
 using types::traits::fwd;
 using types::traits::as;
 using types::traits::get;
+
+//-----------------------------------------------------------------------------
+
+namespace afun {
+
+//-----------------------------------------------------------------------------
+
+struct tmp_call
+{
+	template <typename F, typename... A>
+	INLINE constexpr auto operator()(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(fwd <A>(a)...))
+		{ return fwd <F>(f)(fwd <A>(a)...); }
+
+	template <typename F, typename... P, typename... A>
+	INLINE constexpr auto operator()(F&& f, types::pack <P...>, A&&... a) const
+	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
+		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

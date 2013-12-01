@@ -68,10 +68,6 @@ struct repeat : public type_sequence <repeat <L, T> > { };
 
 //-----------------------------------------------------------------------------
 
-template <typename... P> struct tmp { };
-
-//-----------------------------------------------------------------------------
-
 template <typename D>
 struct der { using der_type = D; };
 

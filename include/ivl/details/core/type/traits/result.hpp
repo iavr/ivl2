@@ -47,7 +47,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using fun_test = decltype(tmp_call()(gen <F>(), gen <A>()...));
+using fun_test = decltype(afun::tmp_call()(gen <F>(), gen <A>()...));
 
 template <typename C, typename M, typename... A>
 using method_test = decltype((gen <C>().*gen <M>())(gen <A>()...));
@@ -113,7 +113,7 @@ struct ret_t : public ret_t <F(A...)> { };
 
 template <typename F, typename... A>
 struct ret_t <F(A...)> :
-	public id_t <decltype(tmp_call()(gen <F>(), gen <A>()...))> { };
+	public id_t <decltype(afun::tmp_call()(gen <F>(), gen <A>()...))> { };
 
 template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
 

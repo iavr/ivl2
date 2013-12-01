@@ -174,12 +174,12 @@ void run()
 // 	report_map <result, decltype(f)&(int)>();
 // 	report_map <result, func(int, double)>();
 // 	report_map <result, func, int, double>();
-// 	report_map <result, func, tmp <char> >();
-// 	report_map <result, func(tmp <char>)>();
+// 	report_map <result, func, pack <char> >();
+// 	report_map <result, func(pack <char>)>();
 // 	report_map <ret,    func(int, double)>();
 // 	report_map <ret,    func, int, double>();
-// 	report_map <ret,    func, tmp <char> >();
-// 	report_map <ret,    func(tmp <char>)>();
+// 	report_map <ret,    func, pack <char> >();
+// 	report_map <ret,    func(pack <char>)>();
 //
 // 	report_map <result, decltype(&J::x)(J)>();
 // 	report_map <result, decltype(&J::x)(J&)>();
@@ -260,11 +260,11 @@ void run()
 // 	report_pred <is_base, A, C>();
 // 	report_pred <is_base, A, G>();
 // 	report_pred <is_base, A, A>();
-
-	report_pred <is_conv, B, A>();
-	report_pred <is_conv, C, A>();
-	report_pred <is_conv, G, A>();
-
+//
+// 	report_pred <is_conv, B, A>();
+// 	report_pred <is_conv, C, A>();
+// 	report_pred <is_conv, G, A>();
+//
 // 	report_pred <is_cons, int>();
 // 	report_pred <is_cons, int, float>();
 // 	report_pred <is_cons, int, float, float>();
