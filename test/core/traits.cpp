@@ -260,11 +260,11 @@ void run()
 // 	report_pred <is_base, A, C>();
 // 	report_pred <is_base, A, G>();
 // 	report_pred <is_base, A, A>();
-//
-// 	report_pred <is_conv, B, A>();
-// 	report_pred <is_conv, C, A>();
-// 	report_pred <is_conv, G, A>();
-//
+
+	report_pred <is_conv, B, A>();
+	report_pred <is_conv, C, A>();
+	report_pred <is_conv, G, A>();
+
 // 	report_pred <is_cons, int>();
 // 	report_pred <is_cons, int, float>();
 // 	report_pred <is_cons, int, float, float>();

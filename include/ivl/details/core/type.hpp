@@ -37,7 +37,6 @@
 #include "type/numeric.hpp"
 #include "type/meta.hpp"
 #include "type/pack.hpp"
-#include "type/meta_pack.hpp"
 #include "type/traits.hpp"
 #include "afun/op.hpp"
 #include "type/const_fun.hpp"

@@ -32,19 +32,15 @@
 
 namespace ivl {
 
+using std::nullptr_t;
+
 //-----------------------------------------------------------------------------
 
 namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace packs {
-
-template <typename... E> struct pack;
-
-}  // namespace packs
-
-using namespace packs;
+template <typename P> struct length_t;
 
 //-----------------------------------------------------------------------------
 

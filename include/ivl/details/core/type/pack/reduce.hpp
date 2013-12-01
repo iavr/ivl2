@@ -132,10 +132,13 @@ struct any_cond <C, D...>
 //-----------------------------------------------------------------------------
 
 template <size_t L>
-using eq_len_to = eq_sz_fun_to <length, L>;
+struct eq_len_to
+{
+	template <typename P>
+	using map = expr <length <P>() == L>;
+};
 
-template <typename P>
-using eq_len_of = eq_len_to <length <P>{}>;
+template <typename P> using eq_len_of = eq_len_to <length <P>{}>;
 
 template <typename P>
 struct eq_len_p :

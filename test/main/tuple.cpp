@@ -10,6 +10,7 @@ using ivl::flip;
 using ivl::join;
 using ivl::apply;
 using ivl::bind;
+using ivl::call;
 
 //-----------------------------------------------------------------------------
 

@@ -28,7 +28,6 @@
 
 //-----------------------------------------------------------------------------
 
-#include "const/begin.hpp"
 #include "const/const.hpp"
 #include "const/scalar.hpp"
 #include "const/class.hpp"

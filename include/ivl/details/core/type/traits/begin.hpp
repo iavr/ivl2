@@ -44,6 +44,8 @@ namespace traits {
 template <typename T> struct remove_cv_t;
 template <typename T> using remove_cv = type_of <remove_cv_t <T> >;
 
+namespace details { using namespace types::details; }
+
 }  // namespace traits
 
 //-----------------------------------------------------------------------------

@@ -76,9 +76,10 @@ struct c_call_base <R, F(tmp <P...>, A...), D, true> : public constant <void, D>
 
 //-----------------------------------------------------------------------------
 
+// TODO: replace (gcc ICE)
 template <typename T>
-// struct val_ct { using type = value_type_of <T>; };
 struct val_ct { using type = typename T::value_type; };
+// struct val_ct { using type = value_type_of <T>; };
 
 template <typename... P>
 struct val_ct <tmp <P...> > { using type = tmp <P...>; };

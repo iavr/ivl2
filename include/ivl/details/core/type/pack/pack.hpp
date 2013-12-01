@@ -42,9 +42,6 @@ namespace packs {
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-struct pack : public type_sequence <pack <E...> > { };
-
 template <typename P>    struct is_pack                : public _false { };
 template <typename... E> struct is_pack <pack <E...> > : public _true { };
 
@@ -114,6 +111,8 @@ using map = type_of <map_t <F, P> >;
 //-----------------------------------------------------------------------------
 
 }  // namespace packs
+
+using namespace packs;
 
 //-----------------------------------------------------------------------------
 

@@ -4,10 +4,9 @@
 
 namespace constant {
 
-using namespace std;
 using namespace ivl;
 using namespace ivl::types;
-using ivl::array;
+namespace op = afun::op;
 
 //-----------------------------------------------------------------------------
 

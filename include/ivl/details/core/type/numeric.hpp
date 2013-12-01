@@ -42,28 +42,6 @@ namespace numeric {
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct length_t;
-template <typename P> using  length = type_of <length_t <P> >;
-
-//-----------------------------------------------------------------------------
-
-template <size_t L> struct sequence { static constexpr size_t length = L; };
-
-template <typename T>
-struct type_sequence : public id_t <T>, public sequence <length <T>{}> { };
-
-}  // namespace numeric
-
-template <typename T>
-struct _type : public numeric::type_sequence <_type <T> > { };
-
-namespace numeric {
-
-template <size_t L, typename T>
-struct repeat : public type_sequence <repeat <L, T> > { };
-
-//-----------------------------------------------------------------------------
-
 template <typename T, T N> using integral = c_integral <T, N>;
 
 template <typename T, T... N>
@@ -140,23 +118,6 @@ using sz_rng  = type_of <sz_rng_t <B, E, s> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using length_of = size <P::length>;
-
-template <template <typename...> class C, typename... E>
-struct length_t <C <E...> > : public size <sizeof...(E)> { };
-
-template <size_t L, typename T>
-struct length_t <repeat <L, T> > : public size <L> { };
-
-template <typename T, T... N>
-struct length_t <integrals <T, N...> > : public size <sizeof...(N)> { };
-
-template <typename T, T B, T E, typename S, S s>
-struct length_t <range <T, B, E, S, s> > :
-	public size <rng_len(B, E, s)> { };
-
-//-----------------------------------------------------------------------------
-
 template <typename T, size_t L>
 struct rng_of_it : public rng_t <T, 0, L - 1> { };
 
@@ -219,6 +180,23 @@ template <size_t L, size_t... N> using sz_rep  = type_of <sz_rep_t <L, N...> >;
 }  // namespace numeric
 
 using namespace numeric;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using length_of = size <P::length>;
+
+template <template <typename...> class C, typename... E>
+struct length_t <C <E...> > : public size <sizeof...(E)> { };
+
+template <size_t L, typename T>
+struct length_t <repeat <L, T> > : public size <L> { };
+
+template <typename T, T... N>
+struct length_t <integrals <T, N...> > : public size <sizeof...(N)> { };
+
+template <typename T, T B, T E, typename S, S s>
+struct length_t <range <T, B, E, S, s> > :
+	public size <rng_len(B, E, s)> { };
 
 //-----------------------------------------------------------------------------
 

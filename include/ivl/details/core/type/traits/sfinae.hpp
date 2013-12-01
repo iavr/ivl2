@@ -46,71 +46,44 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// TODO: replace with always <> when made an alias (gcc issue; see types/logic)
-template <typename...> using pass = _true;
-
-//-----------------------------------------------------------------------------
-
-template <template <typename...> class F, typename P, size_t = length <P>{}>
-struct map_test
+struct subs_test : public subs_fun
 {
-	template <typename... T>             static _false              _(...);
-	template <typename T, typename... A> static pass <F <T, A...> > _(int);
-};
-
-template <template <typename...> class F, typename P>
-struct map_test <F, P, 1>
-{
-	template <typename... T> static _false        _(...);
-	template <typename T>    static pass <F <T> > _(int);
-};
-
-template <template <typename...> class F, typename P>
-struct map_test <F, P, 2>
-{
-	template <typename... T>          static _false           _(...);
-	template <typename T, typename A> static pass <F <T, A> > _(int);
+	using subs_fun::_;
+	template <typename... A> static nat _(...);
 };
 
 template <template <typename...> class F>
 struct conv_test
 {
-	template <typename T> static _false _(...);
-	template <typename T> static _true  _(F <T>);
-};
-
-template <template <typename...> class F>
-struct ret_test
-{
-	template <typename... A> static nat      _(...);
-	template <typename... A> static F <A...> _(_type <A>...);
+	template <typename... A> static _false _(...);
+	template <typename... A> static _true  _(subs <F, A...>);
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename T, typename... A>
-using sfinae_apply = decltype(T::template _<A...>(gen <S>()));
+template <template <typename...> class F, typename... A>
+using try_subs = apply_subs <subs_test, F, A...>;
 
 template <template <typename...> class F, typename... A>
-using sfinae = sfinae_apply <int, map_test <F, pack <A...> >, A...>;
+using sfinae = _not <is_nat <try_subs <F, A...> >{}>;
 
-template <typename S, template <typename...> class F, typename A>
-using conv_sfinae = sfinae_apply <S, conv_test <F>, A>;
+template <template <typename...> class F, typename... A>
+using ret_sfinae = check_t <try_subs <F, A...> >;
+
+template <typename S, template <typename...> class F, typename... A>
+using conv_sfinae = decltype(conv_test <F>::template _<A...>(gen <S>()));
 
 template <template <typename...> class F, typename A>
 using null_sfinae = conv_sfinae <nullptr_t, F, A>;
-
-template <template <typename...> class F, typename... A>
-using ret_sfinae = check_t <decltype(ret_test <F>::template _(_type <A>()...))>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
 using details::sfinae;
+using details::ret_sfinae;
 using details::conv_sfinae;
 using details::null_sfinae;
-using details::ret_sfinae;
 
 //-----------------------------------------------------------------------------
 

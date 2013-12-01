@@ -38,11 +38,15 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
+namespace meta {
+
+//-----------------------------------------------------------------------------
+
 template <template <typename...> class F, typename... V>
 struct bind
 {
 	template <typename... A>
-	using map = F <V..., A...>;
+	using map = subs <F, V..., A...>;
 };
 
 //-----------------------------------------------------------------------------
@@ -51,26 +55,11 @@ template <typename T> using eq_to = bind <eq, T>;
 
 //-----------------------------------------------------------------------------
 
-template <template <typename> class F, typename T, T N>
-struct eq_int_fun_to
-{
-	template <typename P>
-	using map = expr <F <P>() == N>;
-};
-
-template <template <typename> class F, int N>
-using eq_num_fun_to = eq_int_fun_to <F, int, N>;
-
-template <template <typename> class F, size_t N>
-using eq_sz_fun_to = eq_int_fun_to <F, size_t, N>;
-
-//-----------------------------------------------------------------------------
-
 template <template <typename...> class F, template <typename...> class G>
 struct compose
 {
 	template <typename... A>
-	using map = F <G <A...> >;
+	using map = F <subs <G, A...> >;
 };
 
 //-----------------------------------------------------------------------------
@@ -83,8 +72,14 @@ template <template <typename...> class F>
 struct neg
 {
 	template <typename... A>
-	using map = expr <!F <A...>()>;
+	using map = expr <!subs <F, A...>()>;
 };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace meta
+
+using namespace meta;
 
 //-----------------------------------------------------------------------------
 

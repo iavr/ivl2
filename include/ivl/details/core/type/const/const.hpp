@@ -82,6 +82,8 @@ INLINE S& operator<<(S& s, const constant <T, D>& c) { return s << c(); }
 
 }  // namespace constants
 
+using namespace constants;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace types
