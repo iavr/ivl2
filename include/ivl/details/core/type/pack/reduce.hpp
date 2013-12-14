@@ -89,7 +89,7 @@ template <template <typename...> class F, typename... E>
 using all = all_p <F, pack <E...> >;
 
 template <template <typename...> class F, typename... E>
-using any  = any_p  <F, pack <E...> >;
+using any = any_p  <F, pack <E...> >;
 
 //-----------------------------------------------------------------------------
 

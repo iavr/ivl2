@@ -23,33 +23,67 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_HPP
-#define IVL_DETAILS_CORE_HPP
+#ifndef IVL_DETAILS_CORE_KEY_TRAITS_HPP
+#define IVL_DETAILS_CORE_KEY_TRAITS_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "core/debug.hpp"
-#include "core/include.hpp"
-#include "core/using.hpp"
-#include "core/platform.hpp"
-#include "core/type.hpp"
-#include "core/math.hpp"
-#include "core/afun/begin.hpp"
-#include "core/tuple.hpp"
-#include "core/atom.hpp"
-#include "core/key.hpp"
-#include "core/afun.hpp"
-#include "core/vec.hpp"
-#include "core/mem.hpp"
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/pop.hpp"
+namespace traits {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_HPP
+namespace details {
+
+template <typename T>
+struct is_key_ : public _false { };
+
+template <typename K>
+struct is_key_<keys::key <K> > : public _true { };
+
+template <typename T>
+struct is_key_arg_ : public _false { };
+
+template <typename K, typename... A>
+struct is_key_arg_<keys::key_arg <K, A...> > : public _true { };
+
+template <typename T> struct key_of_;
+
+template <typename K>
+struct key_of_<keys::key <K> > { using type = K; };
+
+template <typename K, typename... A>
+struct key_of_<keys::key_arg <K, A...> > { using type = K; };
+
+}  // namespace details
+
+template <typename T> using is_key     = details::is_key_<raw_type <T> >;
+template <typename T> using is_key_arg = details::is_key_arg_<raw_type <T> >;
+
+template <typename T> using key_of_t = details::key_of_<raw_type <T> >;
+template <typename T> using key_of   = type_of <key_of_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace traits
+
+//-----------------------------------------------------------------------------
+
+}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_KEY_TRAITS_HPP

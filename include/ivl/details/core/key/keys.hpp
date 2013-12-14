@@ -21,35 +21,41 @@
    and a copy of the GNU Lesser General Public License along
    with ivl. If not, see <http://www.gnu.org/licenses/>. */
 
-//-----------------------------------------------------------------------------
+#ifndef IVL_DETAILS_CORE_KEY_KEYS_HPP
+#define IVL_DETAILS_CORE_KEY_KEYS_HPP
 
-#ifndef IVL_DETAILS_CORE_HPP
-#define IVL_DETAILS_CORE_HPP
-
-//-----------------------------------------------------------------------------
-
-#include "core/macro/push.hpp"
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/debug.hpp"
-#include "core/include.hpp"
-#include "core/using.hpp"
-#include "core/platform.hpp"
-#include "core/type.hpp"
-#include "core/math.hpp"
-#include "core/afun/begin.hpp"
-#include "core/tuple.hpp"
-#include "core/atom.hpp"
-#include "core/key.hpp"
-#include "core/afun.hpp"
-#include "core/vec.hpp"
-#include "core/mem.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/pop.hpp"
+namespace key {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_HPP
+struct begin        : public ::ivl::keys::key <begin>         { using P::operator=; };
+struct end          : public ::ivl::keys::key <end>           { using P::operator=; };
+struct length       : public ::ivl::keys::key <length>        { using P::operator=; };
+struct size         : public ::ivl::keys::key <size>          { using P::operator=; };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace key
+
+//-----------------------------------------------------------------------------
+
+static  __attribute__ ((unused))  key::begin        begin;
+static  __attribute__ ((unused))  key::end          end;
+static  __attribute__ ((unused))  key::length       length;
+static  __attribute__ ((unused))  key::size         size;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif // IVL_DETAILS_CORE_KEY_KEYS_HPP

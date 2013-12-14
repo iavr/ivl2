@@ -47,7 +47,7 @@ struct NAME                              \
 	operator()(A&& a) const               \
 	-> decltype(OP fwd <A>(a))            \
 		{ return OP fwd <A>(a); }          \
-};
+};                                       \
 
 //-----------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ struct NAME                              \
 	operator()(A&& a) const               \
 	-> decltype(OP fwd <A>(a))            \
 		{ return OP fwd <A>(a); }          \
-};
+};                                       \
 
 //-----------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ struct NAME                              \
 	operator()(A&& a) const               \
 	-> decltype(fwd <A>(a) OP)            \
 		{ return fwd <A>(a) OP; }          \
-};
+};                                       \
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ struct NAME                                          \
 	operator()(A&& a, B&& b) const                    \
 	-> decltype(fwd <A>(a) OP fwd <B>(b))             \
 		{ return fwd <A>(a) OP fwd <B>(b); }           \
-};
+};                                                   \
 
 //-----------------------------------------------------------------------------
 
@@ -99,7 +99,7 @@ struct NAME                                          \
 	operator()(A&& a, B&& b) const                    \
 	-> decltype(fwd <A>(a) OP fwd <B>(b))             \
 		{ return fwd <A>(a) OP fwd <B>(b); }           \
-};
+};                                                   \
 
 //-----------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ struct _##NAME##_cast                                         \
 	template <typename T, typename A>                          \
 	INLINE constexpr T                                         \
 	_(A&& a) const { return NAME##_cast <T>(fwd <A>(a)); }     \
-};
+};                                                            \
 
 //-----------------------------------------------------------------------------
 
@@ -145,6 +145,8 @@ IVL_OP2(bit_or,  |)
 IVL_OP2(bit_xor, ^)
 IVL_OP2_MUT(left,  <<)
 IVL_OP2_MUT(right, >>)
+
+//-----------------------------------------------------------------------------
 
 IVL_OP2_MUT(assign, =)
 IVL_OP2_MUT(add_as, +=)

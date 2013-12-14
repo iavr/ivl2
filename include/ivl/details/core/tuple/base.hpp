@@ -144,6 +144,20 @@ public:
 
 //-----------------------------------------------------------------------------
 
+	template <typename F, typename... A>
+	INLINE ret <F(A..., rtref <E>...)>
+	rcall(F&& f, A&&... a) && { return fwd <F>(f)(fwd <A>(a)..., _f <I>()...); }
+
+	template <typename F, typename... A>
+	INLINE ret <F(A..., ltref <E>...)>
+	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., _<I>()...); }
+
+	template <typename F, typename... A>
+	INLINE constexpr ret <F(A..., cltref <E>...)>
+	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., _<I>()...); }
+
+//-----------------------------------------------------------------------------
+
 	// TODO: flip element order when in gcc, as a workaround to bug
 	// http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51253
 	template <typename F> INLINE void

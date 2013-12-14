@@ -64,11 +64,11 @@ using is_tup_type = expr <is_pack <T>() || as_tuple <T>()>;
 
 //-----------------------------------------------------------------------------
 
-template <typename... A>
-using all_tuple = all <is_tuple, A...>;
+template <typename P> using all_tuple_p = all_p <is_tuple, P>;
+template <typename P> using any_tuple_p = any_p <is_tuple, P>;
 
-template <typename... A>
-using any_tuple = any <is_tuple, A...>;
+template <typename... E> using all_tuple = all_tuple_p <pack <E...> >;
+template <typename... E> using any_tuple = any_tuple_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 

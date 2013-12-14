@@ -23,33 +23,16 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_HPP
-#define IVL_DETAILS_CORE_HPP
+#ifndef IVL_DETAILS_CORE_KEY_HPP
+#define IVL_DETAILS_CORE_KEY_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+#include "key/begin.hpp"
+#include "key/traits.hpp"
+#include "key/key.hpp"
+#include "key/keys.hpp"
 
 //-----------------------------------------------------------------------------
 
-#include "core/debug.hpp"
-#include "core/include.hpp"
-#include "core/using.hpp"
-#include "core/platform.hpp"
-#include "core/type.hpp"
-#include "core/math.hpp"
-#include "core/afun/begin.hpp"
-#include "core/tuple.hpp"
-#include "core/atom.hpp"
-#include "core/key.hpp"
-#include "core/afun.hpp"
-#include "core/vec.hpp"
-#include "core/mem.hpp"
-
-//-----------------------------------------------------------------------------
-
-#include "core/macro/pop.hpp"
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_DETAILS_CORE_HPP
+#endif  // IVL_DETAILS_CORE_KEY_HPP

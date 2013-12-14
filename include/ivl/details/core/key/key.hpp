@@ -23,33 +23,63 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_HPP
-#define IVL_DETAILS_CORE_HPP
+#ifndef IVL_DETAILS_CORE_KEY_KEY_HPP
+#define IVL_DETAILS_CORE_KEY_KEY_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "core/debug.hpp"
-#include "core/include.hpp"
-#include "core/using.hpp"
-#include "core/platform.hpp"
-#include "core/type.hpp"
-#include "core/math.hpp"
-#include "core/afun/begin.hpp"
-#include "core/tuple.hpp"
-#include "core/atom.hpp"
-#include "core/key.hpp"
-#include "core/afun.hpp"
-#include "core/vec.hpp"
-#include "core/mem.hpp"
+namespace keys {
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/pop.hpp"
+struct option { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_HPP
+template <typename K, typename V>
+struct key_val : public option, public tuple <V>
+{
+	using tuple <V>::tuple;
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename K, typename... A>
+struct key_arg : public option, public tuple <A...>
+{
+	using tuple <A...>::tuple;
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename K>
+struct key : public option
+{
+	typedef key <K> P;
+
+	template <typename A>
+	key_val <K, A&&>
+	operator=(A&& a) const { return key_val <K, A&&>(fwd <A>(a)); }
+
+	template <typename... A>
+	key_arg <K, A&&...>
+	_(A&&... a) const { return key_arg <K, A&&...>(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+}  // namespace keys
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_KEY_KEY_HPP

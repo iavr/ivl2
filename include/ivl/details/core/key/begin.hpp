@@ -23,33 +23,28 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_HPP
-#define IVL_DETAILS_CORE_HPP
+#ifndef IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#define IVL_DETAILS_CORE_KEY_BEGIN_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "core/debug.hpp"
-#include "core/include.hpp"
-#include "core/using.hpp"
-#include "core/platform.hpp"
-#include "core/type.hpp"
-#include "core/math.hpp"
-#include "core/afun/begin.hpp"
-#include "core/tuple.hpp"
-#include "core/atom.hpp"
-#include "core/key.hpp"
-#include "core/afun.hpp"
-#include "core/vec.hpp"
-#include "core/mem.hpp"
+namespace keys {
+
+template <typename K>                struct key;
+template <typename K, typename... A> struct key_arg;
+
+}
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/pop.hpp"
+}  // namespace ivl
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_HPP
+#endif  // IVL_DETAILS_CORE_KEY_BEGIN_HPP

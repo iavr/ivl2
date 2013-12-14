@@ -40,6 +40,9 @@ using types::enable_if;
 using types::is_stream;
 using types::is_tuple;
 using types::any_tuple;
+using types::is_key;
+using types::is_key_arg;
+using types::key_of;
 
 }  // namespace op
 
@@ -83,6 +86,17 @@ namespace op {                                               \
                                                              \
 namespace op {                                               \
 	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_VEC_OP_TEMP(NAME)                                \
+                                                             \
+namespace fun {                                              \
+namespace op {                                               \
+	template <typename... T>                                  \
+	using NAME = afun::vec_apply <afun::op::NAME <T...> >;    \
+}                                                            \
 }                                                            \
 
 //-----------------------------------------------------------------------------
@@ -256,6 +270,8 @@ IVL_VEC_OP2(bit_xor, ^)
 IVL_VEC_OP2_SHIFT(left,  <<)
 IVL_VEC_OP2_SHIFT(right, >>)
 
+//-----------------------------------------------------------------------------
+
 IVL_VEC_OP(assign)  //  a = b  // member operator; only vectorized on b
 IVL_VEC_OP2_MUT(add_as, +=)
 IVL_VEC_OP2_MUT(sub_as, -=)
@@ -272,52 +288,42 @@ IVL_VEC_OP2_MUT(right_as, >>=)
 IVL_VEC_OP1(deref, *)
 IVL_VEC_OP1(addr,  &)
 
-// //-----------------------------------------------------------------------------
-//
-// struct ref_member
-// {
-// 	template <typename C, typename R>
-// 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m) const
-// 	-> decltype(fwd <C>(c) .* m)
-// 		{ return fwd <C>(c) .* m; }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct ptr_member
-// {
-// 	template <typename C, typename R>
-// 	INLINE auto operator()(C&& c, R bare_type <C>::*m) const
-// 	-> decltype(fwd <C>(c) ->* m)
-// 		{ return fwd <C>(c) ->* m; }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct ref_call
-// {
-// 	template <typename C, typename R, typename... A>
-// 	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m, A&&... a) const
-// 	-> decltype(( fwd <C>(c) .* m ) ( fwd <A>(a)... ))
-// 		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ); }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct ptr_call
-// {
-// 	template <typename C, typename R, typename... A>
-// 	INLINE auto operator()(C&& c, R bare_type <C>::*m, A&&... a) const
-// 	-> decltype(( fwd <C>(c) ->* m ) ( fwd <A>(a)... ))
-// 		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ); }
-// };
-//
-// //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-IVL_VEC_OP(call)     //  t ( a... )  // member operator
-IVL_VEC_OP(bracket)  //  t [ a ]     // member operator
-IVL_VEC_OP(comma)    //  a , b       // do not overload
-IVL_VEC_OP(cond)     //  c ? a : b   // non-overloadable
+IVL_VEC_OP(ref_member)   //  c .* m             // non-overloadable
+IVL_VEC_OP(ptr_member)   //  c ->* m            // used for key_member, key_call
+IVL_VEC_OP(ref_call)     //  c .* m ( a... )    // non-overloadable
+IVL_VEC_OP(ptr_call)     //  c ->* m  ( a... )  // non-overloadable
+
+//-----------------------------------------------------------------------------
+
+IVL_VEC_OP_TEMP(key_member)
+IVL_VEC_OP_TEMP(key_call)
+
+namespace op {
+
+template <typename C, typename M, enable_if <is_key <M>{}> = 0>
+INLINE constexpr auto
+operator ->*(C&& c, M m)
+-> decltype(fun::op::key_member <M>()(fwd <C>(c)))
+	{ return fun::op::key_member <M>()(fwd <C>(c)); }
+
+template <typename C, typename M, enable_if <is_key_arg <M>{}> = 0>
+INLINE constexpr auto
+operator ->*(C&& c, M&& m)
+-> decltype(fwd <M>(m).rcall(fun::op::key_call <key_of <M> >(), fwd <C>(c)))
+	{ return fwd <M>(m).rcall(fun::op::key_call <key_of <M> >(), fwd <C>(c)); }
+
+}
+
+using op::operator ->*;
+
+//-----------------------------------------------------------------------------
+
+IVL_VEC_OP(call)      //  t ( a... )  // member operator
+IVL_VEC_OP(bracket)   //  t [ a ]     // member operator
+IVL_VEC_OP(comma)     //  a , b       // do not overload
+IVL_VEC_OP(cond)      //  c ? a : b   // non-overloadable
 
 // //-----------------------------------------------------------------------------
 //

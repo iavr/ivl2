@@ -6,6 +6,7 @@ namespace test {
 
 using namespace ivl;
 using namespace ivl::types;
+using ivl::size;
 namespace op = ivl::op;
 
 //-----------------------------------------------------------------------------
@@ -81,6 +82,15 @@ void run()
 		cout << f(8, 4) << endl;
 		cout << f(8, y) << endl;
 		cout << f(8, _[y]) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "op ->*" << endl;
+		array <int> a(3);
+		std::vector <int> s(5);
+		cout << _(a.size(), s.size()) << endl;
+		cout << _(a, s) ->* size._() << endl;
 		cout << endl;
 	}
 
