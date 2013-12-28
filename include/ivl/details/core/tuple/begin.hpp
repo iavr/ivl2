@@ -34,6 +34,15 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+namespace keys {
+
+namespace details { template <typename O, typename... A> struct op_ref; }
+using details::op_ref;
+
+}  // namespace keys
+
+//-----------------------------------------------------------------------------
+
 namespace tuple_details { using namespace types; }
 
 //-----------------------------------------------------------------------------

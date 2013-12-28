@@ -39,7 +39,7 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename... E>
-struct access : public derived <D> { INLINE void _(); };
+struct access : public derived <D> { };
 
 //-----------------------------------------------------------------------------
 
@@ -51,9 +51,10 @@ protected:
 	using derived <D>::der_f;
 
 public:
-	INLINE           rtref <E>  _() &&     { return at._<0>(der_f()); }
-	INLINE           ltref <E>  _() &      { return at._<0>(der()); }
-	INLINE constexpr cltref <E> _() const& { return at._<0>(der()); }
+	INLINE           rtref <E>  val_f()      { return at._<0>(der_f()); }
+	INLINE           rtref <E>  val() &&     { return at._<0>(der_f()); }
+	INLINE           ltref <E>  val() &      { return at._<0>(der()); }
+	INLINE constexpr cltref <E> val() const& { return at._<0>(der()); }
 };
 
 //-----------------------------------------------------------------------------
@@ -66,12 +67,12 @@ protected:
 	using derived <D>::der_f;
 
 public:
-	INLINE void _();
-
+	INLINE           rtref <E0>  fst_f()      { return at._<0>(der_f()); }
 	INLINE           rtref <E0>  fst() &&     { return at._<0>(der_f()); }
 	INLINE           ltref <E0>  fst() &      { return at._<0>(der()); }
 	INLINE constexpr cltref <E0> fst() const& { return at._<0>(der()); }
 
+	INLINE           rtref <E1>  snd_f()      { return at._<1>(der_f()); }
 	INLINE           rtref <E1>  snd() &&     { return at._<1>(der_f()); }
 	INLINE           ltref <E1>  snd() &      { return at._<1>(der()); }
 	INLINE constexpr cltref <E1> snd() const& { return at._<1>(der()); }

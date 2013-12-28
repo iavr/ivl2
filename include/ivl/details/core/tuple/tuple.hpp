@@ -63,6 +63,8 @@ class store <data::tuple <>, sizes <I...>, E...> :
 //-----------------------------------------------------------------------------
 
 public:
+	explicit INLINE constexpr store(_true) : B(yes) { }
+
 	template <typename... A>
 	explicit INLINE constexpr store(_true, A&&... a) : B(fwd <A>(a)...) { }
 
@@ -81,6 +83,8 @@ class collection <data::tuple <>, E...> :
 
 public:
 	using B::base_type::operator=;
+
+	template <typename A = int, enable_if <_and <is_cons <E>...>{}, A> = 0>
 	explicit INLINE constexpr collection() : B(yes) { }
 
 	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
@@ -89,10 +93,10 @@ public:
 	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
 	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-	template <typename T, enable_if <tup_conv <T, P>{}> = 0>
+	template <typename T, enable_if <tup_tup_conv <T, P>{}> = 0>
 	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 
-	template <typename T, enable_if <tup_explicit <P, T>{}> = 0>
+	template <typename T, enable_if <tup_tup_explicit <P, T>{}> = 0>
 	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 };
 

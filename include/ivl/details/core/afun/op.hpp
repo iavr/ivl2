@@ -32,7 +32,6 @@
 
 namespace ivl_op {
 
-using ivl::types::raw_type;
 using ivl::types::bare_type;
 using ivl::fwd;
 
@@ -166,42 +165,32 @@ IVL_OP1(addr,  &)
 
 //-----------------------------------------------------------------------------
 
-struct ref_member
-{
-	template <typename C, typename R>
-	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m) const
-	-> decltype(fwd <C>(c) .* m)
-		{ return fwd <C>(c) .* m; }
-};
-
-//-----------------------------------------------------------------------------
-
 struct ptr_member
 {
-	template <typename C, typename R>
-	INLINE auto operator()(C&& c, R bare_type <C>::*m) const
-	-> decltype(fwd <C>(c) ->* m)
-		{ return fwd <C>(c) ->* m; }
-};
+	template <typename C, typename M>
+	INLINE constexpr auto operator()(C&& c, M&& m) const
+	-> decltype(fwd <C>(c) .* fwd <M>(m))
+		{ return fwd <C>(c) .* fwd <M>(m); }
 
-//-----------------------------------------------------------------------------
-
-struct ref_call
-{
-	template <typename C, typename R, typename... A>
-	INLINE constexpr auto operator()(C&& c, R raw_type <C>::*m, A&&... a) const
-	-> decltype(( fwd <C>(c) .* m ) ( fwd <A>(a)... ))
-		{ return ( fwd <C>(c) .* m ) ( fwd <A>(a)... ); }
+	template <typename C, typename M>
+	INLINE constexpr auto operator()(C* p, M&& m) const
+	-> decltype(p ->* fwd <M>(m))
+		{ return p ->* fwd <M>(m); }
 };
 
 //-----------------------------------------------------------------------------
 
 struct ptr_call
 {
-	template <typename C, typename R, typename... A>
-	INLINE auto operator()(C&& c, R bare_type <C>::*m, A&&... a) const
-	-> decltype(( fwd <C>(c) ->* m ) ( fwd <A>(a)... ))
-		{ return ( fwd <C>(c) ->* m ) ( fwd <A>(a)... ); }
+	template <typename C, typename M, typename... A>
+	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
+	-> decltype(( fwd <C>(c) .* fwd <M>(m) ) ( fwd <A>(a)... ))
+		{ return ( fwd <C>(c) .* fwd <M>(m) ) ( fwd <A>(a)... ); }
+
+	template <typename C, typename M, typename... A>
+	INLINE constexpr auto operator()(C* p, M&& m, A&&... a) const
+	-> decltype(( p ->* fwd <M>(m) ) ( fwd <A>(a)... ))
+		{ return ( p ->* fwd <M>(m) ) ( fwd <A>(a)... ); }
 };
 
 //-----------------------------------------------------------------------------

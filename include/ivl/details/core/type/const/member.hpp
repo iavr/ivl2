@@ -42,37 +42,37 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C, T C::*M>
-struct c_member : public constant <T C::*, c_member <T, C, M> >
+template <typename R, typename C, R C::*M>
+struct c_member : public constant <R C::*, c_member <R, C, M> >
 {
-	INLINE constexpr operator T C::*() const { return M; }
+	INLINE constexpr operator R C::*() const { return M; }
 };
 
-template <typename T, typename C, T const C::*M>
-struct c_cmember : public constant <T const C::*, c_cmember <T, C, M> >
+template <typename R, typename C, R const C::*M>
+struct c_cmember : public constant <R const C::*, c_cmember <R, C, M> >
 {
-	INLINE constexpr operator T const C::*() const { return M; }
+	INLINE constexpr operator R const C::*() const { return M; }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C, C &O, T C::*M>
+template <typename R, typename C, C &O, R C::*M>
 using c_ref_member =
-	c_op <op::ref_member (c_ref <C, O>, c_member <T, C, M>)>;
+	c_op <op::ptr_member (c_ref <C, O>, c_member <R, C, M>)>;
 
-template <typename T, typename C, C const &O, T const C::*M>
+template <typename R, typename C, C const &O, R const C::*M>
 using c_cref_member =
-	c_op <op::ref_member (c_cref <C, O>, c_cmember <T, C, M>)>;
+	c_op <op::ptr_member (c_cref <C, O>, c_cmember <R, C, M>)>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C, C *O, T C::*M>
+template <typename R, typename C, C *O, R C::*M>
 using c_ptr_member =
-	c_op <op::ptr_member (c_ptr <C, O>, c_member <T, C, M>)>;
+	c_op <op::ptr_member (c_ptr <C, O>, c_member <R, C, M>)>;
 
-template <typename T, typename C, C const *O, T const C::*M>
+template <typename R, typename C, C const *O, R const C::*M>
 using c_cptr_member =
-	c_op <op::ptr_member (c_cptr <C, O>, c_cmember <T, C, M>)>;
+	c_op <op::ptr_member (c_cptr <C, O>, c_cmember <R, C, M>)>;
 
 //-----------------------------------------------------------------------------
 

@@ -32,12 +32,27 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-struct uscore : public afun::rref
+namespace uscore_details {
+
+//-----------------------------------------------------------------------------
+
+class uscore : public afun::rref
 {
+	template <typename A> using R = fun_atom <base_opt <A&&> >;
+
+public:
 	template <typename A>
-	INLINE constexpr fun_atom <A&&>
-	operator[](A&& a) const { return fun_atom <A&&>(fwd <A>(a)); }
+	INLINE constexpr R <A>
+	operator[](A&& a) const { return R <A>(fwd <A>(a)); }
 };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace uscore_details
+
+using uscore_details::uscore;
+
+//-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) uscore _;
 

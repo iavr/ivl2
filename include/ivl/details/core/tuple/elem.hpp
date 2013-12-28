@@ -38,12 +38,16 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <size_t I, typename E, bool = is_base_opt <E>()>
+template <
+	size_t I, typename E,
+	bool = is_base_opt <E>(), bool C = is_cons <E>()
+>
 class elem
 {
 	E e;
 
 public:
+	template <typename A = int, enable_if <C, A> = 0>
 	INLINE constexpr elem() : e() { }
 
 	template <typename A>
@@ -61,10 +65,8 @@ public:
 //-----------------------------------------------------------------------------
 
 template <size_t I, typename E>
-struct elem <I, E, true> : private E
+struct elem <I, E, true, false> : private E
 {
-	INLINE constexpr elem() : E() { }
-
 	template <typename A>
 	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
 
@@ -76,6 +78,27 @@ struct elem <I, E, true> : private E
 	INLINE           E get() &&     { return mv(*this); }
 	INLINE           E get() &      { return *this; }
 	INLINE constexpr E get() const& { return *this; }
+};
+
+//-----------------------------------------------------------------------------
+
+// TODO: needs to be disabled in GCC for vec_op sample
+
+template <size_t I, typename E>
+struct elem <I, E, true, true>
+{
+	INLINE constexpr elem() { }
+
+	template <typename A>
+	explicit INLINE constexpr elem(A&& a) { }
+
+	template <typename A>
+	INLINE elem& operator=(A&& a) { return *this; }
+
+	INLINE           E fwd()        { return E(); }
+	INLINE           E get() &&     { return E(); }
+	INLINE           E get() &      { return E(); }
+	INLINE constexpr E get() const& { return E(); }
 };
 
 //-----------------------------------------------------------------------------

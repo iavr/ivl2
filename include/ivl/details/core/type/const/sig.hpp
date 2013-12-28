@@ -49,7 +49,6 @@ template <typename S> class c_sig { };
 template <typename R, typename... A>
 class c_sig <R (A...)>
 {
-	using RC = op::ref_call;
 	using PC = op::ptr_call;
 
 public:
@@ -128,16 +127,16 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename C, R (C::*M)(A...), typename... V>
-	using fun_call = c_op <RC (c_cons <C>, method <C, M>, V...)>;
+	using fun_call = c_op <PC (c_cons <C>, method <C, M>, V...)>;
 
 	template <typename C, R (C::*M)(A...) const, typename... V>
-	using cfun_call = c_op <RC (c_cons <C>, cmethod <C, M>, V...)>;
+	using cfun_call = c_op <PC (c_cons <C>, cmethod <C, M>, V...)>;
 
 	template <typename C, C &O, R (C::*M)(A...), typename... V>
-	using ref_call = c_op <RC (c_ref <C, O>, method <C, M>, V...)>;
+	using ref_call = c_op <PC (c_ref <C, O>, method <C, M>, V...)>;
 
 	template <typename C, C const &O, R (C::*M)(A...) const, typename... V>
-	using cref_call = c_op <RC (c_cref <C, O>, cmethod <C, M>, V...)>;
+	using cref_call = c_op <PC (c_cref <C, O>, cmethod <C, M>, V...)>;
 
 	template <typename C, C *O, R (C::*M)(A...), typename... V>
 	using ptr_call = c_op <PC (c_ptr <C, O>, method <C, M>, V...)>;
@@ -150,16 +149,16 @@ public:
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 	template <typename C, R (C::*M)(A...) &&, typename... V>
-	using rfun_call = c_op <RC (c_cons <C>, rmethod <C, M>, V...)>;
+	using rfun_call = c_op <PC (c_cons <C>, rmethod <C, M>, V...)>;
 
 	template <typename C, R (C::*M)(A...) const&&, typename... V>
-	using crfun_call = c_op <RC (c_cons <C>, crmethod <C, M>, V...)>;
+	using crfun_call = c_op <PC (c_cons <C>, crmethod <C, M>, V...)>;
 
 	template <typename C, C &O, R (C::*M)(A...) &, typename... V>
-	using lref_call = c_op <RC (c_ref <C, O>, lmethod <C, M>, V...)>;
+	using lref_call = c_op <PC (c_ref <C, O>, lmethod <C, M>, V...)>;
 
 	template <typename C, C const &O, R (C::*M)(A...) const&, typename... V>
-	using clref_call = c_op <RC (c_cref <C, O>, clmethod <C, M>, V...)>;
+	using clref_call = c_op <PC (c_cref <C, O>, clmethod <C, M>, V...)>;
 
 	template <typename C, C *O, R (C::*M)(A...) &, typename... V>
 	using lptr_call = c_op <PC (c_ptr <C, O>, lmethod <C, M>, V...)>;

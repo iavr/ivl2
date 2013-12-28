@@ -32,9 +32,6 @@
 #include "version.hpp"
 #include "core"
 #include "array"
-// #include "array_nd"
-// #include "array_2d"
-// #include "image"
 #include "fun"
 
 //-----------------------------------------------------------------------------

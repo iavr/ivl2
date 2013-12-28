@@ -80,9 +80,6 @@ template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
 template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
 template <typename... E> using all_clref = all_clref_p <pack <E...> >;
 
-template <typename P>    using all_opt_p = all_p <is_base_opt, P>;
-template <typename... E> using all_opt   = all_opt_p <pack <E...> >;
-
 //-----------------------------------------------------------------------------
 
 template <typename T> using tup_len = length_of <raw_type <T> >;
@@ -191,6 +188,15 @@ struct tup_assign : public details::tup_rel <is_assign, C, T> { };
 template <typename... E, typename... P, typename T>
 struct tup_assign <pack <pack <E...>, P...>, T> :
 	public alls <tup_assign, pack <pack <E...>, P...>, tup_types <T> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename C>
+using tup_tup_conv = expr <tup_conv <T, C>() && !tup_conv <pack <T>, C>()>;
+
+template <typename C, typename T>
+using tup_tup_explicit =
+	expr <tup_explicit <C, T>() && !tup_explicit <C, pack <T> >()>;
 
 //-----------------------------------------------------------------------------
 

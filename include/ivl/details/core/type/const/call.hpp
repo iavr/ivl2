@@ -53,10 +53,9 @@ namespace details {
 template <typename S> struct ret_ct;
 template <typename S> using  ret_c = type_of <ret_ct <S> >;
 
-// TODO: use value_type_of <> (gcc ICE)
 template <typename F, typename... A>
 struct ret_ct <F(A...)> :
-	public ret_t <typename F::value_type(typename A::value_type...)> { };
+	public ret_t <value_type_of <F>(value_type_of <A>...)> { };
 
 //-----------------------------------------------------------------------------
 
@@ -92,7 +91,7 @@ struct c_call : public c_call <F(A...)> { };
 
 template <typename F, typename... A>
 struct c_call <F(A...)> :
-	public c_call_ret <F(arg_c <A>...), c_call <F(A...)>> { };
+	public c_call_ret <F(arg_c <A>...), c_call <F(A...)> > { };
 
 //-----------------------------------------------------------------------------
 

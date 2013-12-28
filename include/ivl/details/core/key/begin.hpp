@@ -36,10 +36,21 @@ namespace ivl {
 
 namespace keys {
 
-template <typename K>                struct key;
-template <typename K, typename... A> struct key_arg;
+//-----------------------------------------------------------------------------
 
-}
+namespace details {
+
+using namespace types;
+
+template <typename K> struct key;
+
+}  // namespace details
+
+using details::key;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace keys
 
 //-----------------------------------------------------------------------------
 

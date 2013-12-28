@@ -112,10 +112,17 @@ template <typename F, typename... A>
 struct ret_t : public ret_t <F(A...)> { };
 
 template <typename F, typename... A>
-struct ret_t <F(A...)> :
-	public id_t <decltype(afun::tmp_call()(gen <F>(), gen <A>()...))> { };
+struct ret_t <F(A...)> : public id_t <details::fun_test <F, A...> > { };
 
 template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... A>
+struct can_call : public can_call <F(A...)> { };
+
+template <typename F, typename... A>
+struct can_call <F(A...)> : public sfinae <details::fun_test, F, A...> { };
 
 //-----------------------------------------------------------------------------
 

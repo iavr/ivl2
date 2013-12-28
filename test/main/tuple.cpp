@@ -20,10 +20,10 @@ struct B
 {
 	char c;
 	operator char() const { return c; }
-	void operator++() { ++++c;}
+	B& operator++() { return ++++c, *this; }
 };
 
-void swap(B& a, B& b) { std::swap(a, b); ++a, ++b; }
+void swap(B& a, B& b) { std::swap(++a, ++b); }
 
 template <typename E1, typename E2>
 tuple <E1, E2>
@@ -127,9 +127,9 @@ void run()
 		cout << endl;
 
 		auto w = val(_(x));
-		w._() = _(8);
+		w.val() = _(8);
 		cout << x << endl;
-		w._()._() = 3;
+		w.val().val() = 3;
 		cout << x << endl;
 		cout << endl;
 	}
@@ -217,7 +217,7 @@ void run()
 
 	{
 		cout << "atom" << endl;
-		cout << _[3]._() << endl;
+		cout << _[3].val() << endl;
 		cout << _[3] << endl;
 		cout << _[3]._<sizes <5, 7, 9> >() << endl;
 		cout << _[3]._<sz_range <5, 9> >() << endl;

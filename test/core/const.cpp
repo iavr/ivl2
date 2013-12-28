@@ -122,7 +122,7 @@ void run()
 		cout << endl;
 
 		cout << "array_list:" << endl;
-		using L = c_array_list <D, pack <c_int <-4> >, pack <c_int<13> > >;
+		using L = c_array_list <D, pack <c_int <-4> >, pack <c_int <13> > >;
 		print_array(L()());
 		cout << endl;
 
@@ -168,11 +168,11 @@ void run()
 		cout << "debug:" << endl;
 		typedef void S(int);
 		typedef void (E::*SC)(int) const;
-		c_fun_call <op::ref_call (c_cons <E>, c_sig <S>::method <E, &E::f>, c_int <8>)>()();
-		c_fun_call <op::ref_call (c_cons <E>, c_sig <S>::cmethod <E, &E::f>, c_int <8>)>()();
+		c_fun_call <op::ptr_call (c_cons <E>, c_sig <S>::method <E, &E::f>, c_int <8>)>()();
+		c_fun_call <op::ptr_call (c_cons <E>, c_sig <S>::cmethod <E, &E::f>, c_int <8>)>()();
 		SC s = c_sig <S>::cmethod <E, &E::f>()();
-		op::ref_call()(E(), s, 8);
-		op::ref_call()(E(), (SC)&E::f, 8);
+		op::ptr_call()(E(), s, 8);
+		op::ptr_call()(E(), (SC)&E::f, 8);
 		cout << endl;
 	}
 

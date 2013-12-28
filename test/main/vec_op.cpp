@@ -6,8 +6,10 @@ namespace test {
 
 using namespace ivl;
 using namespace ivl::types;
-using ivl::size;
 namespace op = ivl::op;
+
+using ivl::size;
+using ivl::empty;
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +83,7 @@ void run()
 		auto y = _(4, -2, 16.);
 		cout << f(8, 4) << endl;
 		cout << f(8, y) << endl;
-		cout << f(8, _[y]) << endl;
+		cout << f(8, _[y]) << endl;  // not in GCC
 		cout << endl;
 	}
 
@@ -89,8 +91,10 @@ void run()
 		cout << "op ->*" << endl;
 		array <int> a(3);
 		std::vector <int> s(5);
-		cout << _(a.size(), s.size()) << endl;
-		cout << _(a, s) ->* size._() << endl;
+		cout << _(a.size(), s.empty()) << endl;
+		cout << _(a, s) ->* _[_(size, empty)]._() << endl;  // not in GCC
+		cout << 2 ->* _(3) << endl;
+		cout << 2 ->* _(3, 2, 1, 0) << endl;
 		cout << endl;
 	}
 

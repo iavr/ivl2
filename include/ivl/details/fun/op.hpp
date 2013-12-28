@@ -40,11 +40,22 @@ using types::enable_if;
 using types::is_stream;
 using types::is_tuple;
 using types::any_tuple;
-using types::is_key;
-using types::is_key_arg;
-using types::key_of;
 
 }  // namespace op
+
+//-----------------------------------------------------------------------------
+
+#define IVL_ATOM_OP(NAME)                                    \
+                                                             \
+namespace fun {                                              \
+namespace op {                                               \
+	using NAME = afun::NAME;                                  \
+}                                                            \
+}                                                            \
+                                                             \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
 
 //-----------------------------------------------------------------------------
 
@@ -90,17 +101,6 @@ namespace op {                                               \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP_TEMP(NAME)                                \
-                                                             \
-namespace fun {                                              \
-namespace op {                                               \
-	template <typename... T>                                  \
-	using NAME = afun::vec_apply <afun::op::NAME <T...> >;    \
-}                                                            \
-}                                                            \
-
-//-----------------------------------------------------------------------------
-
 #define IVL_VEC_OP1(NAME, OP)                  \
                                                \
 IVL_VEC_OP(NAME)                               \
@@ -109,8 +109,8 @@ namespace op {                                 \
                                                \
 template <                                     \
 	typename A,                                 \
-	enable_if <is_tuple <A>{}> = 0              \
->                                              \
+	enable_if <is_tuple <A>{}>                  \
+= 0>                                           \
 INLINE constexpr auto                          \
 operator OP(A&& a)                             \
 -> decltype(NAME(fwd <A>(a)))                  \
@@ -130,8 +130,8 @@ namespace op {                                 \
                                                \
 template <                                     \
 	typename A,                                 \
-	enable_if <is_tuple <A>{}> = 0              \
->                                              \
+	enable_if <is_tuple <A>{}>                  \
+= 0>                                           \
 INLINE auto                                    \
 operator OP(A&& a)                             \
 -> decltype(NAME(fwd <A>(a)))                  \
@@ -151,8 +151,8 @@ namespace op {                                 \
                                                \
 template <                                     \
 	typename A,                                 \
-	enable_if <is_tuple <A>{}> = 0              \
->                                              \
+	enable_if <is_tuple <A>{}>                  \
+= 0>                                           \
 INLINE auto                                    \
 operator OP(A&& a, int)                        \
 -> decltype(NAME(fwd <A>(a)))                  \
@@ -172,8 +172,8 @@ namespace op {                                             \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	enable_if <any_tuple <A, B>{}> = 0                      \
->                                                          \
+	enable_if <any_tuple <A, B>{}>                          \
+= 0>                                                       \
 INLINE constexpr auto                                      \
 operator OP(A&& a, B&& b)                                  \
 -> decltype(NAME(fwd <A>(a), fwd <B>(b)))                  \
@@ -193,8 +193,8 @@ namespace op {                                             \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	enable_if <any_tuple <A, B>{}> = 0                      \
->                                                          \
+	enable_if <any_tuple <A, B>{}>                          \
+= 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \
 -> decltype(NAME(fwd <A>(a), fwd <B>(b)))                  \
@@ -290,33 +290,26 @@ IVL_VEC_OP1(addr,  &)
 
 //-----------------------------------------------------------------------------
 
-IVL_VEC_OP(ref_member)   //  c .* m             // non-overloadable
-IVL_VEC_OP(ptr_member)   //  c ->* m            // used for key_member, key_call
-IVL_VEC_OP(ref_call)     //  c .* m ( a... )    // non-overloadable
-IVL_VEC_OP(ptr_call)     //  c ->* m  ( a... )  // non-overloadable
+IVL_VEC_OP(ptr_member)   //  c .* m             // non-overloadable
+                         //  c ->* m            // extended + overloaded below
+IVL_VEC_OP(ptr_call)     //  c .* m ( a... )    // non-overloadable
+                         //  c ->* m  ( a... )  // non-overloadable
 
 //-----------------------------------------------------------------------------
 
-IVL_VEC_OP_TEMP(key_member)
-IVL_VEC_OP_TEMP(key_call)
+IVL_ATOM_OP(member)
 
 namespace op {
 
-template <typename C, typename M, enable_if <is_key <M>{}> = 0>
+template <typename A, typename B>
 INLINE constexpr auto
-operator ->*(C&& c, M m)
--> decltype(fun::op::key_member <M>()(fwd <C>(c)))
-	{ return fun::op::key_member <M>()(fwd <C>(c)); }
+operator->*(A&& a, B&& b)
+-> decltype(member(fwd <A>(a), fwd <B>(b)))
+	{ return member(fwd <A>(a), fwd <B>(b)); }
 
-template <typename C, typename M, enable_if <is_key_arg <M>{}> = 0>
-INLINE constexpr auto
-operator ->*(C&& c, M&& m)
--> decltype(fwd <M>(m).rcall(fun::op::key_call <key_of <M> >(), fwd <C>(c)))
-	{ return fwd <M>(m).rcall(fun::op::key_call <key_of <M> >(), fwd <C>(c)); }
+}  // namespace op
 
-}
-
-using op::operator ->*;
+using op::operator->*;
 
 //-----------------------------------------------------------------------------
 

@@ -61,7 +61,8 @@ class store : public base_tup <atom <T, S>, _type <T> >
 //-----------------------------------------------------------------------------
 
 public:
-	explicit INLINE constexpr store() { }
+	template <typename A = int, enable_if <is_cons <T>{}, A> = 0>
+	explicit INLINE constexpr store() : B(yes) { }
 
 	template <typename A, enable_if <is_conv <A, T>{}> = 0>
 	INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
@@ -69,11 +70,11 @@ public:
 	template <typename A, enable_if <is_explicit <T, A>{}> = 0>
 	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
 
-	template <typename A, enable_if <tup_conv <A, P>{}> = 0>
-	INLINE constexpr store(A&& a) : B(fwd <A>(a)._()) { }
+	template <typename A, enable_if <tup_tup_conv <A, P>{}> = 0>
+	INLINE constexpr store(A&& a) : B(fwd <A>(a).val()) { }
 
-	template <typename A, enable_if <tup_explicit <P, A>{}> = 0>
-	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)._()) { }
+	template <typename A, enable_if <tup_tup_explicit <P, A>{}> = 0>
+	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a).val()) { }
 };
 
 //-----------------------------------------------------------------------------

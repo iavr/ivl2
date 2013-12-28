@@ -38,39 +38,39 @@ namespace keys {
 
 //-----------------------------------------------------------------------------
 
-struct option { };
+namespace details {
 
 //-----------------------------------------------------------------------------
 
 template <typename K, typename V>
-struct key_val : public option, public tuple <V>
+struct key_val : private tuple <V>
 {
 	using tuple <V>::tuple;
-};
+	using tuple <V>::val;
 
-//-----------------------------------------------------------------------------
-
-template <typename K, typename... A>
-struct key_arg : public option, public tuple <A...>
-{
-	using tuple <A...>::tuple;
+	INLINE constexpr K key() const { return K(); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename K>
-struct key : public option
+struct key
 {
-	typedef key <K> P;
-
 	template <typename A>
-	key_val <K, A&&>
+	INLINE constexpr key_val <K, base_opt <A&&> >
 	operator=(A&& a) const { return key_val <K, A&&>(fwd <A>(a)); }
 
 	template <typename... A>
-	key_arg <K, A&&...>
-	_(A&&... a) const { return key_arg <K, A&&...>(fwd <A>(a)...); }
+	INLINE constexpr op_ref <K, base_opt <A&&>...>
+	_(A&&... a) const { return op_ref <K, A&&...>(K(), fwd <A>(a)...); }
 };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+using details::key_val;
+using details::key;
 
 //-----------------------------------------------------------------------------
 

@@ -61,7 +61,7 @@ template <size_t... N> using sizes   = integrals <size_t, N...>;
 //-----------------------------------------------------------------------------
 
 template <typename T, T B, T E, typename S = int, S s = 1>
-struct range;
+struct range { };
 
 template <int B, int E, int s = 1>
 using num_range = range <int, B, E, int, s>;
