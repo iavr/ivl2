@@ -38,19 +38,21 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename... E>
-struct access : public derived <D> { };
+template <typename S, typename D, typename... E>
+struct access : public S, public derived <D> { using S::S; };
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename E>
-class access <D, E> : public derived <D>
+template <typename S, typename D, typename E>
+class access <S, D, E> : public S, public derived <D>
 {
 protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
 public:
+	using S::S;
+
 	INLINE           rtref <E>  val_f()      { return at._<0>(der_f()); }
 	INLINE           rtref <E>  val() &&     { return at._<0>(der_f()); }
 	INLINE           ltref <E>  val() &      { return at._<0>(der()); }
@@ -59,14 +61,16 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename E0, typename E1>
-class access <D, E0, E1> : public derived <D>
+template <typename S, typename D, typename E0, typename E1>
+class access <S, D, E0, E1> : public S, public derived <D>
 {
 protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
 public:
+	using S::S;
+	
 	INLINE           rtref <E0>  fst_f()      { return at._<0>(der_f()); }
 	INLINE           rtref <E0>  fst() &&     { return at._<0>(der_f()); }
 	INLINE           ltref <E0>  fst() &      { return at._<0>(der()); }

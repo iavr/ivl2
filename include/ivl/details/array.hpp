@@ -34,6 +34,7 @@
 
 #include "array/data.hpp"
 #include "array/array.hpp"
+
 #include "core/vec/array.hpp"
 #include "core/vec/vec.hpp"
 #include "core/atom/vec.hpp"

@@ -69,7 +69,7 @@ class member_fun : private tuple <C, M>
 	using B::snd_f;
 	using B::snd;
 
-	using MC = afun::vec_apply <member_call>;
+	using MC = afun::vec <member_call>;  // can be void
 
 public:
 	using B::B;
@@ -90,13 +90,13 @@ public:
 class member
 {
 	template <typename B, typename E>
-	using on_pow = can_call <afun::pow(B, E)>;
+	using has_pow = can_call <afun::pow(B, E)>;
 
 public:
 
 	template <
 		typename B, typename E,
-		enable_if <!is_key <E>() && on_pow <B, E>()>
+		enable_if <!is_key <E>() && has_pow <B, E>()>
 	= 0>
 	INLINE constexpr auto operator()(B&& b, E&& e) const
 	-> decltype(afun::pow()(fwd <B>(b), fwd <E>(e)))
@@ -104,7 +104,7 @@ public:
 
 	template <
 		typename C, typename M,
-		enable_if <!is_key <M>() && !on_pow <C, M>()>
+		enable_if <!is_key <M>() && !has_pow <C, M>()>
 	= 0>
 	INLINE constexpr auto operator()(C&& c, M&& m) const
 	-> decltype(afun::op::ptr_member()(fwd <C>(c), fwd <M>(m)))
@@ -123,26 +123,26 @@ public:
 
 class fun_member
 {
-	using VM = afun::vec_apply <member>;
+	using VM = afun::vec_apply <member>;  // cannot be void (pow assumed so)
 
 	template <typename... A>
 	using MF = member_fun <base_opt <A&&>...>;
 
 	template <typename C, typename M>
-	using on_member = can_call <member(C, M)>;
+	using has_member = can_call <member(C, M)>;
 
 public:
 
 	template <
 		typename C, typename M,
-		enable_if <!vec_rec <on_member, C, M>()>
+		enable_if <!vec_all <has_member, C, M>()>
 	= 0>
 	INLINE constexpr MF <C, M> operator()(C&& c, M&& m) const
 		{ return MF <C, M>(fwd <C>(c), fwd <M>(m)); }
 
 	template <
 		typename C, typename M,
-		enable_if <vec_rec <on_member, C, M>{}>
+		enable_if <vec_all <has_member, C, M>{}>
 	= 0>
 	INLINE constexpr auto operator()(C&& c, M&& m) const
 	-> decltype(VM()(fwd <C>(c), fwd <M>(m)))
@@ -153,7 +153,7 @@ public:
 
 class op_member
 {
-	using MC = afun::vec_apply <member_call>;
+	using MC = afun::vec <member_call>;  // can be void
 
 public:
 

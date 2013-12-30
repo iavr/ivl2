@@ -117,7 +117,7 @@ struct vec_non_void <F(T...)> : public expr <
 namespace details {
 
 template <template <typename...> class F>
-struct vec_rec_
+struct vec_all_
 {
 	template <typename P>       struct rec;
 	template <typename P, bool> struct test;
@@ -136,7 +136,7 @@ struct vec_rec_
 
 // TODO: template alias causes clang segmentation fault
 template <template <typename...> class F, typename... A>
-struct vec_rec : public details::vec_rec_<F>::template map <pack <A...> > { };
+struct vec_all : public details::vec_all_<F>::template map <pack <A...> > { };
 
 //-----------------------------------------------------------------------------
 

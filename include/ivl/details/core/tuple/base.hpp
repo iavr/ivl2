@@ -30,8 +30,6 @@
 
 //-----------------------------------------------------------------------------
 
-struct A;
-struct J;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -41,12 +39,12 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-struct derive : public E...
+struct elem_store : public E...
 {
-	explicit INLINE constexpr derive(_true) : E()... { }
+	explicit INLINE constexpr elem_store(_true) : E()... { }
 
 	template <typename... A>
-	explicit INLINE constexpr derive(A&&... a) : E(fwd <A>(a))... { }
+	explicit INLINE constexpr elem_store(A&&... a) : E(fwd <A>(a))... { }
 };
 
 //-----------------------------------------------------------------------------
@@ -62,12 +60,12 @@ class store <
 	sizes <N...>, pack <U...>
 > :
 	public Q <E...>,
-	public access <D, E...>,
-	public derive <elem <N, U>...>
+	public access <elem_store <elem <N, U>...>, D, E...>
 {
 	using P = Q <E...>;
 	using V = pack <U...>;
-	using B = derive <elem <N, U>...>;
+	using S = elem_store <elem <N, U>...>;
+	using B = access <S, D, E...>;
 	static constexpr size_t L = P::length;
 
 	template <size_t J> using under = elem_at <J, U...>;

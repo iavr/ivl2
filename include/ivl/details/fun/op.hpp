@@ -34,6 +34,10 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+namespace op_details { using namespace types; }
+
+//-----------------------------------------------------------------------------
+
 namespace op {
 
 using types::enable_if;
@@ -299,16 +303,32 @@ IVL_VEC_OP(ptr_call)     //  c .* m ( a... )    // non-overloadable
 
 IVL_ATOM_OP(member)
 
-namespace op {
+namespace op_details {
 
 template <typename A, typename B>
+using builtin_member = expr <is_atom <A>() && !is_class <raw_type <B> >()>;
+
+template <
+	typename A, typename B,
+	enable_if <!builtin_member <A, B>()>
+= 0>
 INLINE constexpr auto
 operator->*(A&& a, B&& b)
--> decltype(member(fwd <A>(a), fwd <B>(b)))
-	{ return member(fwd <A>(a), fwd <B>(b)); }
+-> decltype(afun::member()(fwd <A>(a), fwd <B>(b)))
+	{ return afun::member()(fwd <A>(a), fwd <B>(b)); }
 
-}  // namespace op
+template <
+	typename A, typename B,
+	enable_if <builtin_member <A, B>{}>
+= 0>
+INLINE constexpr auto
+operator->*(A&& a, B&& b)
+-> decltype(afun::member()(fwd <A>(a).val(), fwd <B>(b)))
+	{ return afun::member()(fwd <A>(a).val(), fwd <B>(b)); }
 
+}  // namespace op_details
+
+namespace op { using op_details::operator->*; }
 using op::operator->*;
 
 //-----------------------------------------------------------------------------
