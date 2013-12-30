@@ -45,6 +45,14 @@ using types::any_tuple;
 
 //-----------------------------------------------------------------------------
 
+#define IVL_OP_INST(NAME)                                    \
+                                                             \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
+
+//-----------------------------------------------------------------------------
+
 #define IVL_ATOM_OP(NAME)                                    \
                                                              \
 namespace fun {                                              \
@@ -53,9 +61,7 @@ namespace op {                                               \
 }                                                            \
 }                                                            \
                                                              \
-namespace op {                                               \
-	static __attribute__ ((unused)) fun::op::NAME NAME;       \
-}                                                            \
+IVL_OP_INST(NAME)                                            \
 
 //-----------------------------------------------------------------------------
 
@@ -67,9 +73,7 @@ namespace op {                                               \
 }                                                            \
 }                                                            \
                                                              \
-namespace op {                                               \
-	static __attribute__ ((unused)) fun::op::NAME NAME;       \
-}                                                            \
+IVL_OP_INST(NAME)                                            \
 
 //-----------------------------------------------------------------------------
 
@@ -81,9 +85,7 @@ namespace op {                                               \
 }                                                            \
 }                                                            \
                                                              \
-namespace op {                                               \
-	static __attribute__ ((unused)) fun::op::NAME NAME;       \
-}                                                            \
+IVL_OP_INST(NAME)                                            \
 
 //-----------------------------------------------------------------------------
 
@@ -95,9 +97,7 @@ namespace op {                                               \
 }                                                            \
 }                                                            \
                                                              \
-namespace op {                                               \
-	static __attribute__ ((unused)) fun::op::NAME NAME;       \
-}                                                            \
+IVL_OP_INST(NAME)                                            \
 
 //-----------------------------------------------------------------------------
 

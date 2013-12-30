@@ -152,10 +152,16 @@ template <typename M> using member_arg = type_of <member_arg_t <M> >;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename M>
-using is_member_ptr_of = expr <
-	is_member_ptr <M>() &&
-	eq <raw_type <member_class <M> >, raw_type <C> >()
->;
+using is_ptr_of = eq <raw_type <member_class <M> >, raw_type <C> >;
+
+template <typename C, typename M>
+using is_member_ptr_of = expr <is_member_ptr <M>() && is_ptr_of <C, M>()>;
+
+template <typename C, typename M>
+using is_method_ptr_of = expr <is_method_ptr <M>() && is_ptr_of <C, M>()>;
+
+template <typename C, typename M>
+using is_prop_ptr_of = expr <is_prop_ptr <M>() && is_ptr_of <C, M>()>;
 
 //-----------------------------------------------------------------------------
 

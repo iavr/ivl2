@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_KEY_BEGIN_HPP
-#define IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_FUN_HPP
+#define IVL_DETAILS_CORE_TUPLE_FUN_HPP
 
 #include <ivl/ivl>
 
@@ -34,32 +34,32 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-
-template <typename M> struct key_member;
-template <typename M> struct key_call;
-
-}  // namespace afun
+namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
-namespace keys {
+struct at_
+{
+	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
+	INLINE constexpr auto _(T&& t) const
+		-> decltype(fwd <T>(t).template _<I>())
+		{ return fwd <T>(t).template _<I>(); }
+
+	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
+	INLINE constexpr auto _(T&& t) const
+		-> decltype(fwd <T>(t).template _<K>())
+		{ return fwd <T>(t).template _<K>(); }
+};
 
 //-----------------------------------------------------------------------------
 
-namespace details {
-
-using namespace types;
-
-template <typename K> struct key;
-
-}  // namespace details
-
-using details::key;
+}  // namespace afun_details
 
 //-----------------------------------------------------------------------------
 
-}  // namespace keys
+namespace afun { using at = afun_details::at_; }
+
+static __attribute__ ((unused)) afun::at at;
 
 //-----------------------------------------------------------------------------
 
@@ -67,4 +67,4 @@ using details::key;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_FUN_HPP

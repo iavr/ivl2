@@ -146,12 +146,12 @@ public:
 	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
 		{ return fun::get()(fwd <A>(a)...); }
 
-	template <typename... A, enable_if <tup_non_void <F(A...)>{}> = 0>
+	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
 	INLINE constexpr auto operator()(A&&... a) const
 	-> decltype(_apply(*this, fwd <A>(a)...))
 		{ return _apply(*this, fwd <A>(a)...); }
 
-	template <typename... A, enable_if <tup_void <F(A...)>{}> = 0>
+	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
 	INLINE void operator()(A&&... a) const { _loop(*this, fwd <A>(a)...); }
 };
 

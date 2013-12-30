@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_KEY_BEGIN_HPP
-#define IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#ifndef IVL_DETAILS_CORE_KEY__OP_REF__HPP
+#define IVL_DETAILS_CORE_KEY__OP_REF__HPP
 
 #include <ivl/ivl>
 
@@ -34,28 +34,72 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-
-template <typename M> struct key_member;
-template <typename M> struct key_call;
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
 namespace keys {
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-using namespace types;
+//-----------------------------------------------------------------------------
 
-template <typename K> struct key;
+template <typename O, typename... A>
+class op_ref : private tuple <O, A...>
+{
+	using B = tuple <O, A...>;
+	using T = sz_range <1, sizeof...(A)>;
+
+	using derived <B>::der;
+	using derived <B>::der_f;
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+//-----------------------------------------------------------------------------
+
+	// TODO: remove "this->", required by GCC
+	// (remove return type altogether in C++1y)
+
+	INLINE auto
+	op() &&
+	-> decltype(at._<0>(this->der_f()))
+		{ return at._<0>(der_f()); }
+
+	INLINE auto
+	op() &
+	-> decltype(at._<0>(this->der()))
+		{ return at._<0>(der()); }
+
+	INLINE constexpr auto
+	op() const&
+	-> decltype(at._<0>(this->der()))
+		{ return at._<0>(der()); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE auto
+	ref() &&
+	-> decltype(at._<T>(this->der_f()))
+		{ return at._<T>(der_f()); }
+
+	INLINE auto
+	ref() &
+	-> decltype(at._<T>(this->der()))
+		{ return at._<T>(der()); }
+
+	INLINE constexpr auto
+	ref() const&
+	-> decltype(at._<T>(this->der()))
+		{ return at._<T>(der()); }
+
+};
+
+//-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::key;
+using details::op_ref;
 
 //-----------------------------------------------------------------------------
 
@@ -67,4 +111,4 @@ using details::key;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#endif  // IVL_DETAILS_CORE_KEY__OP_REF__HPP

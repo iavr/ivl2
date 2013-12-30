@@ -140,13 +140,13 @@ template <typename... E>
 struct cltref_t <pack <E...> > { using type = tuple <cltref <E>...>; };
 
 template <typename F, typename... E>
-struct rtref_t <F(pack <E...>)>  { using type = ret <F(rtref <E>...)>; };
+struct rtref_t <F(pack <E...>)> : public ret_t <F(rtref <E>...)> { };
 
 template <typename F, typename... E>
-struct ltref_t <F(pack <E...>)>  { using type = ret <F(ltref <E>...)>; };
+struct ltref_t <F(pack <E...>)> : public ret_t <F(ltref <E>...)> { };
 
 template <typename F, typename... E>
-struct cltref_t <F(pack <E...>)> { using type = ret <F(cltref <E>...)>; };
+struct cltref_t <F(pack <E...>)> : public ret_t <F(cltref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 
