@@ -50,6 +50,7 @@ namespace tuple_details { using namespace types; }
 namespace types {
 namespace traits {
 
+template <typename T> struct as_tuple;
 template <typename T> struct atom_of_t;
 template <typename T> using  atom_of = type_of <atom_of_t <T> >;
 

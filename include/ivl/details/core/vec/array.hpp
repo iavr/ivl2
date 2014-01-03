@@ -108,6 +108,9 @@ template <typename F> struct seq_vec_apply :
 template <typename F> struct seq_vec_loop :
 	public tup_vec_loop <F> { using tup_vec_loop <F>::tup_vec_loop; };
 
+template <typename F> struct seq_vec_auto :
+	public tup_vec_auto <F> { using tup_vec_auto <F>::tup_vec_auto; };
+
 template <typename F, size_t I = 0> struct seq_vec_mut :
 	public tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
 

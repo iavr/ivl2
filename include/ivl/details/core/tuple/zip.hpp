@@ -40,9 +40,9 @@ namespace tuple_details {
 
 template <size_t... I, typename... U>
 class store <data::zip <>, sizes <I...>, U...> :
-	public base_tup <zip_tup <U...>, tran <tup_types <U>...> >
+	public base_tup <zip_tup <U...>, tup_tran <tup_types <U>...> >
 {
-	using P = tran <tup_types <U>...>;
+	using P = tup_tran <tup_types <U>...>;
 	using B = base_tup <zip_tup <U...>, P>;
 
 	template <size_t J> using under = elem_at <J, U...>;

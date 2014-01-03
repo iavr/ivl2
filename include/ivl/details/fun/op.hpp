@@ -49,14 +49,6 @@ using types::any_tuple;
 
 //-----------------------------------------------------------------------------
 
-#define IVL_OP_INST(NAME)                                    \
-                                                             \
-namespace op {                                               \
-	static __attribute__ ((unused)) fun::op::NAME NAME;       \
-}                                                            \
-
-//-----------------------------------------------------------------------------
-
 #define IVL_ATOM_OP(NAME)                                    \
                                                              \
 namespace fun {                                              \
@@ -65,43 +57,30 @@ namespace op {                                               \
 }                                                            \
 }                                                            \
                                                              \
-IVL_OP_INST(NAME)                                            \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP(NAME)                                     \
+#define IVL_DEF_VEC_OP(VEC, NAME)                            \
                                                              \
 namespace fun {                                              \
 namespace op {                                               \
-	using NAME = afun::vec_apply <afun::op::NAME>;            \
+	using NAME = afun::VEC <afun::op::NAME>;                  \
 }                                                            \
 }                                                            \
                                                              \
-IVL_OP_INST(NAME)                                            \
+namespace op {                                               \
+	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+}                                                            \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP_MUT(NAME)                                 \
-                                                             \
-namespace fun {                                              \
-namespace op {                                               \
-	using NAME = afun::vec_mut <afun::op::NAME>;              \
-}                                                            \
-}                                                            \
-                                                             \
-IVL_OP_INST(NAME)                                            \
-
-//-----------------------------------------------------------------------------
-
-#define IVL_VEC_OP_COPY(NAME)                                \
-                                                             \
-namespace fun {                                              \
-namespace op {                                               \
-	using NAME = afun::vec_copy <afun::op::NAME>;             \
-}                                                            \
-}                                                            \
-                                                             \
-IVL_OP_INST(NAME)                                            \
+#define IVL_VEC_OP(NAME)       IVL_DEF_VEC_OP(vec_apply,     NAME)
+#define IVL_VEC_OP_MUT(NAME)   IVL_DEF_VEC_OP(vec_mut,       NAME)
+#define IVL_VEC_OP_COPY(NAME)  IVL_DEF_VEC_OP(vec_copy,      NAME)
+#define IVL_TMP_VEC_OP(NAME)   IVL_DEF_VEC_OP(tmp_vec_apply, NAME)
 
 //-----------------------------------------------------------------------------
 
@@ -306,11 +285,14 @@ IVL_ATOM_OP(member)
 namespace op_details {
 
 template <typename A, typename B>
-using builtin_member = expr <is_atom <A>() && !is_class <raw_type <B> >()>;
+using atom_member = expr <is_atom <A>() && !is_class <raw_type <B> >()>;
+
+template <typename A, typename B>
+using builtin_member = can_call <afun::op::ptr_member(A, B)>;
 
 template <
 	typename A, typename B,
-	enable_if <!builtin_member <A, B>()>
+	enable_if <!builtin_member <A, B>() && !atom_member <A, B>()>
 = 0>
 INLINE constexpr auto
 operator->*(A&& a, B&& b)
@@ -319,7 +301,7 @@ operator->*(A&& a, B&& b)
 
 template <
 	typename A, typename B,
-	enable_if <builtin_member <A, B>{}>
+	enable_if <!builtin_member <A, B>() && atom_member <A, B>()>
 = 0>
 INLINE constexpr auto
 operator->*(A&& a, B&& b)
@@ -338,39 +320,27 @@ IVL_VEC_OP(bracket)   //  t [ a ]     // member operator
 IVL_VEC_OP(comma)     //  a , b       // do not overload
 IVL_VEC_OP(cond)      //  c ? a : b   // non-overloadable
 
-// //-----------------------------------------------------------------------------
-//
-// struct _sizeof
-// {
-// 	template <typename T>
-// 	INLINE constexpr size_t _() const { return sizeof(T); }
-//
-// 	template <typename T>
-// 	INLINE constexpr size_t operator()(T&& v) const
-// 		{ return sizeof(fwd <T>(v)); }
-// };
-//
-// struct _alignof
-// {
-// 	template <typename T>
-// 	INLINE constexpr size_t _() const { return alignof(T); }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct conv
-// {
-// 	template <typename T, typename A>
-// 	INLINE constexpr T _(A&& a) const{ return (T) fwd <A>(a); }
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// IVL_VEC_OP_CAST(static)
-// IVL_VEC_OP_CAST(dynamic)
-// IVL_VEC_OP_CAST(const)
-// IVL_VEC_OP_CAST(reinterpret)
-//
+//-----------------------------------------------------------------------------
+
+IVL_TMP_VEC_OP(_sizeof)   //  sizeof(T), sizeof(t)  // non-overloadable
+IVL_TMP_VEC_OP(_alignof)  //  alignof(T)            // non-overloadable
+
+using op::_sizeof;
+using op::_alignof;
+
+//-----------------------------------------------------------------------------
+
+IVL_TMP_VEC_OP(conv)               //  (T) a                    // non-overloadable
+IVL_TMP_VEC_OP(_static_cast)       //  static_cast <T>(a)       // non-overloadable
+IVL_TMP_VEC_OP(_dynamic_cast)      //  dynamic_cast <T>(a)      // non-overloadable
+IVL_TMP_VEC_OP(_const_cast)        //  const_cast <T>(a)        // non-overloadable
+IVL_TMP_VEC_OP(_reinterpret_cast)  //  reinterpret_cast <T>(a)  // non-overloadable
+
+using op::_static_cast;
+using op::_dynamic_cast;
+using op::_const_cast;
+using op::_reinterpret_cast;
+
 // //-----------------------------------------------------------------------------
 //
 // struct _new

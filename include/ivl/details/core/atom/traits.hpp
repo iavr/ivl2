@@ -50,13 +50,12 @@ struct is_atom_ : public _false { };
 template <typename T, typename S>
 struct is_atom_<atom <T, S> > : public _true { };
 
-// extending definition under tuple/traits
-template <typename T, typename S>
-struct as_tuple_<atom <T, S> > : public _true { };
-
 }  // namespace details
 
 template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
+
+template <typename T>
+struct as_tuple : public expr <is_tuple <T>() || is_atom <T>()> { };
 
 //-----------------------------------------------------------------------------
 
@@ -75,17 +74,8 @@ struct is_atom_fun <T, data::fun <> > : public details::is_atom_fun_<T> { };
 
 //-----------------------------------------------------------------------------
 
-namespace details {
-
-template <typename T, bool = as_tuple <T>{}>
-struct atom_of_t_ : public id_t <T> { };
-
 template <typename T>
-struct atom_of_t_<T, false> { using type = atom <T>; };
-
-}  // namespace details
-
-template <typename T> struct atom_of_t : public details::atom_of_t_<T> { };
+struct atom_of_t : public _if_t <as_tuple <T>{}, T, atom <T> > { };
 // atom_of <> defined @tuple/begin
 
 //-----------------------------------------------------------------------------

@@ -68,10 +68,24 @@ struct loop_ : public der_nfun <tup_loop, seq_loop>
 
 template <typename F> using vec_apply_ = seq_vec_apply <F>;
 template <typename F> using vec_loop_  = seq_vec_loop <F>;
+template <typename F> using vec_auto_  = seq_vec_auto <F>;
 template <typename F> using vec_       = seq_vec <F>;
 
-template <typename F, size_t I = 0> using vec_mut_   = seq_vec_mut <F, I>;
-template <typename F, size_t I = 0> using vec_copy_  = seq_vec_copy <F, I>;
+template <typename F, size_t I = 0> using vec_mut_  = seq_vec_mut <F, I>;
+template <typename F, size_t I = 0> using vec_copy_ = seq_vec_copy <F, I>;
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class V, typename F, typename... O>
+class tmp_vec : public V <F, O...>
+{
+	using VT = V <afun::tmp_call, O...>;
+
+public:
+	template <typename... P, typename... A>
+	INLINE constexpr ret <VT(F, tup_tmp <P...>, A...)>
+	_(A&&... a) const { return VT()(F(), tup_tmp <P...>(), fwd <A>(a)...); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -81,11 +95,12 @@ template <typename F, size_t I = 0> using vec_copy_  = seq_vec_copy <F, I>;
 
 namespace afun {
 
-using apply  = afun_details::apply_;
-using loop   = afun_details::loop_;
+using apply = afun_details::apply_;
+using loop  = afun_details::loop_;
 
 template <typename F> using vec_apply = afun_details::vec_apply_<F>;
 template <typename F> using vec_loop  = afun_details::vec_loop_<F>;
+template <typename F> using vec_auto  = afun_details::vec_auto_<F>;
 template <typename F> using vec       = afun_details::vec_<F>;
 
 template <typename F, size_t I = 0>
@@ -93,6 +108,14 @@ using vec_mut = afun_details::vec_mut_<F, I>;
 
 template <typename F, size_t I = 0>
 using vec_copy = afun_details::vec_copy_<F, I>;
+
+using afun_details::tmp_vec;
+// using afun_details::tmp_vec_inst;
+
+template <typename F> using tmp_vec_apply = tmp_vec <vec_apply, F>;
+template <typename F> using tmp_vec_loop  = tmp_vec <vec_loop, F>;
+template <typename F> using tmp_vec_auto  = tmp_vec <vec_auto, F>;
+// template <typename F> using tmp_vec       = tmp_vec_inst <vec, F>;
 
 }  // namespace afun
 

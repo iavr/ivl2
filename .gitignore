@@ -11,6 +11,7 @@ test/core/traits.clang
 test/core/traits.gcc
 test/main/array
 test/main/test
+test/main/tmp_vec
 test/main/tuple
 test/main/vec
 test/main/vec_op

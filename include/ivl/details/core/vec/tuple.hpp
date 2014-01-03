@@ -76,8 +76,7 @@ template <typename F>
 struct tup_vec_apply
 {
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
+	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
@@ -100,12 +99,29 @@ struct tup_vec_loop
 
 //-----------------------------------------------------------------------------
 
+template <typename F>
+struct tup_vec_auto
+{
+	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
+	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
+		{ return F()(fwd <A>(a)...); }
+
+	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(_apply(*this, fwd <A>(a)...))
+		{ return _apply(*this, fwd <A>(a)...); }
+
+	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
+	INLINE void operator()(A&&... a) const { _loop(*this, fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
 template <typename F, size_t I = 0>
 struct tup_vec_mut
 {
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
+	INLINE ret <F(A...)> operator()(A&&... a) const
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
@@ -119,8 +135,7 @@ template <typename F, size_t I = 0>
 struct tup_vec_copy
 {
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
+	INLINE ret <F(A...)> operator()(A&&... a) const
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
@@ -134,25 +149,38 @@ struct tup_vec_copy
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class tup_vec : public atom <F>
+class tup_vec : public atom <F>  // not tuple: used as base of fun_atom
 {
 	using B = atom <F>;
-	using fun = elem_at <0, F>;
+	using B::val_f;
+	using B::val;
 
 public:
 	using B::B;
 
-	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
-		{ return fun::get()(fwd <A>(a)...); }
+	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
+	INLINE ret <F(A...)> operator()(A&&... a) &&
+		{ return val_f()(fwd <A>(a)...); }
+
+	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
+	INLINE constexpr ret <F(A...)> operator()(A&&... a) const&
+		{ return val()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
-	INLINE constexpr auto operator()(A&&... a) const
+	INLINE auto operator()(A&&... a) &&
+	-> decltype(_apply(mv(*this), fwd <A>(a)...))
+		{ return _apply(mv(*this), fwd <A>(a)...); }
+
+	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
+	INLINE constexpr auto operator()(A&&... a) const&
 	-> decltype(_apply(*this, fwd <A>(a)...))
 		{ return _apply(*this, fwd <A>(a)...); }
 
 	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
-	INLINE void operator()(A&&... a) const { _loop(*this, fwd <A>(a)...); }
+	INLINE void operator()(A&&... a) && { _loop(mv(*this), fwd <A>(a)...); }
+
+	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
+	INLINE void operator()(A&&... a) const& { _loop(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

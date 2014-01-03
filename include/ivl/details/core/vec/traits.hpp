@@ -49,7 +49,7 @@ template <typename... T> struct vec_args_t;
 template <typename... T> using  vec_args = type_of <vec_args_t <T...> >;
 
 template <typename... T>
-struct vec_args_t { using type = tran <vec_arg <T>...>; };
+struct vec_args_t { using type = tup_tran <vec_arg <T>...>; };
 
 template <typename T> struct vec_args_t <T> : public tup_types_t <T> { };
 

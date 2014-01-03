@@ -160,22 +160,22 @@ IVL_OP2_MUT(xor_as,   ^=)
 IVL_OP2_MUT(left_as,  <<=)
 IVL_OP2_MUT(right_as, >>=)
 
+//-----------------------------------------------------------------------------
+
 IVL_OP1(deref, *)
 IVL_OP1(addr,  &)
 
+IVL_OP2(ref_member, .*)
+IVL_OP2(ptr_member, ->*)
+
 //-----------------------------------------------------------------------------
 
-struct ptr_member
+struct ref_call
 {
-	template <typename C, typename M>
-	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(fwd <C>(c) .* fwd <M>(m))
-		{ return fwd <C>(c) .* fwd <M>(m); }
-
-	template <typename C, typename M>
-	INLINE constexpr auto operator()(C* p, M&& m) const
-	-> decltype(p ->* fwd <M>(m))
-		{ return p ->* fwd <M>(m); }
+	template <typename C, typename M, typename... A>
+	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
+	-> decltype(( fwd <C>(c) .* fwd <M>(m) ) ( fwd <A>(a)... ))
+		{ return ( fwd <C>(c) .* fwd <M>(m) ) ( fwd <A>(a)... ); }
 };
 
 //-----------------------------------------------------------------------------
@@ -184,13 +184,8 @@ struct ptr_call
 {
 	template <typename C, typename M, typename... A>
 	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
-	-> decltype(( fwd <C>(c) .* fwd <M>(m) ) ( fwd <A>(a)... ))
-		{ return ( fwd <C>(c) .* fwd <M>(m) ) ( fwd <A>(a)... ); }
-
-	template <typename C, typename M, typename... A>
-	INLINE constexpr auto operator()(C* p, M&& m, A&&... a) const
-	-> decltype(( p ->* fwd <M>(m) ) ( fwd <A>(a)... ))
-		{ return ( p ->* fwd <M>(m) ) ( fwd <A>(a)... ); }
+	-> decltype(( fwd <C>(c) ->* fwd <M>(m) ) ( fwd <A>(a)... ))
+		{ return ( fwd <C>(c) ->* fwd <M>(m) ) ( fwd <A>(a)... ); }
 };
 
 //-----------------------------------------------------------------------------
@@ -256,7 +251,7 @@ struct _alignof
 struct conv
 {
 	template <typename T, typename A>
-	INLINE constexpr T _(A&& a) const{ return (T) fwd <A>(a); }
+	INLINE constexpr T _(A&& a) const { return (T) fwd <A>(a); }
 };
 
 //-----------------------------------------------------------------------------

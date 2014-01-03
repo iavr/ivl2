@@ -120,7 +120,7 @@ struct tmp_call
 		{ return fwd <F>(f)(fwd <A>(a)...); }
 
 	template <typename F, typename... P, typename... A>
-	INLINE constexpr auto operator()(F&& f, types::pack <P...>, A&&... a) const
+	INLINE constexpr auto operator()(F&& f, types::tmp <P...>, A&&... a) const
 	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
 		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
 };

@@ -53,7 +53,7 @@ template <
 >
 class collect <F, T, E>
 {
-	template <typename... A> using R = T <F <A&&>...>;
+	template <typename... A> using R = subs <T, F <A&&>...>;
 
 public:
 	template <typename... A, enable_if <E <A...>{}> = 0>

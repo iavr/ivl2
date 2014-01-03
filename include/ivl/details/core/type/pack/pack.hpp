@@ -45,6 +45,23 @@ namespace packs {
 template <typename P>    struct is_pack                : public _false { };
 template <typename... E> struct is_pack <pack <E...> > : public _true { };
 
+template <typename T> struct is_type              : public _false { };
+template <typename T> struct is_type <_type <T> > : public _true { };
+
+template <typename T>
+struct as_pack : public expr <is_pack <T>() || is_type <T>()> { };
+
+template <typename T>    struct is_tmp               : public _false { };
+template <typename... P> struct is_tmp <tmp <P...> > : public _true { };
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+struct _type_of_t : public _if_t <as_pack <T>{}, T, _type <T> > { };
+
+template <typename T>
+using _type_of = type_of <_type_of_t <T> >;
+
 //-----------------------------------------------------------------------------
 
 template <typename P> struct pack_of_t;

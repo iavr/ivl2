@@ -45,19 +45,13 @@ namespace traits {
 namespace details {
 
 template <typename T> struct is_tuple_ : public _false { };
-template <typename T> struct as_tuple_ : public _false { };
 
 template <typename S, typename... E>
 struct is_tuple_<collection <S, E...> > : public _true { };
 
-// extended elsewhere
-template <typename S, typename... E>
-struct as_tuple_<collection <S, E...> > : public _true { };
-
 }  // namespace details
 
 template <typename T> using is_tuple = details::is_tuple_<raw_type <T> >;
-template <typename T> using as_tuple = details::as_tuple_<raw_type <T> >;
 
 template <typename T>
 using is_tup_type = expr <is_pack <T>() || as_tuple <T>()>;
@@ -216,6 +210,44 @@ template <typename... U> using apply_tuple = type_of <apply_tuple_t <U...> >;
 template <typename... U> using loop_tuple  = type_of <loop_tuple_t <U...> >;
 template <typename... U> using zip_tuple   = type_of <zip_tuple_t <U...> >;
 template <typename... U> using join_tuple  = type_of <join_tuple_t <U...> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename P, bool = any_pack_p <P>{}> struct tup_tmp_pt_;
+
+template <template <typename...> class C, typename... E>
+struct tup_tmp_pt_<C <E...>, true> :
+	public embed_t <tuple, tran_p <tmp <_type_of <E>...> > > { };
+
+template <template <typename...> class C, typename... E>
+struct tup_tmp_pt_<C <E...>, false> { using type = tmp <E...>; };
+
+}  // namespace details
+
+template <typename P> using tup_tmp_pt = details::tup_tmp_pt_<P>;
+template <typename P> using tup_tmp_p  = type_of <tup_tmp_pt <P> >;
+
+template <typename... E> using tup_tmp_t = tup_tmp_pt <pack <E...> >;
+template <typename... E> using tup_tmp   = type_of <tup_tmp_t <E...> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename P, size_t = length <P>()>
+struct tup_tran_ : public tran_pt <P> { };
+
+template <typename P> struct tup_tran_<P, 1> : public car_t <P> { };
+
+}  // namespace details
+
+template <typename P> using tup_tran_pt = details::tup_tran_<P>;
+template <typename P> using tup_tran_p  = type_of <tup_tran_pt <P> >;
+
+template <typename... P> using tup_tran_t = tup_tran_pt <pack <P...> >;
+template <typename... P> using tup_tran   = type_of <tup_tran_t <P...> >;
 
 //-----------------------------------------------------------------------------
 

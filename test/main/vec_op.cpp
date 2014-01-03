@@ -49,6 +49,7 @@ int pow(const A& a, int e) { return std::pow(a.p, e); }
 
 void run()
 {
+
 	{
 		cout << "op ++" << endl;
 		auto t = val('a', 3.14, _(2, 5));
@@ -177,13 +178,13 @@ void run()
 		cout << endl;
 
 		cout << "op ->* (custom, atom member ptr)" << endl;
-		auto mf = a ->* &A::f;
+		auto af = a ->* &A::f;
 		cout << a.p << endl;
 		cout << a ->* &A::p << endl;
 		cout << a.f(5, 'c') << endl;
-		cout << mf(5, 'c') << endl;
+		cout << af(5, 'c') << endl;
 		cout << _(a.f(5, 'c'), a.f(7, 'c')) << endl;
-		cout << mf(_(5, 7), 'c') << endl;
+		cout << af(_(5, 7), 'c') << endl;
 		cout << endl;
 
 		cout << "op ->* (pow)" << endl;

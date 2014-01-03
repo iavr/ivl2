@@ -42,13 +42,11 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename... P> using c_pack = c_type <pack <P...> >;
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
 //-----------------------------------------------------------------------------
+
+template <typename T> using arg_c = _if <is_tmp <T>{}, c_type <T>, T>;
 
 template <typename S> struct ret_ct;
 template <typename S> using  ret_c = type_of <ret_ct <S> >;
@@ -60,29 +58,21 @@ struct ret_ct <F(A...)> :
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D, typename R = ret_c <S>, bool = is_void <R>()>
-struct c_call_ret;
+struct c_call_;
 
 template <typename F, typename... A, typename D, typename R>
-struct c_call_ret <F(A...), D, R, false> : public constant <R, D>
+struct c_call_<F(A...), D, R, false> : public constant <R, D>
 {
 	INLINE constexpr
 	operator R() const { return afun::tmp_call()(F()(), A()()...); }
 };
 
 template <typename F, typename... A, typename D, typename R>
-struct c_call_ret <F(A...), D, R, true> : public constant <void, D>
+struct c_call_<F(A...), D, R, true> : public constant <void, D>
 {
 	INLINE void
 	operator()() const { afun::tmp_call()(F()(), A()()...); }
 };
-
-//-----------------------------------------------------------------------------
-
-template <typename T> struct arg_ct { using type = T; };
-template <typename T> using  arg_c = type_of <arg_ct <T> >;
-
-template <typename... P>
-struct arg_ct <pack <P...> > { using type = c_pack <P...>; };
 
 //-----------------------------------------------------------------------------
 
@@ -91,7 +81,7 @@ struct c_call : public c_call <F(A...)> { };
 
 template <typename F, typename... A>
 struct c_call <F(A...)> :
-	public c_call_ret <F(arg_c <A>...), c_call <F(A...)> > { };
+	public c_call_<F(arg_c <A>...), c_call <F(A...)> > { };
 
 //-----------------------------------------------------------------------------
 

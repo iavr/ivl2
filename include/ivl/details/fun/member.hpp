@@ -39,6 +39,40 @@ namespace afun_details {
 
 //-----------------------------------------------------------------------------
 
+class op_member
+{
+	using R = afun::op::ref_member;
+	using P = afun::op::ptr_member;
+
+	template <typename C, typename M>
+	using F = _if <can_call <P(C, M)>{}, P, R>;
+
+public:
+	template <typename C, typename M>
+	INLINE constexpr auto operator()(C&& c, M&& m) const
+	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
+		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
+};
+
+//-----------------------------------------------------------------------------
+
+class op_call
+{
+	using R = afun::op::ref_call;
+	using P = afun::op::ptr_call;
+
+	template <typename C, typename M, typename... A>
+	using F = _if <can_call <P(C, M, A...)>{}, P, R>;
+
+public:
+	template <typename C, typename M, typename... A>
+	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
+	-> decltype(F <C, M, A...>()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
+		{ return F <C, M, A...>()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
 struct member_call
 {
 	template <
@@ -46,8 +80,8 @@ struct member_call
 		enable_if <!is_key <M>()>
 	= 0>
 	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
-	-> decltype(afun::op::ptr_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
-		{ return afun::op::ptr_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
+	-> decltype(op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
+		{ return op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
 
 	template <
 		typename C, typename M, typename... A,
@@ -69,7 +103,7 @@ class member_fun : private tuple <C, M>
 	using B::snd_f;
 	using B::snd;
 
-	using MC = afun::vec <member_call>;  // can be void
+	using MC = afun::vec_auto <member_call>;  // can be void
 
 public:
 	using B::B;
@@ -89,31 +123,19 @@ public:
 
 class member
 {
-	template <typename B, typename E>
-	using has_pow = can_call <afun::pow(B, E)>;
+	using P = afun::pow;
+
+	template <typename C, typename M>
+	using F = _if <can_call <P(C, M)>{}, P, op_member>;
 
 public:
 
-	template <
-		typename B, typename E,
-		enable_if <!is_key <E>() && has_pow <B, E>()>
-	= 0>
-	INLINE constexpr auto operator()(B&& b, E&& e) const
-	-> decltype(afun::pow()(fwd <B>(b), fwd <E>(e)))
-		{ return afun::pow()(fwd <B>(b), fwd <E>(e)); }
-
-	template <
-		typename C, typename M,
-		enable_if <!is_key <M>() && !has_pow <C, M>()>
-	= 0>
+	template <typename C, typename M, enable_if <!is_key <M>()> = 0>
 	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(afun::op::ptr_member()(fwd <C>(c), fwd <M>(m)))
-		{ return afun::op::ptr_member()(fwd <C>(c), fwd <M>(m)); }
+	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
+		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
 
-	template <
-		typename C, typename M,
-		enable_if <is_key <M>{}>
-	= 0>
+	template <typename C, typename M, enable_if <is_key <M>{}> = 0>
 	INLINE constexpr auto operator()(C&& c, M m) const
 	-> decltype(afun::key_member <M>()(fwd <C>(c)))
 		{ return afun::key_member <M>()(fwd <C>(c)); }
@@ -124,51 +146,35 @@ public:
 class fun_member
 {
 	using VM = afun::vec_apply <member>;  // cannot be void (pow assumed so)
-
-	template <typename... A>
-	using MF = member_fun <base_opt <A&&>...>;
+	using MF = rref_of <member_fun>;
 
 	template <typename C, typename M>
 	using has_member = can_call <member(C, M)>;
 
+	template <typename C, typename M>
+	using F = _if <vec_all <has_member, C, M>{}, VM, MF>;
+
 public:
-
-	template <
-		typename C, typename M,
-		enable_if <!vec_all <has_member, C, M>()>
-	= 0>
-	INLINE constexpr MF <C, M> operator()(C&& c, M&& m) const
-		{ return MF <C, M>(fwd <C>(c), fwd <M>(m)); }
-
-	template <
-		typename C, typename M,
-		enable_if <vec_all <has_member, C, M>{}>
-	= 0>
+	template <typename C, typename M>
 	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(VM()(fwd <C>(c), fwd <M>(m)))
-		{ return VM()(fwd <C>(c), fwd <M>(m)); }
+	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
+		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
 };
 
 //-----------------------------------------------------------------------------
 
-class op_member
+class op_ref_member
 {
-	using MC = afun::vec <member_call>;  // can be void
+	using MC = afun::vec_auto <member_call>;  // can be void
 
 public:
 
-	template <
-		typename C, typename M,
-		enable_if <!is_op_ref <M>{}>
-	= 0>
+	template <typename C, typename M, enable_if <!is_op_ref <M>{}> = 0>
 	INLINE constexpr auto operator()(C&& c, M&& m) const
 	-> decltype(fun_member()(fwd <C>(c), fwd <M>(m)))
 		{ return fun_member()(fwd <C>(c), fwd <M>(m)); }
 
-	template <
-		typename C, typename O,
-		enable_if <is_op_ref <O>{}>
-	= 0>
+	template <typename C, typename O, enable_if <is_op_ref <O>{}> = 0>
 	INLINE constexpr auto operator()(C&& c, O&& o) const
 	-> decltype(fwd <O>(o).ref().rcall(MC(), fwd <C>(c), fwd <O>(o).op()))
 		{ return fwd <O>(o).ref().rcall(MC(), fwd <C>(c), fwd <O>(o).op()); }
@@ -180,7 +186,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-namespace afun { using member = afun_details::op_member; }
+namespace afun { using member = afun_details::op_ref_member; }
 
 //-----------------------------------------------------------------------------
 

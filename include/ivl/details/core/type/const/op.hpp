@@ -91,27 +91,27 @@ using c_cond = c_op <op::cond (A, B, C)>;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-using c_sizeof = c_op <op::_sizeof, pack <T> >;
+using c_sizeof = c_op <op::_sizeof, tmp <T> >;
 
 template <typename T>
-using c_alignof = c_op <op::_alignof, pack <T> >;
+using c_alignof = c_op <op::_alignof, tmp <T> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename T, typename A>
-using c_conv = c_op <op::conv (pack <T>, A)>;
+using c_conv = c_op <op::conv (tmp <T>, A)>;
 
 template <typename T, typename A>
-using c_static_cast = c_op <op::_static_cast (pack <T>, A)>;
+using c_static_cast = c_op <op::_static_cast (tmp <T>, A)>;
 
 template <typename T, typename A>
-using c_dynamic_cast = c_op <op::_dynamic_cast (pack <T>, A)>;
+using c_dynamic_cast = c_op <op::_dynamic_cast (tmp <T>, A)>;
 
 template <typename T, typename A>
-using c_const_cast = c_op <op::_const_cast (pack <T>, A)>;
+using c_const_cast = c_op <op::_const_cast (tmp <T>, A)>;
 
 template <typename T, typename A>
-using c_reinterpret_cast = c_op <op::_reinterpret_cast (pack <T>, A)>;
+using c_reinterpret_cast = c_op <op::_reinterpret_cast (tmp <T>, A)>;
 
 //-----------------------------------------------------------------------------
 

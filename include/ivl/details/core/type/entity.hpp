@@ -48,7 +48,7 @@ template <typename... T> using id = type_of <id_t <T...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using  length = type_of <length_t <P> >;
+template <typename P> using length = type_of <length_t <P> >;
 
 template <size_t L> struct sequence { static constexpr size_t length = L; };
 
@@ -62,6 +62,9 @@ struct _type : public type_sequence <_type <T> > { };
 
 template <typename... E>
 struct pack : public type_sequence <pack <E...> > { };
+
+template <typename... E>
+struct tmp : public type_sequence <tmp <E...> > { };
 
 template <size_t L, typename T>
 struct repeat : public type_sequence <repeat <L, T> > { };
