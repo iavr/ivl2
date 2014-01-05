@@ -69,7 +69,7 @@ template <typename T, typename A, typename...An>
 struct is_cons_<true, T, A, An...> : public _false { };
 
 //-----------------------------------------------------------------------------
-// is_cons: main entry point
+// is_cons: void and abstract types
 
 template <typename T, typename... A>
 using is_cons_fail = expr <any <is_void, T, A...>() || is_abstract <T>()>;
@@ -81,8 +81,24 @@ template <typename T, typename... A>
 struct is_cons_check <false, T, A...> :
 	public is_cons_<is_scalar <T>() || is_ref <T>(), T, A...> { };
 
+//-----------------------------------------------------------------------------
+// is_cons: main entry point
+
+// TODO: std version is much faster on GCC, especially with
+// non-builtin traits; fix
+
+#if defined(__clang__)
+
+// no alias: faster on clang
 template <typename T, typename... A>
-using is_cons = is_cons_check <is_cons_fail <T, A...>{}, T, A...>;
+struct is_cons : public is_cons_check <is_cons_fail <T, A...>{}, T, A...> { };
+
+#else  // defined(__clang__)
+
+template <typename T, typename... A>
+using is_cons = expr <std::is_constructible <T, A...>{}>;
+
+#endif  // defined(__clang__)
 
 //-----------------------------------------------------------------------------
 // is_cons: arrays

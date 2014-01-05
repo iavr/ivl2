@@ -13,7 +13,7 @@ namespace op = ivl::op;
 struct conv
 {
 	template <typename P, typename T>
-	P _(T&& x) { return (P) fwd <T>(x); }
+	P _(T&& x) const { return (P) fwd <T>(x); }
 };
 
 //-----------------------------------------------------------------------------
@@ -21,6 +21,9 @@ struct conv
 struct A { int x; };
 struct B : A { };
 struct C : A { };
+
+template <typename S>
+S& operator<<(S& s, A) { return s << "A"; }
 
 template <typename S>
 S& operator<<(S& s, B) { return s << "B"; }
@@ -34,6 +37,7 @@ void run()
 {
 
 	{
+		cout << "sizeof, alignof, C-style conversion" << endl;
 		using S = pack <char, int, double>;
 		using T = pack <char, int, double, array <double> >;
 		cout << _sizeof(_('a', 5, 3.14, array <double>())) << endl;
@@ -45,6 +49,19 @@ void run()
 	}
 
 	{
+		cout << "static_cast" << endl;
+		B b;
+		C c;
+		A &lb = b, &lc = c;
+		A &&rb = B(), &&rc = C();
+		cout << _static_cast._<A>(_(c, b)) << endl;
+		cout << _static_cast._<pack <C&, B&> >(_(lc, lb)) << endl;  // only if B, C are non-empty
+		cout << _static_cast._<pack <C&&, B&&> >(_(rc, rb)) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "custom template _" << endl;
 		using C = afun::tmp_vec_apply <conv>;
 		using S = pack <char, int, double>;
 		float f = '0' + 3.14;
@@ -55,14 +72,6 @@ void run()
 		cout << C()._<S>(_[x]) << endl;
 		cout << endl;
 	}
-
-// 	{
-// 		B b;
-// 		C c;
-// 		A &rb = b, &rc = c;
-// 		_static_cast._<pack <B&> >(rb);
-// 		cout << _static_cast._<pack <C&, B&> >(_(rc, rb)) << endl;
-// 	}
 
 }
 

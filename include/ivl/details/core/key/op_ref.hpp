@@ -59,7 +59,6 @@ public:
 //-----------------------------------------------------------------------------
 
 	// TODO: remove "this->", required by GCC
-	// (remove return type altogether in C++1y)
 
 	INLINE auto
 	op() &&

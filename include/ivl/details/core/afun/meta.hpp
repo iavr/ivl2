@@ -115,7 +115,7 @@ struct tup_fun_
 {
 	template <typename F>
 	INLINE constexpr auto operator()(F&& f) const
-		-> decltype(bind(_call, fwd <F>(f)))
+	-> decltype(bind(_call, fwd <F>(f)))
 		{ return bind(_call, fwd <F>(f)); }
 };
 

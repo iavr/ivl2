@@ -152,11 +152,11 @@ template <typename F>
 class tup_vec : public atom <F>  // not tuple: used as base of fun_atom
 {
 	using B = atom <F>;
-	using B::val_f;
-	using B::val;
 
 public:
 	using B::B;
+	using B::val_f;
+	using B::val;
 
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
 	INLINE ret <F(A...)> operator()(A&&... a) &&

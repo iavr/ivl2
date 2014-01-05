@@ -117,7 +117,7 @@ void run()
 		auto f = _(op::add, _[mid], op::div);
 		auto y = _(4, -2, 16.);
 		cout << f(8, 4) << endl;
-		cout << f(8, y) << endl;
+		cout << f(8, y) << endl;  // not in GCC
 		cout << f(8, _[y]) << endl;  // not in GCC
 		cout << endl;
 	}
@@ -173,8 +173,8 @@ void run()
 		cout << _(a, b) ->* _(AF, BF)._(4, _[_('b', 2)]) << endl;  // not in GCC
 		cout << (_(a, b) ->* _(AF, BF))(4, _[_('b', 2)]) << endl;  // not in GCC
 		cout << (a.h(), b.h(), t ->* m) << endl;
-		cout << (t ->* H._(), t ->* m) << endl;
-		cout << ((t ->* H)(), t ->* m) << endl;
+		cout << (t ->* H._(), t ->* m) << endl;  // not in GCC
+		cout << ((t ->* H)(), t ->* m) << endl;  // not in GCC
 		cout << endl;
 
 		cout << "op ->* (custom, atom member ptr)" << endl;
@@ -182,9 +182,9 @@ void run()
 		cout << a.p << endl;
 		cout << a ->* &A::p << endl;
 		cout << a.f(5, 'c') << endl;
-		cout << af(5, 'c') << endl;
+		cout << af(5, 'c') << endl;  // not in GCC
 		cout << _(a.f(5, 'c'), a.f(7, 'c')) << endl;
-		cout << af(_(5, 7), 'c') << endl;
+		cout << af(_(5, 7), 'c') << endl;  // not in GCC
 		cout << endl;
 
 		cout << "op ->* (pow)" << endl;

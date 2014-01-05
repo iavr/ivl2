@@ -54,15 +54,22 @@ struct key_val : private tuple <V>
 //-----------------------------------------------------------------------------
 
 template <typename K>
-struct key
+class key
 {
 	template <typename A>
-	INLINE constexpr key_val <K, base_opt <A&&> >
-	operator=(A&& a) const { return key_val <K, A&&>(fwd <A>(a)); }
+	using KV = key_val <K, base_opt <A&&> >;
 
 	template <typename... A>
-	INLINE constexpr op_ref <K, base_opt <A&&>...>
-	_(A&&... a) const { return op_ref <K, A&&...>(K(), fwd <A>(a)...); }
+	using OR = op_ref <K, base_opt <A&&>...>;
+
+public:
+	template <typename A>
+	INLINE constexpr KV <A>
+	operator=(A&& a) const { return KV <A>(fwd <A>(a)); }
+
+	template <typename... A>
+	INLINE constexpr OR <A...>
+	_(A&&... a) const { return OR <A...>(K(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

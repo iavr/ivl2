@@ -66,8 +66,8 @@ class op_call
 
 public:
 	template <typename C, typename M, typename... A>
-	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
-	-> decltype(F <C, M, A...>()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
+	INLINE constexpr ret <F <C, M, A...>(C, M, A...)>
+	operator()(C&& c, M&& m, A&&... a) const
 		{ return F <C, M, A...>()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
 };
 
@@ -79,16 +79,16 @@ struct member_call
 		typename C, typename M, typename... A,
 		enable_if <!is_key <M>()>
 	= 0>
-	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
-	-> decltype(op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
+	INLINE constexpr ret <op_call(C, M, A...)>
+	operator()(C&& c, M&& m, A&&... a) const
 		{ return op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
 
 	template <
 		typename C, typename M, typename... A,
 		enable_if <is_key <M>{}>
 	= 0>
-	INLINE constexpr auto operator()(C&& c, M m, A&&... a) const
-	-> decltype(afun::key_call <M>()(fwd <C>(c), fwd <A>(a)...))
+	INLINE constexpr ret <afun::key_call <M>(C, A...)>
+	operator()(C&& c, M m, A&&... a) const
 		{ return afun::key_call <M>()(fwd <C>(c), fwd <A>(a)...); }
 };
 
@@ -109,14 +109,12 @@ public:
 	using B::B;
 
 	template <typename... A>
-	INLINE auto operator()(A&&... a) &&
-	-> decltype(MC()(fst_f(), snd_f(), fwd <A>(a)...))
-		{ return MC()(fst_f(), snd_f(), fwd <A>(a)...); }
+	INLINE ret <MC(C, M, A...)>
+	operator()(A&&... a) && { return MC()(fst_f(), snd_f(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const&
-	-> decltype(MC()(fst(), snd(), fwd <A>(a)...))
-		{ return MC()(fst(), snd(), fwd <A>(a)...); }
+	INLINE constexpr ret <MC(cltref <C>, cltref <M>, A...)>
+	operator()(A&&... a) const& { return MC()(fst(), snd(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -129,7 +127,6 @@ class member
 	using F = _if <can_call <P(C, M)>{}, P, op_member>;
 
 public:
-
 	template <typename C, typename M, enable_if <!is_key <M>()> = 0>
 	INLINE constexpr auto operator()(C&& c, M&& m) const
 	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
@@ -156,8 +153,8 @@ class fun_member
 
 public:
 	template <typename C, typename M>
-	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
+	INLINE constexpr ret <F <C, M>(C, M)>
+	operator()(C&& c, M&& m) const
 		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
 };
 
@@ -168,10 +165,9 @@ class op_ref_member
 	using MC = afun::vec_auto <member_call>;  // can be void
 
 public:
-
 	template <typename C, typename M, enable_if <!is_op_ref <M>{}> = 0>
-	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(fun_member()(fwd <C>(c), fwd <M>(m)))
+	INLINE constexpr ret <fun_member(C, M)>
+	operator()(C&& c, M&& m) const
 		{ return fun_member()(fwd <C>(c), fwd <M>(m)); }
 
 	template <typename C, typename O, enable_if <is_op_ref <O>{}> = 0>

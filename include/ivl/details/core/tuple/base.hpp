@@ -184,75 +184,61 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
-	using bracket = afun::op::bracket;
-	using _call   = afun::op::call;
+	using bra = afun::op::bracket;
+	using par = afun::op::call;
 
 	template <typename T, typename R = raw_type <T> >
-	struct opt_t : public raw_opt_t <T, R> { };
+	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
 
-	template <typename T>
-	struct opt_t <T, D> : public _if_t <is_base_opt <B>{}, D, T> { };
+	template <typename... T> using app = apply_tuple <opt <T&&>...>;
+	template <typename... T> using op  = keys::op_ref <opt <T&&>...>;
 
-	template <typename T> using opt = type_of <opt_t <T> >;
-
-	template <template <typename...> class F, typename... T>
-	using optimize = F <opt <T&&>...>;
-
-//-----------------------------------------------------------------------------
-
-	template <typename... T> using app_r = optimize <apply_tuple,  T...>;
-	template <typename... T> using op_r  = optimize <keys::op_ref, T...>;
-
-	template <typename... A>
-	INLINE static constexpr app_r <A...>
-	app_h(A&&... a) { return app_r <A...>(fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE static constexpr op_r <A...>
-	op_h(A&&... a) { return op_r <A...>(fwd <A>(a)...); }
+	template <template <typename...> class R, typename... A>
+	INLINE static constexpr R <A...>
+	make(A&&... a) { return R <A...>(fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	template <typename A>
-	INLINE app_r <bracket, D&&, A>
-	operator[](A&& a) && { return app_h(bracket(), der_f(), fwd <A>(a)); }
+	INLINE app <bra, D&&, A>
+	operator[](A&& a) && { return make <app>(bra(), der_f(), fwd <A>(a)); }
 
 	template <typename A>
-	INLINE app_r <bracket, D&, A>
-	operator[](A&& a) & { return app_h(bracket(), der(), fwd <A>(a)); }
+	INLINE app <bra, D&, A>
+	operator[](A&& a) & { return make <app>(bra(), der(), fwd <A>(a)); }
 
 	template <typename A>
-	INLINE constexpr app_r <bracket, const D&, A>
-	operator[](A&& a) const& { return app_h(bracket(), der(), fwd <A>(a)); }
+	INLINE constexpr app <bra, const D&, A>
+	operator[](A&& a) const& { return make <app>(bra(), der(), fwd <A>(a)); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE app_r <_call, D&&, A...>
-	operator()(A&&... a) && { return app_h(_call(), der_f(), fwd <A>(a)...); }
+	INLINE app <par, D&&, A...>
+	operator()(A&&... a) && { return make <app>(par(), der_f(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE app_r <_call, D&, A...>
-	operator()(A&&... a) & { return app_h(_call(), der(), fwd <A>(a)...); }
+	INLINE app <par, D&, A...>
+	operator()(A&&... a) & { return make <app>(par(), der(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr app_r <_call, const D&, A...>
-	operator()(A&&... a) const& { return app_h(_call(), der(), fwd <A>(a)...); }
+	INLINE constexpr app <par, const D&, A...>
+	operator()(A&&... a) const& { return make <app>(par(), der(), fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE op_r <D&&, A...>
-	_(A&&... a) && { return op_h(der_f(), fwd <A>(a)...); }
+	INLINE op <D&&, A...>
+	_(A&&... a) && { return make <op>(der_f(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE op_r <D&, A...>
-	_(A&&... a) & { return op_h(der(), fwd <A>(a)...); }
+	INLINE op <D&, A...>
+	_(A&&... a) & { return make <op>(der(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr op_r <const D&, A...>
-	_(A&&... a) const& { return op_h(der(), fwd <A>(a)...); }
+	INLINE constexpr op <const D&, A...>
+	_(A&&... a) const& { return make <op>(der(), fwd <A>(a)...); }
 
 };
 

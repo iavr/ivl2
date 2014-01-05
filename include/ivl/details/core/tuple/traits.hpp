@@ -90,7 +90,7 @@ using as_tup_non_empty = expr <as_tuple <T>() && tup_len <T>()>;
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D>
-using tup_tx_t = base_opt_t <tx_lref <S, tx_cv <remove_ref <S>, D> > >;
+using tup_tx_t = base_opt_t <tx_lref <S, tx_cv <remove_ref <S>, D> >, D>;
 
 template <typename S, typename D> using tup_tx = type_of <tup_tx_t <S, D> >;
 
@@ -116,9 +116,9 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct rtref_t  { using type = base_opt <T&&>; };
-template <typename T> struct ltref_t  { using type = base_opt <T&>; };
-template <typename T> struct cltref_t { using type = base_opt <const T&>; };
+template <typename T> struct rtref_t  : public base_opt_t <T&&, T> { };
+template <typename T> struct ltref_t  : public base_opt_t <T&, T> { };
+template <typename T> struct cltref_t : public base_opt_t <const T&, T> { };
 
 template <typename T> using rtref  = type_of <rtref_t <T> >;
 template <typename T> using ltref  = type_of <ltref_t <T> >;
