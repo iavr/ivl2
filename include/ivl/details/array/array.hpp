@@ -51,10 +51,10 @@ namespace traits {
 namespace details {
 
 template <typename T>
-struct is_array_ : public _false { };
+struct is_array_ : _false { };
 
 template <typename T, typename S>
-struct is_array_<array <T, S> > : public _true { };
+struct is_array_<array <T, S> > : _true { };
 
 }  // namespace details
 

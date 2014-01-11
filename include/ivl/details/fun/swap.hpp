@@ -38,7 +38,7 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
-struct swap_fun : public afun::swap
+struct swap_fun : afun::swap
 {
 	using afun::swap::operator();
 

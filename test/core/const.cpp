@@ -20,7 +20,7 @@ inline const char* world() { return "world"; }
 //-----------------------------------------------------------------------------
 
 struct A { void operator()() { cout << "A "; } };
-struct B : public A { void operator()() { cout << "B "; } };
+struct B : A { void operator()() { cout << "B "; } };
 A aa;
 B bb;
 

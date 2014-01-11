@@ -45,10 +45,10 @@ namespace constants {
 template <typename...> struct c_cons;
 
 template <typename C, typename... A>
-struct c_cons <C, A...> : public c_cons <C(A...)> { };
+struct c_cons <C, A...> : c_cons <C(A...)> { };
 
 template <typename C, typename... A>
-struct c_cons <C(A...)> : public constant <C, c_cons <C(A...)> >
+struct c_cons <C(A...)> : constant <C, c_cons <C(A...)> >
 {
 	INLINE constexpr operator C() const { return C(A()()...); }
 };
@@ -58,10 +58,10 @@ struct c_cons <C(A...)> : public constant <C, c_cons <C(A...)> >
 template <typename...> struct c_cons_list;
 
 template <typename C, typename... A>
-struct c_cons_list <C, A...> : public c_cons_list <C(A...)> { };
+struct c_cons_list <C, A...> : c_cons_list <C(A...)> { };
 
 template <typename C, typename... A>
-struct c_cons_list <C(A...)> : public constant <C, c_cons_list <C(A...)> >
+struct c_cons_list <C(A...)> : constant <C, c_cons_list <C(A...)> >
 {
 	INLINE constexpr operator C() const { return C{A()()...}; }
 };

@@ -42,34 +42,34 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct is_const           : public _false { };
-template <typename T> struct is_const <T const> : public _true  { };
+template <typename T> struct is_const           : _false { };
+template <typename T> struct is_const <T const> : _true  { };
 
-template <typename T> struct is_vol              : public _false { };
-template <typename T> struct is_vol <T volatile> : public _true  { };
+template <typename T> struct is_vol              : _false { };
+template <typename T> struct is_vol <T volatile> : _true  { };
 
-template <typename T> struct is_rref       : public _false { };
-template <typename T> struct is_rref <T&&> : public _true  { };
+template <typename T> struct is_rref       : _false { };
+template <typename T> struct is_rref <T&&> : _true  { };
 
-template <typename T> struct is_lref       : public _false { };
-template <typename T> struct is_lref <T&>  : public _true  { };
+template <typename T> struct is_lref       : _false { };
+template <typename T> struct is_lref <T&>  : _true  { };
 
-template <typename T> struct is_ref       : public _false { };
-template <typename T> struct is_ref <T&>  : public _true  { };
-template <typename T> struct is_ref <T&&> : public _true  { };
+template <typename T> struct is_ref       : _false { };
+template <typename T> struct is_ref <T&>  : _true  { };
+template <typename T> struct is_ref <T&&> : _true  { };
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-template <typename T> struct is_ptr_     : public _false { };
-template <typename T> struct is_ptr_<T*> : public _true  { };
+template <typename T> struct is_ptr_     : _false { };
+template <typename T> struct is_ptr_<T*> : _true  { };
 
-template <typename T> struct is_nullptr_            : public _false { };
-template <>           struct is_nullptr_<nullptr_t> : public _true  { };
+template <typename T> struct is_nullptr_            : _false { };
+template <>           struct is_nullptr_<nullptr_t> : _true  { };
 
-template <typename T> struct is_void_       : public _false { };
-template <>           struct is_void_<void> : public _true  { };
+template <typename T> struct is_void_       : _false { };
+template <>           struct is_void_<void> : _true  { };
 
 }  // namespace details
 

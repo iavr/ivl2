@@ -52,8 +52,7 @@ template <typename S> struct ret_ct;
 template <typename S> using  ret_c = type_of <ret_ct <S> >;
 
 template <typename F, typename... A>
-struct ret_ct <F(A...)> :
-	public ret_t <value_type_of <F>(value_type_of <A>...)> { };
+struct ret_ct <F(A...)> : ret_t <value_type_of <F>(value_type_of <A>...)> { };
 
 //-----------------------------------------------------------------------------
 
@@ -61,14 +60,14 @@ template <typename S, typename D, typename R = ret_c <S>, bool = is_void <R>()>
 struct c_call_;
 
 template <typename F, typename... A, typename D, typename R>
-struct c_call_<F(A...), D, R, false> : public constant <R, D>
+struct c_call_<F(A...), D, R, false> : constant <R, D>
 {
 	INLINE constexpr
 	operator R() const { return afun::tmp_call()(F()(), A()()...); }
 };
 
 template <typename F, typename... A, typename D, typename R>
-struct c_call_<F(A...), D, R, true> : public constant <void, D>
+struct c_call_<F(A...), D, R, true> : constant <void, D>
 {
 	INLINE void
 	operator()() const { afun::tmp_call()(F()(), A()()...); }
@@ -77,11 +76,10 @@ struct c_call_<F(A...), D, R, true> : public constant <void, D>
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-struct c_call : public c_call <F(A...)> { };
+struct c_call : c_call <F(A...)> { };
 
 template <typename F, typename... A>
-struct c_call <F(A...)> :
-	public c_call_<F(arg_c <A>...), c_call <F(A...)> > { };
+struct c_call <F(A...)> : c_call_<F(arg_c <A>...), c_call <F(A...)> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -92,22 +90,22 @@ using details::c_call;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename... A>
-struct c_fun_call : public c_fun_call <C(A...)> { };
+struct c_fun_call : c_fun_call <C(A...)> { };
 
 template <typename C, typename... A>
-struct c_fun_call <C(A...)> : public c_call <c_cons <C>(A...)> { };
+struct c_fun_call <C(A...)> : c_call <c_cons <C>(A...)> { };
 
 template <typename C, C &O, typename... A>
-struct c_ref_call : public c_ref_call <C(A...), O> { };
+struct c_ref_call : c_ref_call <C(A...), O> { };
 
 template <typename C, C &O, typename... A>
-struct c_ref_call <C(A...), O> : public c_call <c_ref <C, O>(A...)> { };
+struct c_ref_call <C(A...), O> : c_call <c_ref <C, O>(A...)> { };
 
 template <typename C, C const &O, typename... A>
-struct c_cref_call : public c_cref_call <C(A...), O> { };
+struct c_cref_call : c_cref_call <C(A...), O> { };
 
 template <typename C, C const &O, typename... A>
-struct c_cref_call <C(A...), O> : public c_call <c_cref <C, O>(A...)> { };
+struct c_cref_call <C(A...), O> : c_call <c_cref <C, O>(A...)> { };
 
 //-----------------------------------------------------------------------------
 

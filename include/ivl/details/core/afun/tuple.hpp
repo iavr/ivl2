@@ -44,7 +44,7 @@ template <
 	template <typename...> class T,
 	template <typename...> class... E
 >
-struct collect : public collect <F, T, all_cond <E...>::template map> { };
+struct collect : collect <F, T, all_cond <E...>::template map> { };
 
 template <
 	template <typename...> class F,

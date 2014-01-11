@@ -45,13 +45,13 @@ namespace packs {
 namespace details {
 
 template <typename P, bool = is_null <P>{}>
-struct _and_p_ : public _if <car <P>{}, _and_p_<cdr <P> >, _false> { };
+struct _and_p_ : _if <car <P>{}, _and_p_<cdr <P> >, _false> { };
 
 template <typename P, bool = is_null <P>{}>
-struct _or_p_ : public _if <car <P>{}, _true, _or_p_<cdr <P> > > { };
+struct _or_p_ : _if <car <P>{}, _true, _or_p_<cdr <P> > > { };
 
-template <typename P> struct _and_p_<P, true> : public _true  { };
-template <typename P> struct _or_p_ <P, true> : public _false { };
+template <typename P> struct _and_p_<P, true> : _true  { };
+template <typename P> struct _or_p_ <P, true> : _false { };
 
 }  // namespace details
 
@@ -66,16 +66,16 @@ template <typename... E> using _or  = _or_p  <pack <E...> >;
 namespace details {
 
 template <template <typename...> class F, typename P, bool = is_null <P>{}>
-struct all_p_ : public _if <F <car <P> >{}, all_p_<F, cdr <P> >, _false> { };
+struct all_p_ : _if <F <car <P> >{}, all_p_<F, cdr <P> >, _false> { };
 
 template <template <typename...> class F, typename P, bool = is_null <P>{}>
-struct any_p_ : public _if <F <car <P> >{}, _true, any_p_<F, cdr <P> > > { };
+struct any_p_ : _if <F <car <P> >{}, _true, any_p_<F, cdr <P> > > { };
 
 template <template <typename...> class F, typename P>
-struct all_p_ <F, P, true> : public _true  { };
+struct all_p_ <F, P, true> : _true  { };
 
 template <template <typename...> class F, typename P>
-struct any_p_ <F, P, true> : public _false { };
+struct any_p_ <F, P, true> : _false { };
 
 }  // namespace details
 
@@ -149,11 +149,10 @@ struct eq_len_to
 template <typename P> using eq_len_of = eq_len_to <length <P>{}>;
 
 template <typename P>
-struct eq_len_p :
-	public all_p <eq_len_of <car <P> >::template map, cdr <P> > { };
+struct eq_len_p : all_p <eq_len_of <car <P> >::template map, cdr <P> > { };
 
 template <template <typename...> class C>
-struct eq_len_p <C <> > : public _true { };
+struct eq_len_p <C <> > : _true { };
 
 template <typename... P>
 using eq_len = eq_len_p <pack <P...> >;
@@ -164,17 +163,17 @@ namespace details {
 
 template <template <typename...> class F, typename P, bool = any_null_p <P>{}>
 struct alls_p_ :
-	public _if <embed <F, cars_p <P> >{}, alls_p_<F, cdrs_p <P> >, _false> { };
+	_if <embed <F, cars_p <P> >{}, alls_p_<F, cdrs_p <P> >, _false> { };
 
 template <template <typename...> class F, typename P, bool = any_null_p <P>{}>
 struct anys_p_ :
-	public _if <embed <F, cars_p <P> >{}, _true, anys_p_<F, cdrs_p <P> > > { };
+	_if <embed <F, cars_p <P> >{}, _true, anys_p_<F, cdrs_p <P> > > { };
 
 template <template <typename...> class F, typename P>
-struct alls_p_<F, P, true> : public _true { };
+struct alls_p_<F, P, true> : _true { };
 
 template <template <typename...> class F, typename P>
-struct anys_p_<F, P, true> : public _false { };
+struct anys_p_<F, P, true> : _false { };
 
 }  // namespace details
 
@@ -196,23 +195,6 @@ using alls = alls_p <F, pack <P...> >;
 
 namespace details {
 
-template <typename P, bool = any_null_p <P>{}>
-struct tran_ : public cons_t <cars_p <P>, type_of <tran_<cdrs_p <P> > > > { };
-
-template <typename P> struct tran_<P, true> { using type = null_of <P>; };
-
-}  // namespace details
-
-template <typename P> using tran_pt = details::tran_<P>;
-template <typename P> using tran_p  = type_of <tran_pt <P> >;
-
-template <typename... P> using tran_t = tran_pt <pack <P...> >;
-template <typename... P> using tran   = type_of <tran_t <P...> >;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
 template <typename A>
 INLINE constexpr A min_(A a, A b) { return a < b ? a : b; }
 
@@ -223,25 +205,23 @@ template <
 	typename T, template <typename...> class F,
 	typename P, bool = is_null <P>{}
 >
-struct int_min_ : public integral <T,
-	min_(F <car <P> >{}(), int_min_<T, F, cdr <P> >{}())
-> {};
+struct int_min_ :
+	integral <T, min_(F <car <P> >{}(), int_min_<T, F, cdr <P> >{}())> {};
 
 template <
 	typename T, template <typename...> class F,
 	typename P, bool = is_null <P>{}
 >
-struct int_max_ : public integral <T,
-	max_(F <car <P> >{}(), int_max_<T, F, cdr <P> >{}())
-> {};
+struct int_max_ :
+	integral <T, max_(F <car <P> >{}(), int_max_<T, F, cdr <P> >{}())> {};
 
 template <typename T, template <typename...> class F, typename P>
 struct int_min_<T, F, P, true> :
-	public integral <T, std::numeric_limits <T>::max()> {};
+	integral <T, std::numeric_limits <T>::max()> {};
 
 template <typename T, template <typename...> class F, typename P>
 struct int_max_<T, F, P, true> :
-	public integral <T, std::numeric_limits <T>::min()> {};
+	integral <T, std::numeric_limits <T>::min()> {};
 
 }  // namespace details
 
@@ -282,6 +262,31 @@ using sz_min = integral_min <size_t, F, E...>;
 
 template <template <typename...> class F, typename... E>
 using sz_max = integral_max <size_t, F, E...>;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename P, bool = any_null_p <P>{}>
+struct tran_ : cons_t <cars_p <P>, type_of <tran_<cdrs_p <P> > > > { };
+
+template <typename P> struct tran_<P, true> { using type = null_of <P>; };
+
+}  // namespace details
+
+template <typename P> using tran_pt = details::tran_<P>;
+template <typename P> using tran_p  = type_of <tran_pt <P> >;
+
+template <typename... P> using tran_t = tran_pt <pack <P...> >;
+template <typename... P> using tran   = type_of <tran_t <P...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P>
+using tran_len_p = sz_min_p <length_of, select_p <is_pack, P> >;
+
+template <typename... P>
+using tran_len = tran_len_p <pack <P...> >;
 
 //-----------------------------------------------------------------------------
 

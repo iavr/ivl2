@@ -76,7 +76,7 @@ struct key_call <key::MEMBER>                                 \
                                                    \
 namespace key {                                    \
                                                    \
-struct KEY : public ::ivl::keys::key <KEY>         \
+struct KEY : ::ivl::keys::key <KEY>                \
 {                                                  \
 	using ::ivl::keys::key <KEY>::operator=;        \
 };                                                 \

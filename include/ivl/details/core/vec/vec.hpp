@@ -57,7 +57,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-struct loop_ : public der_nfun <tup_loop, seq_loop>
+struct loop_ : der_nfun <tup_loop, seq_loop>
 {
 	// TODO: keys
 	template <typename S>

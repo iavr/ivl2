@@ -91,18 +91,18 @@ struct raw_fun_t <R(A...) const volatile&&> { using type = R(A...); };
 
 namespace details {
 
-template <typename T> struct is_fun_ : public _false { };
+template <typename T> struct is_fun_ : _false { };
 template <typename S> struct fun_ret_;
 template <typename S> struct fun_arg_;
 
 template<typename R, typename... A>
-struct is_fun_<R(A...)> : public _true { };
+struct is_fun_<R(A...)> : _true { };
 
 template <typename R, typename... A>
 struct fun_ret_<R(A...)> { using type = R; };
 
 template <typename R, typename... A>
-struct fun_arg_<R(A...)> : public pack <A...> { };
+struct fun_arg_<R(A...)> : pack <A...> { };
 
 }  // namespace details {
 

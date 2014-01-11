@@ -51,52 +51,51 @@ template <typename T, typename... A>
 using is_cons_test = decltype(T(gen <A>()...));
 
 template <bool, typename T, typename... A>  // bool: T is scalar or ref
-struct is_cons_ : public sfinae <is_cons_test, T, A...> { };
+struct is_cons_ : sfinae <is_cons_test, T, A...> { };
 
 template <typename R, typename... B, typename... A>
-struct is_cons_<false, R(B...), A...> : public _false { };
+struct is_cons_<false, R(B...), A...> : _false { };
 
 //-----------------------------------------------------------------------------
 // is_cons: scalars and references
 
 template <typename T>
-struct is_cons_<true, T> : public is_scalar <T> { };
+struct is_cons_<true, T> : is_scalar <T> { };
 
 template <typename T, typename A>
-struct is_cons_<true, T, A> : public is_conv <A, T> { };
+struct is_cons_<true, T, A> : is_conv <A, T> { };
 
 template <typename T, typename A, typename...An>
-struct is_cons_<true, T, A, An...> : public _false { };
+struct is_cons_<true, T, A, An...> : _false { };
 
 //-----------------------------------------------------------------------------
 // is_cons: void and abstract types
 
-template <typename T, typename... A>
-using is_cons_fail = expr <any <is_void, T, A...>() || is_abstract <T>()>;
-
 template <bool fail, typename T, typename... A>
-struct is_cons_check : public _false { };
+struct is_cons_check : _false { };
 
 template <typename T, typename... A>
 struct is_cons_check <false, T, A...> :
-	public is_cons_<is_scalar <T>() || is_ref <T>(), T, A...> { };
+	is_cons_<is_scalar <T>() || is_ref <T>(), T, A...> { };
 
 //-----------------------------------------------------------------------------
 // is_cons: main entry point
+
+// extended elsewhere
 
 // TODO: std version is much faster on GCC, especially with
 // non-builtin traits; fix
 
 #if defined(__clang__)
 
-// no alias: faster on clang
 template <typename T, typename... A>
-struct is_cons : public is_cons_check <is_cons_fail <T, A...>{}, T, A...> { };
+struct is_cons :
+	is_cons_check <any <is_void, T, A...>() || is_abstract <T>(), T, A...> { };
 
 #else  // defined(__clang__)
 
 template <typename T, typename... A>
-using is_cons = expr <std::is_constructible <T, A...>{}>;
+struct is_cons : expr <std::is_constructible <T, A...>{}> { };
 
 #endif  // defined(__clang__)
 
@@ -104,18 +103,19 @@ using is_cons = expr <std::is_constructible <T, A...>{}>;
 // is_cons: arrays
 
 template <typename T, size_t N>
-struct is_cons_<false, T[N]> : public is_cons <remove_all_ext <T> > { };
+struct is_cons_<false, T[N]> : is_cons <remove_all_ext <T> > { };
 
 template <typename T, size_t N, typename... A>
-struct is_cons_<false, T[N], A...> : public _false { };
+struct is_cons_<false, T[N], A...> : _false { };
 
 template <class T, class... A>
-struct is_cons_<false, T[], A...> : public _false { };
+struct is_cons_<false, T[], A...> : _false { };
 
 //-----------------------------------------------------------------------------
 
+// extended elsewhere
 template <typename T, typename A>
-using is_explicit = expr <is_cons <T, A>() && !is_conv <A, T>()>;
+struct is_explicit : expr <is_cons <T, A>() && !is_conv <A, T>()> { };
 
 //-----------------------------------------------------------------------------
 

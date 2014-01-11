@@ -56,7 +56,7 @@ static __attribute__ ((unused)) tup_loop   _loop;
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D>
-struct tup_sep_loop : public derived <D, tup_sep_loop <S, D> >
+struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 {
 	template <typename F, typename T, enable_if <tup_empty <T>{}> = 0>
 	INLINE void operator()(F&& f, T&& t) const { };

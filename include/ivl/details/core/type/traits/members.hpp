@@ -61,14 +61,14 @@ template <typename...> struct has_member;
 
 template <typename M, typename C>
 struct has_member <M, C> :
-	public _not <member_sfinae <M::template fallback, C>{}> { };
+	_not <member_sfinae <M::template fallback, C>{}> { };
 
 template <typename M, typename C, typename T>
 struct has_member <M, C, T> :
-	public member_sfinae <M::template conv, C, member_ptr <C, T> > { };
+	member_sfinae <M::template conv, C, member_ptr <C, T> > { };
 
 template <typename M, typename C, typename T>
-struct has_member_ptr : public expr <
+struct has_member_ptr : expr <
 	is_member_ptr_of <C, T>() && member_sfinae <M::template conv, C, T>()
 > { };
 

@@ -49,7 +49,7 @@ namespace details {
 
 #if IVL_HAS_FEATURE(is_class)
 
-template <typename T> struct is_class : public expr <__is_class(T)> { };
+template <typename T> struct is_class : expr <__is_class(T)> { };
 
 #else
 
@@ -66,7 +66,7 @@ template <typename T>
 using is_derive = expr <is_class <T>() && !is_final <T>()>;
 
 template <typename T, typename B, bool = is_derive <T>{}>
-struct derive : public T, public B { };
+struct derive : T, B { };
 
 template <typename T, typename B>
 struct derive <T, B, false>;
@@ -75,7 +75,7 @@ struct derive <T, B, false>;
 
 #if IVL_HAS_FEATURE(is_empty)
 
-template <typename T> struct is_empty : public expr <__is_empty(T)> { };
+template <typename T> struct is_empty : expr <__is_empty(T)> { };
 
 #else
 
@@ -94,15 +94,15 @@ template <
 	typename T,
 	bool = is_fun <remove_ptr <T> >(), bool = is_member_ptr <T>()
 >
-struct is_complete_ : public sfinae <is_complete_test, remove_ref <T> > { };
+struct is_complete_ : sfinae <is_complete_test, remove_ref <T> > { };
 
-template <> struct is_complete_<void> : public _true { };
+template <> struct is_complete_<void> : _true { };
 
 template <typename T> struct is_complete_<T, true, false> :
-	public is_complete_<fun_ret <remove_ptr <T> > > { };
+	is_complete_<fun_ret <remove_ptr <T> > > { };
 
 template <typename T> struct is_complete_<T, false, true> :
-	public is_complete_<member_class <T> > { };
+	is_complete_<member_class <T> > { };
 
 template <typename T> using is_complete = is_complete_<T>;
 
@@ -117,7 +117,7 @@ template <typename T> using is_abstract =
 #if IVL_HAS_FEATURE(is_polymorphic)
 
 template <typename T>
-struct is_polymorphic : public expr <__is_polymorphic(T)> { };
+struct is_polymorphic : expr <__is_polymorphic(T)> { };
 
 #else
 
@@ -146,7 +146,7 @@ using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
 
 // no alias: faster on clang
 template <typename T, typename R = raw_type <T>, typename Q = R>
-struct base_opt_t : public _if_t <is_base_opt <Q>{}, R, T> { };
+struct base_opt_t : _if_t <is_base_opt <Q>{}, R, T> { };
 
 template <typename T, typename R = raw_type <T>, typename Q = R>
 using base_opt = type_of <base_opt_t <T, R, Q> >;

@@ -38,6 +38,26 @@ namespace tuple_details {
 
 //-----------------------------------------------------------------------------
 
+template <typename F>
+class tup_applier
+{
+	template <typename... A>
+	struct map_t { using type = F(pack <A...>); };
+
+	template <typename... A>
+	struct map_t <pack <A...> > : map_t <A...> { };
+
+public:
+	template <typename... A>
+	using map = type_of <map_t <A...> >;
+};
+
+template <typename F, typename... A>
+using tup_apply_types =
+	map <tup_applier <F>::template map, tup_tran <tup_types <A>...> >;
+
+//-----------------------------------------------------------------------------
+
 template <size_t... I, typename F, typename... A>
 class store <data::apply <>, sizes <I...>, F, A...> :
 	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >

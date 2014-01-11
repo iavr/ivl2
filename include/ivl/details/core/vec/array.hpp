@@ -44,7 +44,7 @@ struct seq_apply { void operator()(nat); };
 //-----------------------------------------------------------------------------
 
 template <typename D>
-struct arr_loop : public derived <D, arr_loop <D> >
+struct arr_loop : derived <D, arr_loop <D> >
 {
 	template <typename F, typename A1, enable_if <is_array <A1>{}> = 0>
 	INLINE void operator()(F&& f, A1&& a1) const
@@ -66,7 +66,7 @@ struct arr_loop : public derived <D, arr_loop <D> >
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D>
-struct seq_sep_loop : public arr_loop <D>
+struct seq_sep_loop : arr_loop <D>
 {
 	template <typename F, typename B, typename E>
 	INLINE void iter(F&& f, const B& b, const E& e) const
@@ -79,7 +79,7 @@ struct seq_sep_loop : public arr_loop <D>
 
 //-----------------------------------------------------------------------------
 
-struct seq_loop : public arr_loop <seq_loop>
+struct seq_loop : arr_loop <seq_loop>
 {
 	using arr_loop <seq_loop>::operator();
 
@@ -103,22 +103,22 @@ struct seq_loop : public arr_loop <seq_loop>
 
 // TODO
 template <typename F> struct seq_vec_apply :
-	public tup_vec_apply <F> { using tup_vec_apply <F>::tup_vec_apply; };
+	tup_vec_apply <F> { using tup_vec_apply <F>::tup_vec_apply; };
 
 template <typename F> struct seq_vec_loop :
-	public tup_vec_loop <F> { using tup_vec_loop <F>::tup_vec_loop; };
+	tup_vec_loop <F> { using tup_vec_loop <F>::tup_vec_loop; };
 
 template <typename F> struct seq_vec_auto :
-	public tup_vec_auto <F> { using tup_vec_auto <F>::tup_vec_auto; };
+	tup_vec_auto <F> { using tup_vec_auto <F>::tup_vec_auto; };
 
 template <typename F, size_t I = 0> struct seq_vec_mut :
-	public tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
+	tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
 
 template <typename F, size_t I = 0> struct seq_vec_copy :
-	public tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
+	tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
 
 template <typename F> struct seq_vec :
-	public tup_vec <F> { using tup_vec <F>::tup_vec; };
+	tup_vec <F> { using tup_vec <F>::tup_vec; };
 
 //-----------------------------------------------------------------------------
 

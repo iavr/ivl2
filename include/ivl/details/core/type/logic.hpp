@@ -58,16 +58,16 @@ template <bool B> using _not = expr <!B>;
 //-----------------------------------------------------------------------------
 
 // TODO: alias not working for report()'s static_assert in gcc
-template <typename... T> struct always : public _true { };
-template <typename... T> struct never  : public _false { };
+template <typename... T> struct always : _true { };
+template <typename... T> struct never  : _false { };
 
 //-----------------------------------------------------------------------------
 
 template <typename A, typename B>
-struct eq : public _false { };
+struct eq : _false { };
 
 template <typename A>
-struct eq <A, A> : public _true { };
+struct eq <A, A> : _true { };
 
 template <typename A, typename B> using is_eq = eq <A, B>;
 template <typename A, typename B> using neq   = expr <!eq <A, B>()>;

@@ -55,17 +55,17 @@ struct cdr_t <C <E, En...> > { using type = C <En...>; };
 template <typename E, template <typename...> class C, typename... En>
 struct cons_t <E, C <En...> > { using type = C <E, En...>; };
 
-template <typename T> struct car_t <_type <T> > : public id_t <T> { };
-template <typename T> struct cdr_t <_type <T> > : public _type <T> { };
+template <typename T> struct car_t <_type <T> > : id_t <T> { };
+template <typename T> struct cdr_t <_type <T> > : _type <T> { };
 
 template <typename T> struct car_t <repeat <0, T> >;
 template <typename T> struct cdr_t <repeat <0, T> >;
 
 template <size_t L, typename T>
-struct car_t <repeat <L, T> > : public id_t <T> { };
+struct car_t <repeat <L, T> > : id_t <T> { };
 
 template <size_t L, typename T>
-struct cdr_t <repeat <L, T> > : public repeat <L - 1, T> { };
+struct cdr_t <repeat <L, T> > : repeat <L - 1, T> { };
 
 template <typename E, typename T>           struct cons_t <E, _type <T> >;
 template <typename E, size_t L, typename T> struct cons_t <E, repeat <L, T> >;
@@ -98,14 +98,14 @@ template <typename P>             using cdrs_p_   = type_of <cdrs_pt_<P> >;
 template <typename E, typename P> using conses_p_ = type_of <conses_pt_<E, P> >;
 
 template <typename P, bool>
-struct cars_pt_ : public cons_t <car <car <P> >, cars_p_<cdr <P> > > { };
+struct cars_pt_ : cons_t <car <car <P> >, cars_p_<cdr <P> > > { };
 
 template <typename P, bool>
-struct cdrs_pt_ : public cons_t <cdr <car <P> >, cdrs_p_<cdr <P> > > { };
+struct cdrs_pt_ : cons_t <cdr <car <P> >, cdrs_p_<cdr <P> > > { };
 
 template <typename E, typename P, bool>
 struct conses_pt_ :
-	public cons_t <cons <car <E>, car <P> >, conses_p_<cdr <E>, cdr <P> > > { };
+	cons_t <cons <car <E>, car <P> >, conses_p_<cdr <E>, cdr <P> > > { };
 
 template <typename P> struct cars_pt_<P, true> { using type = P; };
 template <typename P> struct cdrs_pt_<P, true> { using type = P; };

@@ -77,7 +77,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-struct exception : public std::exception { };
+struct exception : std::exception { };
 
 //-----------------------------------------------------------------------------
 
@@ -97,19 +97,19 @@ struct exception : public std::exception { };
 //-----------------------------------------------------------------------------
 
 // value out of representation range
-struct e_range : public exception
+struct e_range : exception
 {
 	virtual const char* what() const throw() { return IVL_e_range_MSG; }
 };
 
 // value out of domain of function
-struct e_domain : public exception
+struct e_domain : exception
 {
 	virtual const char* what() const throw() { return IVL_e_domain_MSG; }
 };
 
 // any other error in evaluating an expression
-struct e_comp : public exception
+struct e_comp : exception
 {
 	virtual const char* what() const throw() { return IVL_e_comp_MSG; }
 };
@@ -117,19 +117,19 @@ struct e_comp : public exception
 //-----------------------------------------------------------------------------
 
 // array index out of bounds
-struct e_bound : public exception
+struct e_bound : exception
 {
 	virtual const char* what() const throw() { return IVL_e_bound_MSG; }
 };
 
 // invalid array size or incompatible array sizes
-struct e_size : public exception
+struct e_size : exception
 {
 	virtual const char* what() const throw() { return IVL_e_size_MSG; }
 };
 
 // invalid array no. of dimensions or incompatible array no. of dimensions
-struct e_dim : public exception
+struct e_dim : exception
 {
 	virtual const char* what() const throw() { return IVL_e_dim_MSG; }
 };
@@ -137,25 +137,25 @@ struct e_dim : public exception
 //-----------------------------------------------------------------------------
 
 // invalid memory access, e.g. to NULL
-struct e_access : public exception
+struct e_access : exception
 {
 	virtual const char* what() const throw() { return IVL_e_access_MSG; }
 };
 
 // memory allocation failure
-struct e_alloc : public exception
+struct e_alloc : exception
 {
 	virtual const char* what() const throw() { return IVL_e_alloc_MSG; }
 };
 
 // i/o error, e.g. file or network
-struct e_io : public exception
+struct e_io : exception
 {
 	virtual const char* what() const throw() { return IVL_e_io_MSG; }
 };
 
 // any other system call error that does not depend on the CPU
-struct e_system : public exception
+struct e_system : exception
 {
 	virtual const char* what() const throw() { return IVL_e_system_MSG; }
 };

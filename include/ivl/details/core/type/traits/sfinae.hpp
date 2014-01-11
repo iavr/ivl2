@@ -46,7 +46,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct subs_test : public subs_fun
+struct subs_test : subs_fun
 {
 	using subs_fun::_;
 	template <typename... A> static nat _(...);

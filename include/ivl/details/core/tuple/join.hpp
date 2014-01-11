@@ -70,8 +70,8 @@ class collection <data::join <>, U...> :
 //-----------------------------------------------------------------------------
 
 public:
+	using B::B;
 	using B::base_type::operator=;
-	explicit INLINE constexpr collection(U&&... u) : B(fwd <U>(u)...) { }
 };
 
 //-----------------------------------------------------------------------------

@@ -51,29 +51,27 @@ using value_type_of = typename T::value_type;
 //-----------------------------------------------------------------------------
 
 template <typename T, typename D>
-struct constant : public value <T>,
-	public id_t <D>, public derived <D>
+struct constant : value <T>, id_t <D>, derived <D>
 {
 	INLINE constexpr T operator()() const { return this->der(); }
 };
 
 template <typename D>
-struct constant <void, D> : public value <void>,
-	public id_t <D>, public derived <D>
+struct constant <void, D> : value <void>, id_t <D>, derived <D>
 {
 	INLINE void operator()() const { this->der()(); }
 };
 
 template <typename D>
-struct constant <const void, D> : public constant <void, D> { };
+struct constant <const void, D> : constant <void, D> { };
 
 template <typename D>
-struct constant <const volatile void, D> : public constant <void, D> { };
+struct constant <const volatile void, D> : constant <void, D> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename T, typename F>
-struct fun_constant : public constant <T, F> { };
+struct fun_constant : constant <T, F> { };
 
 template <typename S, typename T, typename D>
 INLINE S& operator<<(S& s, const constant <T, D>& c) { return s << c(); }

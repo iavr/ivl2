@@ -44,23 +44,23 @@ namespace traits {
 
 namespace details {
 
-template <typename T> struct is_integral_ : public _false { };
+template <typename T> struct is_integral_ : _false { };
 
-template <> struct is_integral_<bool>               : public _true { };
-template <> struct is_integral_<char>               : public _true { };
-template <> struct is_integral_<signed char>        : public _true { };
-template <> struct is_integral_<unsigned char>      : public _true { };
-template <> struct is_integral_<wchar_t>            : public _true { };
-template <> struct is_integral_<char16_t>           : public _true { };
-template <> struct is_integral_<char32_t>           : public _true { };
-template <> struct is_integral_<short>              : public _true { };
-template <> struct is_integral_<unsigned short>     : public _true { };
-template <> struct is_integral_<int>                : public _true { };
-template <> struct is_integral_<unsigned int>       : public _true { };
-template <> struct is_integral_<long>               : public _true { };
-template <> struct is_integral_<unsigned long>      : public _true { };
-template <> struct is_integral_<long long>          : public _true { };
-template <> struct is_integral_<unsigned long long> : public _true { };
+template <> struct is_integral_<bool>               : _true { };
+template <> struct is_integral_<char>               : _true { };
+template <> struct is_integral_<signed char>        : _true { };
+template <> struct is_integral_<unsigned char>      : _true { };
+template <> struct is_integral_<wchar_t>            : _true { };
+template <> struct is_integral_<char16_t>           : _true { };
+template <> struct is_integral_<char32_t>           : _true { };
+template <> struct is_integral_<short>              : _true { };
+template <> struct is_integral_<unsigned short>     : _true { };
+template <> struct is_integral_<int>                : _true { };
+template <> struct is_integral_<unsigned int>       : _true { };
+template <> struct is_integral_<long>               : _true { };
+template <> struct is_integral_<unsigned long>      : _true { };
+template <> struct is_integral_<long long>          : _true { };
+template <> struct is_integral_<unsigned long long> : _true { };
 
 }  // namespace details
 
@@ -71,11 +71,11 @@ using is_integral = details::is_integral_<remove_cv <T> >;
 
 namespace details {
 
-template <typename T> struct is_floating_ : public _false { };
+template <typename T> struct is_floating_ : _false { };
 
-template <> struct is_floating_<float>       : public _true { };
-template <> struct is_floating_<double>      : public _true { };
-template <> struct is_floating_<long double> : public _true { };
+template <> struct is_floating_<float>       : _true { };
+template <> struct is_floating_<double>      : _true { };
+template <> struct is_floating_<long double> : _true { };
 
 }  // namespace details
 
@@ -100,11 +100,10 @@ using is_compound = expr <!is_fundamental <T>()>;
 namespace details {
 
 template <typename T, bool un, bool = is_arithmetic <T>()>
-struct is_un_signed :
-	public expr <is_integral <T>() ? un ^ (T(-1) < T(0)) : !un> { };
+struct is_un_signed : expr <is_integral <T>() ? un ^ (T(-1) < T(0)) : !un> { };
 
 template <typename T, bool un>
-struct is_un_signed <T, un, false> : public _false { };
+struct is_un_signed <T, un, false> : _false { };
 
 }  // namespace details
 
@@ -115,7 +114,7 @@ template <typename T> using is_unsigned = details::is_un_signed <T, true>;
 
 #if IVL_HAS_FEATURE(is_enum)
 
-template <typename T> struct is_enum : public expr <__is_enum (T)> { };
+template <typename T> struct is_enum : expr <__is_enum (T)> { };
 
 #else
 
@@ -142,14 +141,14 @@ template <typename T> using is_object = expr <
 
 #if IVL_HAS_FEATURE(is_literal)
 
-template <typename T> struct is_literal : public expr <__is_literal (T)> { };
+template <typename T> struct is_literal : expr <__is_literal (T)> { };
 
 #else
 
 namespace details {
 
-template <typename T> struct is_literal_ :
-	public expr <is_scalar <T>() || is_ref <T>() > { };
+template <typename T>
+struct is_literal_ : expr <is_scalar <T>() || is_ref <T>() > { };
 
 }  // namespace details
 
@@ -163,7 +162,7 @@ using is_literal = details::is_literal_<remove_all_ext <T> >;
 #if IVL_HAS_FEATURE(is_std_layout)
 
 template <typename T>
-struct is_std_layout : public expr <__is_std_layout (T)> { };
+struct is_std_layout : expr <__is_std_layout (T)> { };
 
 #else
 
@@ -176,7 +175,7 @@ using is_std_layout = expr <is_scalar <remove_all_ext <T> >{}>;
 
 #if IVL_HAS_FEATURE(is_pod)
 
-template <typename T> struct is_pod : public expr <__is_pod (T)> { };
+template <typename T> struct is_pod : expr <__is_pod (T)> { };
 
 #else
 

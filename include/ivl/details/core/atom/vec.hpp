@@ -37,7 +37,7 @@ namespace ivl {
 namespace atom_details {
 
 template <typename T, typename S>
-struct store <T, S, true> : public afun::vec <T>
+struct store <T, S, true> : afun::vec <T>
 {
 	using afun::vec <T>::vec;
 };

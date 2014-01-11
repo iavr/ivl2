@@ -136,7 +136,7 @@ template <typename T> using remove_vol = type_of <remove_vol_t <T> >;
 
 namespace details {
 
-template <typename T> struct add_cv_t_ : public add_const_t <add_vol <T> > { };
+template <typename T> struct add_cv_t_ : add_const_t <add_vol <T> > { };
 
 }  // namespace details
 
@@ -146,7 +146,7 @@ template <typename T> using add_cv = type_of <add_cv_t <T> >;
 // remove_cv_t defined as struct because it is fwd-declared @begin.hpp
 // remove_cv defined @begin.hpp
 template <typename T>
-struct remove_cv_t : public remove_vol_t <remove_const <T> > { };
+struct remove_cv_t : remove_vol_t <remove_const <T> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -220,15 +220,15 @@ namespace details {
 
 // extended elsewhere
 template <typename T>
-struct create_rec : public id_t <T> { };
+struct create_rec : id_t <T> { };
 
 template <typename T>
-struct create_t_ : public _if <is_arr <T>{}, id_t <remove_ext <T>*>,
+struct create_t_ : _if <is_arr <T>{}, id_t <remove_ext <T>*>,
 	_if <is_fun <T>{}, add_ptr_t <T>, create_rec <remove_cv <T> > >
 > { };
 
 template <typename T>
-struct decay_t_ : public _if <is_arr <T>{}, id_t <remove_ext <T>*>,
+struct decay_t_ : _if <is_arr <T>{}, id_t <remove_ext <T>*>,
 	_if <is_fun <T>{}, add_ptr_t <T>, remove_cv_t <T> >
 > { };
 

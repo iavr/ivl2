@@ -42,7 +42,7 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct vec_arg_t : public tup_types <atom_of <T> > { };
+template <typename T> struct vec_arg_t : tup_types <atom_of <T> > { };
 template <typename T> using  vec_arg = type_of <vec_arg_t <T> >;
 
 template <typename... T> struct vec_args_t;
@@ -51,7 +51,7 @@ template <typename... T> using  vec_args = type_of <vec_args_t <T...> >;
 template <typename... T>
 struct vec_args_t { using type = tup_tran <vec_arg <T>...>; };
 
-template <typename T> struct vec_args_t <T> : public tup_types_t <T> { };
+template <typename T> struct vec_args_t <T> : tup_types_t <T> { };
 
 //-----------------------------------------------------------------------------
 
@@ -65,52 +65,50 @@ template <typename S>       struct vec_ret_p;
 template <typename S, bool> struct vec_ret_s;
 
 template <typename F, typename... T>
-struct vec_ret_p <F(pack <T...>)> : public pack <vec_ret <F(T)>...> { };
+struct vec_ret_p <F(pack <T...>)> : pack <vec_ret <F(T)>...> { };
 
 template <typename F, typename... T>
-struct vec_ret_s <F(T...), true> : public vec_ret_p <F(vec_args <T...>)> { };
+struct vec_ret_s <F(T...), true> : vec_ret_p <F(vec_args <T...>)> { };
 
 template <typename F, typename... T>
-struct vec_ret_s <F(T...), false> : public ret_t <F(T...)> { };
+struct vec_ret_s <F(T...), false> : ret_t <F(T...)> { };
 
 }  // namespace details
 
 template <typename F, typename... T>
-struct vec_ret_t : public vec_ret_t <F(T...)> { };
+struct vec_ret_t : vec_ret_t <F(T...)> { };
 
 template <typename F, typename... T>
 struct vec_ret_t <F(T...)> :
-	public details::vec_ret_s <F(T...), any_tuple <T...>{}> { };
+	details::vec_ret_s <F(T...), any_tuple <T...>{}> { };
 
 template <typename F, typename... T>
-struct vec_ret_t <F(pack <T...>)> : public vec_ret_t <F(T...)> { };
+struct vec_ret_t <F(pack <T...>)> : vec_ret_t <F(T...)> { };
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-template <typename T> struct vec_void_ : public is_void <T> { };
+template <typename T> struct vec_void_ : is_void <T> { };
 
 template <typename... T>
-struct vec_void_<pack <T...> > : public any_p <vec_void_, pack <T...> > { };
+struct vec_void_<pack <T...> > : any_p <vec_void_, pack <T...> > { };
 
 }  // namespace details
 
 template <typename F, typename... T>
-struct vec_void : public vec_void <F(T...)> { };
+struct vec_void : vec_void <F(T...)> { };
 
 template <typename F, typename... T>
-struct vec_void <F(T...)> : public expr <
-	any_tuple <T...>() && details::vec_void_<vec_ret <F(T...)> >()
-> { };
+struct vec_void <F(T...)> :
+	expr <any_tuple <T...>() && details::vec_void_<vec_ret <F(T...)> >()> { };
 
 template <typename F, typename... T>
-struct vec_non_void : public vec_non_void <F(T...)> { };
+struct vec_non_void : vec_non_void <F(T...)> { };
 
 template <typename F, typename... T>
-struct vec_non_void <F(T...)> : public expr <
-	any_tuple <T...>() && !details::vec_void_<vec_ret <F(T...)> >()
-> { };
+struct vec_non_void <F(T...)> :
+	expr <any_tuple <T...>() && !details::vec_void_<vec_ret <F(T...)> >()> { };
 
 //-----------------------------------------------------------------------------
 
@@ -123,20 +121,20 @@ struct vec_all_
 	template <typename P, bool> struct test;
 
 	template <typename... A>
-	struct test <pack <A...>, false> : public F <A...> { };
+	struct test <pack <A...>, false> : F <A...> { };
 
 	template <typename... A>
-	struct test <pack <A...>, true> : public rec <vec_args <A...> > { };
+	struct test <pack <A...>, true> : rec <vec_args <A...> > { };
 
 	template <typename P> using map = test <P, any_tuple_p <P>{}>;
-	template <typename P> struct rec : public all_p <map, P> { };
+	template <typename P> struct rec : all_p <map, P> { };
 };
 
 }  // namespace details
 
 // TODO: template alias causes clang segmentation fault
 template <template <typename...> class F, typename... A>
-struct vec_all : public details::vec_all_<F>::template map <pack <A...> > { };
+struct vec_all : details::vec_all_<F>::template map <pack <A...> > { };
 
 //-----------------------------------------------------------------------------
 

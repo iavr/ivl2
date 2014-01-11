@@ -45,13 +45,13 @@ namespace traits {
 namespace details {
 
 template <typename T, template <typename...> class F>
-struct is_member_ptr_f_ : public _false { };
+struct is_member_ptr_f_ : _false { };
 
 template <typename T, typename C, template <typename...> class F>
-struct is_member_ptr_f_<T C::*, F> : public F <T> { };
+struct is_member_ptr_f_<T C::*, F> : F <T> { };
 
 template <typename T, template <typename...> class F>
-struct is_member_ptr_f : public is_member_ptr_f_<remove_cv <T>, F> { };
+struct is_member_ptr_f : is_member_ptr_f_<remove_cv <T>, F> { };
 
 }  // namespace details
 
@@ -166,10 +166,10 @@ using is_prop_ptr_of = expr <is_prop_ptr <M>() && is_ptr_of <C, M>()>;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename... A>
-struct member_ptr_t : public member_ptr_t <C, R (A...)> { };
+struct member_ptr_t : member_ptr_t <C, R (A...)> { };
 
 template <typename C, typename T>
-struct member_ptr_t <C, T> : public id_t <T raw_type <C>::*> { };
+struct member_ptr_t <C, T> : id_t <T raw_type <C>::*> { };
 
 template <typename C, typename R, typename... A>
 using member_ptr = type_of <member_ptr_t <C, R, A...> >;

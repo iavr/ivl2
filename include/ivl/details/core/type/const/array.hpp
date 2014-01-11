@@ -95,7 +95,7 @@ using c_array_list = details::c_array_cons <c_cons_list, T, A...>;
 //-----------------------------------------------------------------------------
 
 template<const char* F(void)>
-struct c_string : public constant <const char*, c_string <F> >
+struct c_string : constant <const char*, c_string <F> >
 {
 	INLINE constexpr operator const char*() const { return F(); }
 };

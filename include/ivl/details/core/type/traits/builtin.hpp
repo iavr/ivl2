@@ -60,10 +60,10 @@ namespace types {
 namespace traits {
 
 // no aliases: built-in traits not allowed in function sugnatures
-template <typename T> struct is_union     : public expr <__is_union(T)> { };
-template <typename T> struct is_trivial   : public expr <__is_trivial(T)> { };
-template <typename T> struct is_final     : public expr <__is_final(T)> { };
-template <typename T> struct alignment_of : public size <__alignof__(T)> { };
+template <typename T> struct is_union     : expr <__is_union(T)> { };
+template <typename T> struct is_trivial   : expr <__is_trivial(T)> { };
+template <typename T> struct is_final     : expr <__is_final(T)> { };
+template <typename T> struct alignment_of : size <__alignof__(T)> { };
 
 }  // namespace traits
 

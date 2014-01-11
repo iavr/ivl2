@@ -54,7 +54,7 @@ constexpr const T& clcast(A&& a) { return static_cast <const T&>(a); }
 //-----------------------------------------------------------------------------
 
 template <typename B, typename...>
-struct based : public B
+struct based : B
 {
 	using base_type = B;
 
@@ -97,7 +97,7 @@ template <typename T> using derived_type_of = typename T::derived_type;
 
 template <typename... F> struct der_nfun;
 
-template <typename F> struct der_nfun <F> : public F { };
+template <typename F> struct der_nfun <F> : F { };
 
 template <typename F, typename... Fn>
 class der_nfun <F, Fn...> : public F, public der_nfun <Fn...>
@@ -113,7 +113,7 @@ public:
 
 template <typename... F> struct der_tfun;
 
-template <typename F> struct der_tfun <F> : public F { };
+template <typename F> struct der_tfun <F> : F { };
 
 template <typename F, typename... Fn>
 class der_tfun <F, Fn...> : public F, public der_tfun <Fn...>
@@ -128,7 +128,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... F> struct der_fun :
-	public der_nfun <F...>, public der_tfun <F...> { };
+	der_nfun <F...>, der_tfun <F...> { };
 
 //-----------------------------------------------------------------------------
 

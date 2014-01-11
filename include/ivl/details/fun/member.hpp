@@ -30,7 +30,6 @@
 
 //-----------------------------------------------------------------------------
 
-class M;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -79,16 +78,16 @@ struct member_call
 		typename C, typename M, typename... A,
 		enable_if <!is_key <M>()>
 	= 0>
-	INLINE constexpr ret <op_call(C, M, A...)>
-	operator()(C&& c, M&& m, A&&... a) const
+	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
+	-> decltype(op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
 		{ return op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
 
 	template <
 		typename C, typename M, typename... A,
 		enable_if <is_key <M>{}>
 	= 0>
-	INLINE constexpr ret <afun::key_call <M>(C, A...)>
-	operator()(C&& c, M m, A&&... a) const
+	INLINE constexpr auto operator()(C&& c, M m, A&&... a) const
+	-> decltype(afun::key_call <M>()(fwd <C>(c), fwd <A>(a)...))
 		{ return afun::key_call <M>()(fwd <C>(c), fwd <A>(a)...); }
 };
 

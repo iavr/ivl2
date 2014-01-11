@@ -67,8 +67,8 @@ class collection <data::indirect <>, K, U> : public
 //-----------------------------------------------------------------------------
 
 public:
+	using B::B;
 	using B::base_type::operator=;
-	explicit INLINE constexpr collection(U&& u) : B(fwd <U>(u)) { }
 };
 
 //-----------------------------------------------------------------------------

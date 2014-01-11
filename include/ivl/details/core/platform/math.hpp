@@ -52,8 +52,8 @@ namespace math {
 // bit scan reverse instruction, or count leading zeros (CLZ)
 template <typename T>
 INLINE auto BSR(T x)
-	-> decltype(sizeof(T) >= 8 ?
-		_BitScanReverse64(&out, x) : _BitScanReverse(&out, x))
+-> decltype(sizeof(T) >= 8 ?
+	_BitScanReverse64(&out, x) : _BitScanReverse(&out, x))
 {
 	static T out;
 	sizeof(T) >= 8 ?
@@ -64,7 +64,7 @@ INLINE auto BSR(T x)
 // population count instruction (number of bits set)
 template <typename T>
 INLINE auto POPCNT(T x)
-	-> decltype(sizeof(T) >= 8 ? __popcnt64(x) : __popcnt(x))
+-> decltype(sizeof(T) >= 8 ? __popcnt64(x) : __popcnt(x))
 	{ return sizeof(T) >= 8 ? __popcnt64(x) : __popcnt(x); }
 
 //-----------------------------------------------------------------------------
@@ -76,15 +76,15 @@ INLINE auto POPCNT(T x)
 // bit scan reverse instruction, or count leading zeros (CLZ)
 template <typename T>
 INLINE auto BSR(T x)
-	-> decltype(sizeof(T) >= 8 ? __builtin_clzll(x) : __builtin_clz(x))
+-> decltype(sizeof(T) >= 8 ? __builtin_clzll(x) : __builtin_clz(x))
 	{ return sizeof(T) >= 8 ? __builtin_clzll(x) : __builtin_clz(x); }
 
 // population count instruction (number of bits set)
 // gcc/clang require -msse4.2 flag
 template <typename T>
 INLINE auto POPCNT(T x)
-	-> decltype(sizeof(T) >= 8 ?
-		__builtin_popcountll(x) : __builtin_popcount(x))
+-> decltype(sizeof(T) >= 8 ?
+	__builtin_popcountll(x) : __builtin_popcount(x))
 {
 	return sizeof(T) >= 8 ?
 		__builtin_popcountll(x) : __builtin_popcount(x);
@@ -99,13 +99,13 @@ INLINE auto POPCNT(T x)
 // number of bits for given integer type
 template <typename T>
 INLINE auto bits()
-	-> decltype(sizeof(T) << 3)
-	{ return (sizeof(T) << 3); }
+-> decltype(sizeof(T) << 3)
+	{ return sizeof(T) << 3; }
 
 // most significant bit position for given integer type
 template <typename T>
 INLINE auto msb()
-	-> decltype(bits <T>() - 1)
+-> decltype(bits <T>() - 1)
 	{ return bits <T>() - 1; }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ INLINE auto msb()
 // log2 for integer type
 template <typename T>
 INLINE auto log2(T x)
-	-> decltype(msb <T>() - BSR(x))
+-> decltype(msb <T>() - BSR(x))
 {
 	CHECK(x > 0, e_domain);
 	return msb <T>() - BSR(x);
@@ -122,7 +122,7 @@ INLINE auto log2(T x)
 // previous power of 2 for integer type
 template <typename T>
 INLINE auto prev_pow2(T x)
-	-> decltype(1 << (msb <T>() - BSR(x)))
+-> decltype(1 << (msb <T>() - BSR(x)))
 {
 	CHECK(x > 0, e_domain);
 	return 1 << (msb <T>() - BSR(x));
@@ -131,7 +131,7 @@ INLINE auto prev_pow2(T x)
 // next power of 2 for integer type
 template <typename T>
 INLINE auto next_pow2(T x)
-	-> decltype(1 << (bits <T>() - BSR(x)))
+-> decltype(1 << (bits <T>() - BSR(x)))
 {
 	CHECK(x > 0, e_domain);
 	return 1 << (bits <T>() - BSR(x));

@@ -45,8 +45,7 @@ namespace numeric {
 template <typename T, T N> using integral = c_integral <T, N>;
 
 template <typename T, T... N>
-struct integrals : public value <T>,
-	public type_sequence <integrals <T, N...> > { };
+struct integrals : value <T>, type_sequence <integrals <T, N...> > { };
 
 template <typename T> using empty = integrals <T>;
 
@@ -88,14 +87,14 @@ rng_len(T B, T E, S s)
 namespace details {
 
 template <typename T, typename S, S s, T E, T N, T... Nn>
-struct rng_t_ : public _if <(s > 0 ? N + s <= E : N + s >= E),
+struct rng_t_ : _if <(s > 0 ? N + s <= E : N + s >= E),
 	rng_t_<T, S, s, E, N + s, Nn..., N>, integrals <T, Nn..., N>
 > { };
 
 }  // namespace details
 
 template <typename T, T B, T E, typename S = int, S s = 1>  // B: begin; s: step; E: end
-struct rng_t : public _if <rng_empty(B, E, s),
+struct rng_t : _if <rng_empty(B, E, s),
 	empty <T>, details::rng_t_<T, S, s, E, B>
 > { };
 
@@ -119,10 +118,10 @@ using sz_rng  = type_of <sz_rng_t <B, E, s> >;
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t L>
-struct rng_of_it : public rng_t <T, 0, L - 1> { };
+struct rng_of_it : rng_t <T, 0, L - 1> { };
 
 template <typename T>
-struct rng_of_it <T, 0> : public empty <T> { };
+struct rng_of_it <T, 0> : empty <T> { };
 
 template <typename T, typename P>
 using rng_of_pt = rng_of_it <T, length <P>{}>;
@@ -162,7 +161,7 @@ template <typename... E> using sz_rng_of  = type_of <sz_rng_of_t <E...> >;
 //-----------------------------------------------------------------------------
 
 template <size_t L, typename T, T N, T... Nn>
-struct rep_it : public _if <(L > 0),
+struct rep_it : _if <(L > 0),
 	rep_it <L - 1, T, N, N, Nn...>, integrals <T, Nn...>
 > { };
 
@@ -186,17 +185,16 @@ using namespace numeric;
 template <typename P> using length_of = size <P::length>;
 
 template <template <typename...> class C, typename... E>
-struct length_t <C <E...> > : public size <sizeof...(E)> { };
+struct length_t <C <E...> > : size <sizeof...(E)> { };
 
 template <size_t L, typename T>
-struct length_t <repeat <L, T> > : public size <L> { };
+struct length_t <repeat <L, T> > : size <L> { };
 
 template <typename T, T... N>
-struct length_t <integrals <T, N...> > : public size <sizeof...(N)> { };
+struct length_t <integrals <T, N...> > : size <sizeof...(N)> { };
 
 template <typename T, T B, T E, typename S, S s>
-struct length_t <range <T, B, E, S, s> > :
-	public size <rng_len(B, E, s)> { };
+struct length_t <range <T, B, E, S, s> > : size <rng_len(B, E, s)> { };
 
 //-----------------------------------------------------------------------------
 

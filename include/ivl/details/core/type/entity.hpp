@@ -53,21 +53,21 @@ template <typename P> using length = type_of <length_t <P> >;
 template <size_t L> struct sequence { static constexpr size_t length = L; };
 
 template <typename T>
-struct type_sequence : public id_t <T>, public sequence <length <T>{}> { };
+struct type_sequence : id_t <T>, sequence <length <T>{}> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct _type : public type_sequence <_type <T> > { };
+struct _type : type_sequence <_type <T> > { };
 
 template <typename... E>
-struct pack : public type_sequence <pack <E...> > { };
+struct pack : type_sequence <pack <E...> > { };
 
 template <typename... E>
-struct tmp : public type_sequence <tmp <E...> > { };
+struct tmp : type_sequence <tmp <E...> > { };
 
 template <size_t L, typename T>
-struct repeat : public type_sequence <repeat <L, T> > { };
+struct repeat : type_sequence <repeat <L, T> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -77,15 +77,15 @@ struct der { using der_type = D; };
 //-----------------------------------------------------------------------------
 
 template <typename D>
-struct template_class : public der <D> { };
+struct template_class : der <D> { };
 
 template <template <typename...> class F, typename...> struct temp;
 
 template <template <typename...> class F, typename D>
-struct temp <F, D> : public id_t <D>, public template_class <D> { };
+struct temp <F, D> : id_t <D>, template_class <D> { };
 
 template <template <typename...> class F>
-struct temp <F> : public temp <F, temp <F> > { };
+struct temp <F> : temp <F, temp <F> > { };
 
 //-----------------------------------------------------------------------------
 

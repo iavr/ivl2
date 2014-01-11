@@ -42,22 +42,22 @@ namespace packs {
 
 //-----------------------------------------------------------------------------
 
-template <typename P>    struct is_pack                : public _false { };
-template <typename... E> struct is_pack <pack <E...> > : public _true { };
+template <typename P>    struct is_pack                : _false { };
+template <typename... E> struct is_pack <pack <E...> > : _true { };
 
-template <typename T> struct is_type              : public _false { };
-template <typename T> struct is_type <_type <T> > : public _true { };
+template <typename T> struct is_type              : _false { };
+template <typename T> struct is_type <_type <T> > : _true { };
 
 template <typename T>
-struct as_pack : public expr <is_pack <T>() || is_type <T>()> { };
+struct as_pack : expr <is_pack <T>() || is_type <T>()> { };
 
-template <typename T>    struct is_tmp               : public _false { };
-template <typename... P> struct is_tmp <tmp <P...> > : public _true { };
+template <typename T>    struct is_tmp               : _false { };
+template <typename... P> struct is_tmp <tmp <P...> > : _true { };
 
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct _type_of_t : public _if_t <as_pack <T>{}, T, _type <T> > { };
+struct _type_of_t : _if_t <as_pack <T>{}, T, _type <T> > { };
 
 template <typename T>
 using _type_of = type_of <_type_of_t <T> >;
@@ -72,13 +72,13 @@ struct pack_of_t <C <E...> > { using type = pack <E...>; };
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct is_null : public _false { };
+template <typename P> struct is_null : _false { };
 
 template <template <typename...> class C>
-struct is_null <C <> > : public _true { };
+struct is_null <C <> > : _true { };
 
 template <typename T>
-struct is_null <repeat <0, T> > : public _true { };
+struct is_null <repeat <0, T> > : _true { };
 
 //-----------------------------------------------------------------------------
 

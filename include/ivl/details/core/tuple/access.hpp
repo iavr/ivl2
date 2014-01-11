@@ -39,12 +39,12 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <typename B, typename D, typename... E>
-struct access : public B, public derived <D> { using B::B; };
+struct access : B, derived <D> { using B::B; };
 
 //-----------------------------------------------------------------------------
 
 template <typename B, typename D, typename E>
-class access <B, D, E> : public B, public derived <D>
+struct access <B, D, E> : B, derived <D>
 {
 protected:
 	using derived <D>::der;
@@ -62,7 +62,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename B, typename D, typename E0, typename E1>
-class access <B, D, E0, E1> : public B, public derived <D>
+struct access <B, D, E0, E1> : B, derived <D>
 {
 protected:
 	using derived <D>::der;

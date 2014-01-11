@@ -56,8 +56,7 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <R (*F)(A...)>
-	struct function :
-		public fun_constant <R (*)(A...), function <F> >
+	struct function : fun_constant <R (*)(A...), function <F> >
 	{
 		INLINE constexpr
 		operator value_type_of <function>() const { return F; }
@@ -66,16 +65,14 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename C, R (C::*M)(A...)>
-	struct method :
-		public fun_constant <R (C::*)(A...), method <C, M> >
+	struct method : fun_constant <R (C::*)(A...), method <C, M> >
 	{
 		INLINE constexpr
 		operator value_type_of <method>() const { return M; }
 	};
 
 	template <typename C, R (C::*M)(A...) const>
-	struct cmethod :
-		public fun_constant <R (C::*)(A...) const, cmethod <C, M> >
+	struct cmethod : fun_constant <R (C::*)(A...) const, cmethod <C, M> >
 	{
 		INLINE constexpr
 		operator value_type_of <cmethod>() const { return M; }
@@ -86,32 +83,28 @@ public:
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 	template <typename C, R (C::*M)(A...) &>
-	struct lmethod :
-		public fun_constant <R (C::*)(A...) &, lmethod <C, M> >
+	struct lmethod : fun_constant <R (C::*)(A...) &, lmethod <C, M> >
 	{
 		INLINE constexpr
 		operator value_type_of <lmethod>() const { return M; }
 	};
 
 	template <typename C, R (C::*M)(A...) &&>
-	struct rmethod :
-		public fun_constant <R (C::*)(A...) &&, rmethod <C, M> >
+	struct rmethod : fun_constant <R (C::*)(A...) &&, rmethod <C, M> >
 	{
 		INLINE constexpr
 		operator value_type_of <rmethod>() const { return M; }
 	};
 
 	template <typename C, R (C::*M)(A...) const&>
-	struct clmethod :
-		public fun_constant <R (C::*)(A...) const&, clmethod <C, M> >
+	struct clmethod : fun_constant <R (C::*)(A...) const&, clmethod <C, M> >
 	{
 		INLINE constexpr
 		operator value_type_of <clmethod>() const { return M; }
 	};
 
 	template <typename C, R (C::*M)(A...) const&&>
-	struct crmethod :
-		public fun_constant <R (C::*)(A...) const&&, crmethod <C, M> >
+	struct crmethod : fun_constant <R (C::*)(A...) const&&, crmethod <C, M> >
 	{
 		INLINE constexpr
 		operator value_type_of <crmethod>() const { return M; }

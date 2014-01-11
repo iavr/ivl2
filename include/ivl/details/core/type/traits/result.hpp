@@ -60,36 +60,36 @@ using prop_test = decltype((gen <C>().*gen <M>()));
 template <typename S> struct res_fun;
 
 template <typename F, typename... A>
-struct res_fun <F(A...)> : public ret_sfinae <fun_test, F, A...> { };
+struct res_fun <F(A...)> : ret_sfinae <fun_test, F, A...> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename S, bool = is_method_ptr <F>()>
-struct res_member : public nat { };
+struct res_member : nat { };
 
 template <typename F, typename M, typename C, typename... A>
 struct res_member <F, M(C, A...), true> :
-	public ret_sfinae <method_test, ptr2ref <C>, M, A...> { };
+	ret_sfinae <method_test, ptr2ref <C>, M, A...> { };
 
 template <typename F, typename M, typename C>
 struct res_member <F, M(C), false> :
-	public ret_sfinae <prop_test, ptr2ref <C>, M> { };
+	ret_sfinae <prop_test, ptr2ref <C>, M> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename S, bool = is_member_ptr <F>()>
-struct res_choose : public res_fun <S> { };
+struct res_choose : res_fun <S> { };
 
 template <typename F, typename S>
-struct res_choose <F, S, true> : public res_member <F, S> { };
+struct res_choose <F, S, true> : res_member <F, S> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename S, bool = is_complete <F>()>
-struct res_complete : public res_choose <F, S> { };
+struct res_complete : res_choose <F, S> { };
 
 template <typename F, typename S>
-struct res_complete <F, S, false> : public nat { };
+struct res_complete <F, S, false> : nat { };
 
 //-----------------------------------------------------------------------------
 
@@ -98,31 +98,31 @@ struct res_complete <F, S, false> : public nat { };
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-struct result_t : public result_t <F(A...)> { };
+struct result_t : result_t <F(A...)> { };
 
 template <typename F, typename... A>
 struct result_t <F(A...)> :
-	public details::res_complete <remove_ref <F>, F(A...)> { };
+	details::res_complete <remove_ref <F>, F(A...)> { };
 
 template <typename... S> using result = type_of <result_t <S...> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-struct ret_t : public ret_t <F(A...)> { };
+struct ret_t : ret_t <F(A...)> { };
 
 template <typename F, typename... A>
-struct ret_t <F(A...)> : public id_t <details::fun_test <F, A...> > { };
+struct ret_t <F(A...)> : id_t <details::fun_test <F, A...> > { };
 
 template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-struct can_call : public can_call <F(A...)> { };
+struct can_call : can_call <F(A...)> { };
 
 template <typename F, typename... A>
-struct can_call <F(A...)> : public sfinae <details::fun_test, F, A...> { };
+struct can_call <F(A...)> : sfinae <details::fun_test, F, A...> { };
 
 //-----------------------------------------------------------------------------
 

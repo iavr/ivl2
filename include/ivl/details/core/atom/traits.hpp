@@ -45,17 +45,17 @@ namespace traits {
 namespace details {
 
 template <typename T>
-struct is_atom_ : public _false { };
+struct is_atom_ : _false { };
 
 template <typename T, typename S>
-struct is_atom_<atom <T, S> > : public _true { };
+struct is_atom_<atom <T, S> > : _true { };
 
 }  // namespace details
 
 template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
 
 template <typename T>
-struct as_tuple : public expr <is_tuple <T>() || is_atom <T>()> { };
+struct as_tuple : expr <is_tuple <T>() || is_atom <T>()> { };
 
 //-----------------------------------------------------------------------------
 
@@ -67,15 +67,15 @@ using is_atom_fun_ = expr <is_class <R>() || is_fun <R>()>;
 }  // namespace details
 
 template <typename T, typename S>
-struct is_atom_fun : public _false { };
+struct is_atom_fun : _false { };
 
 template <typename T>
-struct is_atom_fun <T, data::fun <> > : public details::is_atom_fun_<T> { };
+struct is_atom_fun <T, data::fun <> > : details::is_atom_fun_<T> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct atom_of_t : public _if_t <as_tuple <T>{}, T, atom <T> > { };
+struct atom_of_t : _if_t <as_tuple <T>{}, T, atom <T> > { };
 // atom_of <> defined @tuple/begin
 
 //-----------------------------------------------------------------------------
@@ -84,8 +84,7 @@ namespace details {
 
 // extending definition under type/traits
 template <typename T, typename S>
-struct create_rec <atom <T, S> > :
-	public create_rec <type_of <atom <T, S> > > { };
+struct create_rec <atom <T, S> > : create_rec <type_of <atom <T, S> > > { };
 
 template <typename T>
 struct create_rec <_type <T> > { using type = atom <create <T> >; };
@@ -96,7 +95,7 @@ struct create_rec <_type <T> > { using type = atom <create <T> >; };
 
 // extending definition under tuple/traits
 template <typename T, typename S>
-struct under_t <atom <T, S> > : public pack <T> { };
+struct under_t <atom <T, S> > : pack <T> { };
 
 //-----------------------------------------------------------------------------
 

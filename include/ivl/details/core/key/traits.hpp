@@ -48,10 +48,10 @@ template <typename T>
 using is_key_ = expr <is_base <keys::key <T>, T>{}>;
 
 template <typename T>
-struct is_op_ref_ : public _false { };
+struct is_op_ref_ : _false { };
 
 template <typename O, typename... A>
-struct is_op_ref_<keys::op_ref <O, A...> > : public _true { };
+struct is_op_ref_<keys::op_ref <O, A...> > : _true { };
 
 }  // namespace details
 

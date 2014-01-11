@@ -39,7 +39,7 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-struct elem_store : public E...
+struct elem_store : E...
 {
 	explicit INLINE constexpr elem_store(_true) : E()... { }
 
@@ -245,7 +245,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename D, typename P>
-struct collection <data::base <>, D, P> : public store <
+class collection <data::base <>, D, P> : public store <
 	data::base <>, D, sz_rng_of_p <P>, P,
 	sz_rng_of_p <under <D> >, under <D>
 >

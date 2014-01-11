@@ -39,11 +39,11 @@ namespace tuple_details {
 //-----------------------------------------------------------------------------
 
 template <size_t... I, typename F, typename... A>
-class store <data::loop <>, sizes <I...>, F, A...> :
-	public base_tup <loop_tup <F, A...>, tup_loop_types <F, A...> >
+class store <data::loop <>, sizes <I...>, F, A...> : public base_tup <
+	loop_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
+>
 {
-	using S = c_static <_true>;
-	using P = tup_loop_types <F, A...>;
+	using P = rep <tran_len <tup_types <A>...>{}, nat>;
 	using B = base_tup <loop_tup <F, A...>, P>;
 
 	using fun = elem_at <0, F, A...>;
@@ -55,15 +55,15 @@ class store <data::loop <>, sizes <I...>, F, A...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...), S::rref(); }
+	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...), nat(); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return fun::get()(at._<J>(arg <I>::get())...), S::lref(); }
+	_at() & { return fun::get()(at._<J>(arg <I>::get())...), nat(); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return fun::get()(at._<J>(arg <I>::get())...), S::clref(); }
+	_at() const& { return fun::get()(at._<J>(arg <I>::get())...), nat(); }
 
 //-----------------------------------------------------------------------------
 

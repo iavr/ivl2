@@ -44,10 +44,10 @@ namespace traits {
 
 namespace details {
 
-template <typename T> struct is_tuple_ : public _false { };
+template <typename T> struct is_tuple_ : _false { };
 
 template <typename S, typename... E>
-struct is_tuple_<collection <S, E...> > : public _true { };
+struct is_tuple_<collection <S, E...> > : _true { };
 
 }  // namespace details
 
@@ -99,10 +99,10 @@ using raw_types = type_of <raw_type <T> >;
 
 template <typename T>
 struct tup_types_t :
-	public apply_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
+	apply_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
 
 template <typename... E>
-struct tup_types_t <pack <E...> > : public pack <E...> { };
+struct tup_types_t <pack <E...> > : pack <E...> { };
 
 template <typename T> using tup_types = type_of <tup_types_t <T> >;
 
@@ -116,9 +116,9 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct rtref_t  : public base_opt_t <T&&, T> { };
-template <typename T> struct ltref_t  : public base_opt_t <T&, T> { };
-template <typename T> struct cltref_t : public base_opt_t <const T&, T> { };
+template <typename T> struct rtref_t  : base_opt_t <T&&, T> { };
+template <typename T> struct ltref_t  : base_opt_t <T&, T> { };
+template <typename T> struct cltref_t : base_opt_t <const T&, T> { };
 
 template <typename T> using rtref  = type_of <rtref_t <T> >;
 template <typename T> using ltref  = type_of <ltref_t <T> >;
@@ -134,13 +134,13 @@ template <typename... E>
 struct cltref_t <pack <E...> > { using type = tuple <cltref <E>...>; };
 
 template <typename F, typename... E>
-struct rtref_t <F(pack <E...>)> : public ret_t <F(rtref <E>...)> { };
+struct rtref_t <F(pack <E...>)> : ret_t <F(rtref <E>...)> { };
 
 template <typename F, typename... E>
-struct ltref_t <F(pack <E...>)> : public ret_t <F(ltref <E>...)> { };
+struct ltref_t <F(pack <E...>)> : ret_t <F(ltref <E>...)> { };
 
 template <typename F, typename... E>
-struct cltref_t <F(pack <E...>)> : public ret_t <F(cltref <E>...)> { };
+struct cltref_t <F(pack <E...>)> : ret_t <F(cltref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 
@@ -160,10 +160,10 @@ template <
 	template <typename...> class R, typename C, typename T,
 	bool = all <is_tup_type, C, T>()
 >
-struct tup_rel : public alls <R, tup_types <C>, tup_types <T> > { };
+struct tup_rel : alls <R, tup_types <C>, tup_types <T> > { };
 
 template <template <typename...> class R, typename C, typename T>
-struct tup_rel <R, C, T, false> : public _false { };
+struct tup_rel <R, C, T, false> : _false { };
 
 }  // namespace details
 
@@ -177,11 +177,11 @@ template <typename C, typename T>
 using tup_explicit = details::tup_rel <is_explicit, C, T>;
 
 template <typename C, typename T>
-struct tup_assign : public details::tup_rel <is_assign, C, T> { };
+struct tup_assign : details::tup_rel <is_assign, C, T> { };
 
 template <typename... E, typename... P, typename T>
 struct tup_assign <pack <pack <E...>, P...>, T> :
-	public alls <tup_assign, pack <pack <E...>, P...>, tup_types <T> > { };
+	alls <tup_assign, pack <pack <E...>, P...>, tup_types <T> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -219,7 +219,7 @@ template <typename P, bool = any_pack_p <P>{}> struct tup_tmp_pt_;
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_pt_<C <E...>, true> :
-	public embed_t <tuple, tran_p <tmp <_type_of <E>...> > > { };
+	embed_t <tuple, tran_p <tmp <_type_of <E>...> > > { };
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_pt_<C <E...>, false> { using type = tmp <E...>; };
@@ -237,9 +237,9 @@ template <typename... E> using tup_tmp   = type_of <tup_tmp_t <E...> >;
 namespace details {
 
 template <typename P, size_t = length <P>()>
-struct tup_tran_ : public tran_pt <P> { };
+struct tup_tran_ : tran_pt <P> { };
 
-template <typename P> struct tup_tran_<P, 1> : public car_t <P> { };
+template <typename P> struct tup_tran_<P, 1> : car_t <P> { };
 
 }  // namespace details
 
@@ -264,7 +264,7 @@ namespace details {
 // extending definition under type/traits
 template <typename S, typename... A>
 struct create_rec <collection <S, A...> > :
-	public create_rec <type_of <collection <S, A...> > > { };
+	create_rec <type_of <collection <S, A...> > > { };
 
 template <typename... E>
 struct create_rec <pack <E...> > { using type = tuple <create <E>...>; };
@@ -277,17 +277,17 @@ struct create_rec <F(pack <E...>)>  { using type = create <ret <F(E...)> >; };
 //-----------------------------------------------------------------------------
 
 // extended elsewhere
-template <typename T> struct under_t : public pack <> { };
+template <typename T> struct under_t : pack <> { };
 template <typename T> using  under = type_of <under_t <T> >;
 
 template <typename S, typename... A>
-struct under_t <collection <S, A...> > : public pack <A...> { };
+struct under_t <collection <S, A...> > : pack <A...> { };
 
 template <typename D, typename P>
-struct under_t <base_tup <D, P> > : public under_t <D> { };
+struct under_t <base_tup <D, P> > : under_t <D> { };
 
 template <typename K, typename U>
-struct under_t <indirect_tup <K, U> > : public pack <U> { };
+struct under_t <indirect_tup <K, U> > : pack <U> { };
 
 //-----------------------------------------------------------------------------
 
@@ -299,42 +299,6 @@ using elem_at = elem_at_p <J, pack <E...> >;
 
 template <size_t J, typename T>
 using under_elem_at = elem_at_p <J, under <T> >;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-template <typename F>
-class tup_applier
-{
-	template <typename... A>
-	struct map_t { using type = F(pack <A...>); };
-
-	template <typename... A>
-	struct map_t <pack <A...> > : public map_t <A...> { };
-
-public:
-	template <typename... A>
-	using map = type_of <map_t <A...> >;
-};
-
-}  // namespace details
-
-template <typename F, typename... A>
-using tup_apply_types =
-	map <details::tup_applier <F>::template map, tran <tup_types <A>...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename... U>
-struct zip_len :
-	public sz_min_p <length_of, select <is_pack, tup_types <U>...> > { };
-
-template <typename U>
-struct zip_len <U> : public tup_len <U> { };
-
-template <typename F, typename... A>
-using tup_loop_types = rep <zip_len <A...>{}, bool>;
 
 //-----------------------------------------------------------------------------
 

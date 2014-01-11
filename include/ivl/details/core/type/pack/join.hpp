@@ -62,7 +62,7 @@ template <
 	typename... L, typename... R, typename... P
 >
 struct join_t <E <L...>, F <R...>, P...> :
-	public join_t <typename fuse <E, F>::template map <L..., R...>, P...> { };
+	join_t <typename fuse <E, F>::template map <L..., R...>, P...> { };
 
 template <template <typename...> class E, typename... T>
 struct join_t <E <T...> > { using type = E <T...>; };
@@ -74,10 +74,10 @@ template <typename... I> using  join_i = type_of <join_it <I...> >;
 
 template <typename T, T... L, T... R, typename... I>
 struct join_it <integrals <T, L...>, integrals <T, R...>, I...> :
-	public join_it <integrals <T, L..., R...>, I...> { };
+	join_it <integrals <T, L..., R...>, I...> { };
 
 template <typename T, T... N>
-struct join_it <integrals <T, N...> > : public integrals <T, N...> { };
+struct join_it <integrals <T, N...> > : integrals <T, N...> { };
 
 //-----------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ template <typename I, typename... E> struct major_t_;
 
 template <size_t... I, typename... E>
 struct major_t_<sizes <I...>, E...> :
-	public join_it <sz_rep <length <E>{}, I>...> { };
+	join_it <sz_rep <length <E>{}, I>...> { };
 
 }  // namespace details
 
@@ -106,8 +106,7 @@ template <typename P> struct flip_pt;
 template <typename P> using flip_p = type_of <flip_pt <P> >;
 
 template <template <typename...> class C, typename E, typename... En>
-struct flip_pt <C <E, En...> > :
-	public join_t <flip_p <C <En...> >, C <E> > { };
+struct flip_pt <C <E, En...> > : join_t <flip_p <C <En...> >, C <E> > { };
 
 template <template <typename...> class C>
 struct flip_pt <C <> > { using type = C <>; };

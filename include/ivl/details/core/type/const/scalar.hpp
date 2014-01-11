@@ -43,7 +43,7 @@ namespace constants {
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct c_type : public constant <T, c_type <T> >
+struct c_type : constant <T, c_type <T> >
 {
 	INLINE constexpr operator T() const { return T(); }
 };
@@ -51,7 +51,7 @@ struct c_type : public constant <T, c_type <T> >
 using c_null = c_type <nullptr_t>;
 
 template <typename T, T V>
-struct c_integral : public constant <T, c_integral <T, V> >
+struct c_integral : constant <T, c_integral <T, V> >
 {
 	static constexpr T value = V;
 	INLINE constexpr operator T() const { return value; }
@@ -127,8 +127,8 @@ struct floating
 //-----------------------------------------------------------------------------
 
 template <typename T, typename M, typename E>
-struct c_scientific : public floating <M, E>,
-	public constant <T, c_scientific <T, M, E> >
+struct c_scientific : floating <M, E>,
+	constant <T, c_scientific <T, M, E> >
 {
 	INLINE constexpr operator T() const { return M() * std::pow(T(10), E()); }
 };
@@ -146,8 +146,8 @@ using c_long_double =
 //-----------------------------------------------------------------------------
 
 template <typename T, typename M, typename E>
-struct c_norm_scientific : public floating <M, E>,
-	public constant <T, c_norm_scientific <T, M, E> >
+struct c_norm_scientific : floating <M, E>,
+	constant <T, c_norm_scientific <T, M, E> >
 {
 	INLINE constexpr operator T() const
 	{
@@ -170,13 +170,13 @@ using c_norm_long_double =
 //-----------------------------------------------------------------------------
 
 template <typename T, T &R>
-struct c_ref : public constant <T&, c_ref <T, R> >
+struct c_ref : constant <T&, c_ref <T, R> >
 {
 	INLINE constexpr operator T&() const { return R; }
 };
 
 template <typename T, T const &R>
-struct c_cref : public constant <T const&, c_cref <T, R> >
+struct c_cref : constant <T const&, c_cref <T, R> >
 {
 	INLINE constexpr operator T const&() const { return R; }
 };
@@ -184,13 +184,13 @@ struct c_cref : public constant <T const&, c_cref <T, R> >
 //-----------------------------------------------------------------------------
 
 template <typename T, T *P>
-struct c_ptr : public constant <T*, c_ptr <T, P> >
+struct c_ptr : constant <T*, c_ptr <T, P> >
 {
 	INLINE constexpr operator T*() const { return P; }
 };
 
 template <typename T, T const *P>
-struct c_cptr : public constant <T const*, c_cptr <T, P> >
+struct c_cptr : constant <T const*, c_cptr <T, P> >
 {
 	INLINE constexpr operator T const*() const { return P; }
 };
