@@ -35,15 +35,35 @@ namespace ivl {
 //-----------------------------------------------------------------------------
 
 namespace keys {
+namespace details {
 
-namespace details { template <typename O, typename... A> struct op_ref; }
+template <typename O, typename... A> struct op_ref;
+
+}  // namespace details
+
 using details::op_ref;
 
 }  // namespace keys
 
 //-----------------------------------------------------------------------------
 
-namespace tuple_details { using namespace types; }
+namespace tuples {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace tuples
+
+//-----------------------------------------------------------------------------
+
+namespace afun {
+namespace details {
+
+using namespace tuples;
+
+}  // namespace details
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

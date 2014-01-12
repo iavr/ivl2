@@ -37,8 +37,8 @@ namespace ivl {
 namespace atom_details {
 
 using namespace types;
-using tuple_details::base_tup;
-using tuple_details::elem;
+using tuples::base_tup;
+using tuples::elem;
 
 }
 

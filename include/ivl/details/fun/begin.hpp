@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
-#define IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#ifndef IVL_DETAILS_FUN_BEGIN_HPP
+#define IVL_DETAILS_FUN_BEGIN_HPP
 
 #include <ivl/ivl>
 
@@ -34,59 +34,13 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
-
-//-----------------------------------------------------------------------------
-
+namespace fun {
 namespace details {
 
-//-----------------------------------------------------------------------------
-
-template <typename D, typename P> struct base_tup;
-
-template <typename S, typename... A> struct store;
-template <typename S, typename... A> struct collection;
-
-//-----------------------------------------------------------------------------
-
-template <typename... E>
-using tuple = collection <data::tuple <>, E...>;
-
-template <typename K, typename U>
-using indirect_tup = collection <data::indirect <>, K, U>;
-
-template <typename F, typename... A>
-using apply_tup = collection <data::apply <>, F, A...>;
-
-template <typename F, typename... A>
-using loop_tup = collection <data::loop <>, F, A...>;
-
-template <typename... U>
-using zip_tup = collection <data::zip <>, U...>;
-
-template <typename... U>
-using join_tup = collection <data::join <>, U...>;
-
-//-----------------------------------------------------------------------------
+using namespace types;
 
 }  // namespace details
-
-using details::base_tup;
-using details::collection;
-
-using details::tuple;
-using details::indirect_tup;
-using details::apply_tup;
-using details::loop_tup;
-using details::zip_tup;
-using details::join_tup;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace tuples
-
-using tuples::collection;
-using tuples::tuple;
+}  // namespace fun
 
 //-----------------------------------------------------------------------------
 
@@ -94,4 +48,4 @@ using tuples::tuple;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#endif  // IVL_DETAILS_FUN_BEGIN_HPP

@@ -96,7 +96,7 @@ using clref_of = collect <base_opt, T, E, all_clref>;
 using tup_join = rref_of <join_tup, all_tuple>;
 using tup      = rref_of <join_tuple>;
 
-using tup_zip   = rref_of <zip_tup,   all_tuple>;
+using tup_zip   = rref_of <zip_tup, all_tuple>;
 using tup_inner = rref_of <zip_tuple, any_tuple>;
 
 //-----------------------------------------------------------------------------

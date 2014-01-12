@@ -42,7 +42,8 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using is_stream = is_base <std::ios_base, raw_type <T> >;
+template <typename T>
+using is_stream = is_base <std::ios_base, raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 

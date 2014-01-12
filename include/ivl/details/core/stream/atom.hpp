@@ -40,16 +40,15 @@ using std::basic_ostream;
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename R, typename T>
+template <typename C, typename R, typename T, typename S>
 INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, atom <T>&& a)
-{
-	return s << fwd <atom <T> >(a).val();
-}
+operator<<(basic_ostream <C, R>& s, atom <T, S>&& a)
+	{ return s << mv(a).val(); }
 
-template <typename C, typename R, typename T>
+template <typename C, typename R, typename T, typename S>
 INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, const atom <T>& a) { return s << a.val(); }
+operator<<(basic_ostream <C, R>& s, const atom <T, S>& a)
+	{ return s << a.val(); }
 
 //-----------------------------------------------------------------------------
 

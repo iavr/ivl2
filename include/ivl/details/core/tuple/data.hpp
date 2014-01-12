@@ -38,7 +38,6 @@ namespace data {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct base { };
 template <typename... D> struct tuple { };
 template <typename... D> struct indirect { };
 template <typename... D> struct apply { };

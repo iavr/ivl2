@@ -37,6 +37,7 @@
 #include "afun/array.hpp"
 #include "afun/container.hpp"
 
+#include "fun/begin.hpp"
 #include "fun/member.hpp"
 #include "fun/op.hpp"
 #include "fun/swap.hpp"

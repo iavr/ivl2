@@ -34,6 +34,7 @@
 #include "tuple/elem.hpp"
 #include "tuple/traits.hpp"
 #include "tuple/at.hpp"
+#include "tuple/store.hpp"
 #include "tuple/access.hpp"
 #include "tuple/base.hpp"
 #include "tuple/tuple.hpp"

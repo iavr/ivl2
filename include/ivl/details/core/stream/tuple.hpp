@@ -34,7 +34,11 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuple_details {
+namespace tuples {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 using std::basic_ostream;
 
@@ -43,21 +47,20 @@ using std::basic_ostream;
 template <typename C, typename R, typename S, typename... A>
 INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, collection <S, A...>&& t)
-{
-	using T = collection <S, A...>;
-	return s << "(",  loop[", "](out_stream(s), fwd <T>(t)),  s << ")";
-}
+	{ return s << "(",  loop[", "](out_stream(s), mv(t)),  s << ")"; }
 
 template <typename C, typename R, typename S, typename... A>
 INLINE basic_ostream <C, R>&
 operator<<(basic_ostream <C, R>& s, const collection <S, A...>& t)
-{
-	return s << "(",  loop[", "](out_stream(s), t),  s << ")";
-}
+	{ return s << "(",  loop[", "](out_stream(s), t),  s << ")"; }
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuple_details
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 

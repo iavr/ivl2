@@ -195,16 +195,16 @@ using tup_tup_explicit =
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-struct apply_tuple_t { using type = apply_tup <F, atom_of <A>...>; };
+struct apply_tuple_t { using type = tuples::apply_tup <F, atom_of <A>...>; };
 
 template <typename F, typename... A>
-struct loop_tuple_t { using type = loop_tup <F, atom_of <A>...>; };
+struct loop_tuple_t { using type = tuples::loop_tup <F, atom_of <A>...>; };
 
 template <typename... U>
-struct zip_tuple_t { using type = zip_tup <atom_of <U>...>; };
+struct zip_tuple_t { using type = tuples::zip_tup <atom_of <U>...>; };
 
 template <typename... U>
-struct join_tuple_t { using type = join_tup <atom_of <U>...>; };
+struct join_tuple_t { using type = tuples::join_tup <atom_of <U>...>; };
 
 template <typename... U> using apply_tuple = type_of <apply_tuple_t <U...> >;
 template <typename... U> using loop_tuple  = type_of <loop_tuple_t <U...> >;
@@ -284,15 +284,15 @@ template <typename S, typename... A>
 struct under_t <collection <S, A...> > : pack <A...> { };
 
 template <typename D, typename P>
-struct under_t <base_tup <D, P> > : under_t <D> { };
+struct under_t <tuples::base_tup <D, P> > : under_t <D> { };
 
 template <typename K, typename U>
-struct under_t <indirect_tup <K, U> > : pack <U> { };
+struct under_t <tuples::indirect_tup <K, U> > : pack <U> { };
 
 //-----------------------------------------------------------------------------
 
 template <size_t J, typename P>
-using elem_at_p = tuple_details::elem <J, pick_p <J, P> >;
+using elem_at_p = tuples::elem <J, pick_p <J, P> >;
 
 template <size_t J, typename... E>
 using elem_at = elem_at_p <J, pack <E...> >;

@@ -34,21 +34,42 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuple_details {
+namespace fun {
 
 //-----------------------------------------------------------------------------
 
-struct swap_fun : afun::swap
+namespace details {
+
+//-----------------------------------------------------------------------------
+
+struct tup_swap : afun::swap
 {
 	using afun::swap::operator();
 
-	template <
-		typename T, typename U,
-		enable_if <all_tuple <T, U>{}>
-	= 0>
+	template <typename T, typename U, enable_if <all_tuple <T, U>{}> = 0>
 	INLINE void
 	operator()(T&& t, U&& u) const { loop(*this, fwd <T>(t), fwd <U>(u)); }
 };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::tup_swap;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace fun
+
+//-----------------------------------------------------------------------------
+
+namespace tuples {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 // defined in same namespace as collection
@@ -59,11 +80,15 @@ template <
 	enable_if <all_tuple <T, U>{}>
 = 0>
 INLINE void
-swap(T&& t, U&& u) { swap_fun()(fwd <T>(t), fwd <U>(u)); }
+swap(T&& t, U&& u) { fun::tup_swap()(fwd <T>(t), fwd <U>(u)); }
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuple_details
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 

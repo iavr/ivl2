@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
-#define IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_STORE_HPP
+#define IVL_DETAILS_CORE_TUPLE_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -42,51 +42,48 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename P> struct base_tup;
+template <typename... E>
+struct elem_store : E...
+{
+	explicit INLINE constexpr elem_store(_true) : E()... { }
 
-template <typename S, typename... A> struct store;
-template <typename S, typename... A> struct collection;
+	template <typename... A>
+	explicit INLINE constexpr elem_store(A&&... a) : E(fwd <A>(a))... { }
+};
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-using tuple = collection <data::tuple <>, E...>;
+template <typename N, typename U> struct elem_map;
 
-template <typename K, typename U>
-using indirect_tup = collection <data::indirect <>, K, U>;
+template <size_t... N, typename... U>
+class elem_map <sizes <N...>, pack <U...> > :
+	public elem_store <elem <N, U>...>
+{
+	using B = elem_store <elem <N, U>...>;
 
-template <typename F, typename... A>
-using apply_tup = collection <data::apply <>, F, A...>;
+public:
+	using B::B;
+};
 
-template <typename F, typename... A>
-using loop_tup = collection <data::loop <>, F, A...>;
+//-----------------------------------------------------------------------------
 
-template <typename... U>
-using zip_tup = collection <data::zip <>, U...>;
+template <typename D>
+class elems : public elem_map <sz_rng_of_p <under <D> >, under <D> >
+{
+	using U = under <D>;
+	using B = elem_map <sz_rng_of_p <U>, U>;
 
-template <typename... U>
-using join_tup = collection <data::join <>, U...>;
+public:
+	using B::B;
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::base_tup;
-using details::collection;
-
-using details::tuple;
-using details::indirect_tup;
-using details::apply_tup;
-using details::loop_tup;
-using details::zip_tup;
-using details::join_tup;
-
 //-----------------------------------------------------------------------------
 
 }  // namespace tuples
-
-using tuples::collection;
-using tuples::tuple;
 
 //-----------------------------------------------------------------------------
 
@@ -94,4 +91,4 @@ using tuples::tuple;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_STORE_HPP

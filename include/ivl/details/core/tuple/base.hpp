@@ -34,41 +34,28 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuple_details {
+namespace tuples {
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-struct elem_store : E...
-{
-	explicit INLINE constexpr elem_store(_true) : E()... { }
+namespace details {
 
-	template <typename... A>
-	explicit INLINE constexpr elem_store(A&&... a) : E(fwd <A>(a))... { }
-};
+//-----------------------------------------------------------------------------
+
+template <typename D, typename I, typename P> struct base_store;
 
 //-----------------------------------------------------------------------------
 
 template <
 	typename D,
-	size_t... I, template <typename...> class Q, typename... E,
-	size_t... N, typename... U
+	size_t... I, template <typename...> class Q, typename... E
 >
-class store <
-	data::base <>, D,
-	sizes <I...>, Q <E...>,
-	sizes <N...>, pack <U...>
-> :
-	public Q <E...>,
-	public access <elem_store <elem <N, U>...>, D, E...>
+class base_store <D, sizes <I...>, Q <E...> > :
+	public Q <E...>, public access <D, E...>
 {
 	using P = Q <E...>;
-	using V = pack <U...>;
-	using S = elem_store <elem <N, U>...>;
-	using B = access <S, D, E...>;
+	using B = access <D, E...>;
 	static constexpr size_t L = P::length;
-
-	template <size_t J> using under = elem_at <J, U...>;
 
 //-----------------------------------------------------------------------------
 
@@ -79,7 +66,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	using base_type = store;
+	using base_type = base_store;
 	using type = P;
 	static constexpr size_t length = L;
 
@@ -245,15 +232,9 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename D, typename P>
-class collection <data::base <>, D, P> : public store <
-	data::base <>, D, sz_rng_of_p <P>, P,
-	sz_rng_of_p <under <D> >, under <D>
->
+class base_tup : public base_store <D, sz_rng_of_p <P>, P>
 {
-	using U = under <D>;
-	using I = sz_rng_of_p <P>;
-	using N = sz_rng_of_p <U>;
-	using B = store <data::base <>, D, I, P, N, U>;
+	using B = base_store <D, sz_rng_of_p <P>, P>;
 
 public:
 	using B::B;
@@ -261,7 +242,11 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuple_details
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 

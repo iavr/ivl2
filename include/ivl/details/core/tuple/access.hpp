@@ -34,24 +34,28 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuple_details {
+namespace tuples {
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename D, typename... E>
-struct access : B, derived <D> { using B::B; };
+namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename D, typename E>
-struct access <B, D, E> : B, derived <D>
+template <typename D, typename... E>
+struct access : elems <D>, derived <D> { using elems <D>::elems; };
+
+//-----------------------------------------------------------------------------
+
+template <typename D, typename E>
+struct access <D, E> : elems <D>, derived <D>
 {
 protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
 public:
-	using B::B;
+	using elems <D>::elems;
 
 	INLINE           rtref <E>  val_f()      { return at._<0>(der_f()); }
 	INLINE           rtref <E>  val() &&     { return at._<0>(der_f()); }
@@ -61,15 +65,15 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename D, typename E0, typename E1>
-struct access <B, D, E0, E1> : B, derived <D>
+template <typename D, typename E0, typename E1>
+struct access <D, E0, E1> : elems <D>, derived <D>
 {
 protected:
 	using derived <D>::der;
 	using derived <D>::der_f;
 
 public:
-	using B::B;
+	using elems <D>::elems;
 
 	INLINE           rtref <E0>  fst_f()      { return at._<0>(der_f()); }
 	INLINE           rtref <E0>  fst() &&     { return at._<0>(der_f()); }
@@ -84,7 +88,11 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuple_details
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 
