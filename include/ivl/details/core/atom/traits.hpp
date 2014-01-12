@@ -75,7 +75,7 @@ struct is_atom_fun <T, data::fun <> > : details::is_atom_fun_<T> { };
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct atom_of_t : _if_t <as_tuple <T>{}, T, atom <T> > { };
+struct atom_of_t : _if_t <as_tuple <T>{}, T, atoms::atom <T> > { };
 // atom_of <> defined @tuple/begin
 
 //-----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ struct create_rec <_type <T> > { using type = atom <create <T> >; };
 
 // extending definition @tuple/traits
 template <typename T, typename S>
-struct under_t <atom <T, S> > : pack <T> { };
+struct under_t <atoms::atom <T, S> > : pack <T> { };
 
 //-----------------------------------------------------------------------------
 

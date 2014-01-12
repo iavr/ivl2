@@ -43,13 +43,13 @@ namespace constants {
 //-----------------------------------------------------------------------------
 
 template <typename T, T (*F)()>
-struct c_gen : c_sig <T ()>::template call <F> { };
+struct c_gen : c_sig <T()>::template call <F> { };
 
 template <typename T, T (*F)(T), typename A1>
-struct c_gen1 : c_sig <T (T)>::template call <F, A1> { };
+struct c_gen1 : c_sig <T(T)>::template call <F, A1> { };
 
 template <typename T, T (*F)(T, T), typename A1, typename A2>
-struct c_gen2 : c_sig <T (T, T)>::template call <F, A1, A2> { }	;
+struct c_gen2 : c_sig <T(T, T)>::template call <F, A1, A2> { }	;
 
 //-----------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ template <typename T = double>
 using c_pi = c_mul <c_gen1 <T, std::atan, c_one>, c_int <4> >;
 
 template <typename T = double>
-using c_i  = c_cons <std::complex <T> (c_zero, c_one)>;
+using c_i  = c_cons <std::complex <T>(c_zero, c_one)>;
 
 template <typename T = double>
 using c_j  = c_i <T>;

@@ -74,6 +74,11 @@ template <typename T> struct as_tuple;
 template <typename T> struct atom_of_t;
 template <typename T> using  atom_of = type_of <atom_of_t <T> >;
 
+namespace details {
+
+using namespace tuples;
+
+}  // namespace details
 }  // namespace traits
 }  // namespace types
 

@@ -4,11 +4,11 @@
 
 namespace ivl {
 
-IVL_KEY(p)
-IVL_KEY(q)
-IVL_KEY(f)
-IVL_KEY(g)
-IVL_KEY(h)
+IVL_KEY_MEMBER(p)
+IVL_KEY_MEMBER(q)
+IVL_KEY_MEMBER(f)
+IVL_KEY_MEMBER(g)
+IVL_KEY_MEMBER(h)
 
 }
 

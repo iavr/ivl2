@@ -13,14 +13,14 @@ struct
 f;
 
 // TODO: bind[val]
-afun::val_of <afun::bind> vbind;
+afun::val_of <afun::details::bind_> vbind;
 
 auto b()
-	-> decltype(bind(f, 4, 'A'))
+-> decltype(bind(f, 4, 'A'))
 	{ return bind(f, 4, 'A'); }
 
 auto vb()
-	-> decltype(vbind(f, 4, 'A'))
+-> decltype(vbind(f, 4, 'A'))
 	{ return vbind(f, 4, 'A'); }
 
 int main ()

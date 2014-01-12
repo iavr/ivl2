@@ -281,7 +281,7 @@ template <typename T> struct under_t : pack <> { };
 template <typename T> using  under = type_of <under_t <T> >;
 
 template <typename S, typename... A>
-struct under_t <collection <S, A...> > : pack <A...> { };
+struct under_t <tuples::collection <S, A...> > : pack <A...> { };
 
 template <typename D, typename P>
 struct under_t <tuples::base_tup <D, P> > : under_t <D> { };

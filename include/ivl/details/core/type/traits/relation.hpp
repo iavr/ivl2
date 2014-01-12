@@ -61,7 +61,7 @@ namespace is_base_eq_test
 	template <class T>
 	struct der
 	{
-		operator const volatile T& ();
+		operator const volatile T&();
 		template <class U> operator const base <U>&();
 	};
 

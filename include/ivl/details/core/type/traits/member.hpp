@@ -1,7 +1,7 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
    A C++ template library extending syntax towards mathematical notation.
 
-   Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
+   Copyright	C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
 
    ivl is free software; you can redistribute it and/or modify
@@ -166,7 +166,7 @@ using is_prop_ptr_of = expr <is_prop_ptr <M>() && is_ptr_of <C, M>()>;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename... A>
-struct member_ptr_t : member_ptr_t <C, R (A...)> { };
+struct member_ptr_t : member_ptr_t <C, R(A...)> { };
 
 template <typename C, typename T>
 struct member_ptr_t <C, T> : id_t <T raw_type <C>::*> { };
@@ -177,55 +177,55 @@ using member_ptr = type_of <member_ptr_t <C, R, A...> >;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C, R (A...)>
+struct member_ptr_t <C, R(A...)>
 	{ using type = R (C::*)(A...); };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const, R (A...)>
+struct member_ptr_t <C const, R(A...)>
 	{ using type = R (C::*)(A...) const; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C volatile, R (A...)>
+struct member_ptr_t <C volatile, R(A...)>
 	{ using type = R (C::*)(A...) volatile; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const volatile, R (A...)>
+struct member_ptr_t <C const volatile, R(A...)>
 	{ using type = R (C::*)(A...) const volatile; };
 
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C&, R (A...)>
+struct member_ptr_t <C&, R(A...)>
 	{ using type = R (C::*)(A...) &; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const&, R (A...)>
+struct member_ptr_t <C const&, R(A...)>
 	{ using type = R (C::*)(A...) const&; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C volatile&, R (A...)>
+struct member_ptr_t <C volatile&, R(A...)>
 	{ using type = R (C::*)(A...) volatile&; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const volatile&, R (A...)>
+struct member_ptr_t <C const volatile&, R(A...)>
 	{ using type = R (C::*)(A...) const volatile&; };
 
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C&&, R (A...)>
+struct member_ptr_t <C&&, R(A...)>
 	{ using type = R (C::*)(A...) &&; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const&&, R (A...)>
+struct member_ptr_t <C const&&, R(A...)>
 	{ using type = R (C::*)(A...) const&&; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C volatile&&, R (A...)>
+struct member_ptr_t <C volatile&&, R(A...)>
 	{ using type = R (C::*)(A...) volatile&&; };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const volatile&&, R (A...)>
+struct member_ptr_t <C const volatile&&, R(A...)>
 	{ using type = R (C::*)(A...) const volatile&&; };
 
 //-----------------------------------------------------------------------------

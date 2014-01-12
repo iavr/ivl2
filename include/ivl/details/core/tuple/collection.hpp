@@ -85,7 +85,6 @@ using details::join_tup;
 
 }  // namespace tuples
 
-using tuples::collection;
 using tuples::tuple;
 
 //-----------------------------------------------------------------------------

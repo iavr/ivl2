@@ -32,13 +32,17 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace uscore_details {
+namespace atoms {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
 class uscore : public afun::rref
 {
-	template <typename A> using R = fun_atom <base_opt <A&&> >;
+	template <typename A> using R = atoms::fun_atom <base_opt <A&&> >;
 
 public:
 	template <typename A>
@@ -48,13 +52,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace uscore_details
+}  // namespace details
 
-using uscore_details::uscore;
+using details::uscore;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) uscore _;
+}  // namespace atoms
+
+//-----------------------------------------------------------------------------
+
+static __attribute__ ((unused)) atoms::uscore _;
 
 //-----------------------------------------------------------------------------
 

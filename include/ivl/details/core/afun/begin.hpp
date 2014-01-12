@@ -48,4 +48,25 @@ using namespace types;
 
 //-----------------------------------------------------------------------------
 
+namespace ivl_op {
+namespace details {
+
+using ::ivl::types::bare_type;
+using ::ivl::fwd;
+
+}  // namespace details
+}  // namespace ivl_op
+
+//-----------------------------------------------------------------------------
+
+namespace ivl_fun {
+namespace details {
+
+using ::ivl::fwd;
+
+}  // namespace details
+}  // namespace ivl_fun
+
+//-----------------------------------------------------------------------------
+
 #endif  // IVL_DETAILS_CORE_AFUN_BEGIN_HPP

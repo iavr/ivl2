@@ -38,6 +38,7 @@
 #include "type/meta.hpp"
 #include "type/pack.hpp"
 #include "type/traits.hpp"
+#include "afun/begin.hpp"
 #include "afun/op.hpp"
 #include "type/const_fun.hpp"
 

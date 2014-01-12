@@ -38,7 +38,6 @@
 #include "core/platform.hpp"
 #include "core/type.hpp"
 #include "core/math.hpp"
-#include "core/afun/begin.hpp"
 #include "core/tuple.hpp"
 #include "core/atom.hpp"
 #include "core/key.hpp"

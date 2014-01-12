@@ -34,16 +34,25 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace atom_details {
+namespace atoms {
+namespace details {
 
-template <typename T, typename S = data::atom <> > class atom;
+//-----------------------------------------------------------------------------
 
-template <typename T> using fun_atom = atom <T, data::fun <> >;
+template <typename T, typename S = data::atom <> >
+struct atom;
 
-}
+template <typename T>
+using fun_atom = atom <T, data::fun <> >;
 
-using atom_details::atom;
-using atom_details::fun_atom;
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+using details::atom;
+using details::fun_atom;
+
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 

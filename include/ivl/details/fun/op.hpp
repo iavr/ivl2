@@ -34,21 +34,6 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace op_details { using namespace types; }
-
-//-----------------------------------------------------------------------------
-
-namespace op {
-
-using types::enable_if;
-using types::is_stream;
-using types::is_tuple;
-using types::any_tuple;
-
-}  // namespace op
-
-//-----------------------------------------------------------------------------
-
 #define IVL_ATOM_OP(NAME)                                    \
                                                              \
 namespace fun {                                              \
@@ -89,6 +74,7 @@ namespace op {                                               \
 IVL_VEC_OP(NAME)                               \
                                                \
 namespace op {                                 \
+namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
@@ -100,8 +86,9 @@ operator OP(A&& a)                             \
 	{ return NAME(fwd <A>(a)); }                \
                                                \
 }                                              \
+}                                              \
                                                \
-using op::operator OP;                         \
+using op::details::operator OP;                \
 
 //-----------------------------------------------------------------------------
 
@@ -110,6 +97,7 @@ using op::operator OP;                         \
 IVL_VEC_OP_MUT(NAME)                           \
                                                \
 namespace op {                                 \
+namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
@@ -121,8 +109,9 @@ operator OP(A&& a)                             \
 	{ return NAME(fwd <A>(a)); }                \
                                                \
 }                                              \
+}                                              \
                                                \
-using op::operator OP;                         \
+using op::details::operator OP;                \
 
 //-----------------------------------------------------------------------------
 
@@ -131,6 +120,7 @@ using op::operator OP;                         \
 IVL_VEC_OP_COPY(NAME)                          \
                                                \
 namespace op {                                 \
+namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
@@ -142,8 +132,9 @@ operator OP(A&& a, int)                        \
 	{ return NAME(fwd <A>(a)); }                \
                                                \
 }                                              \
+}                                              \
                                                \
-using op::operator OP;                         \
+using op::details::operator OP;                \
 
 //-----------------------------------------------------------------------------
 
@@ -152,6 +143,7 @@ using op::operator OP;                         \
 IVL_VEC_OP(NAME)                                           \
                                                            \
 namespace op {                                             \
+namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
@@ -163,8 +155,9 @@ operator OP(A&& a, B&& b)                                  \
 	{ return NAME(fwd <A>(a), fwd <B>(b)); }                \
                                                            \
 }                                                          \
+}                                                          \
                                                            \
-using op::operator OP;                                     \
+using op::details::operator OP;                            \
 
 //-----------------------------------------------------------------------------
 
@@ -173,6 +166,7 @@ using op::operator OP;                                     \
 IVL_VEC_OP_MUT(NAME)                                       \
                                                            \
 namespace op {                                             \
+namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
@@ -184,8 +178,9 @@ operator OP(A&& a, B&& b)                                  \
 	{ return NAME(fwd <A>(a), fwd <B>(b)); }                \
                                                            \
 }                                                          \
+}                                                          \
                                                            \
-using op::operator OP;                                     \
+using op::details::operator OP;                            \
 
 //-----------------------------------------------------------------------------
 
@@ -194,6 +189,7 @@ using op::operator OP;                                     \
 IVL_VEC_OP(NAME)                                           \
                                                            \
 namespace op {                                             \
+namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
@@ -205,19 +201,9 @@ operator OP(A&& a, B&& b)                                  \
 	{ return NAME(fwd <A>(a), fwd <B>(b)); }                \
                                                            \
 }                                                          \
+}                                                          \
                                                            \
-using op::operator OP;                                     \
-
-//-----------------------------------------------------------------------------
-
-// #define IVL_OP_CAST(NAME)                                     \
-//                                                               \
-// struct _##NAME##_cast                                         \
-// {                                                             \
-// 	template <typename T, typename A>                          \
-// 	INLINE constexpr T                                         \
-// 	_(A&& a) const { return NAME##_cast <T>(fwd <A>(a)); }     \
-// };
+using op::details::operator OP;                            \
 
 //-----------------------------------------------------------------------------
 
@@ -282,7 +268,8 @@ IVL_VEC_OP(ptr_call)     //  c .* m ( a... )    // non-overloadable
 
 IVL_ATOM_OP(member)
 
-namespace op_details {
+namespace op {
+namespace details {
 
 template <typename A, typename B>
 using atom_member = expr <is_atom <A>() && !is_class <raw_type <B> >()>;
@@ -308,10 +295,10 @@ operator->*(A&& a, B&& b)
 -> decltype(afun::member()(fwd <A>(a).val(), fwd <B>(b)))
 	{ return afun::member()(fwd <A>(a).val(), fwd <B>(b)); }
 
-}  // namespace op_details
+}  // namespace details
+}  // namespace op;
 
-namespace op { using op_details::operator->*; }
-using op::operator->*;
+using op::details::operator->*;
 
 //-----------------------------------------------------------------------------
 

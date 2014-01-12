@@ -32,12 +32,11 @@
 
 namespace ivl_op {
 
-using ivl::types::bare_type;
-using ivl::fwd;
-
 //-----------------------------------------------------------------------------
 
 #define IVL_OP1(NAME, OP)                \
+                                         \
+namespace details {                      \
                                          \
 struct NAME                              \
 {                                        \
@@ -47,10 +46,16 @@ struct NAME                              \
 	-> decltype(OP fwd <A>(a))            \
 		{ return OP fwd <A>(a); }          \
 };                                       \
+                                         \
+}                                        \
+                                         \
+using details::NAME;                     \
 
 //-----------------------------------------------------------------------------
 
 #define IVL_OP1_PRE(NAME, OP)            \
+                                         \
+namespace details {                      \
                                          \
 struct NAME                              \
 {                                        \
@@ -60,10 +65,16 @@ struct NAME                              \
 	-> decltype(OP fwd <A>(a))            \
 		{ return OP fwd <A>(a); }          \
 };                                       \
+                                         \
+}                                        \
+                                         \
+using details::NAME;                     \
 
 //-----------------------------------------------------------------------------
 
 #define IVL_OP1_POST(NAME, OP)           \
+                                         \
+namespace details {                      \
                                          \
 struct NAME                              \
 {                                        \
@@ -73,10 +84,16 @@ struct NAME                              \
 	-> decltype(fwd <A>(a) OP)            \
 		{ return fwd <A>(a) OP; }          \
 };                                       \
+                                         \
+}                                        \
+                                         \
+using details::NAME;                     \
 
 //-----------------------------------------------------------------------------
 
 #define IVL_OP2(NAME, OP)                            \
+                                                     \
+namespace details {                                  \
                                                      \
 struct NAME                                          \
 {                                                    \
@@ -86,10 +103,16 @@ struct NAME                                          \
 	-> decltype(fwd <A>(a) OP fwd <B>(b))             \
 		{ return fwd <A>(a) OP fwd <B>(b); }           \
 };                                                   \
+                                                     \
+}                                                    \
+                                                     \
+using details::NAME;                                 \
 
 //-----------------------------------------------------------------------------
 
 #define IVL_OP2_MUT(NAME, OP)                        \
+                                                     \
+namespace details {                                  \
                                                      \
 struct NAME                                          \
 {                                                    \
@@ -99,10 +122,16 @@ struct NAME                                          \
 	-> decltype(fwd <A>(a) OP fwd <B>(b))             \
 		{ return fwd <A>(a) OP fwd <B>(b); }           \
 };                                                   \
+                                                     \
+}                                                    \
+                                                     \
+using details::NAME;                                 \
 
 //-----------------------------------------------------------------------------
 
 #define IVL_OP_CAST(NAME)                                     \
+                                                              \
+namespace details {                                           \
                                                               \
 struct _##NAME##_cast                                         \
 {                                                             \
@@ -110,6 +139,10 @@ struct _##NAME##_cast                                         \
 	INLINE constexpr T                                         \
 	_(A&& a) const { return NAME##_cast <T>(fwd <A>(a)); }     \
 };                                                            \
+                                                              \
+}                                                             \
+                                                              \
+using details::_##NAME##_cast;                                \
 
 //-----------------------------------------------------------------------------
 
@@ -167,6 +200,10 @@ IVL_OP1(addr,  &)
 
 IVL_OP2(ref_member, .*)
 IVL_OP2(ptr_member, ->*)
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
@@ -256,10 +293,30 @@ struct conv
 
 //-----------------------------------------------------------------------------
 
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::ref_call;
+using details::ptr_call;
+using details::call;
+using details::bracket;
+using details::comma;
+using details::cond;
+using details::_sizeof;
+using details::_alignof;
+using details::conv;
+
+//-----------------------------------------------------------------------------
+
 IVL_OP_CAST(static)
 IVL_OP_CAST(dynamic)
 IVL_OP_CAST(const)
 IVL_OP_CAST(reinterpret)
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
@@ -476,6 +533,27 @@ struct delete_array
 	template <typename C>
 	INLINE void operator()(C&& c) const { delete [] fwd <C>(c); }
 };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::_new;
+using details::new_nothrow;
+using details::place;
+using details::new_val;
+using details::new_nothrow_val;
+using details::place_val;
+using details::new_direct;
+using details::new_nothrow_direct;
+using details::place_direct;
+using details::new_list;
+using details::new_nothrow_list;
+using details::place_list;
+using details::_delete;
+using details::delete_array;
 
 //-----------------------------------------------------------------------------
 

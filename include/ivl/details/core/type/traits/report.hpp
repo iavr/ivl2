@@ -46,23 +46,23 @@ template <typename... T>
 void report() { static_assert(never <T...>(), "type report"); };
 
 template <typename T, value_type_of <T> V = T()>
-void report_int() { static_assert (never <T>(), "integral value report"); }
+void report_int() { static_assert(never <T>(), "integral value report"); }
 
 template <
 	template <typename...> class F, typename... X, bool Y = F <X...>()
 >
-void report_pred() { static_assert (never <X...>(), "predicate report"); }
+void report_pred() { static_assert(never <X...>(), "predicate report"); }
 
 template <
 	template <typename...> class F, typename... X, typename Y = F <X...>
 >
-void report_map() { static_assert (never <X...>(), "type map report"); }
+void report_map() { static_assert(never <X...>(), "type map report"); }
 
 template <
 	template <typename...> class F, typename... X,
 	typename Y = type_of <F <X...> >
 >
-void report_map_t() { static_assert (never <X...>(), "type map report"); }
+void report_map_t() { static_assert(never <X...>(), "type map report"); }
 
 //-----------------------------------------------------------------------------
 

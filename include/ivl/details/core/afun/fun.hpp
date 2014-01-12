@@ -30,16 +30,13 @@
 
 //-----------------------------------------------------------------------------
 
-namespace ivl_fun { using ivl::fwd; }
-
-//-----------------------------------------------------------------------------
-
 // capture function NS::FUN, calling unqualified FUN
 // to allow for custom ADL-based overloads on NS::FUN
 
 #define IVL_FUN_NS(FUN, NS)                       \
                                                   \
 namespace ivl_fun {                               \
+namespace details {                               \
 namespace FUN##__ns {                             \
                                                   \
 using NS::FUN;                                    \
@@ -55,11 +52,13 @@ struct FUN##__fun                                 \
                                                   \
 }                                                 \
 }                                                 \
+}                                                 \
                                                   \
 namespace ivl {                                   \
 namespace afun {                                  \
                                                   \
-using FUN = ::ivl_fun::FUN##__ns::FUN##__fun;     \
+using FUN =                                       \
+	::ivl_fun::details::FUN##__ns::FUN##__fun;     \
                                                   \
 }                                                 \
 }                                                 \

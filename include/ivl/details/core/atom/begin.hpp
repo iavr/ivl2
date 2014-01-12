@@ -34,13 +34,37 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace atom_details {
+namespace atoms {
+namespace details {
 
 using namespace types;
 using tuples::base_tup;
 using tuples::elem;
 
-}
+}  // namespace details
+}  // namespace atoms
+
+//-----------------------------------------------------------------------------
+
+namespace afun {
+namespace details {
+
+using namespace atoms;
+
+}  // namespace details
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+namespace types {
+namespace traits {
+namespace details {
+
+using namespace atoms;
+
+}  // namespace details
+}  // namespace traits
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 

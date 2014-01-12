@@ -168,11 +168,11 @@ void run()
 		cout << "debug:" << endl;
 		typedef void S(int);
 		typedef void (E::*SC)(int) const;
-		c_fun_call <op::ptr_call (c_cons <E>, c_sig <S>::method <E, &E::f>, c_int <8>)>()();
-		c_fun_call <op::ptr_call (c_cons <E>, c_sig <S>::cmethod <E, &E::f>, c_int <8>)>()();
+		c_fun_call <op::ref_call(c_cons <E>, c_sig <S>::method <E, &E::f>, c_int <8>)>()();
+		c_fun_call <op::ref_call(c_cons <E>, c_sig <S>::cmethod <E, &E::f>, c_int <8>)>()();
 		SC s = c_sig <S>::cmethod <E, &E::f>()();
-		op::ptr_call()(E(), s, 8);
-		op::ptr_call()(E(), (SC)&E::f, 8);
+		op::ref_call()(E(), s, 8);
+		op::ref_call()(E(), (SC)&E::f, 8);
 		cout << endl;
 	}
 

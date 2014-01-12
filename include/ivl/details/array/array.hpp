@@ -34,34 +34,16 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace array_details {
+namespace arrays {
+namespace details {
 
 template <typename T, typename S = data::heap <> >
 class array;
 
-}  // namespace array_details
-
-using array_details::array;
-
-//-----------------------------------------------------------------------------
-
-namespace types {
-namespace traits {
-
-namespace details {
-
-template <typename T>
-struct is_array_ : _false { };
-
-template <typename T, typename S>
-struct is_array_<array <T, S> > : _true { };
-
 }  // namespace details
+}  // namespace arrays
 
-template <typename T> using is_array = details::is_array_<raw_type <T> >;
-
-}  // namespace traits
-}  // namespace types
+using arrays::details::array;
 
 //-----------------------------------------------------------------------------
 
