@@ -95,7 +95,7 @@ struct is_cons :
 #else  // defined(__clang__)
 
 template <typename T, typename... A>
-struct is_cons : expr <std::is_constructible <T, A...>{}> { };
+using is_cons = expr <std::is_constructible <T, A...>{}>;
 
 #endif  // defined(__clang__)
 
@@ -115,7 +115,7 @@ struct is_cons_<false, T[], A...> : _false { };
 
 // extended elsewhere
 template <typename T, typename A>
-struct is_explicit : expr <is_cons <T, A>() && !is_conv <A, T>()> { };
+using is_explicit = expr <is_cons <T, A>() && !is_conv <A, T>()>;
 
 //-----------------------------------------------------------------------------
 

@@ -82,7 +82,7 @@ struct atom_of_t : _if_t <as_tuple <T>{}, T, atom <T> > { };
 
 namespace details {
 
-// extending definition under type/traits
+// extending definition @type/traits
 template <typename T, typename S>
 struct create_rec <atom <T, S> > : create_rec <type_of <atom <T, S> > > { };
 
@@ -93,7 +93,7 @@ struct create_rec <_type <T> > { using type = atom <create <T> >; };
 
 //-----------------------------------------------------------------------------
 
-// extending definition under tuple/traits
+// extending definition @tuple/traits
 template <typename T, typename S>
 struct under_t <atom <T, S> > : pack <T> { };
 

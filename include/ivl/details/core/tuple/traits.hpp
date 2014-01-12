@@ -174,7 +174,7 @@ template <typename T, typename C>
 using tup_conv = details::tup_rel <is_conv, T, C>;
 
 template <typename C, typename T>
-using tup_explicit = details::tup_rel <is_explicit, C, T>;
+using tup_explicit = expr <tup_cons <C, T>() && !tup_conv <T, C>()>;
 
 template <typename C, typename T>
 struct tup_assign : details::tup_rel <is_assign, C, T> { };
@@ -261,7 +261,7 @@ template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
 
 namespace details {
 
-// extending definition under type/traits
+// extending definition @type/traits
 template <typename S, typename... A>
 struct create_rec <collection <S, A...> > :
 	create_rec <type_of <collection <S, A...> > > { };
