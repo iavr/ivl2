@@ -34,11 +34,15 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
-using apply_ = der_nfun <tup_apply, seq_apply>;
+namespace details {
+
+//-----------------------------------------------------------------------------
+
+using apply = der_nfun <tup_apply, seq_apply>;
 
 //-----------------------------------------------------------------------------
 
@@ -57,22 +61,23 @@ public:
 
 //-----------------------------------------------------------------------------
 
-struct loop_ : der_nfun <tup_loop, seq_loop>
+struct loop : der_nfun <tup_loop, seq_loop>
 {
 	// TODO: keys
 	template <typename S>
-	INLINE sep_loop <S> operator[](S&& s) const { return sep_loop <S>(fwd <S>(s)); }
+	INLINE sep_loop <S>
+	operator[](S&& s) const { return sep_loop <S>(fwd <S>(s)); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename F> using vec_apply_ = seq_vec_apply <F>;
-template <typename F> using vec_loop_  = seq_vec_loop <F>;
-template <typename F> using vec_auto_  = seq_vec_auto <F>;
-template <typename F> using vec_       = seq_vec <F>;
+template <typename F> using vec_apply = seq_vec_apply <F>;
+template <typename F> using vec_loop  = seq_vec_loop <F>;
+template <typename F> using vec_auto  = seq_vec_auto <F>;
+template <typename F> using vec       = seq_vec <F>;
 
-template <typename F, size_t I = 0> using vec_mut_  = seq_vec_mut <F, I>;
-template <typename F, size_t I = 0> using vec_copy_ = seq_vec_copy <F, I>;
+template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
+template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
 
 //-----------------------------------------------------------------------------
 
@@ -89,33 +94,40 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+// template <...>
+// struct tmp_vec_inst
+// {
+// };
 
 //-----------------------------------------------------------------------------
-
-namespace afun {
-
-using apply = afun_details::apply_;
-using loop  = afun_details::loop_;
-
-template <typename F> using vec_apply = afun_details::vec_apply_<F>;
-template <typename F> using vec_loop  = afun_details::vec_loop_<F>;
-template <typename F> using vec_auto  = afun_details::vec_auto_<F>;
-template <typename F> using vec       = afun_details::vec_<F>;
-
-template <typename F, size_t I = 0>
-using vec_mut = afun_details::vec_mut_<F, I>;
-
-template <typename F, size_t I = 0>
-using vec_copy = afun_details::vec_copy_<F, I>;
-
-using afun_details::tmp_vec;
-// using afun_details::tmp_vec_inst;
 
 template <typename F> using tmp_vec_apply = tmp_vec <vec_apply, F>;
 template <typename F> using tmp_vec_loop  = tmp_vec <vec_loop, F>;
 template <typename F> using tmp_vec_auto  = tmp_vec <vec_auto, F>;
 // template <typename F> using tmp_vec       = tmp_vec_inst <vec, F>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::apply;
+using details::loop;
+
+using details::vec_apply;
+using details::vec_loop;
+using details::vec_auto;
+using details::vec;
+using details::vec_mut;
+using details::vec_copy;
+
+using details::tmp_vec_apply;
+using details::tmp_vec_loop;
+using details::tmp_vec_auto;
+// using details::tmp_vec;
+
+//-----------------------------------------------------------------------------
 
 }  // namespace afun
 

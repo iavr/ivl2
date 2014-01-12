@@ -34,7 +34,13 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details { using namespace types; }
+namespace afun {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

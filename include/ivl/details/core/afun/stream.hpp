@@ -34,17 +34,21 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
 template <typename S>
-class out_streamer
+class out_stream_
 {
 	S& s;
 
 public:
-	out_streamer(S& s) : s(s) { }
+	out_stream_(S& s) : s(s) { }
 
 	template <typename A>
 	INLINE S& operator()(A&& a) const { return s << fwd <A>(a); }
@@ -52,28 +56,28 @@ public:
 
 //-----------------------------------------------------------------------------
 
-struct out_stream_
+struct out_stream
 {
 	template <typename S>
-	INLINE constexpr out_streamer <S>
-	operator()(S& s) const { return out_streamer <S>(s); }
+	INLINE constexpr out_stream_<S>
+	operator()(S& s) const { return out_stream_<S>(s); }
 };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+using details::out_stream;
 
-using out_stream = afun_details::out_stream_;
+//-----------------------------------------------------------------------------
 
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::out_stream   out_stream;
+static __attribute__ ((unused)) afun::out_stream out_stream;
 
 //-----------------------------------------------------------------------------
 

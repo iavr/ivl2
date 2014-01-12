@@ -34,33 +34,41 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
-
-using join_  = der_nfun <tup_join,  seq_join>;
-using zip_   = der_nfun <tup_zip,   seq_zip>;
-using inner_ = der_nfun <tup_inner, seq_inner>;
-
-using head_  = der_nfun <tup_head, seq_head>;
-using tail_  = der_nfun <tup_tail, seq_tail>;
-using flip_  = der_nfun <tup_flip, seq_flip>;
-using call_  = der_nfun <tup_call, seq_call>;
-
-}  // namespace afun_details
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace details {
 
-using join  = afun_details::join_;
-using zip   = afun_details::zip_;
-using inner = afun_details::inner_;
+//-----------------------------------------------------------------------------
 
-using head  = afun_details::head_;
-using tail  = afun_details::tail_;
-using flip  = afun_details::flip_;
-using call  = afun_details::call_;
+using join  = der_nfun <tup_join,  seq_join>;
+using zip   = der_nfun <tup_zip,   seq_zip>;
+using inner = der_nfun <tup_inner, seq_inner>;
 
-}  // namespace fun
+using head  = der_nfun <tup_head,  seq_head>;
+using tail  = der_nfun <tup_tail,  seq_tail>;
+using flip  = der_nfun <tup_flip,  seq_flip>;
+using call  = der_nfun <tup_call,  seq_call>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::join;
+using details::zip;
+using details::inner;
+
+using details::head;
+using details::tail;
+using details::flip;
+using details::call;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

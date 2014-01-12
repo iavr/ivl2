@@ -34,30 +34,40 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
-struct at_
+namespace details {
+
+//-----------------------------------------------------------------------------
+
+struct at
 {
 	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
 	INLINE constexpr auto _(T&& t) const
-		-> decltype(fwd <T>(t).template _<I>())
+	-> decltype(fwd <T>(t).template _<I>())
 		{ return fwd <T>(t).template _<I>(); }
 
 	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
 	INLINE constexpr auto _(T&& t) const
-		-> decltype(fwd <T>(t).template _<K>())
+	-> decltype(fwd <T>(t).template _<K>())
 		{ return fwd <T>(t).template _<K>(); }
 };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 
-namespace afun { using at = afun_details::at_; }
+using details::at;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) afun::at at;
 

@@ -34,7 +34,11 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
@@ -61,7 +65,7 @@ struct arg_construct <tuple <E...> > : private tuple <E...>
 
 //-----------------------------------------------------------------------------
 
-struct construct_
+struct construct
 {
 	INLINE constexpr arg_construct <>
 	operator()() const { return arg_construct <>(); }
@@ -79,7 +83,7 @@ struct construct_
 
 //-----------------------------------------------------------------------------
 
-struct destruct_
+struct destruct
 {
 	template <typename T>
 	INLINE void operator()(T& o) const { o.~T(); }
@@ -87,21 +91,21 @@ struct destruct_
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+using details::construct;
+using details::destruct;
 
-using construct = afun_details::construct_;
-using destruct  = afun_details::destruct_;
+//-----------------------------------------------------------------------------
 
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::construct    construct;
-static __attribute__ ((unused)) afun::destruct     destruct;
+static __attribute__ ((unused)) afun::construct  construct;
+static __attribute__ ((unused)) afun::destruct   destruct;
 
 //-----------------------------------------------------------------------------
 

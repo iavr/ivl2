@@ -34,14 +34,18 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
 class op_member
 {
-	using R = afun::op::ref_member;
-	using P = afun::op::ptr_member;
+	using R = op::ref_member;
+	using P = op::ptr_member;
 
 	template <typename C, typename M>
 	using F = _if <can_call <P(C, M)>{}, P, R>;
@@ -57,8 +61,8 @@ public:
 
 class op_call
 {
-	using R = afun::op::ref_call;
-	using P = afun::op::ptr_call;
+	using R = op::ref_call;
+	using P = op::ptr_call;
 
 	template <typename C, typename M, typename... A>
 	using F = _if <can_call <P(C, M, A...)>{}, P, R>;
@@ -72,7 +76,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-struct member_call
+struct op_key_call
 {
 	template <
 		typename C, typename M, typename... A,
@@ -87,8 +91,8 @@ struct member_call
 		enable_if <is_key <M>{}>
 	= 0>
 	INLINE constexpr auto operator()(C&& c, M m, A&&... a) const
-	-> decltype(afun::key_call <M>()(fwd <C>(c), fwd <A>(a)...))
-		{ return afun::key_call <M>()(fwd <C>(c), fwd <A>(a)...); }
+	-> decltype(key_call <M>()(fwd <C>(c), fwd <A>(a)...))
+		{ return key_call <M>()(fwd <C>(c), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -102,7 +106,7 @@ class member_fun : private tuple <C, M>
 	using B::snd_f;
 	using B::snd;
 
-	using MC = afun::vec_auto <member_call>;  // can be void
+	using MC = vec_auto <op_key_call>;  // can be void
 
 public:
 	using B::B;
@@ -118,12 +122,10 @@ public:
 
 //-----------------------------------------------------------------------------
 
-class member
+class op_key_member
 {
-	using P = afun::pow;
-
 	template <typename C, typename M>
-	using F = _if <can_call <P(C, M)>{}, P, op_member>;
+	using F = _if <can_call <pow(C, M)>{}, pow, op_member>;
 
 public:
 	template <typename C, typename M, enable_if <!is_key <M>()> = 0>
@@ -133,19 +135,19 @@ public:
 
 	template <typename C, typename M, enable_if <is_key <M>{}> = 0>
 	INLINE constexpr auto operator()(C&& c, M m) const
-	-> decltype(afun::key_member <M>()(fwd <C>(c)))
-		{ return afun::key_member <M>()(fwd <C>(c)); }
+	-> decltype(key_member <M>()(fwd <C>(c)))
+		{ return key_member <M>()(fwd <C>(c)); }
 };
 
 //-----------------------------------------------------------------------------
 
 class fun_member
 {
-	using VM = afun::vec_apply <member>;  // cannot be void (pow assumed so)
+	using VM = vec_apply <op_key_member>;   // cannot be void (pow assumed so)
 	using MF = rref_of <member_fun>;
 
 	template <typename C, typename M>
-	using has_member = can_call <member(C, M)>;
+	using has_member = can_call <op_key_member(C, M)>;
 
 	template <typename C, typename M>
 	using F = _if <vec_all <has_member, C, M>{}, VM, MF>;
@@ -161,7 +163,7 @@ public:
 
 class op_ref_member
 {
-	using MC = afun::vec_auto <member_call>;  // can be void
+	using MC = vec_auto <op_key_call>;  // can be void
 
 public:
 	template <typename C, typename M, enable_if <!is_op_ref <M>{}> = 0>
@@ -177,11 +179,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+}  // namespace details
+
+using member = details::op_ref_member;
 
 //-----------------------------------------------------------------------------
 
-namespace afun { using member = afun_details::op_ref_member; }
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

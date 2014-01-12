@@ -34,7 +34,11 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
@@ -111,18 +115,22 @@ template <typename F> struct seq_vec_loop :
 template <typename F> struct seq_vec_auto :
 	tup_vec_auto <F> { using tup_vec_auto <F>::tup_vec_auto; };
 
+template <typename F> struct seq_vec :
+	tup_vec <F> { using tup_vec <F>::tup_vec; };
+
 template <typename F, size_t I = 0> struct seq_vec_mut :
 	tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
 
 template <typename F, size_t I = 0> struct seq_vec_copy :
 	tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
 
-template <typename F> struct seq_vec :
-	tup_vec <F> { using tup_vec <F>::tup_vec; };
+//-----------------------------------------------------------------------------
+
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

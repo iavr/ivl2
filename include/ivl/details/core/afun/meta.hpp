@@ -34,7 +34,11 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun_details {
+namespace afun {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
 
 //-----------------------------------------------------------------------------
 
@@ -51,12 +55,12 @@ public:
 	template <typename... A>
 	INLINE ret <F(E..., A...)>
 	operator()(A&&... a) &&
-		{ return _tail(der_f()).call(_head(der_f()), fwd <A>(a)...); }
+		{ return tup_tail()(der_f()).call(tup_head()(der_f()), fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE constexpr ret <F(E..., A...)>
 	operator()(A&&... a) const&
-		{ return _tail(der()).call(_head(der()), fwd <A>(a)...); }
+		{ return tup_tail()(der()).call(tup_head()(der()), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -75,61 +79,53 @@ public:
 	INLINE ret <F(A...)>
 	operator()(A&&... a) &&
 	{
-		return _tail(der_f()).call(_head(der_f())),
-		       _head(der_f())(fwd <A>(a)...);
+		return tup_tail()(der_f()).call(tup_head()(der_f())),
+		       tup_head()(der_f())(fwd <A>(a)...);
 	}
 
 	template <typename... A>
 	INLINE constexpr ret <F(A...)>
 	operator()(A&&... a) const&
 	{
-		return _tail(der()).call(_head(der())),
-		       _head(der())(fwd <A>(a)...);
+		return tup_tail()(der()).call(tup_head()(der())),
+		       tup_head()(der())(fwd <A>(a)...);
 	}
 };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun_details
+using bind    = rref_of <bind_>;
+using pre_fun = rref_of <pre_fun_>;
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-
-// TODO: gcc ICE: template <typename F, typename... E>
-template <typename... T> using bind    = afun_details::bind_<T...>;
-template <typename... T> using pre_fun = afun_details::pre_fun_<T...>;
-
-}  // namespace afun
-
-static __attribute__ ((unused)) afun::rref_of <afun::bind>    bind;
-static __attribute__ ((unused)) afun::rref_of <afun::pre_fun> pre_fun;
-
-namespace afun_details { using ivl::bind; }  // not types::bind
-
-//-----------------------------------------------------------------------------
-
-namespace afun_details {
-
-struct tup_fun_
+struct tup_fun
 {
 	template <typename F>
 	INLINE constexpr auto operator()(F&& f) const
-	-> decltype(bind(_call, fwd <F>(f)))
-		{ return bind(_call, fwd <F>(f)); }
+	-> decltype(bind()(tup_call(), fwd <F>(f)))
+		{ return bind()(tup_call(), fwd <F>(f)); }
 };
-
-}  // namespace afun_details
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+}  // namespace details
 
-using tup_fun = afun_details::tup_fun_;
+//-----------------------------------------------------------------------------
 
-}  // namespace afun
+using details::bind;
+using details::pre_fun;
+using details::tup_fun;
 
-static __attribute__ ((unused)) afun::tup_fun tup_fun;
+//-----------------------------------------------------------------------------
+
+}  // namespace fun
+
+//-----------------------------------------------------------------------------
+
+static __attribute__ ((unused)) afun::bind     bind;
+static __attribute__ ((unused)) afun::pre_fun  pre_fun;
+static __attribute__ ((unused)) afun::tup_fun  tup_fun;
 
 //-----------------------------------------------------------------------------
 
