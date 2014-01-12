@@ -81,13 +81,12 @@ struct is_cons_check <false, T, A...> :
 //-----------------------------------------------------------------------------
 // is_cons: main entry point
 
-// extended elsewhere
-
 // TODO: std version is much faster on GCC, especially with
 // non-builtin traits; fix
 
 #if defined(__clang__)
 
+// no alias: faster on clang
 template <typename T, typename... A>
 struct is_cons :
 	is_cons_check <any <is_void, T, A...>() || is_abstract <T>(), T, A...> { };
@@ -113,7 +112,6 @@ struct is_cons_<false, T[], A...> : _false { };
 
 //-----------------------------------------------------------------------------
 
-// extended elsewhere
 template <typename T, typename A>
 using is_explicit = expr <is_cons <T, A>() && !is_conv <A, T>()>;
 
