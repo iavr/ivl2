@@ -99,7 +99,7 @@ using raw_types = type_of <raw_type <T> >;
 
 template <typename T>
 struct tup_types_t :
-	apply_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
+	type_map_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
 
 template <typename... E>
 struct tup_types_t <pack <E...> > : pack <E...> { };
@@ -191,25 +191,6 @@ using tup_tup_conv = expr <tup_conv <T, C>() && !tup_conv <pack <T>, C>()>;
 template <typename C, typename T>
 using tup_tup_explicit =
 	expr <tup_explicit <C, T>() && !tup_explicit <C, pack <T> >()>;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... A>
-struct apply_tuple_t { using type = tuples::apply_tup <F, atom_of <A>...>; };
-
-template <typename F, typename... A>
-struct loop_tuple_t { using type = tuples::loop_tup <F, atom_of <A>...>; };
-
-template <typename... U>
-struct zip_tuple_t { using type = tuples::zip_tup <atom_of <U>...>; };
-
-template <typename... U>
-struct join_tuple_t { using type = tuples::join_tup <atom_of <U>...>; };
-
-template <typename... U> using apply_tuple = type_of <apply_tuple_t <U...> >;
-template <typename... U> using loop_tuple  = type_of <loop_tuple_t <U...> >;
-template <typename... U> using zip_tuple   = type_of <zip_tuple_t <U...> >;
-template <typename... U> using join_tuple  = type_of <join_tuple_t <U...> >;
 
 //-----------------------------------------------------------------------------
 

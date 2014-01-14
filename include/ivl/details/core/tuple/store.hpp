@@ -42,8 +42,10 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename P> struct elem_store;
+
 template <typename... E>
-struct elem_store : E...
+struct elem_store <pack <E...> > : E...
 {
 	explicit INLINE constexpr elem_store(_true) : E()... { }
 
@@ -53,28 +55,19 @@ struct elem_store : E...
 
 //-----------------------------------------------------------------------------
 
-template <typename N, typename U> struct elem_map;
+template <typename U, typename N = sz_rng_of_p <U> > struct elem_types_t;
+template <typename U, typename N = sz_rng_of_p <U> >
+using elem_types = type_of <elem_types_t <U, N> >;
 
-template <size_t... N, typename... U>
-class elem_map <sizes <N...>, pack <U...> > :
-	public elem_store <elem <N, U>...>
-{
-	using B = elem_store <elem <N, U>...>;
-
-public:
-	using B::B;
-};
+template <typename... U, size_t... N>
+struct elem_types_t <pack <U...>, sizes <N...> > : pack <elem <N, U>...> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename D>
-class elems : public elem_map <sz_rng_of_p <under <D> >, under <D> >
+struct elems : elem_store <elem_types <under <D> > >
 {
-	using U = under <D>;
-	using B = elem_map <sz_rng_of_p <U>, U>;
-
-public:
-	using B::B;
+	using elem_store <elem_types <under <D> > >::elem_store;
 };
 
 //-----------------------------------------------------------------------------

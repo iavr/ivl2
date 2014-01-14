@@ -65,6 +65,12 @@ class store : public base_tup <atom <T, S>, _type <T> >
 //-----------------------------------------------------------------------------
 
 public:
+// 	template <typename A = int, enable_if <is_cons <T>{}, A> = 0>
+// 	explicit INLINE constexpr store() : B(yes) { }
+//
+// 	template <typename A>
+// 	explicit INLINE constexpr store(A&& a) : B(fwd <A>(a)) { }
+
 	template <typename A = int, enable_if <is_cons <T>{}, A> = 0>
 	explicit INLINE constexpr store() : B(yes) { }
 

@@ -177,8 +177,8 @@ private:
 	template <typename T, typename R = raw_type <T> >
 	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
 
-	template <typename... T> using app = apply_tuple <opt <T&&>...>;
-	template <typename... T> using op  = keys::op_ref <opt <T&&>...>;
+	template <typename... T> using app = subs <apply_tuple, opt <T&&>...>;
+	template <typename... T> using op  = subs <keys::op_ref, opt <T&&>...>;
 
 	template <template <typename...> class R, typename... A>
 	INLINE static constexpr R <A...>
