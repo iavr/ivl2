@@ -192,10 +192,10 @@ class array <T, data::heap <D...> >
 
 	INLINE void destr_all()  { it(destruct); }
 
-	INLINE void cons_all() { it(construct()); }
+	INLINE void cons_all() { it(constructor()); }
 
 	template <typename A>
-	INLINE void cons_all(A&& a) { it(construct(fwd <A>(a))); }
+	INLINE void cons_all(A&& a) { it(constructor(fwd <A>(a))); }
 
 	// TODO: move
 	template <typename T1, typename S1>
@@ -214,10 +214,10 @@ class array <T, data::heap <D...> >
 	INLINE void destr_at(P p)  { it(destruct, p); }
 
 	template <typename P>
-	INLINE void cons_at(P p) { it(construct(), p); }
+	INLINE void cons_at(P p) { it(constructor(), p); }
 
 	template <typename P, typename A>
-	INLINE void cons_at(P p, A&& a) { it(construct(fwd <A>(a)), p); }
+	INLINE void cons_at(P p, A&& a) { it(constructor(fwd <A>(a)), p); }
 
 	// TODO: move or copy?
 	template <typename P, typename T1, typename S1>
@@ -317,7 +317,7 @@ public:
 // length by one
 
 	// TODO: construct(back(), _);
-	INLINE T& push_back() { return inc(), construct()(back()), back(); }
+	INLINE T& push_back() { return inc(), constructor()(back()), back(); }
 
 	template <typename A>
 	INLINE T& push_back(A&& a)

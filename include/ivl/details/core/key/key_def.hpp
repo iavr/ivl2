@@ -95,7 +95,7 @@ IVL_MEMBER(KEY)                           \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_KEY       (KEY)   IVL_KEY_INST       (KEY, KEY)
+#define IVL_KEY(KEY)          IVL_KEY_INST(KEY, KEY)
 #define IVL_KEY_MEMBER(KEY)   IVL_KEY_INST_MEMBER(KEY, KEY)
 
 //-----------------------------------------------------------------------------

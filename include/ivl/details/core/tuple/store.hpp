@@ -47,9 +47,10 @@ template <typename P> struct elem_store;
 template <typename... E>
 struct elem_store <pack <E...> > : E...
 {
-	explicit INLINE constexpr elem_store(_true) : E()... { }
+	template <typename A = int, enable_if <_and <is_cons <E>...>{}(), A> = 0>
+	explicit INLINE constexpr elem_store() : E()... { }
 
-	template <typename... A>
+	template <typename... A, enable_if <sizeof...(A) == sizeof...(E)> = 0>
 	explicit INLINE constexpr elem_store(A&&... a) : E(fwd <A>(a))... { }
 };
 

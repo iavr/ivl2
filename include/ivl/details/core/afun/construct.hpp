@@ -51,8 +51,15 @@ struct obj_construct
 	INLINE void operator()(A&&... a) const { new (&obj) T(fwd <A>(a)...); }
 };
 
-template <typename T = tuple <> >
-struct arg_construct;
+template <typename...> struct arg_construct;
+
+// TODO: remove
+template <>
+struct arg_construct <>
+{
+	template <typename T>
+	INLINE void operator()(T& o) const { obj_construct <T>{o}(); }
+};
 
 template <typename... E>
 struct arg_construct <tuple <E...> > : private tuple <E...>
@@ -63,9 +70,19 @@ struct arg_construct <tuple <E...> > : private tuple <E...>
 	INLINE void operator()(T& o) const { this->call(obj_construct <T>{o}); }
 };
 
+// TODO: remove
+template <typename... E>
+struct arg_construct <raw_tuple <E...> > : private tuple <E...>
+{
+	using tuple <E...>::tuple;
+
+	template <typename T>
+	INLINE void operator()(T& o) const { this->call(obj_construct <T>{o}); }
+};
+
 //-----------------------------------------------------------------------------
 
-struct construct
+struct constructor
 {
 	INLINE constexpr arg_construct <>
 	operator()() const { return arg_construct <>(); }
@@ -76,9 +93,14 @@ struct construct
 	{
 		return arg_construct <map <reuse, tuple_of <A> > >(fwd <A>(a));
 	}
+};
 
+//-----------------------------------------------------------------------------
+
+struct construct
+{
 	template <typename T, typename A>
-	INLINE void operator()(T& o, A&& a) const { (*this)(fwd <A>(a))(o); }
+	INLINE void operator()(T& o, A&& a) const { constructor()(fwd <A>(a))(o); }
 };
 
 //-----------------------------------------------------------------------------
@@ -95,6 +117,7 @@ struct destruct
 
 //-----------------------------------------------------------------------------
 
+using details::constructor;
 using details::construct;
 using details::destruct;
 
@@ -104,8 +127,9 @@ using details::destruct;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::construct  construct;
-static __attribute__ ((unused)) afun::destruct   destruct;
+static __attribute__ ((unused)) afun::constructor  constructor;
+static __attribute__ ((unused)) afun::construct    construct;
+static __attribute__ ((unused)) afun::destruct     destruct;
 
 //-----------------------------------------------------------------------------
 

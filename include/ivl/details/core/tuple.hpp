@@ -37,7 +37,9 @@
 #include "tuple/store.hpp"
 #include "tuple/access.hpp"
 #include "tuple/base.hpp"
+
 #include "tuple/tuple.hpp"
+#include "tuple/raw.hpp"
 #include "tuple/indirect.hpp"
 #include "tuple/apply.hpp"
 #include "tuple/loop.hpp"

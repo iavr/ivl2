@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename V>
-struct key_val : private tuple <V>
+struct key_val : private raw_tuple <V>
 {
-	using tuple <V>::tuple;
-	using tuple <V>::val;
+	using raw_tuple <V>::raw_tuple;
+	using raw_tuple <V>::val;
 
 	INLINE constexpr K key() const { return K(); }
 };
@@ -63,7 +63,7 @@ class key
 	using OR = op_ref <K, base_opt <A&&>...>;
 
 public:
-	template <typename A>
+	template <typename A, enable_if <!eq <K, raw_type <A> >()> >
 	INLINE constexpr KV <A>
 	operator=(A&& a) const { return KV <A>(fwd <A>(a)); }
 

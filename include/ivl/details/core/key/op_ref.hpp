@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename O, typename... A>
-class op_ref : private tuple <O, A...>
+class op_ref : private raw_tuple <O, A...>
 {
-	using B = tuple <O, A...>;
+	using B = raw_tuple <O, A...>;
 	using T = sz_range <1, sizeof...(A)>;
 
 	using derived <B>::der;

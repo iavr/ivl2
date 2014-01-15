@@ -98,9 +98,9 @@ struct op_key_call
 //-----------------------------------------------------------------------------
 
 template <typename C, typename M>
-class member_fun : private tuple <C, M>
+class member_fun : private raw_tuple <C, M>
 {
-	using B = tuple <C, M>;
+	using B = raw_tuple <C, M>;
 	using B::fst_f;
 	using B::fst;
 	using B::snd_f;

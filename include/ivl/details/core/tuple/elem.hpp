@@ -105,30 +105,6 @@ struct elem <I, E, true, true>
 
 //-----------------------------------------------------------------------------
 
-// // TODO: need to disable both previous specializations and enable
-// // the following one instead for vec_op sample on GCC
-//
-// template <size_t I, typename E, bool C>
-// struct elem <I, E, true, C> : private E
-// {
-// 	template <typename A = int, enable_if <C, A> = 0>
-// 	INLINE constexpr elem() : E() { }
-//
-// 	template <typename A>
-// 	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
-//
-// 	template <typename A>
-// 	INLINE elem& operator=(A&& a)
-// 		{ return E::operator=(ivl::fwd <A>(a)), *this; }
-//
-// 	INLINE           E fwd()        { return mv(*this); }
-// 	INLINE           E get() &&     { return mv(*this); }
-// 	INLINE           E get() &      { return *this; }
-// 	INLINE constexpr E get() const& { return *this; }
-// };
-
-//-----------------------------------------------------------------------------
-
 }  // namespace details
 
 using details::elem;

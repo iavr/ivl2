@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_META_HPP
-#define IVL_DETAILS_CORE_AFUN_META_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_RAW_HPP
+#define IVL_DETAILS_CORE_TUPLE_RAW_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace tuples {
 
 //-----------------------------------------------------------------------------
 
@@ -42,69 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... E>
-class bind_ : private raw_tuple <F, E...>
+template <typename... E>
+class collection <data::raw <>, E...> :
+	public base_tup <raw_tuple <E...>, pack <E...> >
 {
-	using B = raw_tuple <F, E...>;
-	using B::der;
-	using B::der_f;
+	using P = pack <E...>;
+	using B = base_tup <raw_tuple <E...>, P>;
+
+	template <size_t J> using under = elem_at <J, E...>;
+
+	friend base_type_of <B>;
+
+//-----------------------------------------------------------------------------
+
+	template <size_t J>
+	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
+
+	template <size_t J>
+	INLINE ltel <J, P> _at() & { return under <J>::get(); }
+
+	template <size_t J>
+	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
+
+//-----------------------------------------------------------------------------
 
 public:
 	using B::B;
-
-	template <typename... A>
-	INLINE ret <F(E..., A...)>
-	operator()(A&&... a) &&
-		{ return tup_tail()(der_f()).call(tup_head()(der_f()), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE constexpr ret <F(E..., A...)>
-	operator()(A&&... a) const&
-		{ return tup_tail()(der()).call(tup_head()(der()), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... E>
-class pre_fun_ : private raw_tuple <F, E...>
-{
-	using B = raw_tuple <F, E...>;
-	using B::der;
-	using B::der_f;
-
-public:
-	using B::B;
-
-	template <typename... A>
-	INLINE ret <F(A...)>
-	operator()(A&&... a) &&
-	{
-		return tup_tail()(der_f()).call(tup_head()(der_f())),
-		       tup_head()(der_f())(fwd <A>(a)...);
-	}
-
-	template <typename... A>
-	INLINE constexpr ret <F(A...)>
-	operator()(A&&... a) const&
-	{
-		return tup_tail()(der()).call(tup_head()(der())),
-		       tup_head()(der())(fwd <A>(a)...);
-	}
-};
-
-//-----------------------------------------------------------------------------
-
-using bind    = rref_of <bind_>;
-using pre_fun = rref_of <pre_fun_>;
-
-//-----------------------------------------------------------------------------
-
-struct tup_fun
-{
-	template <typename F>
-	INLINE constexpr auto operator()(F&& f) const
-	-> decltype(bind()(tup_call(), fwd <F>(f)))
-		{ return bind()(tup_call(), fwd <F>(f)); }
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------
@@ -113,19 +77,7 @@ struct tup_fun
 
 //-----------------------------------------------------------------------------
 
-using details::bind;
-using details::pre_fun;
-using details::tup_fun;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace fun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::bind     bind;
-static __attribute__ ((unused)) afun::pre_fun  pre_fun;
-static __attribute__ ((unused)) afun::tup_fun  tup_fun;
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 
@@ -133,4 +85,4 @@ static __attribute__ ((unused)) afun::tup_fun  tup_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_META_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_RAW_HPP

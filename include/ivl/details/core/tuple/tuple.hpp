@@ -67,7 +67,7 @@ class store <data::tuple <>, sizes <I...>, E...> :
 //-----------------------------------------------------------------------------
 
 public:
-	explicit INLINE constexpr store(_true) : B(yes) { }
+	explicit INLINE constexpr store(_true) : B() { }
 
 	template <typename... A>
 	explicit INLINE constexpr store(_true, A&&... a) : B(fwd <A>(a)...) { }

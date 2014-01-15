@@ -52,6 +52,9 @@ template <typename S, typename... A> struct collection;
 template <typename... E>
 using tuple = collection <data::tuple <>, E...>;
 
+template <typename... E>
+using raw_tuple = collection <data::raw <>, E...>;
+
 template <typename K, typename U>
 using indirect_tup = collection <data::indirect <>, K, U>;
 
@@ -83,6 +86,8 @@ using details::base_tup;
 using details::collection;
 
 using details::tuple;
+using details::raw_tuple;
+
 using details::indirect_tup;
 using details::apply_tup;
 using details::loop_tup;
@@ -99,6 +104,7 @@ using details::join_tuple;
 }  // namespace tuples
 
 using tuples::tuple;
+using tuples::raw_tuple;
 
 //-----------------------------------------------------------------------------
 

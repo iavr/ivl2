@@ -125,13 +125,13 @@ template <typename T> using ltref  = type_of <ltref_t <T> >;
 template <typename T> using cltref = type_of <cltref_t <T> >;
 
 template <typename... E>
-struct rtref_t <pack <E...> > { using type = tuple <rtref <E>...>; };
+struct rtref_t <pack <E...> > { using type = raw_tuple <rtref <E>...>; };
 
 template <typename... E>
-struct ltref_t <pack <E...> > { using type = tuple <ltref <E>...>; };
+struct ltref_t <pack <E...> > { using type = raw_tuple <ltref <E>...>; };
 
 template <typename... E>
-struct cltref_t <pack <E...> > { using type = tuple <cltref <E>...>; };
+struct cltref_t <pack <E...> > { using type = raw_tuple <cltref <E>...>; };
 
 template <typename F, typename... E>
 struct rtref_t <F(pack <E...>)> : ret_t <F(rtref <E>...)> { };
@@ -176,12 +176,20 @@ using tup_conv = details::tup_rel <is_conv, T, C>;
 template <typename C, typename T>
 using tup_explicit = expr <tup_cons <C, T>() && !tup_conv <T, C>()>;
 
+//-----------------------------------------------------------------------------
+
 template <typename C, typename T>
 struct tup_assign : details::tup_rel <is_assign, C, T> { };
 
 template <typename... E, typename... P, typename T>
 struct tup_assign <pack <pack <E...>, P...>, T> :
 	alls <tup_assign, pack <pack <E...>, P...>, tup_types <T> > { };
+
+template <typename C, typename T, bool = tup_assign <C, T>{}>
+struct tup_assign_rep : tup_assign <C, rep <length_of <C>{}, T> > { };
+
+template <typename C, typename T>
+struct tup_assign_rep <C, T, true> : _false { };
 
 //-----------------------------------------------------------------------------
 
@@ -200,7 +208,7 @@ template <typename P, bool = any_pack_p <P>{}> struct tup_tmp_pt_;
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_pt_<C <E...>, true> :
-	embed_t <tuple, tran_p <tmp <_type_of <E>...> > > { };
+	embed_t <raw_tuple, tran_p <tmp <_type_of <E>...> > > { };
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_pt_<C <E...>, false> { using type = tmp <E...>; };
@@ -263,9 +271,6 @@ template <typename T> using  under = type_of <under_t <T> >;
 
 template <typename S, typename... A>
 struct under_t <tuples::collection <S, A...> > : pack <A...> { };
-
-template <typename D, typename P>
-struct under_t <tuples::base_tup <D, P> > : under_t <D> { };
 
 template <typename K, typename U>
 struct under_t <tuples::indirect_tup <K, U> > : pack <U> { };

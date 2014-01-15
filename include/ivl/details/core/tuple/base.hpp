@@ -77,7 +77,7 @@ public:
 
 	using B::B;
 
-	template <typename A, enable_if <tup_assign <P, rep <L, A> >{}> = 0>
+	template <typename A, enable_if <tup_assign_rep <P, A>{}> = 0>
 	INLINE D& operator=(A&& a)
 		{ return thru{_<I>() = fwd <A>(a)...}, der(); }
 

@@ -137,6 +137,7 @@ IVL_HAS_TYPE(value_type)
 IVL_HAS_MEMBER(begin)
 IVL_HAS_MEMBER(end)
 IVL_HAS_MEMBER(size)
+IVL_HAS_MEMBER(type)
 
 //-----------------------------------------------------------------------------
 

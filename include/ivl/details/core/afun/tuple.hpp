@@ -68,25 +68,25 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	template <typename...> class T = tuple,
+	template <typename...> class T = raw_tuple,
 	template <typename...> class E = always
 >
 using val_of = collect <decay, T, E>;
 
 template <
-	template <typename...> class T = tuple,
+	template <typename...> class T = raw_tuple,
 	template <typename...> class E = always
 >
 using rref_of = collect <base_opt, T, E>;
 
 template <
-	template <typename...> class T = tuple,
+	template <typename...> class T = raw_tuple,
 	template <typename...> class E = always
 >
 using lref_of = collect <base_opt, T, E, all_lref>;
 
 template <
-	template <typename...> class T = tuple,
+	template <typename...> class T = raw_tuple,
 	template <typename...> class E = always
 >
 using clref_of = collect <base_opt, T, E, all_clref>;

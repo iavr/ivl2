@@ -10,6 +10,7 @@ test/core/traits
 test/core/traits.clang
 test/core/traits.gcc
 test/main/array
+test/main/member
 test/main/test
 test/main/tmp_vec
 test/main/tuple
