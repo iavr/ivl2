@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_FUN_HPP
-#define IVL_DETAILS_CORE_TUPLE_FUN_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_BEGIN_HPP
+#define IVL_DETAILS_CORE_TUPLE_TYPE_BEGIN_HPP
 
 #include <ivl/ivl>
 
@@ -34,42 +34,53 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-
-//-----------------------------------------------------------------------------
-
+namespace keys {
 namespace details {
 
-//-----------------------------------------------------------------------------
-
-struct at
-{
-	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
-	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template _<I>())
-		{ return fwd <T>(t).template _<I>(); }
-
-	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
-	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template _<K>())
-		{ return fwd <T>(t).template _<K>(); }
-};
-
-//-----------------------------------------------------------------------------
+template <typename O, typename... A> struct op_ref;
 
 }  // namespace details
 
+using details::op_ref;
+
+}  // namespace keys
+
 //-----------------------------------------------------------------------------
 
-using details::at;
+namespace tuples {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 
+namespace afun {
+namespace details {
+
+using namespace tuples;
+
+}  // namespace details
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::at at;
+namespace types {
+namespace traits {
+
+template <typename T> struct as_tuple;
+template <typename T> struct atom_of_t;
+template <typename T> using  atom_of = type_of <atom_of_t <T> >;
+
+namespace details {
+
+using namespace tuples;
+
+}  // namespace details
+}  // namespace traits
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -77,4 +88,4 @@ static __attribute__ ((unused)) afun::at at;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_FUN_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_BEGIN_HPP

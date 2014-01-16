@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_INDIRECT_HPP
-#define IVL_DETAILS_CORE_TUPLE_INDIRECT_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_BASE_AT_HPP
+#define IVL_DETAILS_CORE_TUPLE_BASE_AT_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,37 +42,17 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename K, typename U>
-class collection <data::indirect <>, K, U> : public
-	base_tup <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
+struct at
 {
-	using P = choose_p <K, tup_types <U> >;
-	using B = base_tup <indirect_tup <K, U>, P>;
-	using E = elem <0, U>;
+	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
+	INLINE constexpr auto _(T&& t) const
+	-> decltype(fwd <T>(t).template _<I>())
+		{ return fwd <T>(t).template _<I>(); }
 
-	template <size_t J> using off = pick_i <J, K>;
-
-	friend base_type_of <B>;
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J>
-	INLINE rtel <J, P>
-	_at() && { return at._<off <J>{}>(E::fwd()); }
-
-	template <size_t J>
-	INLINE ltel <J, P>
-	_at() & { return at._<off <J>{}>(E::get()); }
-
-	template <size_t J>
-	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<off <J>{}>(E::get()); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-	using B::base_type::operator=;
+	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
+	INLINE constexpr auto _(T&& t) const
+	-> decltype(fwd <T>(t).template _<K>())
+		{ return fwd <T>(t).template _<K>(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -81,7 +61,15 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuples
+using details::at;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+static __attribute__ ((unused)) afun::at at;
 
 //-----------------------------------------------------------------------------
 
@@ -89,4 +77,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_INDIRECT_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_BASE_AT_HPP

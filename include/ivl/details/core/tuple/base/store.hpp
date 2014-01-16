@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_BEGIN_HPP
-#define IVL_DETAILS_CORE_TUPLE_BEGIN_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_BASE_STORE_HPP
+#define IVL_DETAILS_CORE_TUPLE_BASE_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -34,53 +34,50 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace keys {
-namespace details {
-
-template <typename O, typename... A> struct op_ref;
-
-}  // namespace details
-
-using details::op_ref;
-
-}  // namespace keys
-
-//-----------------------------------------------------------------------------
-
 namespace tuples {
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
-using namespace types;
+//-----------------------------------------------------------------------------
+
+template <typename P> struct elem_store;
+
+template <typename... E>
+struct elem_store <pack <E...> > : E...
+{
+	template <typename A = int, enable_if <_and <is_cons <E>...>{}(), A> = 0>
+	explicit INLINE constexpr elem_store() : E()... { }
+
+	template <typename... A, enable_if <sizeof...(A) == sizeof...(E)> = 0>
+	explicit INLINE constexpr elem_store(A&&... a) : E(fwd <A>(a))... { }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename U, typename N = sz_rng_of_p <U> > struct elem_types_t;
+template <typename U, typename N = sz_rng_of_p <U> >
+using elem_types = type_of <elem_types_t <U, N> >;
+
+template <typename... U, size_t... N>
+struct elem_types_t <pack <U...>, sizes <N...> > : pack <elem <N, U>...> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename D>
+struct elems : elem_store <elem_types <under <D> > >
+{
+	using elem_store <elem_types <under <D> > >::elem_store;
+};
+
+//-----------------------------------------------------------------------------
 
 }  // namespace details
+
+//-----------------------------------------------------------------------------
+
 }  // namespace tuples
-
-//-----------------------------------------------------------------------------
-
-namespace afun {
-namespace details {
-
-using namespace tuples;
-
-}  // namespace details
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-namespace types {
-namespace traits {
-
-template <typename T> struct as_tuple;
-template <typename T> struct atom_of_t;
-template <typename T> using  atom_of = type_of <atom_of_t <T> >;
-
-namespace details {
-
-using namespace tuples;
-
-}  // namespace details
-}  // namespace traits
-}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -88,4 +85,4 @@ using namespace tuples;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_BEGIN_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_BASE_STORE_HPP

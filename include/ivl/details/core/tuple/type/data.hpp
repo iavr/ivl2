@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_ZIP_HPP
-#define IVL_DETAILS_CORE_TUPLE_ZIP_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_DATA_HPP
+#define IVL_DETAILS_CORE_TUPLE_TYPE_DATA_HPP
 
 #include <ivl/ivl>
 
@@ -34,67 +34,21 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace data {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename... D> struct raw { };
+template <typename... D> struct tuple { };
+template <typename... D> struct indirect { };
+template <typename... D> struct apply { };
+template <typename... D> struct loop { };
+template <typename... D> struct zip { };
+template <typename... D> struct join { };
 
 //-----------------------------------------------------------------------------
 
-template <typename P, typename I = sz_rng_of_p <P> >
-struct zip_store;
-
-template <typename... U, size_t... I>
-class zip_store <pack <U...>, sizes <I...> > :
-	public base_tup <zip_tup <U...>, tup_tran <tup_types <U>...> >
-{
-	using P = tup_tran <tup_types <U>...>;
-	using B = base_tup <zip_tup <U...>, P>;
-
-	template <size_t J> using under = elem_at <J, U...>;
-
-	friend base_type_of <B>;
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J>
-	INLINE rtel <J, P>
-	_at() && { return rtel <J, P>(at._<J>(under <I>::fwd())...); }
-
-	template <size_t J>
-	INLINE ltel <J, P>
-	_at() & { return ltel <J, P>(at._<J>(under <I>::get())...); }
-
-	template <size_t J>
-	INLINE constexpr cltel <J, P>
-	_at() const& { return cltel <J, P>(at._<J>(under <I>::get())...); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename... U>
-class collection <data::zip <>, U...> : public zip_store <pack <U...> >
-{
-	using B = zip_store <pack <U...> >;
-
-public:
-	using B::B;
-	using B::base_type::operator=;
-};
-
-//-----------------------------------------------------------------------------
-
-}  // namespace details
-
-//-----------------------------------------------------------------------------
-
-}  // namespace tuples
+}  // namespace data
 
 //-----------------------------------------------------------------------------
 
@@ -102,4 +56,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_ZIP_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_DATA_HPP

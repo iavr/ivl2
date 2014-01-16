@@ -23,14 +23,16 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_STORE_HPP
-#define IVL_DETAILS_CORE_TUPLE_STORE_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+#define IVL_DETAILS_CORE_TUPLE_TYPE_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "store/raw.hpp"
-#include "store/tuple.hpp"
+#include "type/begin.hpp"
+#include "type/data.hpp"
+#include "type/collection.hpp"
+#include "type/traits.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_STORE_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_HPP

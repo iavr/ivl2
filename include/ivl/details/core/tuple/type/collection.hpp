@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_LOOP_HPP
-#define IVL_DETAILS_CORE_TUPLE_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_COLLECTION_HPP
+#define IVL_DETAILS_CORE_TUPLE_TYPE_COLLECTION_HPP
 
 #include <ivl/ivl>
 
@@ -42,64 +42,65 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename A, typename I = sz_rng_of_p <A> >
-class loop_store;
-
-template <typename F, typename... A, size_t... I>
-class loop_store <F, pack <A...>, sizes <I...> > : public base_tup <
-	loop_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
->
-{
-	using P = rep <tran_len <tup_types <A>...>{}, nat>;
-	using B = base_tup <loop_tup <F, A...>, P>;
-
-	using fun = elem_at <0, F, A...>;
-	template <size_t J> using arg = elem_at <J + 1, F, A...>;
-
-	friend base_type_of <B>;
+template <typename S, typename... A> struct collection;
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J>
-	INLINE rtel <J, P>
-	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...), nat(); }
+template <typename... E>
+using raw_tuple = collection <data::raw <>, E...>;
 
-	template <size_t J>
-	INLINE ltel <J, P>
-	_at() & { return fun::get()(at._<J>(arg <I>::get())...), nat(); }
+template <typename... E>
+using tuple = collection <data::tuple <>, E...>;
 
-	template <size_t J>
-	INLINE constexpr cltel <J, P>
-	_at() const& { return fun::get()(at._<J>(arg <I>::get())...), nat(); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-class collection <data::loop <>, F>;
+template <typename K, typename U>
+using indirect_tup = collection <data::indirect <>, K, U>;
 
 template <typename F, typename... A>
-class collection <data::loop <>, F, A...> : public loop_store <F, pack <A...> >
-{
-	using B = loop_store <F, pack <A...> >;
+using apply_tup = collection <data::apply <>, F, A...>;
 
-public:
-	using B::B;
-	using B::base_type::operator=;
-};
+template <typename F, typename... A>
+using loop_tup = collection <data::loop <>, F, A...>;
+
+template <typename... U> using zip_tup  = collection <data::zip <>,  U...>;
+template <typename... U> using join_tup = collection <data::join <>, U...>;
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... A>
+using apply_tuple = apply_tup <F, atom_of <A>...>;
+
+template <typename F, typename... A>
+using loop_tuple = loop_tup <F, atom_of <A>...>;
+
+template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
+template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
+using details::collection;
+
+using details::raw_tuple;
+using details::tuple;
+
+using details::indirect_tup;
+using details::apply_tup;
+using details::loop_tup;
+using details::zip_tup;
+using details::join_tup;
+
+using details::apply_tuple;
+using details::loop_tuple;
+using details::zip_tuple;
+using details::join_tuple;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace tuples
+
+using tuples::tuple;
+using tuples::raw_tuple;
 
 //-----------------------------------------------------------------------------
 
@@ -107,4 +108,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_COLLECTION_HPP

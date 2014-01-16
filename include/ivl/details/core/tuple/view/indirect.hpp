@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_JOIN_HPP
-#define IVL_DETAILS_CORE_TUPLE_JOIN_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_INDIRECT_HPP
+#define IVL_DETAILS_CORE_TUPLE_VIEW_INDIRECT_HPP
 
 #include <ivl/ivl>
 
@@ -42,18 +42,15 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename... U>
-class collection <data::join <>, U...> :
-	public base_tup <join_tup <U...>, join <tup_types <U>...> >
+template <typename K, typename U>
+class collection <data::indirect <>, K, U> : public
+	base_tup <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
 {
-	using P = join <tup_types <U>...>;
-	using M = major <tup_types <U>...>;
-	using m = minor <tup_types <U>...>;
-	using B = base_tup <join_tup <U...>, P>;
+	using P = choose_p <K, tup_types <U> >;
+	using B = base_tup <indirect_tup <K, U>, P>;
+	using E = elem <0, U>;
 
-	template <size_t J> using under = elem_at <J, U...>;
-	template <size_t J> using majr  = pick_i <J, M>;
-	template <size_t J> using minr  = pick_i <J, m>;
+	template <size_t J> using off = pick_i <J, K>;
 
 	friend base_type_of <B>;
 
@@ -61,15 +58,15 @@ class collection <data::join <>, U...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<minr <J>{}>(under <majr <J>{}>::fwd()); }
+	_at() && { return at._<off <J>{}>(E::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
+	_at() & { return at._<off <J>{}>(E::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
+	_at() const& { return at._<off <J>{}>(E::get()); }
 
 //-----------------------------------------------------------------------------
 
@@ -92,4 +89,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_JOIN_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_INDIRECT_HPP

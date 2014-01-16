@@ -28,23 +28,10 @@
 
 //-----------------------------------------------------------------------------
 
-#include "tuple/begin.hpp"
-#include "tuple/data.hpp"
-#include "tuple/collection.hpp"
-#include "tuple/traits.hpp"
-#include "tuple/at.hpp"
-#include "tuple/elem.hpp"
-#include "tuple/store.hpp"
-#include "tuple/access.hpp"
+#include "tuple/type.hpp"
 #include "tuple/base.hpp"
-
-#include "tuple/raw.hpp"
-#include "tuple/tuple.hpp"
-#include "tuple/indirect.hpp"
-#include "tuple/apply.hpp"
-#include "tuple/loop.hpp"
-#include "tuple/zip.hpp"
-#include "tuple/join.hpp"
+#include "tuple/store.hpp"
+#include "tuple/view.hpp"
 
 //-----------------------------------------------------------------------------
 

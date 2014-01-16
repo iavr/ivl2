@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TUPLE_HPP
-#define IVL_DETAILS_CORE_TUPLE_TUPLE_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_APPLY_HPP
+#define IVL_DETAILS_CORE_TUPLE_VIEW_APPLY_HPP
 
 #include <ivl/ivl>
 
@@ -42,49 +42,75 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename P, typename I = sz_rng_of_p <P> >
-struct tuple_store;
-
-template <typename... E, size_t... I>
-class tuple_store <pack <E...>, sizes <I...> > : public raw_tuple <E...>
+template <typename F>
+class tup_applier
 {
-	using B = raw_tuple <E...>;
-
-public:
-	explicit INLINE constexpr tuple_store(_true) : B() { }
+	template <typename... A>
+	struct map_t { using type = F(pack <A...>); };
 
 	template <typename... A>
-	explicit INLINE constexpr tuple_store(_true, A&&... a) : B(fwd <A>(a)...) { }
+	struct map_t <pack <A...> > : map_t <A...> { };
 
-	template <typename T>
-	INLINE constexpr tuple_store(T&& t) : B(at._<I>(fwd <T>(t))...) { }
+public:
+	template <typename... A>
+	using map = type_of <map_t <A...> >;
+};
+
+template <typename F, typename... A>
+using tup_apply_types =
+	map <tup_applier <F>::template map, tup_tran <tup_types <A>...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename A, typename I = sz_rng_of_p <A> >
+class apply_store;
+
+template <typename F, typename... A, size_t... I>
+class apply_store <F, pack <A...>, sizes <I...> > :
+	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >
+{
+	using P = tup_apply_types <F, A...>;
+	using B = base_tup <apply_tup <F, A...>, P>;
+
+	using fun = elem_at <0, F, A...>;
+	template <size_t J> using arg = elem_at <J + 1, F, A...>;
+
+	friend base_type_of <B>;
+
+//-----------------------------------------------------------------------------
+
+	template <size_t J>
+	INLINE rtel <J, P>
+	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...); }
+
+	template <size_t J>
+	INLINE ltel <J, P>
+	_at() & { return fun::get()(at._<J>(arg <I>::get())...); }
+
+	template <size_t J>
+	INLINE constexpr cltel <J, P>
+	_at() const& { return fun::get()(at._<J>(arg <I>::get())...); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
+template <typename F>
+class collection <data::apply <>, F>;
+
+template <typename F, typename... A>
+class collection <data::apply <>, F, A...> :
+	public apply_store <F, pack <A...> >
 {
-	using P = pack <E...>;
-	using B = tuple_store <P>;
+	using B = apply_store <F, pack <A...> >;
 
 public:
+	using B::B;
 	using B::base_type::operator=;
-
-	template <typename A = int, enable_if <_and <is_cons <E>...>{}, A> = 0>
-	explicit INLINE constexpr collection() : B(yes) { }
-
-	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
-	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
-	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename T, enable_if <tup_tup_conv <T, P>{}> = 0>
-	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
-
-	template <typename T, enable_if <tup_tup_explicit <P, T>{}> = 0>
-	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -101,4 +127,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TUPLE_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_APPLY_HPP

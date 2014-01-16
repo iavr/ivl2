@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
-#define IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
+#define IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
 
 #include <ivl/ivl>
 
@@ -42,65 +42,58 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename... A> struct collection;
+template <typename P, typename I = sz_rng_of_p <P> >
+struct tuple_store;
+
+template <typename... E, size_t... I>
+class tuple_store <pack <E...>, sizes <I...> > : public raw_tuple <E...>
+{
+	using B = raw_tuple <E...>;
+
+public:
+	explicit INLINE constexpr tuple_store(_true) : B() { }
+
+	template <typename... A>
+	explicit INLINE constexpr tuple_store(_true, A&&... a) : B(fwd <A>(a)...) { }
+
+	template <typename T>
+	INLINE constexpr tuple_store(T&& t) : B(at._<I>(fwd <T>(t))...) { }
+};
 
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-using raw_tuple = collection <data::raw <>, E...>;
+class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
+{
+	using P = pack <E...>;
+	using B = tuple_store <P>;
 
-template <typename... E>
-using tuple = collection <data::tuple <>, E...>;
+public:
+	using B::base_type::operator=;
 
-template <typename K, typename U>
-using indirect_tup = collection <data::indirect <>, K, U>;
+	template <typename A = int, enable_if <_and <is_cons <E>...>{}, A> = 0>
+	explicit INLINE constexpr collection() : B(yes) { }
 
-template <typename F, typename... A>
-using apply_tup = collection <data::apply <>, F, A...>;
+	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
+	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-template <typename F, typename... A>
-using loop_tup = collection <data::loop <>, F, A...>;
+	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
+	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-template <typename... U> using zip_tup  = collection <data::zip <>,  U...>;
-template <typename... U> using join_tup = collection <data::join <>, U...>;
+	template <typename T, enable_if <tup_tup_conv <T, P>{}> = 0>
+	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... A>
-using apply_tuple = apply_tup <F, atom_of <A>...>;
-
-template <typename F, typename... A>
-using loop_tuple = loop_tup <F, atom_of <A>...>;
-
-template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
-template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
+	template <typename T, enable_if <tup_tup_explicit <P, T>{}> = 0>
+	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::collection;
-
-using details::raw_tuple;
-using details::tuple;
-
-using details::indirect_tup;
-using details::apply_tup;
-using details::loop_tup;
-using details::zip_tup;
-using details::join_tup;
-
-using details::apply_tuple;
-using details::loop_tuple;
-using details::zip_tuple;
-using details::join_tuple;
-
 //-----------------------------------------------------------------------------
 
 }  // namespace tuples
-
-using tuples::tuple;
-using tuples::raw_tuple;
 
 //-----------------------------------------------------------------------------
 
@@ -108,4 +101,4 @@ using tuples::raw_tuple;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_COLLECTION_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP

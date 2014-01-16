@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_RAW_HPP
-#define IVL_DETAILS_CORE_TUPLE_RAW_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_JOIN_HPP
+#define IVL_DETAILS_CORE_TUPLE_VIEW_JOIN_HPP
 
 #include <ivl/ivl>
 
@@ -42,27 +42,34 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-class collection <data::raw <>, E...> :
-	public base_tup <raw_tuple <E...>, pack <E...> >
+template <typename... U>
+class collection <data::join <>, U...> :
+	public base_tup <join_tup <U...>, join <tup_types <U>...> >
 {
-	using P = pack <E...>;
-	using B = base_tup <raw_tuple <E...>, P>;
+	using P = join <tup_types <U>...>;
+	using M = major <tup_types <U>...>;
+	using m = minor <tup_types <U>...>;
+	using B = base_tup <join_tup <U...>, P>;
 
-	template <size_t J> using under = elem_at <J, E...>;
+	template <size_t J> using under = elem_at <J, U...>;
+	template <size_t J> using majr  = pick_i <J, M>;
+	template <size_t J> using minr  = pick_i <J, m>;
 
 	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
+	INLINE rtel <J, P>
+	_at() && { return at._<minr <J>{}>(under <majr <J>{}>::fwd()); }
 
 	template <size_t J>
-	INLINE ltel <J, P> _at() & { return under <J>::get(); }
+	INLINE ltel <J, P>
+	_at() & { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
 
 	template <size_t J>
-	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
+	INLINE constexpr cltel <J, P>
+	_at() const& { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
 
 //-----------------------------------------------------------------------------
 
@@ -85,4 +92,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_RAW_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_JOIN_HPP

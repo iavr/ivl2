@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_ELEM_HPP
-#define IVL_DETAILS_CORE_TUPLE_ELEM_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_BASE_ELEM_HPP
+#define IVL_DETAILS_CORE_TUPLE_BASE_ELEM_HPP
 
 #include <ivl/ivl>
 
@@ -129,4 +129,4 @@ using details::elem_at;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_ELEM_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_BASE_ELEM_HPP

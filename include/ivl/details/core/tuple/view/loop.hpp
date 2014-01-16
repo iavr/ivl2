@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_APPLY_HPP
-#define IVL_DETAILS_CORE_TUPLE_APPLY_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_LOOP_HPP
+#define IVL_DETAILS_CORE_TUPLE_VIEW_LOOP_HPP
 
 #include <ivl/ivl>
 
@@ -42,35 +42,16 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-class tup_applier
-{
-	template <typename... A>
-	struct map_t { using type = F(pack <A...>); };
-
-	template <typename... A>
-	struct map_t <pack <A...> > : map_t <A...> { };
-
-public:
-	template <typename... A>
-	using map = type_of <map_t <A...> >;
-};
-
-template <typename F, typename... A>
-using tup_apply_types =
-	map <tup_applier <F>::template map, tup_tran <tup_types <A>...> >;
-
-//-----------------------------------------------------------------------------
-
 template <typename F, typename A, typename I = sz_rng_of_p <A> >
-class apply_store;
+class loop_store;
 
 template <typename F, typename... A, size_t... I>
-class apply_store <F, pack <A...>, sizes <I...> > :
-	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >
+class loop_store <F, pack <A...>, sizes <I...> > : public base_tup <
+	loop_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
+>
 {
-	using P = tup_apply_types <F, A...>;
-	using B = base_tup <apply_tup <F, A...>, P>;
+	using P = rep <tran_len <tup_types <A>...>{}, nat>;
+	using B = base_tup <loop_tup <F, A...>, P>;
 
 	using fun = elem_at <0, F, A...>;
 	template <size_t J> using arg = elem_at <J + 1, F, A...>;
@@ -81,15 +62,15 @@ class apply_store <F, pack <A...>, sizes <I...> > :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...); }
+	_at() && { return fun::fwd()(at._<J>(arg <I>::fwd())...), nat(); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return fun::get()(at._<J>(arg <I>::get())...); }
+	_at() & { return fun::get()(at._<J>(arg <I>::get())...), nat(); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return fun::get()(at._<J>(arg <I>::get())...); }
+	_at() const& { return fun::get()(at._<J>(arg <I>::get())...), nat(); }
 
 //-----------------------------------------------------------------------------
 
@@ -100,13 +81,12 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class collection <data::apply <>, F>;
+class collection <data::loop <>, F>;
 
 template <typename F, typename... A>
-class collection <data::apply <>, F, A...> :
-	public apply_store <F, pack <A...> >
+class collection <data::loop <>, F, A...> : public loop_store <F, pack <A...> >
 {
-	using B = apply_store <F, pack <A...> >;
+	using B = loop_store <F, pack <A...> >;
 
 public:
 	using B::B;
@@ -127,4 +107,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_APPLY_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_LOOP_HPP

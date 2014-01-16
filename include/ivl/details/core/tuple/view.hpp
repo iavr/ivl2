@@ -23,37 +23,17 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_DATA_HPP
-#define IVL_DETAILS_CORE_TUPLE_DATA_HPP
-
-#include <ivl/ivl>
+#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_HPP
+#define IVL_DETAILS_CORE_TUPLE_VIEW_HPP
 
 //-----------------------------------------------------------------------------
 
-namespace ivl {
+#include "view/indirect.hpp"
+#include "view/apply.hpp"
+#include "view/loop.hpp"
+#include "view/zip.hpp"
+#include "view/join.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace data {
-
-//-----------------------------------------------------------------------------
-
-template <typename... D> struct raw { };
-template <typename... D> struct tuple { };
-template <typename... D> struct indirect { };
-template <typename... D> struct apply { };
-template <typename... D> struct loop { };
-template <typename... D> struct zip { };
-template <typename... D> struct join { };
-
-//-----------------------------------------------------------------------------
-
-}  // namespace data
-
-//-----------------------------------------------------------------------------
-
-}  // namespace ivl
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_DETAILS_CORE_TUPLE_DATA_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_HPP

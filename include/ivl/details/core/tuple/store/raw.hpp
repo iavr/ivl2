@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_ACCESS_HPP
-#define IVL_DETAILS_CORE_TUPLE_ACCESS_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_STORE_RAW_HPP
+#define IVL_DETAILS_CORE_TUPLE_STORE_RAW_HPP
 
 #include <ivl/ivl>
 
@@ -42,48 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename... E>
-struct access : elems <D>, derived <D> { using elems <D>::elems; };
+template <typename... E>
+class collection <data::raw <>, E...> :
+	public base_tup <raw_tuple <E...>, pack <E...> >
+{
+	using P = pack <E...>;
+	using B = base_tup <raw_tuple <E...>, P>;
+
+	template <size_t J> using under = elem_at <J, E...>;
+
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename E>
-struct access <D, E> : elems <D>, derived <D>
-{
-protected:
-	using derived <D>::der;
-	using derived <D>::der_f;
+	template <size_t J>
+	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
 
-public:
-	using elems <D>::elems;
+	template <size_t J>
+	INLINE ltel <J, P> _at() & { return under <J>::get(); }
 
-	INLINE           rtref <E>  val_f()      { return at._<0>(der_f()); }
-	INLINE           rtref <E>  val() &&     { return at._<0>(der_f()); }
-	INLINE           ltref <E>  val() &      { return at._<0>(der()); }
-	INLINE constexpr cltref <E> val() const& { return at._<0>(der()); }
-};
+	template <size_t J>
+	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename E0, typename E1>
-struct access <D, E0, E1> : elems <D>, derived <D>
-{
-protected:
-	using derived <D>::der;
-	using derived <D>::der_f;
-
 public:
-	using elems <D>::elems;
-
-	INLINE           rtref <E0>  fst_f()      { return at._<0>(der_f()); }
-	INLINE           rtref <E0>  fst() &&     { return at._<0>(der_f()); }
-	INLINE           ltref <E0>  fst() &      { return at._<0>(der()); }
-	INLINE constexpr cltref <E0> fst() const& { return at._<0>(der()); }
-
-	INLINE           rtref <E1>  snd_f()      { return at._<1>(der_f()); }
-	INLINE           rtref <E1>  snd() &&     { return at._<1>(der_f()); }
-	INLINE           ltref <E1>  snd() &      { return at._<1>(der()); }
-	INLINE constexpr cltref <E1> snd() const& { return at._<1>(der()); }
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------
@@ -100,4 +85,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_ACCESS_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_STORE_RAW_HPP

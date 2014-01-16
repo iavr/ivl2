@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TRAITS_HPP
-#define IVL_DETAILS_CORE_TUPLE_TRAITS_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_TRAITS_HPP
+#define IVL_DETAILS_CORE_TUPLE_TYPE_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -289,4 +289,4 @@ struct under_t <tuples::indirect_tup <K, U> > : pack <U> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TRAITS_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_TRAITS_HPP
