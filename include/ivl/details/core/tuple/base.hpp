@@ -42,15 +42,16 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename I, typename P> struct base_store;
+template <typename D, typename P, typename I = sz_rng_of_p <P> >
+struct base_store;
 
 //-----------------------------------------------------------------------------
 
 template <
 	typename D,
-	size_t... I, template <typename...> class Q, typename... E
+	template <typename...> class Q, typename... E, size_t... I
 >
-class base_store <D, sizes <I...>, Q <E...> > :
+class base_store <D, Q <E...>, sizes <I...> > :
 	public Q <E...>, public access <D, E...>
 {
 	using P = Q <E...>;
@@ -232,9 +233,9 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename D, typename P>
-class base_tup : public base_store <D, sz_rng_of_p <P>, P>
+class base_tup : public base_store <D, P>
 {
-	using B = base_store <D, sz_rng_of_p <P>, P>;
+	using B = base_store <D, P>;
 
 public:
 	using B::B;
@@ -243,6 +244,8 @@ public:
 //-----------------------------------------------------------------------------
 
 }  // namespace details
+
+using details::base_tup;
 
 //-----------------------------------------------------------------------------
 

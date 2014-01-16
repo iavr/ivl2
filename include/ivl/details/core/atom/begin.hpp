@@ -38,8 +38,7 @@ namespace atoms {
 namespace details {
 
 using namespace types;
-using tuples::base_tup;
-using tuples::elem;
+using namespace tuples;
 
 }  // namespace details
 }  // namespace atoms

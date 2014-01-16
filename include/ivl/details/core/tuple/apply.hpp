@@ -62,8 +62,11 @@ using tup_apply_types =
 
 //-----------------------------------------------------------------------------
 
-template <size_t... I, typename F, typename... A>
-class store <data::apply <>, sizes <I...>, F, A...> :
+template <typename F, typename A, typename I = sz_rng_of_p <A> >
+class apply_store;
+
+template <typename F, typename... A, size_t... I>
+class apply_store <F, pack <A...>, sizes <I...> > :
 	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >
 {
 	using P = tup_apply_types <F, A...>;
@@ -101,9 +104,9 @@ class collection <data::apply <>, F>;
 
 template <typename F, typename... A>
 class collection <data::apply <>, F, A...> :
-	public store <data::apply <>, sz_rng_of <A...>, F, A...>
+	public apply_store <F, pack <A...> >
 {
-	using B = store <data::apply <>, sz_rng_of <A...>, F, A...>;
+	using B = apply_store <F, pack <A...> >;
 
 public:
 	using B::B;

@@ -42,8 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <size_t... I, typename... U>
-class store <data::zip <>, sizes <I...>, U...> :
+template <typename P, typename I = sz_rng_of_p <P> >
+struct zip_store;
+
+template <typename... U, size_t... I>
+class zip_store <pack <U...>, sizes <I...> > :
 	public base_tup <zip_tup <U...>, tup_tran <tup_types <U>...> >
 {
 	using P = tup_tran <tup_types <U>...>;
@@ -76,10 +79,9 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... U>
-class collection <data::zip <>, U...> :
-	public store <data::zip <>, sz_rng_of <U...>, U...>
+class collection <data::zip <>, U...> : public zip_store <pack <U...> >
 {
-	using B = store <data::zip <>, sz_rng_of <U...>, U...>;
+	using B = zip_store <pack <U...> >;
 
 public:
 	using B::B;

@@ -277,17 +277,6 @@ struct under_t <tuples::indirect_tup <K, U> > : pack <U> { };
 
 //-----------------------------------------------------------------------------
 
-template <size_t J, typename P>
-using elem_at_p = tuples::elem <J, pick_p <J, P> >;
-
-template <size_t J, typename... E>
-using elem_at = elem_at_p <J, pack <E...> >;
-
-template <size_t J, typename T>
-using under_elem_at = elem_at_p <J, under <T> >;
-
-//-----------------------------------------------------------------------------
-
 }  // namespace traits
 
 //-----------------------------------------------------------------------------

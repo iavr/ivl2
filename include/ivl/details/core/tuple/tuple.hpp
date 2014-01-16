@@ -42,48 +42,31 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <size_t... I, typename... E>
-class store <data::tuple <>, sizes <I...>, E...> :
-	public base_tup <tuple <E...>, pack <E...> >
+template <typename P, typename I = sz_rng_of_p <P> >
+struct tuple_store;
+
+template <typename... E, size_t... I>
+class tuple_store <pack <E...>, sizes <I...> > : public raw_tuple <E...>
 {
-	using P = pack <E...>;
-	using B = base_tup <tuple <E...>, P>;
-
-	template <size_t J> using under = elem_at <J, E...>;
-
-	friend base_type_of <B>;
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J>
-	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
-
-	template <size_t J>
-	INLINE ltel <J, P> _at() & { return under <J>::get(); }
-
-	template <size_t J>
-	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
-
-//-----------------------------------------------------------------------------
+	using B = raw_tuple <E...>;
 
 public:
-	explicit INLINE constexpr store(_true) : B() { }
+	explicit INLINE constexpr tuple_store(_true) : B() { }
 
 	template <typename... A>
-	explicit INLINE constexpr store(_true, A&&... a) : B(fwd <A>(a)...) { }
+	explicit INLINE constexpr tuple_store(_true, A&&... a) : B(fwd <A>(a)...) { }
 
 	template <typename T>
-	INLINE constexpr store(T&& t) : B(at._<I>(fwd <T>(t))...) { }
+	INLINE constexpr tuple_store(T&& t) : B(at._<I>(fwd <T>(t))...) { }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::tuple <>, E...> :
-	public store <data::tuple <>, sz_rng_of <E...>, E...>
+class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
 {
 	using P = pack <E...>;
-	using B = store <data::tuple <>, sz_rng_of <E...>, E...>;
+	using B = tuple_store <P>;
 
 public:
 	using B::base_type::operator=;

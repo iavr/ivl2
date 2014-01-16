@@ -42,8 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <size_t... I, typename F, typename... A>
-class store <data::loop <>, sizes <I...>, F, A...> : public base_tup <
+template <typename F, typename A, typename I = sz_rng_of_p <A> >
+class loop_store;
+
+template <typename F, typename... A, size_t... I>
+class loop_store <F, pack <A...>, sizes <I...> > : public base_tup <
 	loop_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
 >
 {
@@ -81,10 +84,9 @@ template <typename F>
 class collection <data::loop <>, F>;
 
 template <typename F, typename... A>
-class collection <data::loop <>, F, A...> :
-	public store <data::loop <>, sz_rng_of <A...>, F, A...>
+class collection <data::loop <>, F, A...> : public loop_store <F, pack <A...> >
 {
-	using B = store <data::loop <>, sz_rng_of <A...>, F, A...>;
+	using B = loop_store <F, pack <A...> >;
 
 public:
 	using B::B;

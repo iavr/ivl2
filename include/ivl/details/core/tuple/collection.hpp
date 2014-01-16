@@ -42,18 +42,15 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename P> struct base_tup;
-
-template <typename S, typename... A> struct store;
 template <typename S, typename... A> struct collection;
 
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-using tuple = collection <data::tuple <>, E...>;
+using raw_tuple = collection <data::raw <>, E...>;
 
 template <typename... E>
-using raw_tuple = collection <data::raw <>, E...>;
+using tuple = collection <data::tuple <>, E...>;
 
 template <typename K, typename U>
 using indirect_tup = collection <data::indirect <>, K, U>;
@@ -82,11 +79,10 @@ template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
 
 }  // namespace details
 
-using details::base_tup;
 using details::collection;
 
-using details::tuple;
 using details::raw_tuple;
+using details::tuple;
 
 using details::indirect_tup;
 using details::apply_tup;
