@@ -68,25 +68,25 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	template <typename...> class T = raw_tuple,
+	template <typename...> class T = pre_tuple,
 	template <typename...> class E = always
 >
 using val_of = collect <decay, T, E>;
 
 template <
-	template <typename...> class T = raw_tuple,
+	template <typename...> class T = pre_tuple,
 	template <typename...> class E = always
 >
 using rref_of = collect <base_opt, T, E>;
 
 template <
-	template <typename...> class T = raw_tuple,
+	template <typename...> class T = pre_tuple,
 	template <typename...> class E = always
 >
 using lref_of = collect <base_opt, T, E, all_lref>;
 
 template <
-	template <typename...> class T = raw_tuple,
+	template <typename...> class T = pre_tuple,
 	template <typename...> class E = always
 >
 using clref_of = collect <base_opt, T, E, all_clref>;
@@ -114,9 +114,8 @@ struct tup_head
 struct tup_tail
 {
 	template <typename T, enable_if <as_tup_non_empty <T>{}> = 0>
-	INLINE constexpr auto operator()(T&& t) const
-	-> decltype(at()._<sz_range <1, tup_len <T>() - 1> >(fwd <T>(t)))
-		{ return at()._<sz_range <1, tup_len <T>() - 1> >(fwd <T>(t)); }
+	INLINE constexpr tail_tup <base_opt <T&&> >
+	operator()(T&& t) const { return tail_tup <base_opt <T&&> >(fwd <T>(t)); }
 };
 
 //-----------------------------------------------------------------------------

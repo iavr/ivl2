@@ -64,14 +64,6 @@ using _type_of = type_of <_type_of_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct pack_of_t;
-template <typename P> using  pack_of = type_of <pack_of_t <P> >;
-
-template <template <typename...> class C, typename... E>
-struct pack_of_t <C <E...> > { using type = pack <E...>; };
-
-//-----------------------------------------------------------------------------
-
 template <typename P> struct is_null : _false { };
 
 template <template <typename...> class C>
@@ -103,6 +95,11 @@ struct embed_t <F, C <E...> > { using type = F <E...>; };
 
 template <template <typename...> class F, typename P>
 using embed = type_of <embed_t <F, P> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using pack_of_t = embed_t <pack, P>;
+template <typename P> using pack_of = type_of <pack_of_t <P> >;
 
 //-----------------------------------------------------------------------------
 

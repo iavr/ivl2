@@ -72,7 +72,7 @@ struct arg_construct <tuple <E...> > : private tuple <E...>
 
 // TODO: remove
 template <typename... E>
-struct arg_construct <raw_tuple <E...> > : private tuple <E...>
+struct arg_construct <pre_tuple <E...> > : private tuple <E...>
 {
 	using tuple <E...>::tuple;
 

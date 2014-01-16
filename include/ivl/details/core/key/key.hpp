@@ -63,7 +63,7 @@ class key
 	using OR = op_ref <K, base_opt <A&&>...>;
 
 public:
-	template <typename A, enable_if <!eq <K, raw_type <A> >()> >
+	template <typename A>
 	INLINE constexpr KV <A>
 	operator=(A&& a) const { return KV <A>(fwd <A>(a)); }
 

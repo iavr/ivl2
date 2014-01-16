@@ -50,6 +50,7 @@ namespace keys {
 namespace details {
 
 using namespace types;
+using namespace tuples;
 
 template <typename K> struct key;
 

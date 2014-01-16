@@ -28,6 +28,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include "view/tail.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
 #include "view/loop.hpp"

@@ -125,13 +125,13 @@ template <typename T> using ltref  = type_of <ltref_t <T> >;
 template <typename T> using cltref = type_of <cltref_t <T> >;
 
 template <typename... E>
-struct rtref_t <pack <E...> > { using type = raw_tuple <rtref <E>...>; };
+struct rtref_t <pack <E...> > { using type = pre_tuple <rtref <E>...>; };
 
 template <typename... E>
-struct ltref_t <pack <E...> > { using type = raw_tuple <ltref <E>...>; };
+struct ltref_t <pack <E...> > { using type = pre_tuple <ltref <E>...>; };
 
 template <typename... E>
-struct cltref_t <pack <E...> > { using type = raw_tuple <cltref <E>...>; };
+struct cltref_t <pack <E...> > { using type = pre_tuple <cltref <E>...>; };
 
 template <typename F, typename... E>
 struct rtref_t <F(pack <E...>)> : ret_t <F(rtref <E>...)> { };

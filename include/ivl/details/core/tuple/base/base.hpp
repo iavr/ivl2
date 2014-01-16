@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename P, typename I = sz_rng_of_p <P> >
-struct base_store;
+struct base_tup;
 
 //-----------------------------------------------------------------------------
 
@@ -51,25 +51,26 @@ template <
 	typename D,
 	template <typename...> class Q, typename... E, size_t... I
 >
-class base_store <D, Q <E...>, sizes <I...> > :
-	public Q <E...>, public access <D, E...>
+class base_tup <D, Q <E...>, sizes <I...> > : public access <D, E...>
 {
 	using P = Q <E...>;
 	using B = access <D, E...>;
-	static constexpr size_t L = P::length;
+
+	template <typename T, typename R = raw_type <T> >
+	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
 
 //-----------------------------------------------------------------------------
 
 protected:
-	using derived <D>::der;
 	using derived <D>::der_f;
+	using derived <D>::der;
 
 //-----------------------------------------------------------------------------
 
 public:
-	using base_type = base_store;
+	using base_type = base_tup;
 	using type = P;
-	static constexpr size_t length = L;
+	static constexpr size_t length = P::length;
 
 	using indices = sizes <I...>;
 	INLINE constexpr indices idx() const { return indices(); }
@@ -111,15 +112,15 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename K>
-	INLINE indirect_tup <K, D&&>
+	INLINE indirect_tup <K, opt <D&&> >
 	_() && { return indirect_tup <K, D&&>(der_f()); }
 
 	template <typename K>
-	INLINE indirect_tup <K, D&>
+	INLINE indirect_tup <K, opt <D&> >
 	_() & { return indirect_tup <K, D&>(der()); }
 
 	template <typename K>
-	INLINE constexpr indirect_tup <K, const D&>
+	INLINE constexpr indirect_tup <K, opt <const D&> >
 	_() const& { return indirect_tup <K, const D&>(der()); }
 
 //-----------------------------------------------------------------------------
@@ -175,9 +176,6 @@ private:
 	using bra = afun::op::bracket;
 	using par = afun::op::call;
 
-	template <typename T, typename R = raw_type <T> >
-	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
-
 	template <typename... T> using app = subs <apply_tuple, opt <T&&>...>;
 	template <typename... T> using op  = subs <keys::op_ref, opt <T&&>...>;
 
@@ -228,17 +226,6 @@ public:
 	INLINE constexpr op <const D&, A...>
 	_(A&&... a) const& { return make <op>(der(), fwd <A>(a)...); }
 
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename D, typename P>
-class base_tup : public base_store <D, P>
-{
-	using B = base_store <D, P>;
-
-public:
-	using B::B;
 };
 
 //-----------------------------------------------------------------------------

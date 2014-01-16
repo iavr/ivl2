@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
-#define IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_STORE_PRE_HPP
+#define IVL_DETAILS_CORE_TUPLE_STORE_PRE_HPP
 
 #include <ivl/ivl>
 
@@ -42,49 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename P, typename I = sz_rng_of_p <P> >
-struct tuple_store;
-
-template <typename... E, size_t... I>
-class tuple_store <pack <E...>, sizes <I...> > : public pre_tuple <E...>
+template <typename... E>
+class collection <data::pre <>, E...> :
+	public base_tup <pre_tuple <E...>, pack <E...> >
 {
-	using B = pre_tuple <E...>;
+	using P = pack <E...>;
+	using B = base_tup <pre_tuple <E...>, P>;
 
-public:
-	explicit INLINE constexpr tuple_store(_true) : B() { }
+	template <size_t J> using under = elem_at <J, E...>;
 
-	template <typename... A>
-	explicit INLINE constexpr tuple_store(_true, A&&... a) : B(fwd <A>(a)...) { }
-
-	template <typename T>
-	INLINE constexpr tuple_store(T&& t) : B(at._<I>(fwd <T>(t))...) { }
-};
+	friend base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
-{
-	using P = pack <E...>;
-	using B = tuple_store <P>;
+	template <size_t J>
+	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
+
+	template <size_t J>
+	INLINE ltel <J, P> _at() & { return under <J>::get(); }
+
+	template <size_t J>
+	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
+
+//-----------------------------------------------------------------------------
 
 public:
+	using B::B;
 	using B::base_type::operator=;
-
-	template <typename A = int, enable_if <_and <is_cons <E>...>{}, A> = 0>
-	explicit INLINE constexpr collection() : B(yes) { }
-
-	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
-	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
-	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename T, enable_if <tup_tup_conv <T, P>{}> = 0>
-	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
-
-	template <typename T, enable_if <tup_tup_explicit <P, T>{}> = 0>
-	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -101,4 +85,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_STORE_PRE_HPP

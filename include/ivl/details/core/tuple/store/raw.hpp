@@ -43,32 +43,32 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::raw <>, E...> :
-	public base_tup <raw_tuple <E...>, pack <E...> >
+class collection <data::raw <>, E...> : public access <raw_tuple <E...>, E...>
 {
 	using P = pack <E...>;
-	using B = base_tup <raw_tuple <E...>, P>;
+	using B = access <raw_tuple <E...>, E...>;
 
 	template <size_t J> using under = elem_at <J, E...>;
-
-	friend base_type_of <B>;
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J>
-	INLINE rtel <J, P> _at() && { return under <J>::fwd(); }
-
-	template <size_t J>
-	INLINE ltel <J, P> _at() & { return under <J>::get(); }
-
-	template <size_t J>
-	INLINE constexpr cltel <J, P> _at() const& { return under <J>::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
+	using type = P;
+	static constexpr size_t length = P::length;
+
 	using B::B;
-	using B::base_type::operator=;
+
+//-----------------------------------------------------------------------------
+
+	template <size_t J>
+	INLINE rtel <J, P> _() && { return under <J>::fwd(); }
+
+	template <size_t J>
+	INLINE ltel <J, P> _() & { return under <J>::get(); }
+
+	template <size_t J>
+	INLINE constexpr cltel <J, P> _() const& { return under <J>::get(); }
+
 };
 
 //-----------------------------------------------------------------------------

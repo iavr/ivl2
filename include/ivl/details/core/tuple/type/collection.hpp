@@ -50,7 +50,13 @@ template <typename... E>
 using raw_tuple = collection <data::raw <>, E...>;
 
 template <typename... E>
+using pre_tuple = collection <data::pre <>, E...>;
+
+template <typename... E>
 using tuple = collection <data::tuple <>, E...>;
+
+template <typename U>
+using tail_tup = collection <data::tail <>, U>;
 
 template <typename K, typename U>
 using indirect_tup = collection <data::indirect <>, K, U>;
@@ -81,10 +87,9 @@ template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
 
 using details::collection;
 
-using details::raw_tuple;
-using details::tuple;
-
+using details::tail_tup;
 using details::indirect_tup;
+
 using details::apply_tup;
 using details::loop_tup;
 using details::zip_tup;
@@ -99,8 +104,9 @@ using details::join_tuple;
 
 }  // namespace tuples
 
-using tuples::tuple;
-using tuples::raw_tuple;
+using tuples::details::raw_tuple;
+using tuples::details::pre_tuple;
+using tuples::details::tuple;
 
 //-----------------------------------------------------------------------------
 

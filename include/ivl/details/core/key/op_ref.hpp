@@ -46,7 +46,9 @@ template <typename O, typename... A>
 class op_ref : private raw_tuple <O, A...>
 {
 	using B = raw_tuple <O, A...>;
-	using T = sz_range <1, sizeof...(A)>;
+
+	template <typename T>
+	using tail = tail_tup <base_opt <T&&> >;
 
 	using derived <B>::der;
 	using derived <B>::der_f;
@@ -58,39 +60,20 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	// TODO: remove "this->", required by GCC
-
-	INLINE auto
-	op() &&
-	-> decltype(at._<0>(this->der_f()))
-		{ return at._<0>(der_f()); }
-
-	INLINE auto
-	op() &
-	-> decltype(at._<0>(this->der()))
-		{ return at._<0>(der()); }
-
-	INLINE constexpr auto
-	op() const&
-	-> decltype(at._<0>(this->der()))
-		{ return at._<0>(der()); }
+	INLINE           rtref <O>  op() &&     { return at._<0>(der_f()); }
+	INLINE           ltref <O>  op() &      { return at._<0>(der()); }
+	INLINE constexpr cltref <O> op() const& { return at._<0>(der()); }
 
 //-----------------------------------------------------------------------------
 
-	INLINE auto
-	ref() &&
-	-> decltype(at._<T>(this->der_f()))
-		{ return at._<T>(der_f()); }
+	INLINE tail <B&&>
+	ref() && { return tail <B&&>(der_f()); }
 
-	INLINE auto
-	ref() &
-	-> decltype(at._<T>(this->der()))
-		{ return at._<T>(der()); }
+	INLINE tail <B&>
+	ref() & { return tail <B&>(der()); }
 
-	INLINE constexpr auto
-	ref() const&
-	-> decltype(at._<T>(this->der()))
-		{ return at._<T>(der()); }
+	INLINE constexpr tail <const B&>
+	ref() const& { return tail <const B&>(der()); }
 
 };
 
