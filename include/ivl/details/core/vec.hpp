@@ -23,14 +23,15 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_LOOP_HPP
-#define IVL_DETAILS_CORE_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_VEC_HPP
+#define IVL_DETAILS_CORE_VEC_HPP
 
 //-----------------------------------------------------------------------------
 
+#include "vec/begin.hpp"
 #include "vec/traits.hpp"
 #include "vec/tuple.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_VEC_HPP

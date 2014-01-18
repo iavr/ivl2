@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ATOM_TRAITS_HPP
-#define IVL_DETAILS_CORE_ATOM_TRAITS_HPP
+#ifndef IVL_DETAILS_CORE_AFUN_AT_HPP
+#define IVL_DETAILS_CORE_AFUN_AT_HPP
 
 #include <ivl/ivl>
 
@@ -34,81 +34,42 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-
-//-----------------------------------------------------------------------------
-
-namespace traits {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-template <typename T>
-struct is_atom_ : _false { };
-
-template <typename T, typename S>
-struct is_atom_<atom <T, S> > : _true { };
-
-}  // namespace details
-
-template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
-
-template <typename T>
-struct as_tuple : expr <is_tuple <T>() || is_atom <T>()> { };
-
 //-----------------------------------------------------------------------------
 
-namespace details {
+struct at
+{
+	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
+	INLINE constexpr auto _(T&& t) const
+	-> decltype(fwd <T>(t).template _<I>())
+		{ return fwd <T>(t).template _<I>(); }
 
-template <typename T>
-using is_atom_fun_ = expr <is_class <T>() || is_fun <T>()>;
-
-}  // namespace details
-
-template <typename T, typename S> struct is_atom_fun    : _false { };
-template <typename T, typename S> struct is_atom_method : _false { };
-
-template <typename T>
-struct is_atom_fun <T, data::fun <> > :
-	details::is_atom_fun_<raw_type <T> > { };
-
-template <typename T>
-struct is_atom_method <T, data::fun <> > :
-	is_method_ptr <raw_type <T> > { };
+	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
+	INLINE constexpr auto _(T&& t) const
+	-> decltype(fwd <T>(t).template _<K>())
+		{ return fwd <T>(t).template _<K>(); }
+};
 
 //-----------------------------------------------------------------------------
-
-template <typename T>
-struct atom_of_t : _if_t <as_tuple <T>{}, T, atoms::atom <T> > { };
-// atom_of <> defined @tuple/begin
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-// extending definition @type/traits/transform
-template <typename T, typename S>
-struct create_rec <atom <T, S> > : create_rec <type_of <atom <T, S> > > { };
-
-template <typename T>
-struct create_rec <_type <T> > { using type = atom <create <T> >; };
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-// extending definition @tuple/type/traits
-template <typename T, typename S>
-struct under_t <atoms::atom <T, S> > : pack <T> { };
+using details::at;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace traits
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-}  // namespace types
+static __attribute__ ((unused)) afun::at at;
 
 //-----------------------------------------------------------------------------
 
@@ -116,4 +77,4 @@ struct under_t <atoms::atom <T, S> > : pack <T> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ATOM_TRAITS_HPP
+#endif  // IVL_DETAILS_CORE_AFUN_AT_HPP

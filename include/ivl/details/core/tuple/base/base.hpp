@@ -42,6 +42,12 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <template <typename...> class R, typename... A>
+INLINE static constexpr R <A...>
+make(A&&... a) { return R <A...>(fwd <A>(a)...); }
+
+//-----------------------------------------------------------------------------
+
 template <typename D, typename P, typename I = sz_rng_of_p <P> >
 struct base_tup;
 
@@ -179,10 +185,6 @@ private:
 
 	template <typename... T> using app = subs <apply_tuple, opt <T&&>...>;
 	template <typename... T> using op  = subs <keys::op_ref, opt <T&&>...>;
-
-	template <template <typename...> class R, typename... A>
-	INLINE static constexpr R <A...>
-	make(A&&... a) { return R <A...>(fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 

@@ -36,14 +36,8 @@ namespace ivl {
 
 #define IVL_ATOM_OP(NAME)                                    \
                                                              \
-namespace fun {                                              \
 namespace op {                                               \
-	using NAME = afun::NAME;                                  \
-}                                                            \
-}                                                            \
-                                                             \
-namespace op {                                               \
-	static __attribute__ ((unused)) fun::op::NAME NAME;       \
+	static __attribute__ ((unused)) afun::op::NAME NAME;      \
 }                                                            \
 
 //-----------------------------------------------------------------------------
@@ -271,29 +265,14 @@ IVL_ATOM_OP(member)
 namespace op {
 namespace details {
 
-template <typename A, typename B>
-using atom_member = expr <is_atom <A>() && !is_class <raw_type <B> >()>;
-
-template <typename A, typename B>
-using builtin_member = can_call <afun::op::ptr_member(A, B)>;
-
 template <
 	typename A, typename B,
-	enable_if <!builtin_member <A, B>() && !atom_member <A, B>()>
+	enable_if <!can_call <afun::op::ptr_member(A, B)>()>
 = 0>
 INLINE constexpr auto
 operator->*(A&& a, B&& b)
--> decltype(afun::member()(fwd <A>(a), fwd <B>(b)))
-	{ return afun::member()(fwd <A>(a), fwd <B>(b)); }
-
-template <
-	typename A, typename B,
-	enable_if <!builtin_member <A, B>() && atom_member <A, B>()>
-= 0>
-INLINE constexpr auto
-operator->*(A&& a, B&& b)
--> decltype(afun::member()(fwd <A>(a).val(), fwd <B>(b)))
-	{ return afun::member()(fwd <A>(a).val(), fwd <B>(b)); }
+-> decltype(member(fwd <A>(a), fwd <B>(b)))
+	{ return member(fwd <A>(a), fwd <B>(b)); }
 
 }  // namespace details
 }  // namespace op;

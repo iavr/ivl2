@@ -42,7 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename S, bool = is_atom_fun <T, S>()>
+template <
+	typename T, typename S,
+	bool = is_atom_fun <T, S>(),
+	bool = is_atom_method <T, S>()
+>
 class store : public base_tup <atom <T, S>, _type <T> >
 {
 	using P = pack <T>;

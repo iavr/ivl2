@@ -118,11 +118,30 @@ template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
+// extended elsewhere
 template <typename F, typename... A>
 struct can_call : can_call <F(A...)> { };
 
 template <typename F, typename... A>
 struct can_call <F(A...)> : sfinae <details::fun_test, F, A...> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... A>
+struct call_first_t : call_first_t <F(A...)> { };
+
+template <typename F, typename... Fn, typename... A>
+struct call_first_t <pack <F, Fn...>(A...)> :
+	_if <can_call <F(A...)>{}, id_t <F>, call_first_t <pack <Fn...>, A...> > { };
+
+template <typename F, typename... A>
+struct call_first_t <pack <F>(A...)> : id_t <F> { };
+
+template <typename F, typename... A>
+struct call_first_t <F(A...)> : id_t <F> { };
+
+template <typename F, typename... A>
+using call_first = type_of <call_first_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 

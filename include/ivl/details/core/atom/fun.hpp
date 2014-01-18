@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_BASE_AT_HPP
-#define IVL_DETAILS_CORE_TUPLE_BASE_AT_HPP
+#ifndef IVL_DETAILS_CORE_ATOM_VEC_HPP
+#define IVL_DETAILS_CORE_ATOM_VEC_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace atoms {
 
 //-----------------------------------------------------------------------------
 
@@ -42,17 +42,42 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct at
+template <typename T, typename S>
+struct store <T, S, true, false> : afun::vec <T>
 {
-	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
-	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template _<I>())
-		{ return fwd <T>(t).template _<I>(); }
+	using afun::vec <T>::vec;
+};
 
-	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
-	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template _<K>())
-		{ return fwd <T>(t).template _<K>(); }
+//-----------------------------------------------------------------------------
+
+template <typename T, typename S>
+struct store <T, S, false, true> : store <T, S, false, false>
+{
+	using B = store <T, S, false, false>;
+	using B::val_f;
+	using B::val;
+
+	template <typename... A>
+	using op = subs <keys::op_ref, base_opt <A&&>...>;
+
+public:
+	using B::B;
+
+//-----------------------------------------------------------------------------
+
+// TODO: activate when '_' is renamed to 'at'
+// 	template <typename... A>
+// 	INLINE op <T&&, A...>
+// 	_(A&&... a) && { return make <op>(val_f(), fwd <A>(a)...); }
+//
+// 	template <typename... A>
+// 	INLINE op <T&, A...>
+// 	_(A&&... a) & { return make <op>(val(), fwd <A>(a)...); }
+//
+// 	template <typename... A>
+// 	INLINE constexpr op <const T&, A...>
+// 	_(A&&... a) const& { return make <op>(val(), fwd <A>(a)...); }
+
 };
 
 //-----------------------------------------------------------------------------
@@ -61,15 +86,7 @@ struct at
 
 //-----------------------------------------------------------------------------
 
-using details::at;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::at at;
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 
@@ -77,4 +94,4 @@ static __attribute__ ((unused)) afun::at at;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_BASE_AT_HPP
+#endif  // IVL_DETAILS_CORE_ATOM_VEC_HPP

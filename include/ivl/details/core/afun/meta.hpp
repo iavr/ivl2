@@ -42,12 +42,43 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename F>
+struct binder_
+{
+	template <typename... E>
+	class map : private pre_tuple <E...>
+	{
+		using B = pre_tuple <E...>;
+		using B::der_f;
+		using B::call;
+
+	public:
+		using B::B;
+
+		template <typename... A>
+		INLINE ret <F(rtref <E>..., A...)>
+		operator()(A&&... a) && { return der_f().call(F(), fwd <A>(a)...); }
+
+		template <typename... A>
+		INLINE ret <F(ltref <E>..., A...)>
+		operator()(A&&... a) & { return call(F(), fwd <A>(a)...); }
+
+		template <typename... A>
+		INLINE constexpr ret <F(cltref <E>..., A...)>
+		operator()(A&&... a) const& { return call(F(), fwd <A>(a)...); }
+	};
+};
+
+//-----------------------------------------------------------------------------
+
 template <typename F, typename... E>
 class bind_ : private raw_tuple <F, E...>
 {
 	using B = raw_tuple <F, E...>;
 	using B::der;
 	using B::der_f;
+	using H = tup_head;
+	using T = tup_tail;
 
 public:
 	using B::B;
@@ -55,12 +86,17 @@ public:
 	template <typename... A>
 	INLINE ret <F(E..., A...)>
 	operator()(A&&... a) &&
-		{ return tup_tail()(der_f()).call(tup_head()(der_f()), fwd <A>(a)...); }
+		{ return T()(der_f()).call(H()(der_f()), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <F(E..., A...)>
+	INLINE ret <F(ltref <E>..., A...)>
+	operator()(A&&... a) &
+		{ return T()(der()).call(H()(der()), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr ret <F(cltref <E>..., A...)>
 	operator()(A&&... a) const&
-		{ return tup_tail()(der()).call(tup_head()(der()), fwd <A>(a)...); }
+		{ return T()(der()).call(H()(der()), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -71,6 +107,8 @@ class pre_fun_ : private raw_tuple <F, E...>
 	using B = raw_tuple <F, E...>;
 	using B::der;
 	using B::der_f;
+	using H = tup_head;
+	using T = tup_tail;
 
 public:
 	using B::B;
@@ -78,21 +116,22 @@ public:
 	template <typename... A>
 	INLINE ret <F(A...)>
 	operator()(A&&... a) &&
-	{
-		return tup_tail()(der_f()).call(tup_head()(der_f())),
-		       tup_head()(der_f())(fwd <A>(a)...);
-	}
+		{ return T()(der_f()).call(H()(der_f())), H()(der_f())(fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE ret <F(A...)>
+	operator()(A&&... a) &
+		{ return T()(der()).call(H()(der())), H()(der())(fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE constexpr ret <F(A...)>
 	operator()(A&&... a) const&
-	{
-		return tup_tail()(der()).call(tup_head()(der())),
-		       tup_head()(der())(fwd <A>(a)...);
-	}
+		{ return T()(der()).call(H()(der())), H()(der())(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
+
+template <typename F> using binder  = rref_of <binder_<F>::template map>;
 
 using bind    = rref_of <bind_>;
 using pre_fun = rref_of <pre_fun_>;
@@ -109,13 +148,41 @@ struct tup_fun
 
 //-----------------------------------------------------------------------------
 
+template <typename F>
+struct try_fun_p
+{
+	template <typename... A>
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
+		{ return call_first <F(A...)>()(fwd <A>(a)...); }
+};
+
+template <typename... F>
+using try_fun = try_fun_p <pack <F...> >;
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class F>
+struct choose_fun
+{
+	template <typename... A>
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(subs <F, A...>()(fwd <A>(a)...))
+		{ return subs <F, A...>()(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
+using details::binder;
 using details::bind;
 using details::pre_fun;
 using details::tup_fun;
+using details::try_fun;
+using details::choose_fun;
 
 //-----------------------------------------------------------------------------
 

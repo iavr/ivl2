@@ -257,7 +257,7 @@ template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
 
 namespace details {
 
-// extending definition @type/traits
+// extending definition @type/traits/transform
 template <typename S, typename... A>
 struct create_rec <collection <S, A...> > :
 	create_rec <type_of <collection <S, A...> > > { };

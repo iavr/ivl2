@@ -42,54 +42,17 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-class op_member
+struct key_member_caller
 {
-	using R = op::ref_member;
-	using P = op::ptr_member;
-
 	template <typename C, typename M>
-	using F = _if <can_call <P(C, M)>{}, P, R>;
-
-public:
-	template <typename C, typename M>
-	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
-		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
+	INLINE constexpr auto operator()(C&& c, M m) const
+	-> decltype(key_member <M>()(fwd <C>(c)))
+		{ return key_member <M>()(fwd <C>(c)); }
 };
 
-//-----------------------------------------------------------------------------
-
-class op_call
+struct key_call_caller
 {
-	using R = op::ref_call;
-	using P = op::ptr_call;
-
 	template <typename C, typename M, typename... A>
-	using F = _if <can_call <P(C, M, A...)>{}, P, R>;
-
-public:
-	template <typename C, typename M, typename... A>
-	INLINE constexpr ret <F <C, M, A...>(C, M, A...)>
-	operator()(C&& c, M&& m, A&&... a) const
-		{ return F <C, M, A...>()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-struct op_key_call
-{
-	template <
-		typename C, typename M, typename... A,
-		enable_if <!is_key <M>()>
-	= 0>
-	INLINE constexpr auto operator()(C&& c, M&& m, A&&... a) const
-	-> decltype(op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...))
-		{ return op_call()(fwd <C>(c), fwd <M>(m), fwd <A>(a)...); }
-
-	template <
-		typename C, typename M, typename... A,
-		enable_if <is_key <M>{}>
-	= 0>
 	INLINE constexpr auto operator()(C&& c, M m, A&&... a) const
 	-> decltype(key_call <M>()(fwd <C>(c), fwd <A>(a)...))
 		{ return key_call <M>()(fwd <C>(c), fwd <A>(a)...); }
@@ -97,95 +60,100 @@ struct op_key_call
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename M>
-class member_fun : private raw_tuple <C, M>
+template <typename F>
+struct op_ref_caller
 {
-	using B = raw_tuple <C, M>;
-	using B::fst_f;
-	using B::fst;
-	using B::snd_f;
-	using B::snd;
-
-	using MC = vec_auto <op_key_call>;  // can be void
-
-public:
-	using B::B;
-
-	template <typename... A>
-	INLINE ret <MC(C, M, A...)>
-	operator()(A&&... a) && { return MC()(fst_f(), snd_f(), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE constexpr ret <MC(cltref <C>, cltref <M>, A...)>
-	operator()(A&&... a) const& { return MC()(fst(), snd(), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-class op_key_member
-{
-	template <typename C, typename M>
-	using F = _if <can_call <pow(C, M)>{}, pow, op_member>;
-
-public:
-	template <typename C, typename M, enable_if <!is_key <M>()> = 0>
-	INLINE constexpr auto operator()(C&& c, M&& m) const
-	-> decltype(F <C, M>()(fwd <C>(c), fwd <M>(m)))
-		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
-
-	template <typename C, typename M, enable_if <is_key <M>{}> = 0>
-	INLINE constexpr auto operator()(C&& c, M m) const
-	-> decltype(key_member <M>()(fwd <C>(c)))
-		{ return key_member <M>()(fwd <C>(c)); }
-};
-
-//-----------------------------------------------------------------------------
-
-class fun_member
-{
-	using VM = vec_apply <op_key_member>;   // cannot be void (pow assumed so)
-	using MF = rref_of <member_fun>;
-
-	template <typename C, typename M>
-	using has_member = can_call <op_key_member(C, M)>;
-
-	template <typename C, typename M>
-	using F = _if <vec_all <has_member, C, M>{}, VM, MF>;
-
-public:
-	template <typename C, typename M>
-	INLINE constexpr ret <F <C, M>(C, M)>
-	operator()(C&& c, M&& m) const
-		{ return F <C, M>()(fwd <C>(c), fwd <M>(m)); }
-};
-
-//-----------------------------------------------------------------------------
-
-class op_ref_member
-{
-	using MC = vec_auto <op_key_call>;  // can be void
-
-public:
-	template <typename C, typename M, enable_if <!is_op_ref <M>{}> = 0>
-	INLINE constexpr ret <fun_member(C, M)>
-	operator()(C&& c, M&& m) const
-		{ return fun_member()(fwd <C>(c), fwd <M>(m)); }
-
-	template <typename C, typename O, enable_if <is_op_ref <O>{}> = 0>
+	template <typename C, typename O>
 	INLINE constexpr auto operator()(C&& c, O&& o) const
-	-> decltype(fwd <O>(o).ref().rcall(MC(), fwd <C>(c), fwd <O>(o).op()))
-		{ return fwd <O>(o).ref().rcall(MC(), fwd <C>(c), fwd <O>(o).op()); }
+	-> decltype(fwd <O>(o).ref().rcall(F(), fwd <C>(c), fwd <O>(o).op()))
+		{ return fwd <O>(o).ref().rcall(F(), fwd <C>(c), fwd <O>(o).op()); }
 };
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+struct atom_first_caller
+{
+	template <typename A, typename... An>
+	INLINE constexpr auto
+	operator()(A&& a, An&&... an) const
+	-> decltype(F()(fwd <A>(a).val(), fwd <An>(an)...))
+		{ return F()(fwd <A>(a).val(), fwd <An>(an)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+// c .* &C::m VS p ->* &C::m
+using op_member = try_fun <op::ref_member, op::ptr_member>;
+
+// c .* &C::m(a...) VS p ->* &C::m(a...)
+using op_call   = try_fun <op::ref_call,   op::ptr_call>;
+
+// c ->* k VS c ->* &C::m OR pow(b, e)
+template <typename C, typename M, bool = is_key <M>()>
+struct op_key_member_for_t : call_first_t <pack <pow, op_member>(C, M)> { };
+
+template <typename C, typename M>
+struct op_key_member_for_t <C, M, true> : id_t <key_member_caller > { };
+
+template <typename C, typename M>
+using op_key_member_for = type_of <op_key_member_for_t <C, M> >;
+
+// c ->* k._(a...) OR (c ->* k)(a...) VS c ->* _[&C::m]._(a...) OR (c ->* &C::m)(a...)
+template <typename C, typename M, typename... A>
+using op_key_call_for = _if <is_key <M>{}, key_call_caller, op_call>;
+
+using op_key_member = choose_fun <op_key_member_for>;
+using op_key_call   = choose_fun <op_key_call_for>;
+
+using vec_op_key_member = vec_apply <op_key_member>;  // cannot be void (pow assumed so)
+using vec_op_key_call   = vec_auto  <op_key_call>;    // can be void
+
+// c ->* m._(a...) VS c ->* m OR (c ->* m)(a...)
+template <typename C, typename M>
+using op_ref_member_for = _if <
+	is_op_ref <M>{},
+	op_ref_caller <vec_op_key_call>,
+	try_fun <vec_op_key_member, binder <vec_op_key_call> >
+>;
+
+using op_ref_member = choose_fun <op_ref_member_for>;
+
+// _[b] ->* e VS c ->* m
+template <typename A, typename B>
+using atom_member_for = _if <
+	is_atom <A>() && !is_class <raw_type <B> >(),
+	atom_first_caller <op_ref_member>,
+	op_ref_member
+>;
+
+using atom_member = choose_fun <atom_member_for>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using member = details::op_ref_member;
+using details::op_member;
+using details::op_call;
+using details::op_key_member;
+using details::op_key_call;
+using details::op_ref_member;
+using details::atom_member;
+
+namespace op { using member = atom_member; }
 
 //-----------------------------------------------------------------------------
 
 }  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+namespace fun {
+
+using op_key_member = afun::details::vec_op_key_member;
+using op_key_call   = afun::details::vec_op_key_call;
+
+}  // namespace fun
 
 //-----------------------------------------------------------------------------
 

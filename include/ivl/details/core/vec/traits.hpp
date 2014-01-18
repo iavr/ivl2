@@ -117,17 +117,14 @@ namespace details {
 template <template <typename...> class F>
 struct vec_all_
 {
-	template <typename P>       struct rec;
-	template <typename P, bool> struct test;
+	template <typename P, bool = any_tuple_p <P>()> struct map_;
+	template <typename P> using map = map_<P>;
 
 	template <typename... A>
-	struct test <pack <A...>, false> : F <A...> { };
+	struct map_<pack <A...>, false> : F <A...> { };
 
 	template <typename... A>
-	struct test <pack <A...>, true> : rec <vec_args <A...> > { };
-
-	template <typename P> using map = test <P, any_tuple_p <P>{}>;
-	template <typename P> struct rec : all_p <map, P> { };
+	struct map_<pack <A...>, true> : all_p <map, vec_args <A...> > { };
 };
 
 }  // namespace details
@@ -135,6 +132,20 @@ struct vec_all_
 // TODO: template alias causes clang segmentation fault
 template <template <typename...> class F, typename... A>
 struct vec_all : details::vec_all_<F>::template map <pack <A...> > { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename F>
+struct call_test { template <typename... A> using map = can_call <F(A...)>; };
+
+}  // namespace details
+
+// extending definition @type/traits/result
+template <typename F, typename... A>
+struct can_call <afun::vec_apply <F>(A...)> :
+	vec_all <details::call_test <F>::template map, A...> { };
 
 //-----------------------------------------------------------------------------
 

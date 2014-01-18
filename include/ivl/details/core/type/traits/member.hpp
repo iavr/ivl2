@@ -74,55 +74,55 @@ template <typename M> struct member_class_ { };
 template <typename M> struct member_type_ { };
 
 template <typename T, typename C>
-struct member_class_<T C::*> { using type = C; };
+struct member_class_<T C::*> : id_t <C> { };
 
 template <typename T, typename C>
-struct member_type_<T C::*> { using type = T; };
+struct member_type_<T C::*> : id_t <T> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...)> { using type = C; };
+struct member_class_<R (C::*)(A...)> : id_t <C> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) const> { using type = C const; };
+struct member_class_<R (C::*)(A...) const> : id_t <C const> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) volatile> { using type = C volatile; };
+struct member_class_<R (C::*)(A...) volatile> : id_t <C volatile> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) const volatile>
-	{ using type = C const volatile; };
+struct member_class_<R (C::*)(A...) const volatile> :
+	id_t <C const volatile> { };
 
 //-----------------------------------------------------------------------------
 
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) &> { using type = C&; };
+struct member_class_<R (C::*)(A...) &> : id_t <C&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) const&> { using type = C const&; };
+struct member_class_<R (C::*)(A...) const&> : id_t <C const&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) volatile&> { using type = C volatile&; };
+struct member_class_<R (C::*)(A...) volatile&> : id_t <C volatile&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) const volatile&>
-	{ using type = C const volatile&; };
+struct member_class_<R (C::*)(A...) const volatile&> :
+	id_t <C const volatile&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) &&> { using type = C&&; };
+struct member_class_<R (C::*)(A...) &&> : id_t <C&&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) const&&> { using type = C const&&; };
+struct member_class_<R (C::*)(A...) const&&> : id_t <C const&&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) volatile&&> { using type = C volatile&&; };
+struct member_class_<R (C::*)(A...) volatile&&> : id_t <C volatile&&> { };
 
 template <typename R, typename C, typename ...A>
-struct member_class_<R (C::*)(A...) const volatile&&>
-	{ using type = C const volatile&&; };
+struct member_class_<R (C::*)(A...) const volatile&&> :
+	id_t <C const volatile&&> { };
 
 #endif  // IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
@@ -177,56 +177,49 @@ using member_ptr = type_of <member_ptr_t <C, R, A...> >;
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C, R(A...)>
-	{ using type = R (C::*)(A...); };
+struct member_ptr_t <C, R(A...)> : id_t <R (C::*)(A...)> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const, R(A...)>
-	{ using type = R (C::*)(A...) const; };
+struct member_ptr_t <C const, R(A...)> : id_t <R (C::*)(A...) const> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C volatile, R(A...)>
-	{ using type = R (C::*)(A...) volatile; };
+struct member_ptr_t <C volatile, R(A...)> : id_t <R (C::*)(A...) volatile> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const volatile, R(A...)>
-	{ using type = R (C::*)(A...) const volatile; };
+struct member_ptr_t <C const volatile, R(A...)> :
+	id_t <R (C::*)(A...) const volatile> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C&, R(A...)>
-	{ using type = R (C::*)(A...) &; };
+struct member_ptr_t <C&, R(A...)> : id_t <R (C::*)(A...) &> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const&, R(A...)>
-	{ using type = R (C::*)(A...) const&; };
+struct member_ptr_t <C const&, R(A...)> : id_t <R (C::*)(A...) const&> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C volatile&, R(A...)>
-	{ using type = R (C::*)(A...) volatile&; };
+struct member_ptr_t <C volatile&, R(A...)> :
+	id_t <R (C::*)(A...) volatile&> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const volatile&, R(A...)>
-	{ using type = R (C::*)(A...) const volatile&; };
+struct member_ptr_t <C const volatile&, R(A...)> :
+	id_t <R (C::*)(A...) const volatile&> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C&&, R(A...)>
-	{ using type = R (C::*)(A...) &&; };
+struct member_ptr_t <C&&, R(A...)> : id_t <R (C::*)(A...) &&> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const&&, R(A...)>
-	{ using type = R (C::*)(A...) const&&; };
+struct member_ptr_t <C const&&, R(A...)> : id_t <R (C::*)(A...) const&&> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C volatile&&, R(A...)>
-	{ using type = R (C::*)(A...) volatile&&; };
+struct member_ptr_t <C volatile&&, R(A...)> :
+	id_t <R (C::*)(A...) volatile&&> { };
 
 template <typename C, typename R, typename ...A>
-struct member_ptr_t <C const volatile&&, R(A...)>
-	{ using type = R (C::*)(A...) const volatile&&; };
+struct member_ptr_t <C const volatile&&, R(A...)> :
+	id_t <R (C::*)(A...) const volatile&&> { };
 
 //-----------------------------------------------------------------------------
 

@@ -42,48 +42,48 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename S> struct raw_fun_t { using type = S; };
+template <typename S> struct raw_fun_t : id_t <S> { };
 template <typename S> using  raw_fun = type_of <raw_fun_t <S> >;
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...)> { using type = R(A...); };
+struct raw_fun_t <R(A...)> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) const> { using type = R(A...); };
+struct raw_fun_t <R(A...) const> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) volatile> { using type = R(A...); };
+struct raw_fun_t <R(A...) volatile> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) const volatile> { using type = R(A...); };
+struct raw_fun_t <R(A...) const volatile> : id_t <R(A...)> { };
 
 //-----------------------------------------------------------------------------
 
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) &> { using type = R(A...); };
+struct raw_fun_t <R(A...) &> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) const&> { using type = R(A...); };
+struct raw_fun_t <R(A...) const&> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) volatile&> { using type = R(A...); };
+struct raw_fun_t <R(A...) volatile&> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) const volatile&> { using type = R(A...); };
+struct raw_fun_t <R(A...) const volatile&> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) &&> { using type = R(A...); };
+struct raw_fun_t <R(A...) &&> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) const&&> { using type = R(A...); };
+struct raw_fun_t <R(A...) const&&> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) volatile&&> { using type = R(A...); };
+struct raw_fun_t <R(A...) volatile&&> : id_t <R(A...)> { };
 
 template <typename R, typename... A>
-struct raw_fun_t <R(A...) const volatile&&> { using type = R(A...); };
+struct raw_fun_t <R(A...) const volatile&&> : id_t <R(A...)> { };
 
 #endif  // IVL_HAS_FEATURE(cxx_reference_qualified_functions)
 
@@ -99,7 +99,7 @@ template<typename R, typename... A>
 struct is_fun_<R(A...)> : _true { };
 
 template <typename R, typename... A>
-struct fun_ret_<R(A...)> { using type = R; };
+struct fun_ret_<R(A...)> : id_t <R> { };
 
 template <typename R, typename... A>
 struct fun_arg_<R(A...)> : pack <A...> { };
