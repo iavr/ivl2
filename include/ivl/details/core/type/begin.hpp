@@ -40,7 +40,8 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct as_pack;
+namespace packs { template <typename P> struct as_pack; }
+
 template <typename P> struct length_t;
 
 //-----------------------------------------------------------------------------

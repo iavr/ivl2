@@ -49,11 +49,12 @@ struct base_tup;
 
 template <
 	typename D,
-	template <typename...> class Q, typename... E, size_t... I
+	template <typename...> class C, typename... E, size_t... I
 >
-class base_tup <D, Q <E...>, sizes <I...> > : public access <D, E...>
+class base_tup <D, C <E...>, sizes <I...> > : public access <D, E...>
 {
-	using P = Q <E...>;
+	using P = C <E...>;
+	using Q = pack <E...>;
 	using B = access <D, E...>;
 
 	template <typename T, typename R = raw_type <T> >
@@ -79,11 +80,11 @@ public:
 
 	using B::B;
 
-	template <typename A, enable_if <tup_assign_rep <P, A>{}> = 0>
+	template <typename A, enable_if <tup_atom_assign <Q, A>{}> = 0>
 	INLINE D& operator=(A&& a)
 		{ return thru{_<I>() = fwd <A>(a)...}, der(); }
 
-	template <typename T, enable_if <tup_assign <P, T>{}> = 0>
+	template <typename T, enable_if <tup_assign <Q, T>{}> = 0>
 	INLINE D& operator=(T&& t)
 		{ return thru{_<I>() = at._<I>(fwd <T>(t))...}, der(); }
 

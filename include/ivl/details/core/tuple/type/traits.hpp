@@ -54,7 +54,7 @@ struct is_tuple_<collection <S, E...> > : _true { };
 template <typename T> using is_tuple = details::is_tuple_<raw_type <T> >;
 
 template <typename T>
-using is_tup_type = expr <is_pack <T>() || as_tuple <T>()>;
+using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -94,17 +94,15 @@ using tup_tx_t = base_opt_t <tx_lref <S, tx_cv <remove_ref <S>, D> >, D>;
 
 template <typename S, typename D> using tup_tx = type_of <tup_tx_t <S, D> >;
 
-template <typename T>
-using raw_types = type_of <raw_type <T> >;
+template <typename T> using raw_types = type_of <raw_type <T> >;
 
 template <typename T>
 struct tup_types_t :
 	type_map_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
 
-template <typename... E>
-struct tup_types_t <pack <E...> > : pack <E...> { };
-
-template <typename T> using tup_types = type_of <tup_types_t <T> >;
+template <typename... E> struct tup_types_t <pack <E...> > : pack <E...> { };
+template <typename T>    struct tup_types_t <_type <T> >   : _type <T> { };
+template <typename T>    using  tup_types = type_of <tup_types_t <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -154,44 +152,42 @@ template <size_t I, typename P> using cltel = type_of <cltel_t <I, P> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename T> struct tref_t            : rtref_t <T> { };
+template <typename T> struct tref_t <T&>       : ltref_t <T> { };
+template <typename T> struct tref_t <const T&> : cltref_t <T> { };
+template <typename T> using  tref              = type_of <tref_t <T> >;
+
+template <typename T>
+struct tref_types_t : type_map_t <tref_t, tup_types <T> > { };
+
+template <typename T> using tref_types = type_of <tref_types_t <T> >;
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
-template <
-	template <typename...> class R, typename C, typename T,
-	bool = all <is_tup_type, C, T>()
->
-struct tup_rel : alls <R, tup_types <C>, tup_types <T> > { };
+template <typename C, typename T, bool = all <is_tup_type, C, T>()>
+struct tup_cons_ : all2 <is_cons, tup_types <C>, tup_types <T> > { };
 
-template <template <typename...> class R, typename C, typename T>
-struct tup_rel <R, C, T, false> : _false { };
+template <typename T, typename C, bool = all <is_tup_type, T, C>()>
+struct tup_conv_ : all2 <is_conv, tup_types <T>, tup_types <C> > { };
+
+template <typename C, typename T, bool = all <is_tup_type, C, T>()>
+struct tup_assign_ : all2 <is_assign, tref_types <C>, tref_types <T> > { };
+
+template <typename C, typename T> struct tup_cons_<C, T, false>   : _false { };
+template <typename T, typename C> struct tup_conv_<T, C, false>   : _false { };
+template <typename C, typename T> struct tup_assign_<C, T, false> : _false { };
 
 }  // namespace details
 
-template <typename C, typename T>
-using tup_cons = details::tup_rel <is_cons, C, T>;
+//-----------------------------------------------------------------------------
 
-template <typename T, typename C>
-using tup_conv = details::tup_rel <is_conv, T, C>;
+template <typename C, typename T> using tup_cons = details::tup_cons_<C, T>;
+template <typename T, typename C> using tup_conv = details::tup_conv_<T, C>;
 
 template <typename C, typename T>
 using tup_explicit = expr <tup_cons <C, T>() && !tup_conv <T, C>()>;
-
-//-----------------------------------------------------------------------------
-
-template <typename C, typename T>
-struct tup_assign : details::tup_rel <is_assign, C, T> { };
-
-template <typename... E, typename... P, typename T>
-struct tup_assign <pack <pack <E...>, P...>, T> :
-	alls <tup_assign, pack <pack <E...>, P...>, tup_types <T> > { };
-
-template <typename C, typename T, bool = tup_assign <C, T>{}>
-struct tup_assign_rep : tup_assign <C, rep <length_of <C>{}, T> > { };
-
-template <typename C, typename T>
-struct tup_assign_rep <C, T, true> : _false { };
-
-//-----------------------------------------------------------------------------
 
 template <typename T, typename C>
 using tup_tup_conv = expr <tup_conv <T, C>() && !tup_conv <pack <T>, C>()>;
@@ -199,6 +195,17 @@ using tup_tup_conv = expr <tup_conv <T, C>() && !tup_conv <pack <T>, C>()>;
 template <typename C, typename T>
 using tup_tup_explicit =
 	expr <tup_explicit <C, T>() && !tup_explicit <C, pack <T> >()>;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename T>
+using tup_assign = details::tup_assign_<C, T>;
+
+template <typename C, typename T, bool = tup_assign <C, T>()>
+struct tup_atom_assign : tup_assign <C, rep <length_of <C>{}, T> > { };
+
+template <typename C, typename T>
+struct tup_atom_assign <C, T, true> : _false { };
 
 //-----------------------------------------------------------------------------
 

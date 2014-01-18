@@ -139,6 +139,44 @@ struct any_cond <C, D...>
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <
+	template <typename...> class F, typename A, typename B,
+	bool = length <A>() == length <B>()
+>
+struct all2_ : _false { };
+
+template <
+	template <typename...> class F, typename A, typename B,
+	bool = length <A>() == length <B>()
+>
+struct any2_ : _false { };
+
+template <
+	template <typename...> class F,
+	template <typename...> class C, typename... A,
+	template <typename...> class D, typename... B
+>
+struct all2_<F, C <A...>, D <B...>, true> : _and <F <A, B>...> { };
+
+template <
+	template <typename...> class F,
+	template <typename...> class C, typename... A,
+	template <typename...> class D, typename... B
+>
+struct any2_<F, C <A...>, D <B...>, true> : _or <F <A, B>...> { };
+
+}  // namespace details
+
+template <template <typename...> class F, typename A, typename B>
+using all2 = details::all2_<F, A, B>;
+
+template <template <typename...> class F, typename A, typename B>
+using any2 = details::any2_<F, A, B>;
+
+//-----------------------------------------------------------------------------
+
 template <size_t L>
 struct eq_len_to
 {
@@ -148,24 +186,28 @@ struct eq_len_to
 
 template <typename P> using eq_len_of = eq_len_to <length <P>{}>;
 
+namespace details {
+
+template <typename P, bool = is_null <P>()>
+struct eq_len_p_ : all_p <eq_len_of <car <P> >::template map, cdr <P> > { };
+
 template <typename P>
-struct eq_len_p : all_p <eq_len_of <car <P> >::template map, cdr <P> > { };
+struct eq_len_p_<P, true> : _true { };
 
-template <template <typename...> class C>
-struct eq_len_p <C <> > : _true { };
+}  // namespace details
 
-template <typename... P>
-using eq_len = eq_len_p <pack <P...> >;
+template <typename P>    using eq_len_p = details::eq_len_p_<P>;
+template <typename... P> using eq_len   = eq_len_p <pack <P...> >;
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-template <template <typename...> class F, typename P, bool = any_null_p <P>{}>
+template <template <typename...> class F, typename P, bool = any_null_p <P>()>
 struct alls_p_ :
 	_if <embed <F, cars_p <P> >{}, alls_p_<F, cdrs_p <P> >, _false> { };
 
-template <template <typename...> class F, typename P, bool = any_null_p <P>{}>
+template <template <typename...> class F, typename P, bool = any_null_p <P>()>
 struct anys_p_ :
 	_if <embed <F, cars_p <P> >{}, _true, anys_p_<F, cdrs_p <P> > > { };
 
@@ -177,19 +219,17 @@ struct anys_p_<F, P, true> : _false { };
 
 }  // namespace details
 
-//-----------------------------------------------------------------------------
+template <template <typename...> class F, typename P>
+using alls_p = _if <eq_len_p <P>{}, details::alls_p_<F, P>, _false>;
 
 template <template <typename...> class F, typename P>
 using anys_p = _if <eq_len_p <P>{}, details::anys_p_<F, P>, _false>;
 
-template <template <typename...> class F, typename P>
-using alls_p = _if <eq_len_p <P>{}, details::alls_p_<F, P>, _false>;
+template <template <typename...> class F, typename... P>
+using alls = alls_p <F, pack <P...> >;
 
 template <template <typename...> class F, typename... P>
 using anys = anys_p <F, pack <P...> >;
-
-template <template <typename...> class F, typename... P>
-using alls = alls_p <F, pack <P...> >;
 
 //-----------------------------------------------------------------------------
 
