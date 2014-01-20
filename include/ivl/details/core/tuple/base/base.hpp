@@ -43,8 +43,26 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <template <typename...> class R, typename... A>
-INLINE static constexpr R <A...>
+INLINE constexpr R <A...>
 make(A&&... a) { return R <A...>(fwd <A>(a)...); }
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class T>
+struct apply_
+{
+	template <typename... A>
+	INLINE constexpr subs <T, A...>
+	operator()(A&&... a) const { return subs <T, A...>(fwd <A>(a)...); }
+};
+
+template <template <typename...> class T>
+struct loop_
+{
+	template <typename... A>
+	INLINE void
+	operator()(A&&... a) const { subs <T, A...>(fwd <A>(a)...).loop(); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -88,103 +106,115 @@ public:
 
 	template <typename A, enable_if <tup_atom_assign <Q, A>{}> = 0>
 	INLINE D& operator=(A&& a)
-		{ return thru{_<I>() = fwd <A>(a)...}, der(); }
+		{ return thru{at <I>() = fwd <A>(a)...}, der(); }
 
 	template <typename T, enable_if <tup_assign <Q, T>{}> = 0>
 	INLINE D& operator=(T&& t)
-		{ return thru{_<I>() = at._<I>(fwd <T>(t))...}, der(); }
+		{ return thru{at <I>() = _at._<I>(fwd <T>(t))...}, der(); }
 
 //-----------------------------------------------------------------------------
 
 private:
 	template <size_t J>
 	INLINE rtel <J, P>
-	_f() { return der_f().template _at <J>(); }
+	at_f() { return der_f().template ref_at <J>(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	template <size_t J>
 	INLINE rtel <J, P>
-	_() && { return der_f().template _at <J>(); }
+	at() && { return der_f().template ref_at <J>(); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_() & { return der().template _at <J>(); }
+	at() & { return der().template ref_at <J>(); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_() const& { return der().template _at <J>(); }
+	at() const& { return der().template ref_at <J>(); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename K>
 	INLINE indirect_tup <K, opt <D&&> >
-	_() && { return indirect_tup <K, D&&>(der_f()); }
+	at() && { return indirect_tup <K, D&&>(der_f()); }
 
 	template <typename K>
 	INLINE indirect_tup <K, opt <D&> >
-	_() & { return indirect_tup <K, D&>(der()); }
+	at() & { return indirect_tup <K, D&>(der()); }
 
 	template <typename K>
 	INLINE constexpr indirect_tup <K, opt <const D&> >
-	_() const& { return indirect_tup <K, const D&>(der()); }
+	at() const& { return indirect_tup <K, const D&>(der()); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
 	INLINE ret <F(rtref <E>..., A...)>
-	call(F&& f, A&&... a) && { return fwd <F>(f)(_f <I>()..., fwd <A>(a)...); }
+	call(F&& f, A&&... a) && { return fwd <F>(f)(at_f <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
 	INLINE ret <F(ltref <E>..., A...)>
-	call(F&& f, A&&... a) & { return fwd <F>(f)(_<I>()..., fwd <A>(a)...); }
+	call(F&& f, A&&... a) & { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
 	INLINE constexpr ret <F(cltref <E>..., A...)>
-	call(F&& f, A&&... a) const& { return fwd <F>(f)(_<I>()..., fwd <A>(a)...); }
+	call(F&& f, A&&... a) const& { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
 	INLINE ret <F(A..., rtref <E>...)>
-	rcall(F&& f, A&&... a) && { return fwd <F>(f)(fwd <A>(a)..., _f <I>()...); }
+	rcall(F&& f, A&&... a) && { return fwd <F>(f)(fwd <A>(a)..., at_f <I>()...); }
 
 	template <typename F, typename... A>
 	INLINE ret <F(A..., ltref <E>...)>
-	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., _<I>()...); }
+	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 	template <typename F, typename... A>
 	INLINE constexpr ret <F(A..., cltref <E>...)>
-	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., _<I>()...); }
+	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 //-----------------------------------------------------------------------------
 
 	// TODO: flip element order when in gcc, as a workaround to bug
 	// http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51253
 	template <typename F> INLINE void
-	loop(F&& f) && { thru{(fwd <F>(f)(_f <I>()), 0)...}; }
+	loop(F&& f) && { thru{(fwd <F>(f)(at_f <I>()), 0)...}; }
 
 	template <typename F> INLINE void
-	loop(F&& f) & { thru{(fwd <F>(f)(_<I>()), 0)...}; }
+	loop(F&& f) & { thru{(fwd <F>(f)(at <I>()), 0)...}; }
 
 	template <typename F> INLINE void
-	loop(F&& f) const& { thru{(fwd <F>(f)(_<I>()), 0)...}; }
+	loop(F&& f) const& { thru{(fwd <F>(f)(at <I>()), 0)...}; }
 
 //-----------------------------------------------------------------------------
 
-	INLINE void loop() &&     { thru{_f <I>()...}; }
-	INLINE void loop() &      { thru{_<I>()...}; }
-	INLINE void loop() const& { thru{_<I>()...}; }
+	INLINE void loop() &&     { thru{at_f <I>()...}; }
+	INLINE void loop() &      { thru{at <I>()...}; }
+	INLINE void loop() const& { thru{at <I>()...}; }
 
 //-----------------------------------------------------------------------------
 
 private:
-	using bra = afun::op::bracket;
-	using par = afun::op::call;
-
 	template <typename... T> using app = subs <apply_tuple, opt <T&&>...>;
+	template <typename... T> using loo = subs <loop_tuple, opt <T&&>...>;
 	template <typename... T> using op  = subs <keys::op_ref, opt <T&&>...>;
+
+	template <typename... P>
+	using tmp_if = enable_if <sizeof...(P), tup_tmp <P...> >;
+
+	template <typename F, typename... A>
+	using auto_ret = _if <tup_void <F(A...)>{}, void, app <F, A...> >;
+
+	template <typename F, typename... A>
+	using auto_for = _if <tup_void <F(A...)>{}, loop_<loo>, apply_<app> >;
+
+	using _auto = afun::choose_fun <auto_for>;
+	using bra   = afun::op::bracket;
+	using par   = afun::op::call;
+	using tmp   = afun::pre_tmp_call;
 
 //-----------------------------------------------------------------------------
 
@@ -204,16 +234,30 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE app <par, D&&, A...>
-	operator()(A&&... a) && { return make <app>(par(), der_f(), fwd <A>(a)...); }
+	INLINE auto_ret <par, D&&, A...>
+	operator()(A&&... a) && { return _auto()(par(), der_f(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE app <par, D&, A...>
-	operator()(A&&... a) & { return make <app>(par(), der(), fwd <A>(a)...); }
+	INLINE auto_ret <par, D&, A...>
+	operator()(A&&... a) & { return _auto()(par(), der(), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr app <par, const D&, A...>
-	operator()(A&&... a) const& { return make <app>(par(), der(), fwd <A>(a)...); }
+	INLINE constexpr auto_ret <par, const D&, A...>
+	operator()(A&&... a) const& { return _auto()(par(), der(), fwd <A>(a)...); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename... P, typename... A, typename T = tmp_if <P...> >
+	INLINE auto_ret <tmp, D&&, T, A...>
+	_(A&&... a) && { return _auto()(tmp(), der_f(), T(), fwd <A>(a)...); }
+
+	template <typename... P, typename... A, typename T = tmp_if <P...> >
+	INLINE auto_ret <tmp, D&, T, A...>
+	_(A&&... a) & { return _auto()(tmp(), der(), T(), fwd <A>(a)...); }
+
+	template <typename... P, typename... A, typename T = tmp_if <P...> >
+	INLINE constexpr auto_ret <tmp, const D&, T, A...>
+	_(A&&... a) const& { return _auto()(tmp(), der(), T(), fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 

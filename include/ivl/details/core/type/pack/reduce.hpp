@@ -101,6 +101,14 @@ using contains = contains_p <T, pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename P> using all_type_p = all_p <is_type, P>;
+template <typename P> using any_type_p = any_p <is_type, P>;
+
+template <typename... E> using all_type = all_type_p <pack <E...> >;
+template <typename... E> using any_type = any_type_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename P> using all_pack_p = all_p <is_pack, P>;
 template <typename P> using any_pack_p = any_p <is_pack, P>;
 

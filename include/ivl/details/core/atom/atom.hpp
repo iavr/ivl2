@@ -58,13 +58,13 @@ class store : public base_tup <atom <T, S>, _type <T> >
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtref <T> _at() && { return U::fwd(); }
+	INLINE rtref <T> ref_at() && { return U::fwd(); }
 
 	template <size_t J>
-	INLINE ltref <T> _at() & { return U::get(); }
+	INLINE ltref <T> ref_at() & { return U::get(); }
 
 	template <size_t J>
-	INLINE constexpr cltref <T> _at() const& { return U::get(); }
+	INLINE constexpr cltref <T> ref_at() const& { return U::get(); }
 
 //-----------------------------------------------------------------------------
 

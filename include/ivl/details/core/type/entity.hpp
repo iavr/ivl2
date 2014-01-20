@@ -71,6 +71,13 @@ struct repeat : type_sequence <repeat <L, T> > { };
 
 //-----------------------------------------------------------------------------
 
+template <typename T> struct remove_type_t              : id_t <T> { };
+template <typename T> struct remove_type_t <_type <T> > : id_t <T> { };
+
+template <typename T> using remove_type = type_of <remove_type_t <T> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename D>
 struct der { using der_type = D; };
 

@@ -58,15 +58,15 @@ class collection <data::indirect <>, K, U> : public
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<off <J>{}>(E::fwd()); }
+	ref_at() && { return _at._<off <J>{}>(E::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<off <J>{}>(E::get()); }
+	ref_at() & { return _at._<off <J>{}>(E::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<off <J>{}>(E::get()); }
+	ref_at() const& { return _at._<off <J>{}>(E::get()); }
 
 //-----------------------------------------------------------------------------
 

@@ -112,6 +112,14 @@ namespace afun {
 
 //-----------------------------------------------------------------------------
 
+struct pre_tmp_call
+{
+	template <typename F, typename... P, typename... A>
+	INLINE constexpr auto operator()(F&& f, types::tmp <P...>, A&&... a) const
+	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
+		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
+};
+
 struct tmp_call
 {
 	template <typename F, typename... A>

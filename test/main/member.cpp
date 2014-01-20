@@ -95,12 +95,9 @@ void run()
 		auto AF = val(&A::f, &A::g);
 		auto BF = val(&B::f, &B::g);
 		auto H  = val(&A::h, &B::h);
-
-// TODO: activate when '_' is renamed to 'at'
-// 		cout << _(a.f(10, 'c'), a.f(10, 'd')) << endl;
-// 		cout << a ->* _[&A::f]._(10, _('c', 'd')) << endl;
-// 		cout << (a ->* &A::f)(10, _('c', 'd')) << endl;
-
+		cout << _(a.f(10, 'c'), a.f(10, 'd')) << endl;
+		cout << a ->* _[&A::f]._(10, _('c', 'd')) << endl;
+		cout << (a ->* &A::f)(10, _('c', 'd')) << endl;
 		cout << _(_(a.p, a.q), _(b.p, b.q)) << endl;
 		cout << _(a, b) ->* _(Am, Bm) << endl;
 		cout << _(_(a.f(4, 'b'), a.g(4, 2)), _(b.f(4, 'b'), b.g(4, 2))) << endl;

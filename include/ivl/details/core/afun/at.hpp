@@ -44,15 +44,15 @@ namespace details {
 
 struct at
 {
-	template <size_t I, typename T, enable_if <as_tuple <T>{}> = 0>
+	template <size_t I, typename T>
 	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template _<I>())
-		{ return fwd <T>(t).template _<I>(); }
+	-> decltype(fwd <T>(t).template at <I>())
+		{ return fwd <T>(t).template at <I>(); }
 
-	template <typename K, typename T, enable_if <as_tuple <T>{}> = 0>
+	template <typename K, typename T>
 	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template _<K>())
-		{ return fwd <T>(t).template _<K>(); }
+	-> decltype(fwd <T>(t).template at <K>())
+		{ return fwd <T>(t).template at <K>(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -70,6 +70,14 @@ using details::at;
 //-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) afun::at at;
+
+namespace tuples {
+namespace details {
+
+static __attribute__ ((unused)) afun::at _at;
+
+}  // namespace details
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 

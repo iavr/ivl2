@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 
 #include "../afun/at.hpp"
+#include "../afun/call.hpp"
 #include "base/elem.hpp"
 #include "base/store.hpp"
 #include "base/access.hpp"

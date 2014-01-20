@@ -87,6 +87,20 @@ struct atom_of_t : _if_t <as_tuple <T>{}, T, atoms::atom <T> > { };
 
 namespace details {
 
+// extending definition @tuple/traits
+template <template <typename...> class C, typename... E>
+struct tup_tmp_type <C <E...>, true> :
+	id_t <atom <tmp <remove_type <E>...> > > { };
+
+template <template <typename...> class C, typename... E>
+struct tup_tmp_type <C <E...>, false> : id_t <tmp <E...> > { };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
 // extending definition @type/traits/transform
 template <typename T, typename S>
 struct create_rec <atom <T, S> > : create_rec <type_of <atom <T, S> > > { };

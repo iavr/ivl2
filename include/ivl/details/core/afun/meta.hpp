@@ -148,31 +148,6 @@ struct tup_fun
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-struct try_fun_p
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
-		{ return call_first <F(A...)>()(fwd <A>(a)...); }
-};
-
-template <typename... F>
-using try_fun = try_fun_p <pack <F...> >;
-
-//-----------------------------------------------------------------------------
-
-template <template <typename...> class F>
-struct choose_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <F, A...>()(fwd <A>(a)...))
-		{ return subs <F, A...>()(fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
 }  // namespace details
 
 //-----------------------------------------------------------------------------
@@ -181,12 +156,10 @@ using details::binder;
 using details::bind;
 using details::pre_fun;
 using details::tup_fun;
-using details::try_fun;
-using details::choose_fun;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace fun
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

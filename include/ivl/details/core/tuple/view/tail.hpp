@@ -56,15 +56,15 @@ class collection <data::tail <>, U> : public
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<J + 1>(E::fwd()); }
+	ref_at() && { return _at._<J + 1>(E::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<J + 1>(E::get()); }
+	ref_at() & { return _at._<J + 1>(E::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<J + 1>(E::get()); }
+	ref_at() const& { return _at._<J + 1>(E::get()); }
 
 //-----------------------------------------------------------------------------
 

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
-#define IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
+#ifndef IVL_DETAILS_CORE_AFUN_CALL_HPP
+#define IVL_DETAILS_CORE_AFUN_CALL_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,49 +42,27 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename P, typename I = sz_rng_of_p <P> >
-struct tuple_store;
-
-template <typename... E, size_t... I>
-class tuple_store <pack <E...>, sizes <I...> > : public pre_tuple <E...>
+template <typename F>
+struct try_fun_p
 {
-	using B = pre_tuple <E...>;
-
-public:
-	explicit INLINE constexpr tuple_store(_true) : B() { }
-
 	template <typename... A>
-	explicit INLINE constexpr tuple_store(_true, A&&... a) : B(fwd <A>(a)...) { }
-
-	template <typename T>
-	INLINE constexpr tuple_store(T&& t) : B(_at._<I>(fwd <T>(t))...) { }
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
+		{ return call_first <F(A...)>()(fwd <A>(a)...); }
 };
+
+template <typename... F>
+using try_fun = try_fun_p <pack <F...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
+template <template <typename...> class F>
+struct choose_fun
 {
-	using P = pack <E...>;
-	using B = tuple_store <P>;
-
-public:
-	using B::base_type::operator=;
-
-	template <typename A = int, enable_if <_and <is_cons <E>...>{}, A> = 0>
-	explicit INLINE constexpr collection() : B(yes) { }
-
-	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
-	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
-	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename T, enable_if <tup_tup_conv <T, P>{}> = 0>
-	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
-
-	template <typename T, enable_if <tup_tup_explicit <P, T>{}> = 0>
-	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
+	template <typename... A>
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(subs <F, A...>()(fwd <A>(a)...))
+		{ return subs <F, A...>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -93,7 +71,12 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuples
+using details::try_fun;
+using details::choose_fun;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
@@ -101,4 +84,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_STORE_TUPLE_HPP
+#endif  // IVL_DETAILS_CORE_AFUN_CALL_HPP

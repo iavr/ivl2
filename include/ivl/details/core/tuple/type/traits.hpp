@@ -211,18 +211,20 @@ struct tup_atom_assign <C, T, true> : _false { };
 
 namespace details {
 
-template <typename P, bool = any_pack_p <P>{}> struct tup_tmp_pt_;
+// defined @atom/traits
+template <typename P, bool = any_type_p <P>{}> struct tup_tmp_type { };
+template <typename P, bool = any_pack_p <P>{}> struct tup_tmp_pack;
 
 template <template <typename...> class C, typename... E>
-struct tup_tmp_pt_<C <E...>, true> :
+struct tup_tmp_pack <C <E...>, true> :
 	embed_t <raw_tuple, tran_p <tmp <_type_of <E>...> > > { };
 
 template <template <typename...> class C, typename... E>
-struct tup_tmp_pt_<C <E...>, false> { using type = tmp <E...>; };
+struct tup_tmp_pack <C <E...>, false> : tup_tmp_type <C <E...> > { };
 
 }  // namespace details
 
-template <typename P> using tup_tmp_pt = details::tup_tmp_pt_<P>;
+template <typename P> using tup_tmp_pt = details::tup_tmp_pack <P>;
 template <typename P> using tup_tmp_p  = type_of <tup_tmp_pt <P> >;
 
 template <typename... E> using tup_tmp_t = tup_tmp_pt <pack <E...> >;
@@ -244,6 +246,47 @@ template <typename P> using tup_tran_p  = type_of <tup_tran_pt <P> >;
 
 template <typename... P> using tup_tran_t = tup_tran_pt <pack <P...> >;
 template <typename... P> using tup_tran   = type_of <tup_tran_t <P...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T> struct tup_arg_t : tup_types <atom_of <T> > { };
+template <typename T> using  tup_arg = type_of <tup_arg_t <T> >;
+
+template <typename... T> struct tup_args_t;
+template <typename... T> using  tup_args = type_of <tup_args_t <T...> >;
+
+template <typename... T>
+struct tup_args_t { using type = tup_tran <tup_arg <T>...>; };
+
+template <typename T> struct tup_args_t <T> : tup_types_t <T> { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename S> struct tup_ret_pt;
+template <typename S> struct tup_ret_et;
+template <typename S> using  tup_ret_e = type_of <tup_ret_et <S> >;
+
+template <typename F, typename... T>
+struct tup_ret_et <F(pack <T...>)> : ret_t <F(T...)> { };
+
+template <typename F, typename... T>
+struct tup_ret_pt <F(pack <T...>)> : pack <tup_ret_e <F(T)>...> { };
+
+}  // namespace details
+
+template <typename F, typename... T>
+struct tup_ret_t : tup_ret_t <F(T...)> { };
+
+template <typename F, typename... T>
+struct tup_ret_t <F(T...)> : details::tup_ret_pt <F(tup_args <T...>)> { };
+
+template <typename F, typename... T>
+using tup_ret = type_of <tup_ret_t <F, T...> >;
+
+template <typename F, typename... T>
+struct tup_void : any_p <is_void, tup_ret <F, T...> > { };
 
 //-----------------------------------------------------------------------------
 

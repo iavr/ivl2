@@ -38,11 +38,9 @@ namespace math {
 
 //-----------------------------------------------------------------------------
 
-namespace fun {
+namespace afun {
 
 using namespace types::traits;
-
-// TODO: all constexpr in C++1y
 
 //-----------------------------------------------------------------------------
 
@@ -51,9 +49,9 @@ using namespace types::traits;
 struct NAME                      \
 {                                \
 	template <typename T>         \
-	INLINE auto                   \
+	INLINE constexpr auto         \
 	operator()(T x) const         \
-		-> decltype(FUN(x))        \
+	-> decltype(FUN(x))           \
 		{ return FUN(x); }         \
 };
 
@@ -69,7 +67,7 @@ IVL_FUN1(round, ::round)
 struct is_int
 {
 	template <typename T>
-	INLINE bool
+	INLINE constexpr bool
 	operator()(T x) const { return x == floor()(x); }
 };
 
@@ -78,13 +76,13 @@ struct is_int
 struct exp
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(std::exp(x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(std::exp(x))
 		{ return std::exp(x); }
 
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x) const
-		-> decltype(std::pow(base, x))
+	INLINE constexpr auto operator()(B base, T x) const
+	-> decltype(std::pow(base, x))
 	{
 		CHECK((base >= 0 || is_int()(x)) && (base || x > 0), e_domain);
 		return std::pow(base, x);
@@ -96,16 +94,16 @@ struct exp
 struct log
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		->decltype(std::log(x))
+	INLINE constexpr auto operator()(T x) const
+	->decltype(std::log(x))
 	{
 		CHECK(x > 0, e_domain);
 		return std::log(x);
 	}
 
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x) const
-		-> decltype((*this)(x) / (*this)(base))
+	INLINE constexpr auto operator()(B base, T x) const
+	-> decltype((*this)(x) / (*this)(base))
 	{
 		CHECK(base != 1, e_domain);
 		return (*this)(x) / (*this)(base);
@@ -117,16 +115,16 @@ struct log
 struct exp2
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(is_integral <T>() ? 1 << x : exp()(2, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(is_integral <T>() ? 1 << x : exp()(2, x))
 		{ return is_integral <T>() ? 1 << x : exp()(2, x); }
 };
 
 struct log2
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(is_integral <T>() ? platform::math::log2(x) : log()(2, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(is_integral <T>() ? platform::math::log2(x) : log()(2, x))
 		{ return is_integral <T>() ? platform::math::log2(x) : log()(2, x); }
 };
 
@@ -135,16 +133,16 @@ struct log2
 struct exp10
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(exp()(10, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(exp()(10, x))
 		{ return exp()(10, x); }
 };
 
 struct log10
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(log()(10, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(log()(10, x))
 		{ return log()(10, x); }
 };
 
@@ -153,17 +151,17 @@ struct log10
 struct prev_pow
 {
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x) const
-		-> decltype(exp()(base, floor()(log()(base, x))))
+	INLINE constexpr auto operator()(B base, T x) const
+	-> decltype(exp()(base, floor()(log()(base, x))))
 		{ return exp()(base, floor()(log()(base, x))); }
 };
 
 struct prev_pow2
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(is_integral <T>() ?
-			platform::math::prev_pow2(x) : prev_pow()(2, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(is_integral <T>() ?
+		platform::math::prev_pow2(x) : prev_pow()(2, x))
 	{
 		return is_integral <T>() ?
 			platform::math::prev_pow2(x) : prev_pow()(2, x);
@@ -173,8 +171,8 @@ struct prev_pow2
 struct prev_pow10
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(prev_pow()(10, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(prev_pow()(10, x))
 		{ return prev_pow()(10, x); }
 };
 
@@ -183,17 +181,17 @@ struct prev_pow10
 struct next_pow
 {
 	template <typename B, typename T>
-	INLINE auto operator()(B base, T x) const
-		-> decltype(exp()(base, floor()(log()(base, x)) + 1))
+	INLINE constexpr auto operator()(B base, T x) const
+	-> decltype(exp()(base, floor()(log()(base, x)) + 1))
 		{ return exp()(base, floor()(log()(base, x)) + 1); }
 };
 
 struct next_pow2
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(is_integral <T>() ?
-			platform::math::next_pow2(x) : next_pow()(2, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(is_integral <T>() ?
+		platform::math::next_pow2(x) : next_pow()(2, x))
 	{
 		return is_integral <T>() ?
 			platform::math::next_pow2(x) : next_pow()(2, x);
@@ -203,8 +201,8 @@ struct next_pow2
 struct next_pow10
 {
 	template <typename T>
-	INLINE auto operator()(T x) const
-		-> decltype(next_pow()(10, x))
+	INLINE constexpr auto operator()(T x) const
+	-> decltype(next_pow()(10, x))
 		{ return next_pow()(10, x); }
 };
 
@@ -213,14 +211,14 @@ struct next_pow10
 struct is_pow_of
 {
 	template <typename B, typename T>
-	INLINE bool operator()(B base, T x) const
+	INLINE constexpr bool operator()(B base, T x) const
 		{ return x == exp()(base, floor()(log()(base, x))); }
 };
 
 struct is_pow_of2
 {
 	template <typename T>
-	INLINE bool operator()(T x) const
+	INLINE constexpr bool operator()(T x) const
 	{
 		return is_integral <T>() ?
 			platform::math::is_pow_of2(x) : is_pow_of()(2, x);
@@ -229,28 +227,28 @@ struct is_pow_of2
 
 //-----------------------------------------------------------------------------
 
-}  // namespace fun
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) fun::floor       floor;
-static __attribute__ ((unused)) fun::ceil        ceil;
-static __attribute__ ((unused)) fun::round       round;
-static __attribute__ ((unused)) fun::is_int      is_int;
-static __attribute__ ((unused)) fun::exp         exp,   pow;
-static __attribute__ ((unused)) fun::exp2        exp2,  pow2;
-static __attribute__ ((unused)) fun::exp10       exp10, pow10;
-static __attribute__ ((unused)) fun::log         log;
-static __attribute__ ((unused)) fun::log2        log2;
-static __attribute__ ((unused)) fun::log10       log10;
-static __attribute__ ((unused)) fun::prev_pow    prev_pow;
-static __attribute__ ((unused)) fun::prev_pow2   prev_pow2;
-static __attribute__ ((unused)) fun::prev_pow10  prev_pow10;
-static __attribute__ ((unused)) fun::next_pow    next_pow;
-static __attribute__ ((unused)) fun::next_pow2   next_pow2;
-static __attribute__ ((unused)) fun::next_pow10  next_pow10;
-static __attribute__ ((unused)) fun::is_pow_of   is_pow_of;
-static __attribute__ ((unused)) fun::is_pow_of2  is_pow_of2;
+static __attribute__ ((unused)) afun::floor       floor;
+static __attribute__ ((unused)) afun::ceil        ceil;
+static __attribute__ ((unused)) afun::round       round;
+static __attribute__ ((unused)) afun::is_int      is_int;
+static __attribute__ ((unused)) afun::exp         exp,   pow;
+static __attribute__ ((unused)) afun::exp2        exp2,  pow2;
+static __attribute__ ((unused)) afun::exp10       exp10, pow10;
+static __attribute__ ((unused)) afun::log         log;
+static __attribute__ ((unused)) afun::log2        log2;
+static __attribute__ ((unused)) afun::log10       log10;
+static __attribute__ ((unused)) afun::prev_pow    prev_pow;
+static __attribute__ ((unused)) afun::prev_pow2   prev_pow2;
+static __attribute__ ((unused)) afun::prev_pow10  prev_pow10;
+static __attribute__ ((unused)) afun::next_pow    next_pow;
+static __attribute__ ((unused)) afun::next_pow2   next_pow2;
+static __attribute__ ((unused)) afun::next_pow10  next_pow10;
+static __attribute__ ((unused)) afun::is_pow_of   is_pow_of;
+static __attribute__ ((unused)) afun::is_pow_of2  is_pow_of2;
 
 //-----------------------------------------------------------------------------
 

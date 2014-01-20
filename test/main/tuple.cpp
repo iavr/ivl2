@@ -72,8 +72,8 @@ void run()
 		int i = 4;
 		double x = 3.14;
 		tuple <double&, int> t = _(x, i);
-		t._<0>() = 0.2;
-		t._<1>() = 8;
+		t.at <0>() = 0.2;
+		t.at <1>() = 8;
 		cout << x << " " << i << endl;
 		cout << endl;
 	}
@@ -83,7 +83,7 @@ void run()
 		int i = 4;
 		double x = 3.14;
 		tuple <double&, int> u = mk_tup(x, i);
-		cout << u._<0>() << " " << u._<1>() << endl;
+		cout << u.at <0>() << " " << u.at <1>() << endl;
 		cout << gen_tup() << endl;
 		cout << endl;
 	}
@@ -104,11 +104,11 @@ void run()
 		double x = 3.14;
 		tuple <double&, int> t = _(x, i);
 		const tuple <double&, int>& u = t;
-		(tuple <double&, int>(_(x, i)))._<0>() = 2.18;
+		(tuple <double&, int>(_(x, i))).at <0>() = 2.18;
 		cout << x << endl;
-		t._<0>() = 1.18;
+		t.at <0>() = 1.18;
 		cout << x << endl;
-		u._<0>() = 0.18;
+		u.at <0>() = 0.18;
 		cout << x << endl;
 		cout << endl;
 	}
@@ -121,9 +121,10 @@ void run()
 		int* p = 0;
 		int x = 0;
 
-// 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);  // TODO: array bug
+// TODO: array bug
+// 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);
 		auto t = val(7, "hello", 56.3, a, 'c', l, p);
-		cout << t._<1>() << endl;
+		cout << t.at <1>() << endl;
 		cout << endl;
 
 		auto w = val(_(x));
@@ -176,12 +177,12 @@ void run()
 		int l[] = { 1, 2, 3 };
 		int* p = 0;
 
-		// TODO: array bug
+// TODO: array bug
 // 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);
 		auto t = val(7, "hello", 56.3, a, 'c', p);
 		cout << t << endl;
-		cout << t._<sizes <0, 3, 3, 2, 0, 4, 0, 5> >() << endl;
-		t._<sz_range <0, 4, 2> >() = _(-7, 3.14, 'd');
+		cout << t.at <sizes <0, 3, 3, 2, 0, 4, 0, 5> >() << endl;
+		t.at <sz_range <0, 4, 2> >() = _(-7, 3.14, 'd');
 		cout << t << endl;
 		cout << endl;
 	}
@@ -219,8 +220,8 @@ void run()
 		cout << "atom" << endl;
 		cout << _[3].val() << endl;
 		cout << _[3] << endl;
-		cout << _[3]._<sizes <5, 7, 9> >() << endl;
-		cout << _[3]._<sz_range <5, 9> >() << endl;
+		cout << _[3].at <sizes <5, 7, 9> >() << endl;
+		cout << _[3].at <sz_range <5, 9> >() << endl;
 		cout << tup_len <decltype(_[3])>() << endl;
 		cout << head(_[3]) << " " << tail(_[3]) << endl;
 		cout << flip(_[3]) << " " << call(inc, _[3]) << endl;

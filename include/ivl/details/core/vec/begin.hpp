@@ -40,7 +40,7 @@ namespace afun {
 
 namespace details {
 
-template <typename F> struct vec_apply;
+// template <typename F> struct vec_apply;
 
 }  // namespace details
 

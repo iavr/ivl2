@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename S>
-struct store <T, S, true, false> : afun::vec <T>
+struct store <T, S, true, false> : afun::tmp_vec <T>
 {
-	using afun::vec <T>::vec;
+	using afun::tmp_vec <T>::tmp_vec;
 };
 
 //-----------------------------------------------------------------------------
@@ -65,18 +65,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
-// TODO: activate when '_' is renamed to 'at'
-// 	template <typename... A>
-// 	INLINE op <T&&, A...>
-// 	_(A&&... a) && { return make <op>(val_f(), fwd <A>(a)...); }
-//
-// 	template <typename... A>
-// 	INLINE op <T&, A...>
-// 	_(A&&... a) & { return make <op>(val(), fwd <A>(a)...); }
-//
-// 	template <typename... A>
-// 	INLINE constexpr op <const T&, A...>
-// 	_(A&&... a) const& { return make <op>(val(), fwd <A>(a)...); }
+	template <typename... A>
+	INLINE op <T&&, A...>
+	_(A&&... a) && { return make <op>(val_f(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE op <T&, A...>
+	_(A&&... a) & { return make <op>(val(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr op <const T&, A...>
+	_(A&&... a) const& { return make <op>(val(), fwd <A>(a)...); }
 
 };
 

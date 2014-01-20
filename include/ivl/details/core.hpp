@@ -37,13 +37,13 @@
 #include "core/using.hpp"
 #include "core/platform.hpp"
 #include "core/type.hpp"
-#include "core/math.hpp"
 #include "core/tuple.hpp"
 #include "core/atom.hpp"
 #include "core/key.hpp"
 #include "core/afun.hpp"
 #include "core/vec.hpp"
 #include "core/mem.hpp"
+#include "core/math.hpp"
 
 //-----------------------------------------------------------------------------
 

@@ -10,6 +10,61 @@ namespace op = ivl::op;
 
 //-----------------------------------------------------------------------------
 
+template <char C>
+struct rf
+{
+	char operator()(int x) { return x + C; }
+};
+
+template <char C>
+struct pf
+{
+	void operator()(int x) { cout << char(x + C) << " "; }
+};
+
+template <char C> using vrf = afun::vec_apply <rf <C> >;
+template <char C> using vpf = afun::vec_loop <pf <C> >;
+template <char C> using arf = afun::vec_auto <rf <C> >;
+template <char C> using apf = afun::vec_auto <pf <C> >;
+
+//-----------------------------------------------------------------------------
+
+template <template <char> class R, template <char> class V>
+void call()
+{
+	{
+		cout << "custom operator()" << endl;
+		auto f = R <'A'>();
+		auto F = val(R <'A'>(), R <'N'>());
+		auto p = 5;
+		auto P = val(5, val(0, 2));
+		cout << f(p) << endl;
+		cout << f(P) << endl;
+		cout << F(p) << endl;
+		cout << F(P) << endl;
+		cout << _[F](P) << endl;
+		cout << F(_[P]) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "custom void operator()" << endl;
+		auto f = V <'A'>();
+		auto F = val(V <'A'>(), V <'N'>());
+		auto p = 5;
+		auto P = val(5, val(0, 2));
+		f(p); cout << endl;
+		f(P); cout << endl;
+		F(p); cout << endl;
+		F(P); cout << endl;
+		_[F](P); cout << endl;
+		F(_[P]); cout << endl;
+		cout << endl;
+	}
+}
+
+//-----------------------------------------------------------------------------
+
 void run()
 {
 	// TODO: val needed only for GCC; clang working also with _
@@ -84,6 +139,11 @@ void run()
 		cout << f(8, y) << endl;
 		cout << f(8, _[y]) << endl;
 		cout << endl;
+	}
+
+	{
+		call <vrf, vpf>();
+		call <arf, apf>();
 	}
 
 }

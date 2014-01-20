@@ -61,15 +61,15 @@ class collection <data::join <>, U...> :
 
 	template <size_t J>
 	INLINE rtel <J, P>
-	_at() && { return at._<minr <J>{}>(under <majr <J>{}>::fwd()); }
+	ref_at() && { return _at._<minr <J>{}>(under <majr <J>{}>::fwd()); }
 
 	template <size_t J>
 	INLINE ltel <J, P>
-	_at() & { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
+	ref_at() & { return _at._<minr <J>{}>(under <majr <J>{}>::get()); }
 
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
-	_at() const& { return at._<minr <J>{}>(under <majr <J>{}>::get()); }
+	ref_at() const& { return _at._<minr <J>{}>(under <majr <J>{}>::get()); }
 
 //-----------------------------------------------------------------------------
 

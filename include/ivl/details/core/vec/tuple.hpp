@@ -52,6 +52,11 @@ struct tup_loop
 		{ tup_loop_()(fwd <T>(t)...).loop(); }
 };
 
+template <typename F, typename... A>
+using tup_auto_for = _if <vec_void <F(A...)>{}, tup_loop, tup_apply>;
+
+using tup_auto = afun::choose_fun <tup_auto_for>;
+
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D>
@@ -75,7 +80,8 @@ template <typename F>
 struct tup_vec_apply
 {
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
@@ -102,16 +108,14 @@ template <typename F>
 struct tup_vec_auto
 {
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr ret <F(A...)> operator()(A&&... a) const
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
-	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
 	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(tup_apply()(*this, fwd <A>(a)...))
-		{ return tup_apply()(*this, fwd <A>(a)...); }
-
-	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
-	INLINE void operator()(A&&... a) const { tup_loop()(*this, fwd <A>(a)...); }
+	-> decltype(tup_auto()(*this, fwd <A>(a)...))
+		{ return tup_auto()(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -126,29 +130,38 @@ public:
 	using B::val_f;
 	using B::val;
 
+//-----------------------------------------------------------------------------
+
+	// TODO: decltype for clang + GCC
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE ret <F(A...)> operator()(A&&... a) &&
-		{ return val_f()(fwd <A>(a)...); }
+	INLINE ret <rtref <F>(A...)>
+	operator()(A&&... a) && { return val_f()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr ret <F(A...)> operator()(A&&... a) const&
-		{ return val()(fwd <A>(a)...); }
+	INLINE ret <ltref <F>(A...)>
+	operator()(A&&... a) & { return val()(fwd <A>(a)...); }
 
-	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
+	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
+	INLINE constexpr ret <cltref <F>(A...)>
+	operator()(A&&... a) const& { return val()(fwd <A>(a)...); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
 	INLINE auto operator()(A&&... a) &&
-	-> decltype(tup_apply()(mv(*this), fwd <A>(a)...))
-		{ return tup_apply()(mv(*this), fwd <A>(a)...); }
+	-> decltype(tup_auto()(mv(*this), fwd <A>(a)...))
+		{ return tup_auto()(mv(*this), fwd <A>(a)...); }
 
-	template <typename... A, enable_if <vec_non_void <F(A...)>{}> = 0>
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
+	INLINE auto operator()(A&&... a) &
+	-> decltype(tup_auto()(*this, fwd <A>(a)...))
+		{ return tup_auto()(*this, fwd <A>(a)...); }
+
+	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
 	INLINE constexpr auto operator()(A&&... a) const&
-	-> decltype(tup_apply()(*this, fwd <A>(a)...))
-		{ return tup_apply()(*this, fwd <A>(a)...); }
+	-> decltype(tup_auto()(*this, fwd <A>(a)...))
+		{ return tup_auto()(*this, fwd <A>(a)...); }
 
-	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
-	INLINE void operator()(A&&... a) && { tup_loop()(mv(*this), fwd <A>(a)...); }
-
-	template <typename... A, enable_if <vec_void <F(A...)>{}> = 0>
-	INLINE void operator()(A&&... a) const& { tup_loop()(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -157,7 +170,8 @@ template <typename F, size_t I = 0>
 struct tup_vec_mut
 {
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE ret <F(A...)> operator()(A&&... a) const
+	INLINE auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
@@ -171,7 +185,8 @@ template <typename F, size_t I = 0>
 struct tup_vec_copy
 {
 	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE ret <F(A...)> operator()(A&&... a) const
+	INLINE auto operator()(A&&... a) const
+	-> decltype(F()(fwd <A>(a)...))
 		{ return F()(fwd <A>(a)...); }
 
 	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
