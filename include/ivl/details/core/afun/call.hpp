@@ -56,13 +56,13 @@ using try_fun = try_fun_p <pack <F...> >;
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class F>
+template <template <typename...> class C>
 struct choose_fun
 {
 	template <typename... A>
 	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <F, A...>()(fwd <A>(a)...))
-		{ return subs <F, A...>()(fwd <A>(a)...); }
+	-> decltype(subs <C, A...>()(fwd <A>(a)...))
+		{ return subs <C, A...>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

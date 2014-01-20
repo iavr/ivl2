@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+struct C;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -76,126 +77,45 @@ struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-struct tup_vec_apply
-{
-	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
-		{ return F()(fwd <A>(a)...); }
+template <typename F, typename... B>
+struct gen_val : B... { F val() const { return F(); } };
 
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(tup_apply()(*this, fwd <A>(a)...))
-		{ return tup_apply()(*this, fwd <A>(a)...); }
+template <typename F> struct gen_atom : F { using F::F; };
+
+//-----------------------------------------------------------------------------
+
+template <typename R>
+struct tup_vec_for
+{
+	template <typename... A>
+	using map = _if <any_tuple <A...>{}, R, term_call <op::call> >;
 };
 
-//-----------------------------------------------------------------------------
+template <typename R, typename F>
+using tup_vec_fun = vec_fun <
+	gen_val <F>,
+	tup_vec_for <R>::template map
+>;
 
+template <typename C, typename F>
+using tup_vec_val = tup_vec_fun <rec_call <C>, F>;
+
+template <typename F> using tup_vec_apply = tup_vec_val <tup_apply, F>;
+template <typename F> using tup_vec_loop  = tup_vec_val <tup_loop, F>;
+template <typename F> using tup_vec_auto  = tup_vec_val <tup_auto, F>;
+
+// publicly derived from atom: used as base of fun_atom
 template <typename F>
-struct tup_vec_loop
-{
-	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE void operator()(A&&... a) const { F()(fwd <A>(a)...); }
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE void operator()(A&&... a) const { tup_loop()(*this, fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-struct tup_vec_auto
-{
-	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
-		{ return F()(fwd <A>(a)...); }
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(tup_auto()(*this, fwd <A>(a)...))
-		{ return tup_auto()(*this, fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-class tup_vec : public atom <F>  // not private, not tuple: used as base of fun_atom
-{
-	using B = atom <F>;
-
-public:
-	using B::B;
-	using B::val_f;
-	using B::val;
-
-//-----------------------------------------------------------------------------
-
-	// TODO: decltype for clang + GCC
-	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE ret <rtref <F>(A...)>
-	operator()(A&&... a) && { return val_f()(fwd <A>(a)...); }
-
-	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE ret <ltref <F>(A...)>
-	operator()(A&&... a) & { return val()(fwd <A>(a)...); }
-
-	template <typename... A, enable_if <!any_tuple <A...>()> = 0>
-	INLINE constexpr ret <cltref <F>(A...)>
-	operator()(A&&... a) const& { return val()(fwd <A>(a)...); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE auto operator()(A&&... a) &&
-	-> decltype(tup_auto()(mv(*this), fwd <A>(a)...))
-		{ return tup_auto()(mv(*this), fwd <A>(a)...); }
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE auto operator()(A&&... a) &
-	-> decltype(tup_auto()(*this, fwd <A>(a)...))
-		{ return tup_auto()(*this, fwd <A>(a)...); }
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE constexpr auto operator()(A&&... a) const&
-	-> decltype(tup_auto()(*this, fwd <A>(a)...))
-		{ return tup_auto()(*this, fwd <A>(a)...); }
-
-};
-
-//-----------------------------------------------------------------------------
+using tup_vec = vec_atom <
+	gen_atom <atom <F> >,
+	tup_vec_for <tup_auto>::template map
+>;
 
 template <typename F, size_t I = 0>
-struct tup_vec_mut
-{
-	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
-		{ return F()(fwd <A>(a)...); }
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE pick <I, A...>&& operator()(A&&... a) const
-		{ return tup_loop()(*this, fwd <A>(a)...), get <I>(fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
+using tup_vec_mut = tup_vec_fun <rec_call_mut <tup_loop, I>, F>;
 
 template <typename F, size_t I = 0>
-struct tup_vec_copy
-{
-	template <typename... A, enable_if <!any_tuple <A...>{}> = 0>
-	INLINE auto operator()(A&&... a) const
-	-> decltype(F()(fwd <A>(a)...))
-		{ return F()(fwd <A>(a)...); }
-
-	template <typename... A, enable_if <any_tuple <A...>{}> = 0>
-	INLINE create <pick <I, A...> > operator()(A&&... a) const
-	{
-		create <pick <I, A...> > b = get <I>(fwd <A>(a)...);
-		return tup_loop()(*this, fwd <A>(a)...), b;
-	}
-};
+using tup_vec_copy = tup_vec_fun <rec_call_copy <tup_apply, I>, F>;
 
 //-----------------------------------------------------------------------------
 

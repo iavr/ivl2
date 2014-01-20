@@ -142,6 +142,23 @@ void run()
 	}
 
 	{
+		cout << "expression" << endl;
+// 		tuple <float&, tuple <int&, char&> > x;
+		double x = 0;
+		int i = -2;
+		char c = 0;
+		auto t = _(x, _(i, c));
+		auto a = val(3.14, val(6, 'A'));
+		auto b = val(6.18, val(-2, 3));
+
+// TODO
+// 		t = a + 2 * b;
+// 		cout << (t += a + 1) << endl;
+// 		cout << t << endl;
+		cout << endl;
+	}
+
+	{
 		call <vrf, vpf>();
 		call <arf, apf>();
 	}

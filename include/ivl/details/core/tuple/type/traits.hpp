@@ -166,18 +166,18 @@ template <typename T> using tref_types = type_of <tref_types_t <T> >;
 
 namespace details {
 
-template <typename C, typename T, bool = all <is_tup_type, C, T>()>
-struct tup_cons_ : all2 <is_cons, tup_types <C>, tup_types <T> > { };
+template <typename P, typename T, bool = is_tup_type <T>()>
+struct tup_cons_ : all2 <is_cons, P, tref_types <T> > { };
 
-template <typename T, typename C, bool = all <is_tup_type, T, C>()>
-struct tup_conv_ : all2 <is_conv, tup_types <T>, tup_types <C> > { };
+template <typename T, typename P, bool = is_tup_type <T>()>
+struct tup_conv_ : all2 <is_conv, tref_types <T>, P> { };
 
-template <typename C, typename T, bool = all <is_tup_type, C, T>()>
-struct tup_assign_ : all2 <is_assign, tref_types <C>, tref_types <T> > { };
+template <typename P, typename T, bool = is_tup_type <T>()>
+struct tup_assign_ : all2 <is_assign, tref_types <P>, tref_types <T> > { };
 
-template <typename C, typename T> struct tup_cons_<C, T, false>   : _false { };
-template <typename T, typename C> struct tup_conv_<T, C, false>   : _false { };
-template <typename C, typename T> struct tup_assign_<C, T, false> : _false { };
+template <typename P, typename T> struct tup_cons_<P, T, false>   : _false { };
+template <typename T, typename P> struct tup_conv_<T, P, false>   : _false { };
+template <typename P, typename T> struct tup_assign_<P, T, false> : _false { };
 
 }  // namespace details
 

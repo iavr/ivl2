@@ -42,105 +42,42 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class V, typename F>
-class pre_tmp_vec_f
+template <typename T, typename VT>
+struct tmp_vec_for
 {
-	using VT = V <afun::pre_tmp_call>;
-
-public:
-	template <
-		typename... P, typename... A,
-		enable_if <!any_pack <P...>() && !any_tuple <A...>()> = 0
-	>
-	INLINE constexpr auto _(A&&... a) const
-	-> decltype(F().template _<P...>(fwd <A>(a)...))
-		{ return F().template _<P...>(fwd <A>(a)...); }
-
-	template <
-		typename... P, typename... A,
-		enable_if <any_pack <P...>() || any_tuple <A...>()> = 0
-	>
-	INLINE constexpr auto _(A&&... a) const
-	-> decltype(VT()(*this, tup_tmp <P...>(), fwd <A>(a)...))
-		{ return VT()(*this, tup_tmp <P...>(), fwd <A>(a)...); }
+	template <typename P, typename... A>
+	using map = _if <
+		any_pack_p <P>() || any_tuple <A...>(),
+		rec_call <VT>, term_call <T>
+	>;
 };
 
+template <typename T, template <typename...> class V, typename F>
+using tmp_vec_vt = tmp_vec_fun <
+	gen_val <F, V <F> >,
+	tmp_vec_for <T, V <T> >::template map
+>;
+
 template <template <typename...> class V, typename F>
-struct tmp_vec_f : pre_tmp_vec_f <V, F>, V <F> { };
+using tmp_vec_v = tmp_vec_vt <afun::pre_tmp_call, V, F>;
 
 //-----------------------------------------------------------------------------
 
-template <typename F> using tmp_vec_apply = tmp_vec_f <vec_apply, F>;
-template <typename F> using tmp_vec_loop  = tmp_vec_f <vec_loop, F>;
-template <typename F> using tmp_vec_auto  = tmp_vec_f <vec_auto, F>;
+template <typename F> using tmp_vec_apply = tmp_vec_v <vec_apply, F>;
+template <typename F> using tmp_vec_loop  = tmp_vec_v <vec_loop, F>;
+template <typename F> using tmp_vec_auto  = tmp_vec_v <vec_auto, F>;
 
 //-----------------------------------------------------------------------------
+
+// publicly derived from vec, then atom: used as base of fun_atom
+template <typename T, typename F>
+using tmp_vec_t = tmp_vec_atom <
+	gen_atom <vec <F> >,
+	tmp_vec_for <T, vec_auto <T> >::template map
+>;
 
 template <typename F>
-class tmp_vec : public vec <F>
-{
-	using T  = afun::pre_tmp_call;
-	using VT = vec_auto <T>;
-	using B = vec <F>;
-
-public:
-	using B::B;
-	using B::val_f;
-	using B::val;
-
-//-----------------------------------------------------------------------------
-
-	// TODO: decltype for clang + GCC
-	template <
-		typename... P, typename... A,
-		enable_if <!any_pack <P...>() && !any_tuple <A...>()> = 0
-	>
-	INLINE auto _(A&&... a) &&
-	-> decltype(T()(gen <F&&>(), tmp <P...>(), fwd <A>(a)...))
-		{ return T()(val_f(), tmp <P...>(), fwd <A>(a)...); }
-
-	template <
-		typename... P, typename... A,
-		enable_if <!any_pack <P...>() && !any_tuple <A...>()> = 0
-	>
-	INLINE auto _(A&&... a) &
-	-> decltype(T()(gen <F&>(), tmp <P...>(), fwd <A>(a)...))
-		{ return T()(val(), tmp <P...>(), fwd <A>(a)...); }
-
-	template <
-		typename... P, typename... A,
-		enable_if <!any_pack <P...>() && !any_tuple <A...>()> = 0
-	>
-	INLINE constexpr auto _(A&&... a) const&
-	-> decltype(T()(gen <const F&>(), tmp <P...>(), fwd <A>(a)...))
-		{ return T()(val(), tmp <P...>(), fwd <A>(a)...); }
-
-//-----------------------------------------------------------------------------
-
-	template <
-		typename... P, typename... A,
-		enable_if <any_pack <P...>() || any_tuple <A...>()> = 0
-	>
-	INLINE auto _(A&&... a) &&
-	-> decltype(VT()(mv(*this), tup_tmp <P...>(), fwd <A>(a)...))
-		{ return VT()(mv(*this), tup_tmp <P...>(), fwd <A>(a)...); }
-
-	template <
-		typename... P, typename... A,
-		enable_if <any_pack <P...>() || any_tuple <A...>()> = 0
-	>
-	INLINE auto _(A&&... a) &
-	-> decltype(VT()(*this, tup_tmp <P...>(), fwd <A>(a)...))
-		{ return VT()(*this, tup_tmp <P...>(), fwd <A>(a)...); }
-
-	template <
-		typename... P, typename... A,
-		enable_if <any_pack <P...>() || any_tuple <A...>()> = 0
-	>
-	INLINE constexpr auto _(A&&... a) const&
-	-> decltype(VT()(*this, tup_tmp <P...>(), fwd <A>(a)...))
-		{ return VT()(*this, tup_tmp <P...>(), fwd <A>(a)...); }
-};
+using tmp_vec = tmp_vec_t <afun::pre_tmp_call, F>;
 
 //-----------------------------------------------------------------------------
 
