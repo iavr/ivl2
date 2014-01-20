@@ -44,15 +44,15 @@ namespace details {
 
 struct at
 {
-	template <size_t I, typename T>
+	template <size_t... I, typename T>
 	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template at <I>())
-		{ return fwd <T>(t).template at <I>(); }
+	-> decltype(fwd <T>(t).template at <I...>())
+		{ return fwd <T>(t).template at <I...>(); }
 
-	template <typename K, typename T>
+	template <typename... K, typename T>
 	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template at <K>())
-		{ return fwd <T>(t).template at <K>(); }
+	-> decltype(fwd <T>(t).template at <K...>())
+		{ return fwd <T>(t).template at <K...>(); }
 };
 
 //-----------------------------------------------------------------------------

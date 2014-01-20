@@ -119,6 +119,9 @@ private:
 	INLINE rtel <J, P>
 	at_f() { return der_f().template ref_at <J>(); }
 
+	template <size_t... J>
+	using sz_if = enable_if <sizeof...(J) != 1, sizes <J...> >;
+
 //-----------------------------------------------------------------------------
 
 public:
@@ -133,6 +136,20 @@ public:
 	template <size_t J>
 	INLINE constexpr cltel <J, P>
 	at() const& { return der().template ref_at <J>(); }
+
+//-----------------------------------------------------------------------------
+
+	template <size_t... J, typename K = sz_if <J...> >
+	INLINE indirect_tup <K, opt <D&&> >
+	at() && { return der_f().template at <K>(); }
+
+	template <size_t... J, typename K = sz_if <J...> >
+	INLINE indirect_tup <K, opt <D&> >
+	at() & { return der().template at <K>(); }
+
+	template <size_t... J, typename K = sz_if <J...> >
+	INLINE constexpr indirect_tup <K, opt <const D&> >
+	at() const& { return der().template at <K>(); }
 
 //-----------------------------------------------------------------------------
 

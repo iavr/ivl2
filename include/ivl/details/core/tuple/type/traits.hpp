@@ -132,13 +132,13 @@ template <typename... E>
 struct cltref_t <pack <E...> > { using type = pre_tuple <cltref <E>...>; };
 
 template <typename F, typename... E>
-struct rtref_t <F(pack <E...>)> : ret_t <F(rtref <E>...)> { };
+struct rtref_t <F(pack <E...>)> : ret_t <rtref <F>(rtref <E>...)> { };
 
 template <typename F, typename... E>
-struct ltref_t <F(pack <E...>)> : ret_t <F(ltref <E>...)> { };
+struct ltref_t <F(pack <E...>)> : ret_t <ltref <F>(ltref <E>...)> { };
 
 template <typename F, typename... E>
-struct cltref_t <F(pack <E...>)> : ret_t <F(cltref <E>...)> { };
+struct cltref_t <F(pack <E...>)> : ret_t <cltref <F>(cltref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 

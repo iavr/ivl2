@@ -49,7 +49,6 @@ template <
 >
 class store : public base_tup <atom <T, S>, _type <T> >
 {
-	using P = pack <T>;
 	using B = base_tup <atom <T, S>, _type <T> >;
 	using U = elem_at <0, T>;
 

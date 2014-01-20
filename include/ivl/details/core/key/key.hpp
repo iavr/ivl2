@@ -43,12 +43,33 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename V>
-struct key_val : private raw_tuple <V>
+class key_val : private raw_tuple <V>
 {
+	using KV = key_val;
+
+	template <typename T, typename R = raw_type <T> >
+	using opt = base_opt <T, R, _if <eq <R, KV>{}, V, R> >;
+
+	template <typename D, typename... A>
+	using OR = op_ref <opt <D&&>, opt <A&&>...>;
+
+public:
 	using raw_tuple <V>::raw_tuple;
 	using raw_tuple <V>::val;
 
 	INLINE constexpr K key() const { return K(); }
+
+	template <typename... A>
+	INLINE OR <KV&&, A...>
+	_(A&&... a) && { return OR <KV&&, A...>(mv(*this), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE OR <KV&, A...>
+	_(A&&... a) & { return OR <KV&, A...>(*this, fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr OR <const KV&, A...>
+	_(A&&... a) const& { return OR <const KV&, A...>(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

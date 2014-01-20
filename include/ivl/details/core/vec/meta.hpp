@@ -68,7 +68,7 @@ template <typename C, size_t I = 0>
 struct rec_call_mut
 {
 	template <typename F, typename... A>
-	INLINE pick <I, A...>&&
+	INLINE constexpr pick <I, A...>&&
 	operator()(F&& f, A&&... a) const
 		{ return C()(fwd <F>(f), fwd <A>(a)...), get <I>(fwd <A>(a)...); }
 };
@@ -79,7 +79,7 @@ template <typename C, size_t I = 0>
 struct rec_call_copy
 {
 	template <typename F, typename... A>
-	INLINE create <pick <I, A...> >
+	INLINE constexpr create <pick <I, A...> >
 	operator()(F&& f, A&&... a) const
 		{ return create <pick <I, A...> >(C()(fwd <F>(f), fwd <A>(a)...)); }
 };

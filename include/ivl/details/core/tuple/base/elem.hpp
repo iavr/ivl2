@@ -50,12 +50,24 @@ class elem
 {
 	E e;
 
+	template <typename T>
+	void print(_true, T&& x) { cout << ivl::fwd <T>(x) << " "; }
+
+	template <typename T>
+	void print(_false, T&& x) { }
+
 public:
 	template <typename A = int, enable_if <C, A> = 0>
 	INLINE constexpr elem() : e() { }
 
 	template <typename A>
 	explicit INLINE constexpr elem(A&& a) : e(ivl::fwd <A>(a)) { }
+
+// 	template <typename A>
+// 	explicit INLINE elem(A&& a) : e(ivl::fwd <A>(a))
+// 	{
+// 			print(expr <is_arithmetic <T>{}>{}, ivl::fwd <T>(x));
+// 	}
 
 	template <typename A>
 	INLINE elem& operator=(A&& a) { return e = ivl::fwd <A>(a), *this; }

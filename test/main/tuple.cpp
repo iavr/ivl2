@@ -182,6 +182,7 @@ void run()
 		auto t = val(7, "hello", 56.3, a, 'c', p);
 		cout << t << endl;
 		cout << t.at <sizes <0, 3, 3, 2, 0, 4, 0, 5> >() << endl;
+		cout << t.at <0, 3, 3, 2, 0, 4, 0, 5 >() << endl;
 		t.at <sz_range <0, 4, 2> >() = _(-7, 3.14, 'd');
 		cout << t << endl;
 		cout << endl;

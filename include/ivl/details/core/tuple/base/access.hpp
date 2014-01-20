@@ -90,6 +90,8 @@ public:
 
 }  // namespace details
 
+using details::access;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace tuples

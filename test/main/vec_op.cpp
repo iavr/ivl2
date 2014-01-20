@@ -142,26 +142,33 @@ void run()
 	}
 
 	{
-		cout << "expression" << endl;
-// 		tuple <float&, tuple <int&, char&> > x;
-		double x = 0;
-		int i = -2;
-		char c = 0;
-		auto t = _(x, _(i, c));
-		auto a = val(3.14, val(6, 'A'));
-		auto b = val(6.18, val(-2, 3));
-
-// TODO
-// 		t = a + 2 * b;
-// 		cout << (t += a + 1) << endl;
-// 		cout << t << endl;
-		cout << endl;
-	}
-
-	{
 		call <vrf, vpf>();
 		call <arf, apf>();
 	}
+
+// TODO: runtime errors
+// 	{
+// 		cout << "expression" << endl;
+// 		double x = 0;
+// 		int i = -2;
+// 		char c = 0;
+// 		auto t = _(x, _(i, c));
+// 		auto a = val(3.14, val(6, 'A'));
+// 		auto b = val(6.18, val(-2, 3));
+//
+// 		cout << endl << "NOW" << endl << endl;
+//
+// 		cout << (a + 2 * b).at <0>() << endl;
+// 		cout << (a + 2 * b).at <1>() << endl;
+// 		report <tup_types <decltype(a + 2 * b)> >();
+// 		report <rtel <0, tup_types <decltype(a + 2 * b)> > >();
+// 		report <rtel <1, tup_types <decltype(a + 2 * b)> > >();
+//
+// 		t = a + 2 * b;
+// 		cout << t << endl;
+// 		cout << (a + 2 * b) << endl;
+// 		cout << endl;
+// 	}
 
 }
 //-----------------------------------------------------------------------------

@@ -33,6 +33,7 @@
 #include "atom/atoms.hpp"
 #include "atom/traits.hpp"
 #include "atom/atom.hpp"
+#include "atom/raw.hpp"
 
 //-----------------------------------------------------------------------------
 

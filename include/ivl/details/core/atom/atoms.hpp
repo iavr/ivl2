@@ -43,6 +43,9 @@ template <typename T, typename S = data::atom <> >
 struct atom;
 
 template <typename T>
+using raw_atom = atom <T, data::raw <> >;
+
+template <typename T>
 using fun_atom = atom <T, data::fun <> >;
 
 //-----------------------------------------------------------------------------
@@ -50,6 +53,7 @@ using fun_atom = atom <T, data::fun <> >;
 }  // namespace details
 
 using details::atom;
+using details::raw_atom;
 using details::fun_atom;
 
 }  // namespace atoms

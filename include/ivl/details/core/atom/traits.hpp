@@ -80,7 +80,7 @@ struct is_atom_method <T, data::fun <> > :
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct atom_of_t : _if_t <as_tuple <T>{}, T, atoms::atom <T> > { };
+struct atom_of_t : _if_t <as_tuple <T>{}, T, atoms::raw_atom <T> > { };
 // atom_of <> defined @tuple/begin
 
 //-----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace details {
 // extending definition @tuple/traits
 template <template <typename...> class C, typename... E>
 struct tup_tmp_type <C <E...>, true> :
-	id_t <atom <tmp <remove_type <E>...> > > { };
+	id_t <raw_atom <tmp <remove_type <E>...> > > { };
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_type <C <E...>, false> : id_t <tmp <E...> > { };
