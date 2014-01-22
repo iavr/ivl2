@@ -46,7 +46,7 @@ struct tup_swap : afun::swap
 {
 	using afun::swap::operator();
 
-	template <typename T, typename U, enable_if <all_tuple <T, U>{}> = 0>
+	template <typename T, typename U, only_if <all_tuple <T, U>{}> = 0>
 	INLINE void
 	operator()(T&& t, U&& u) const { loop(*this, fwd <T>(t), fwd <U>(u)); }
 };
@@ -77,7 +77,7 @@ namespace details {
 
 template <
 	typename T, typename U,
-	enable_if <all_tuple <T, U>{}>
+	only_if <all_tuple <T, U>{}>
 = 0>
 INLINE void
 swap(T&& t, U&& u) { fun::tup_swap()(fwd <T>(t), fwd <U>(u)); }

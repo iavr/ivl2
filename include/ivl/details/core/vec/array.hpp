@@ -50,7 +50,7 @@ struct seq_apply { void operator()(nat); };
 template <typename D>
 struct arr_loop : derived <D, arr_loop <D> >
 {
-	template <typename F, typename A1, enable_if <is_array <A1>{}> = 0>
+	template <typename F, typename A1, only_if <is_array <A1>{}> = 0>
 	INLINE void operator()(F&& f, A1&& a1) const
 	{
 		this->der().iter(fwd <F>(f), fwd <A1>(a1).begin(), fwd <A1>(a1).end());
@@ -58,7 +58,7 @@ struct arr_loop : derived <D, arr_loop <D> >
 
 	template <
 		typename F, typename A1, typename A2,
-		enable_if <is_array <A1>{} && is_array <A2>{}> = 0
+		only_if <is_array <A1>{} && is_array <A2>{}> = 0
 	>
 	INLINE void operator()(F&& f, A1&& a1, A2&& a2) const
 	{
@@ -115,14 +115,20 @@ template <typename F> struct seq_vec_loop :
 template <typename F> struct seq_vec_auto :
 	tup_vec_auto <F> { using tup_vec_auto <F>::tup_vec_auto; };
 
-template <typename F> struct seq_vec :
-	tup_vec <F> { using tup_vec <F>::tup_vec; };
+template <typename F, typename B = atom <F> > struct seq_vec :
+	tup_vec <F, B> { using tup_vec <F, B>::tup_vec; };
 
 template <typename F, size_t I = 0> struct seq_vec_mut :
 	tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
 
 template <typename F, size_t I = 0> struct seq_vec_copy :
 	tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
+
+template <typename F> struct seq_brak_vec_apply :
+	tup_brak_vec_apply <F> { using tup_brak_vec_apply <F>::tup_brak_vec_apply; };
+
+template <typename F, typename B = atom <F> > struct seq_brak_vec :
+	tup_brak_vec <F, B> { using tup_brak_vec <F, B>::tup_brak_vec; };
 
 //-----------------------------------------------------------------------------
 

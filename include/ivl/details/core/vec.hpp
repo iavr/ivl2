@@ -30,7 +30,7 @@
 
 #include "vec/begin.hpp"
 #include "vec/traits.hpp"
-#include "vec/meta.hpp"
+#include "vec/fun.hpp"
 #include "vec/tuple.hpp"
 
 //-----------------------------------------------------------------------------

@@ -42,41 +42,26 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+// builtin-array atom: vec-[]
 template <typename T, typename S>
-struct store <T, S, true, false> : afun::tmp_vec <T>
+struct store <T, S, numbers <0, 1, 0, 0> > : afun::brak_vec <T>
 {
-	using afun::tmp_vec <T>::tmp_vec;
+	using afun::brak_vec <T>::brak_vec;
 };
 
-//-----------------------------------------------------------------------------
-
+// builtin-function atom: vec-()
 template <typename T, typename S>
-struct store <T, S, false, true> : store <T, S, false, false>
+struct store <T, S, numbers <0, 0, 1, 0> > : afun::vec <T>
 {
-	using B = store <T, S, false, false>;
-	using B::val_f;
-	using B::val;
+	using afun::vec <T>::vec;
+};
 
-	template <typename... A>
-	using op = subs <keys::op_ref, base_opt <A&&>...>;
-
-public:
-	using B::B;
-
-//-----------------------------------------------------------------------------
-
-	template <typename... A>
-	INLINE op <T&&, A...>
-	_(A&&... a) && { return make <op>(val_f(), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE op <T&, A...>
-	_(A&&... a) & { return make <op>(val(), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE constexpr op <const T&, A...>
-	_(A&&... a) const& { return make <op>(val(), fwd <A>(a)...); }
-
+// class atom: vec- [], (), _<>()
+template <typename T, typename S>
+struct store <T, S, numbers <0, 0, 0, 1> > :
+	afun::tmp_vec <T, afun::vec <T, afun::brak_vec <T> > >
+{
+	using afun::tmp_vec <T, afun::vec <T, afun::brak_vec <T> > >::tmp_vec;
 };
 
 //-----------------------------------------------------------------------------

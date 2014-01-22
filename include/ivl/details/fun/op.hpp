@@ -72,7 +72,7 @@ namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
-	enable_if <is_tuple <A>{}>                  \
+	only_if <is_tuple <A>{}>                    \
 = 0>                                           \
 INLINE constexpr auto                          \
 operator OP(A&& a)                             \
@@ -95,7 +95,7 @@ namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
-	enable_if <is_tuple <A>{}>                  \
+	only_if <is_tuple <A>{}>                    \
 = 0>                                           \
 INLINE auto                                    \
 operator OP(A&& a)                             \
@@ -118,7 +118,7 @@ namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
-	enable_if <is_tuple <A>{}>                  \
+	only_if <is_tuple <A>{}>                    \
 = 0>                                           \
 INLINE auto                                    \
 operator OP(A&& a, int)                        \
@@ -141,7 +141,7 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	enable_if <any_tuple <A, B>{}>                          \
+	only_if <any_tuple <A, B>{}>                            \
 = 0>                                                       \
 INLINE constexpr auto                                      \
 operator OP(A&& a, B&& b)                                  \
@@ -164,7 +164,7 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	enable_if <any_tuple <A, B>{}>                          \
+	only_if <any_tuple <A, B>{}>                            \
 = 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \
@@ -187,7 +187,7 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	enable_if <any_tuple <A, B>() && !is_stream <A>()>      \
+	only_if <any_tuple <A, B>() && !is_stream <A>()>        \
 = 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \
@@ -267,7 +267,7 @@ namespace details {
 
 template <
 	typename A, typename B,
-	enable_if <!can_call <afun::op::ptr_member(A, B)>()>
+	only_if <!can_call <afun::op::ptr_member(A, B)>()>
 = 0>
 INLINE constexpr auto
 operator->*(A&& a, B&& b)

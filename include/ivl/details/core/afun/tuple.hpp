@@ -60,7 +60,7 @@ class collect <F, T, E>
 	template <typename... A> using R = subs <T, F <A&&>...>;
 
 public:
-	template <typename... A, enable_if <E <A...>{}> = 0>
+	template <typename... A, only_if <E <A...>{}> = 0>
 	INLINE constexpr R <A...>
 	operator()(A&&... a) const { return R <A...>(fwd <A>(a)...); }
 };
@@ -103,7 +103,7 @@ using tup_inner = rref_of <zip_tuple, any_tuple>;
 
 struct tup_head
 {
-	template <typename T, enable_if <as_tup_non_empty <T>{}> = 0>
+	template <typename T, only_if <as_tup_non_empty <T>{}> = 0>
 	INLINE constexpr auto operator()(T&& t) const
 	-> decltype(at()._<0>(fwd <T>(t)))
 		{ return at()._<0>(fwd <T>(t)); }
@@ -113,7 +113,7 @@ struct tup_head
 
 struct tup_tail
 {
-	template <typename T, enable_if <as_tup_non_empty <T>{}> = 0>
+	template <typename T, only_if <as_tup_non_empty <T>{}> = 0>
 	INLINE constexpr tail_tup <base_opt <T&&> >
 	operator()(T&& t) const { return tail_tup <base_opt <T&&> >(fwd <T>(t)); }
 };
@@ -122,10 +122,10 @@ struct tup_tail
 
 struct tup_flip
 {
-	template <typename T, enable_if <tup_empty <T>{} || is_atom <T>{}> = 0>
+	template <typename T, only_if <tup_empty <T>{} || is_atom <T>{}> = 0>
 	INLINE constexpr T&& operator()(T&& t) const { return fwd <T>(t); }
 
-	template <typename T, enable_if <tup_non_empty <T>{}> = 0>
+	template <typename T, only_if <tup_non_empty <T>{}> = 0>
 	INLINE constexpr auto operator()(T&& t) const
 	-> decltype(at()._<sz_range <tup_len <T>() - 1, 0, -1> >(fwd <T>(t)))
 		{ return at()._<sz_range <tup_len <T>() - 1, 0, -1> >(fwd <T>(t)); }

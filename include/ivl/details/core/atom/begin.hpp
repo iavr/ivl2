@@ -39,7 +39,7 @@ namespace details {
 
 using namespace types;
 using namespace tuples;
-using tuples::details::make;
+using namespace tuples::details;
 
 }  // namespace details
 }  // namespace atoms

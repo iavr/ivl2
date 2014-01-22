@@ -275,10 +275,10 @@ public:
 
 	INLINE array() { cons <true>(); }
 
-	template <typename L, enable_if <!is_array <L>()> = 0>
+	template <typename L, only_if <!is_array <L>()> = 0>
 	INLINE explicit array(L l) { cons <true>(fwd <L>(l)); }
 
-	template <typename A, enable_if <(is_array <A>())> = 0>
+	template <typename A, only_if <(is_array <A>())> = 0>
 	INLINE array(A&& a) { cons <true>(fwd <A>(a)); }
 
 	template <typename L, typename A>

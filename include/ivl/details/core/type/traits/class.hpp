@@ -80,7 +80,7 @@ template <typename T> struct is_empty : expr <__is_empty(T)> { };
 #else
 
 template <typename T>
-using is_empty_test = enable_if <sizeof(derive <T, sized <1> >) == 1>;
+using is_empty_test = only_if <sizeof(derive <T, sized <1> >) == 1>;
 
 template <typename T> using is_empty = sfinae <is_empty_test, T>;
 

@@ -221,11 +221,9 @@ void run()
 		cout << "atom" << endl;
 		cout << _[3].val() << endl;
 		cout << _[3] << endl;
-		cout << _[3].at <sizes <5, 7, 9> >() << endl;
-		cout << _[3].at <sz_range <5, 9> >() << endl;
 		cout << tup_len <decltype(_[3])>() << endl;
 		cout << head(_[3]) << " " << tail(_[3]) << endl;
-		cout << flip(_[3]) << " " << call(inc, _[3]) << endl;
+		cout << flip(_[3]) << endl;
 		cout << endl;
 	}
 

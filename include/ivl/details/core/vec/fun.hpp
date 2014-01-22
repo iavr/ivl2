@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_META_HPP
-#define IVL_DETAILS_CORE_VEC_META_HPP
+#ifndef IVL_DETAILS_CORE_VEC_FUN_HPP
+#define IVL_DETAILS_CORE_VEC_FUN_HPP
 
 #include <ivl/ivl>
 
@@ -52,18 +52,6 @@ struct term_call
 		{ return C()(fwd <F>(f).val(), fwd <A>(a)...); }
 };
 
-template <typename C>
-struct rec_call
-{
-	template <typename F, typename... A>
-	INLINE constexpr auto
-	operator()(F&& f, A&&... a) const
-	-> decltype(C()(fwd <F>(f), fwd <A>(a)...))
-		{ return C()(fwd <F>(f), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
 template <typename C, size_t I = 0>
 struct rec_call_mut
 {
@@ -72,8 +60,6 @@ struct rec_call_mut
 	operator()(F&& f, A&&... a) const
 		{ return C()(fwd <F>(f), fwd <A>(a)...), get <I>(fwd <A>(a)...); }
 };
-
-//-----------------------------------------------------------------------------
 
 template <typename C, size_t I = 0>
 struct rec_call_copy
@@ -87,6 +73,15 @@ struct rec_call_copy
 //-----------------------------------------------------------------------------
 
 template <typename F, template <typename...> class M>
+struct brak_vec_fun
+{
+	template <typename A>
+	INLINE constexpr auto operator[](A&& a) const
+	-> decltype(subs <M, A>()(F(), fwd <A>(a)))
+		{ return subs <M, A>()(F(), fwd <A>(a)); }
+};
+
+template <typename F, template <typename...> class M>
 struct vec_fun : F
 {
 	template <typename... A>
@@ -95,8 +90,6 @@ struct vec_fun : F
 		{ return subs <M, A...>()(*this, fwd <A>(a)...); }
 };
 
-//-----------------------------------------------------------------------------
-
 template <typename F, template <typename...> class M>
 struct tmp_vec_fun : F
 {
@@ -104,6 +97,29 @@ struct tmp_vec_fun : F
 	INLINE constexpr auto _(A&&... a) const
 	-> decltype(subs <M, pack <P...>, A...>()(*this, T(), fwd <A>(a)...))
 		{ return subs <M, pack <P...>, A...>()(*this, T(), fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F, template <typename...> class M>
+struct brak_vec_atom : F
+{
+	using F::F;
+
+	template <typename A>
+	INLINE auto operator[](A&& a) &&
+	-> decltype(subs <M, A>()(mv(*this), fwd <A>(a)))
+		{ return subs <M, A>()(mv(*this), fwd <A>(a)); }
+
+	template <typename A>
+	INLINE auto operator[](A&& a) &
+	-> decltype(subs <M, A>()(*this, fwd <A>(a)))
+		{ return subs <M, A>()(*this, fwd <A>(a)); }
+
+	template <typename A>
+	INLINE constexpr auto operator[](A&& a) const&
+	-> decltype(subs <M, A>()(*this, fwd <A>(a)))
+		{ return subs <M, A>()(*this, fwd <A>(a)); }
 };
 
 //-----------------------------------------------------------------------------
@@ -166,4 +182,4 @@ struct tmp_vec_atom : F
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_META_HPP
+#endif  // IVL_DETAILS_CORE_VEC_FUN_HPP

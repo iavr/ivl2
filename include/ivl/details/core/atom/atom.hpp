@@ -42,45 +42,51 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename T, typename S,
-	bool = is_atom_fun <T, S>(),
-	bool = is_atom_method <T, S>()
->
-class store : public base_tup <atom <T, S>, _type <T> >
+template <typename T, typename S, typename A = atom_attr <T, S> >
+struct store : base_atom <atom <T, S>, _type <T> >
 {
-	using B = base_tup <atom <T, S>, _type <T> >;
-	using U = elem_at <0, T>;
-
-	friend base_type_of <B>;
+	using base_atom <atom <T, S>, _type <T> >::base_atom;
+};
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J>
-	INLINE rtref <T> ref_at() && { return U::fwd(); }
+// member_ptr atom
+template <typename T, typename S>
+class store <T, S, numbers <1, 0, 0, 0> > :
+	public base_atom <atom <T, S>, _type <T> >
+{
+	using B = base_atom <atom <T, S>, _type <T> >;
+	using B::val_f;
+	using B::val;
 
-	template <size_t J>
-	INLINE ltref <T> ref_at() & { return U::get(); }
-
-	template <size_t J>
-	INLINE constexpr cltref <T> ref_at() const& { return U::get(); }
-
-//-----------------------------------------------------------------------------
+	template <typename... A>
+	using op = subs <keys::op_ref, base_opt <A&&>...>;
 
 public:
 	using B::B;
+
+//-----------------------------------------------------------------------------
+
+	template <typename... A>
+	INLINE op <T&&, A...>
+	_(A&&... a) && { return make <op>(val_f(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE op <T&, A...>
+	_(A&&... a) & { return make <op>(val(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr op <const T&, A...>
+	_(A&&... a) const& { return make <op>(val(), fwd <A>(a)...); }
+
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename T, typename S>
-class atom : public store <T, S>
+struct atom : store <T, S>
 {
-	using B = store <T, S>;
-
-public:
-	using B::B;
-	using B::base_type::operator=;
+	using store <T, S>::store;
 };
 
 //-----------------------------------------------------------------------------

@@ -40,8 +40,8 @@
 #include "core/vec/array.hpp"
 #include "core/vec/vec.hpp"
 #include "core/vec/tmp.hpp"
-#include "core/atom/fun.hpp"
-#include "core/uscore.hpp"
+#include "core/atom/vec.hpp"
+#include "core/atom/uscore.hpp"
 
 #include "array/heap.hpp"
 

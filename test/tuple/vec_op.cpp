@@ -127,6 +127,8 @@ void run()
 		auto t = _(a, b, c, d);
 		cout << t[2] << endl;
 		cout << t[_(2, 0 , 1, 0)] << endl;
+		cout << _[a][_(2, 0)] << endl;
+// 		cout << _[t][_(2, 0, 1, 0)] << endl;
 		cout << endl;
 	}
 
@@ -146,28 +148,28 @@ void run()
 		call <arf, apf>();
 	}
 
-// TODO: runtime errors
+// // TODO: runtime errors
 // 	{
 // 		cout << "expression" << endl;
 // 		double x = 0;
 // 		int i = -2;
-// 		char c = 0;
-// 		auto t = _(x, _(i, c));
-// 		auto a = val(3.14, val(6, 'A'));
-// 		auto b = val(6.18, val(-2, 3));
+// 		auto t = _(x, _(i));
+// // 		auto a = val(3.14, val(7));
+// // 		auto b = val(6.18, val(-2));
+// 		auto a = _(3.14, _(7));
+// 		auto b = _(6.18, _(-2));
 //
-// 		cout << endl << "NOW" << endl << endl;
+// // 		cout << (a + 2 * b).at <0>() << endl;
+// // 		cout << (a + 2 * b).at <1>() << endl;
 //
-// 		cout << (a + 2 * b).at <0>() << endl;
-// 		cout << (a + 2 * b).at <1>() << endl;
-// 		report <tup_types <decltype(a + 2 * b)> >();
-// 		report <rtel <0, tup_types <decltype(a + 2 * b)> > >();
-// 		report <rtel <1, tup_types <decltype(a + 2 * b)> > >();
+// // 		report <tup_types <decltype(a + 2 * b)> >();
+// // 		report <rtel <0, tup_types <decltype(a + 2 * b)> > >();
+// // 		report <rtel <1, tup_types <decltype(a + 2 * b)> > >();
 //
-// 		t = a + 2 * b;
-// 		cout << t << endl;
-// 		cout << (a + 2 * b) << endl;
-// 		cout << endl;
+// // 		t = a + 2 * b;
+// // 		cout << t << endl;
+// // 		cout << (a + 2 * b) << endl;
+// // 		cout << endl;
 // 	}
 
 }

@@ -32,6 +32,7 @@
 #include "atom/data.hpp"
 #include "atom/atoms.hpp"
 #include "atom/traits.hpp"
+#include "atom/base.hpp"
 #include "atom/atom.hpp"
 #include "atom/raw.hpp"
 

@@ -79,12 +79,7 @@ template <typename T> using remove_type = type_of <remove_type_t <T> >;
 //-----------------------------------------------------------------------------
 
 template <typename D>
-struct der { using der_type = D; };
-
-//-----------------------------------------------------------------------------
-
-template <typename D>
-struct template_class : der <D> { };
+struct template_class { };
 
 template <template <typename...> class F, typename...> struct temp;
 

@@ -104,11 +104,11 @@ public:
 
 	using B::B;
 
-	template <typename A, enable_if <tup_atom_assign <Q, A>{}> = 0>
+	template <typename A, only_if <tup_atom_assign <Q, A>{}> = 0>
 	INLINE D& operator=(A&& a)
 		{ return thru{at <I>() = fwd <A>(a)...}, der(); }
 
-	template <typename T, enable_if <tup_assign <Q, T>{}> = 0>
+	template <typename T, only_if <tup_assign <Q, T>{}> = 0>
 	INLINE D& operator=(T&& t)
 		{ return thru{at <I>() = _at._<I>(fwd <T>(t))...}, der(); }
 
@@ -120,7 +120,7 @@ private:
 	at_f() { return der_f().template ref_at <J>(); }
 
 	template <size_t... J>
-	using sz_if = enable_if <sizeof...(J) != 1, sizes <J...> >;
+	using sz_if = only_if <sizeof...(J) != 1, sizes <J...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -220,7 +220,7 @@ private:
 	template <typename... T> using op  = subs <keys::op_ref, opt <T&&>...>;
 
 	template <typename... P>
-	using tmp_if = enable_if <sizeof...(P), tup_tmp <P...> >;
+	using tmp_if = only_if <sizeof...(P), tup_tmp <P...> >;
 
 	template <typename F, typename... A>
 	using auto_ret = _if <tup_void <F(A...)>{}, void, app <F, A...> >;

@@ -71,19 +71,19 @@ class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
 public:
 	using B::base_type::operator=;
 
-	template <typename A = int, enable_if <_and <is_cons <E>...>{}, A> = 0>
+	template <typename A = int, only_if <_and <is_cons <E>...>{}, A> = 0>
 	explicit INLINE constexpr collection() : B(yes) { }
 
-	template <typename... A, enable_if <tup_conv <pack <A...>, P>{}> = 0>
+	template <typename... A, only_if <tup_conv <pack <A...>, P>{}> = 0>
 	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-	template <typename... A, enable_if <tup_explicit <P, pack <A...> >{}> = 0>
+	template <typename... A, only_if <tup_explicit <P, pack <A...> >{}> = 0>
 	explicit INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-	template <typename T, enable_if <tup_tup_conv <T, P>{}> = 0>
+	template <typename T, only_if <tup_tup_conv <T, P>{}> = 0>
 	INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 
-	template <typename T, enable_if <tup_tup_explicit <P, T>{}> = 0>
+	template <typename T, only_if <tup_tup_explicit <P, T>{}> = 0>
 	explicit INLINE constexpr collection(T&& t) : B(fwd <T>(t)) { }
 };
 

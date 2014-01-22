@@ -43,8 +43,9 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using tup_apply = rref_of <apply_tuple, any_tuple>;
-using tup_loop_ = rref_of <loop_tuple,  any_tuple>;
+// no alias: often used
+struct tup_apply : rref_of <apply_tuple, any_tuple> { };
+struct tup_loop_ : rref_of <loop_tuple,  any_tuple> { };
 
 struct tup_loop
 {
@@ -63,10 +64,10 @@ using tup_auto = afun::choose_fun <tup_auto_for>;
 template <typename S, typename D>
 struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 {
-	template <typename F, typename T, enable_if <tup_empty <T>{}> = 0>
+	template <typename F, typename T, only_if <tup_empty <T>{}> = 0>
 	INLINE void operator()(F&& f, T&& t) const { };
 
-	template <typename F, typename T, enable_if <tup_non_empty<T>{}> = 0>
+	template <typename F, typename T, only_if <tup_non_empty<T>{}> = 0>
 	INLINE void operator()(F&& f, T&& t) const
 	{
 		fwd <F>(f)(tup_head()(fwd <T>(t)));
@@ -78,44 +79,54 @@ struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... B>
-struct gen_val : B... { F val() const { return F(); } };
+struct val_gen : B... { F val() const { return F(); } };
 
-template <typename F> struct gen_atom : F { using F::F; };
+template <typename F> struct atom_gen : F { using F::F; };
 
 //-----------------------------------------------------------------------------
 
-template <typename R>
+template <typename R, typename T = op::call>
 struct tup_vec_for
 {
 	template <typename... A>
-	using map = _if <any_tuple <A...>{}, R, term_call <op::call> >;
+	using map = _if <any_tuple <A...>{}, R, term_call <T> >;
 };
 
-template <typename R, typename F>
-using tup_vec_fun = vec_fun <
-	gen_val <F>,
+template <typename F, typename R>
+using tup_vec_f = vec_fun <
+	val_gen <F>,
 	tup_vec_for <R>::template map
 >;
 
-template <typename C, typename F>
-using tup_vec_val = tup_vec_fun <rec_call <C>, F>;
+template <typename F> using tup_vec_apply = tup_vec_f <F, tup_apply>;
+template <typename F> using tup_vec_loop  = tup_vec_f <F, tup_loop>;
+template <typename F> using tup_vec_auto  = tup_vec_f <F, tup_auto>;
 
-template <typename F> using tup_vec_apply = tup_vec_val <tup_apply, F>;
-template <typename F> using tup_vec_loop  = tup_vec_val <tup_loop, F>;
-template <typename F> using tup_vec_auto  = tup_vec_val <tup_auto, F>;
-
-// publicly derived from atom: used as base of fun_atom
-template <typename F>
+template <typename F, typename B = atom <F> >
 using tup_vec = vec_atom <
-	gen_atom <atom <F> >,
+	atom_gen <B>,
 	tup_vec_for <tup_auto>::template map
 >;
 
 template <typename F, size_t I = 0>
-using tup_vec_mut = tup_vec_fun <rec_call_mut <tup_loop, I>, F>;
+using tup_vec_mut = tup_vec_f <F, rec_call_mut <tup_loop, I> >;
 
 template <typename F, size_t I = 0>
-using tup_vec_copy = tup_vec_fun <rec_call_copy <tup_apply, I>, F>;
+using tup_vec_copy = tup_vec_f <F, rec_call_copy <tup_apply, I> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename T = op::bracket>
+using tup_brak_vec_apply = brak_vec_fun <
+	val_gen <F>,
+	tup_vec_for <tup_vec_apply <T>, T>::template map
+>;
+
+template <typename F, typename B = atom <F>, typename T = op::bracket>
+using tup_brak_vec = brak_vec_atom <
+	atom_gen <B>,
+	tup_vec_for <tup_vec_apply <T>, T>::template map
+>;
 
 //-----------------------------------------------------------------------------
 

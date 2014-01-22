@@ -56,7 +56,7 @@ template <typename A>
 INLINE remove_ref <A>&&
 mv(A&& a) { return static_cast <remove_ref <A>&&>(a); }
 
-template <typename T, enable_if <!is_lref <T>()> = 0>
+template <typename T, only_if <!is_lref <T>()> = 0>
 INLINE constexpr T&&
 fwd(remove_ref <T>&& a) { return static_cast <T&&>(a); }
 
@@ -66,31 +66,31 @@ fwd(remove_ref <T>& a) { return static_cast <T&&>(a); }
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename A, enable_if <!is_lref <A>()> = 0>
+template <typename T, typename A, only_if <!is_lref <A>()> = 0>
 INLINE constexpr raw_type <T>&&
 as(A&& a) { return static_cast <raw_type <T>&&>(a); }
 
 template <
 	typename T, typename A,
-	enable_if <is_lref <A>() && !is_const <remove_ref <A> >()> = 0
+	only_if <is_lref <A>() && !is_const <remove_ref <A> >()> = 0
 >
 INLINE constexpr raw_type <T>&
 as(A&& a) { return static_cast <raw_type <T>&>(a); }
 
 template <
 	typename T, typename A,
-	enable_if <is_lref <A>() && is_const <remove_ref <A> >()> = 0
+	only_if <is_lref <A>() && is_const <remove_ref <A> >()> = 0
 >
 INLINE constexpr const raw_type <T>&
 as(A&& a) { return static_cast <const raw_type <T>&>(a); }
 
 //-----------------------------------------------------------------------------
 
-template <size_t I, typename A, typename... An, enable_if <I> = 0>
+template <size_t I, typename A, typename... An, only_if <I> = 0>
 pick <I - 1, An...>&&
 get(A&& a, An&&... an) { return get <I - 1>(fwd <An>(an)...); }
 
-template <size_t I, typename A, typename... An, enable_if <!I> = 0>
+template <size_t I, typename A, typename... An, only_if <!I> = 0>
 A&& get(A&& a, An&&... an) { return fwd <A>(a); }
 
 //-----------------------------------------------------------------------------

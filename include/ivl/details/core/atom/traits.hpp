@@ -62,20 +62,20 @@ struct as_tuple : expr <is_tuple <T>() || is_atom <T>()> { };
 namespace details {
 
 template <typename T>
-using is_atom_fun_ = expr <is_class <T>() || is_fun <T>()>;
+using atom_attr_ = numbers <
+	is_method_ptr <T>{}, is_arr <T>{}, is_fun <T>{}, is_class <T>{}
+>;
 
 }  // namespace details
 
-template <typename T, typename S> struct is_atom_fun    : _false { };
-template <typename T, typename S> struct is_atom_method : _false { };
+template <typename T, typename S>
+struct atom_attr_t : numbers <0, 0, 0, 0> { };
 
 template <typename T>
-struct is_atom_fun <T, data::fun <> > :
-	details::is_atom_fun_<raw_type <T> > { };
+struct atom_attr_t <T, data::fun <> > : details::atom_attr_<raw_type <T> > { };
 
-template <typename T>
-struct is_atom_method <T, data::fun <> > :
-	is_method_ptr <raw_type <T> > { };
+template <typename T, typename S>
+using atom_attr = type_of <atom_attr_t <T, S> >;
 
 //-----------------------------------------------------------------------------
 

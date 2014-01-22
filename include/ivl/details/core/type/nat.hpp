@@ -58,14 +58,14 @@ using if_nat = type_of <if_nat_t <T, E, D> >;
 //-----------------------------------------------------------------------------
 
 template <bool C, typename T = int>
-using enable_if_t = _if <C, id_t <T>, nat>;
+using only_if_t = _if <C, id_t <T>, nat>;
 
 template <bool C, typename T = int>
-using enable_if = type_of <enable_if_t <C, T> >;
+using only_if = type_of <only_if_t <C, T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using check_t = enable_if_t <!is_nat <T>(), T>;
+template <typename T> using check_t = only_if_t <!is_nat <T>(), T>;
 template <typename T> using check   = type_of <check_t <T> >;
 
 //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ using namespace logic;
 
 }  // namespace types
 
-using types::enable_if;
+using types::only_if;
 
 //-----------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_TMP_HPP
-#define IVL_DETAILS_CORE_VEC_TMP_HPP
+#ifndef IVL_DETAILS_CORE_ATOM_RAW_HPP
+#define IVL_DETAILS_CORE_ATOM_RAW_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace atoms {
 
 //-----------------------------------------------------------------------------
 
@@ -42,35 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename R, typename T = afun::pre_tmp_call>
-struct tmp_vec_for
+template <typename T>
+class atom <T, data::raw <> > : public access <raw_atom <T>, T>
 {
-	template <typename P, typename... A>
-	using map = _if <
-		any_pack_p <P>() || any_tuple <A...>(),
-		R, term_call <T>
-	>;
+	using P = _type <T>;
+	using B = access <raw_atom <T>, T>;
+	using U = elem_at <0, T>;
+
+//-----------------------------------------------------------------------------
+
+public:
+	using type = P;
+	static constexpr size_t length = P::length;
+
+	using B::B;
+
+//-----------------------------------------------------------------------------
+
+	template <size_t J>
+	INLINE rtref <T> at() && { return U::fwd(); }
+
+	template <size_t J>
+	INLINE ltref <T> at() & { return U::get(); }
+
+	template <size_t J>
+	INLINE constexpr cltref <T> at() const& { return U::get(); }
+
 };
-
-template <typename F, template <typename...> class V, typename T = afun::pre_tmp_call>
-using tmp_vec_f = tmp_vec_fun <
-	val_gen <F, V <F> >,
-	tmp_vec_for <V <T>, T>::template map
->;
-
-//-----------------------------------------------------------------------------
-
-template <typename F> using tmp_vec_apply = tmp_vec_f <F, vec_apply>;
-template <typename F> using tmp_vec_loop  = tmp_vec_f <F, vec_loop>;
-template <typename F> using tmp_vec_auto  = tmp_vec_f <F, vec_auto>;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename B = atom <F>, typename T = afun::pre_tmp_call>
-using tmp_vec = tmp_vec_atom <
-	atom_gen <B>,
-	tmp_vec_for <vec_auto <T>, T>::template map
->;
 
 //-----------------------------------------------------------------------------
 
@@ -78,14 +76,7 @@ using tmp_vec = tmp_vec_atom <
 
 //-----------------------------------------------------------------------------
 
-using details::tmp_vec_apply;
-using details::tmp_vec_loop;
-using details::tmp_vec_auto;
-using details::tmp_vec;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 
@@ -93,4 +84,4 @@ using details::tmp_vec;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_TMP_HPP
+#endif  // IVL_DETAILS_CORE_ATOM_RAW_HPP
