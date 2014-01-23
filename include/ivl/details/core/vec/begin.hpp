@@ -35,19 +35,11 @@ namespace ivl {
 //-----------------------------------------------------------------------------
 
 namespace afun {
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
-// template <typename F> struct vec_apply;
+template <typename F, typename B> struct vec_apply;
 
 }  // namespace details
-
-using details::vec_apply;
-
-//-----------------------------------------------------------------------------
-
 }  // namespace afun
 
 //-----------------------------------------------------------------------------

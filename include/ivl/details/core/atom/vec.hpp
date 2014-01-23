@@ -44,9 +44,9 @@ namespace details {
 
 // builtin-array atom: vec-[]
 template <typename T, typename S>
-struct store <T, S, numbers <0, 1, 0, 0> > : afun::brak_vec <T>
+struct store <T, S, numbers <0, 1, 0, 0> > : afun::bra_vec <T>
 {
-	using afun::brak_vec <T>::brak_vec;
+	using afun::bra_vec <T>::bra_vec;
 };
 
 // builtin-function atom: vec-()
@@ -58,10 +58,9 @@ struct store <T, S, numbers <0, 0, 1, 0> > : afun::vec <T>
 
 // class atom: vec- [], (), _<>()
 template <typename T, typename S>
-struct store <T, S, numbers <0, 0, 0, 1> > :
-	afun::tmp_vec <T, afun::vec <T, afun::brak_vec <T> > >
+struct store <T, S, numbers <0, 0, 0, 1> > : afun::tvec <T, afun::bra_vec <T> >
 {
-	using afun::tmp_vec <T, afun::vec <T, afun::brak_vec <T> > >::tmp_vec;
+	using afun::tvec <T, afun::bra_vec <T> >::tvec;
 };
 
 //-----------------------------------------------------------------------------

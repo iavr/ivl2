@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename C>
-struct term_call
+struct atom_call
 {
 	template <typename F, typename... A>
 	INLINE constexpr auto
@@ -53,7 +53,7 @@ struct term_call
 };
 
 template <typename C, size_t I = 0>
-struct rec_call_mut
+struct mut_call
 {
 	template <typename F, typename... A>
 	INLINE constexpr pick <I, A...>&&
@@ -62,18 +62,18 @@ struct rec_call_mut
 };
 
 template <typename C, size_t I = 0>
-struct rec_call_copy
+struct copy_call
 {
 	template <typename F, typename... A>
-	INLINE constexpr create <pick <I, A...> >
+	INLINE constexpr copy <pick <I, A...> >
 	operator()(F&& f, A&&... a) const
-		{ return create <pick <I, A...> >(C()(fwd <F>(f), fwd <A>(a)...)); }
+		{ return copy <pick <I, A...> >(C()(fwd <F>(f), fwd <A>(a)...)); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, template <typename...> class M>
-struct brak_vec_fun
+struct bra_vec_fun
 {
 	template <typename A>
 	INLINE constexpr auto operator[](A&& a) const
@@ -102,7 +102,7 @@ struct tmp_vec_fun : F
 //-----------------------------------------------------------------------------
 
 template <typename F, template <typename...> class M>
-struct brak_vec_atom : F
+struct bra_vec_atom : F
 {
 	using F::F;
 

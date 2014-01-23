@@ -220,24 +220,24 @@ namespace details {
 
 // extended elsewhere
 template <typename T>
-struct create_rec : id_t <T> { };
+struct copy_rec : id_t <T> { };
 
 template <typename T>
-struct create_t_ : _if <is_arr <T>{}, id_t <remove_ext <T>*>,
-	_if <is_fun <T>{}, add_ptr_t <T>, create_rec <remove_cv <T> > >
+struct copy_ : _if <is_arr <T>{}, id_t <remove_ext <T>*>,
+	_if <is_fun <T>{}, add_ptr_t <T>, copy_rec <remove_cv <T> > >
 > { };
 
 template <typename T>
-struct decay_t_ : _if <is_arr <T>{}, id_t <remove_ext <T>*>,
+struct decay_ : _if <is_arr <T>{}, id_t <remove_ext <T>*>,
 	_if <is_fun <T>{}, add_ptr_t <T>, remove_cv_t <T> >
 > { };
 
 }  // namespace details
 
-template <typename T> using create_t = details::create_t_ <remove_ref <T> >;
-template <typename T> using create = type_of <create_t <T> >;
+template <typename T> using copy_t = details::copy_<remove_ref <T> >;
+template <typename T> using copy = type_of <copy_t <T> >;
 
-template <typename T> using decay_t = details::decay_t_ <remove_ref <T> >;
+template <typename T> using decay_t = details::decay_<remove_ref <T> >;
 template <typename T> using decay = type_of <decay_t <T> >;
 
 //-----------------------------------------------------------------------------

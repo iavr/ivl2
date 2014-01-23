@@ -78,8 +78,8 @@ struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... B>
-struct val_gen : B... { F val() const { return F(); } };
+template <typename F, typename B = none>
+struct val_gen : B { F val() const { return F(); } };
 
 template <typename F> struct atom_gen : F { using F::F; };
 
@@ -89,18 +89,23 @@ template <typename R, typename T = op::call>
 struct tup_vec_for
 {
 	template <typename... A>
-	using map = _if <any_tuple <A...>{}, R, term_call <T> >;
+	using map = _if <any_tuple <A...>{}, R, atom_call <T> >;
 };
 
-template <typename F, typename R>
+template <typename F, typename R, typename B = none>
 using tup_vec_f = vec_fun <
-	val_gen <F>,
+	val_gen <F, B>,
 	tup_vec_for <R>::template map
 >;
 
-template <typename F> using tup_vec_apply = tup_vec_f <F, tup_apply>;
-template <typename F> using tup_vec_loop  = tup_vec_f <F, tup_loop>;
-template <typename F> using tup_vec_auto  = tup_vec_f <F, tup_auto>;
+template <typename F, typename B = none>
+using tup_vec_apply = tup_vec_f <F, tup_apply, B>;
+
+template <typename F, typename B = none>
+using tup_vec_loop  = tup_vec_f <F, tup_loop, B>;
+
+template <typename F, typename B = none>
+using tup_vec_auto  = tup_vec_f <F, tup_auto, B>;
 
 template <typename F, typename B = atom <F> >
 using tup_vec = vec_atom <
@@ -109,21 +114,21 @@ using tup_vec = vec_atom <
 >;
 
 template <typename F, size_t I = 0>
-using tup_vec_mut = tup_vec_f <F, rec_call_mut <tup_loop, I> >;
+using tup_vec_mut = tup_vec_f <F, mut_call <tup_loop, I> >;
 
 template <typename F, size_t I = 0>
-using tup_vec_copy = tup_vec_f <F, rec_call_copy <tup_apply, I> >;
+using tup_vec_copy = tup_vec_f <F, copy_call <tup_apply, I> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename T = op::bracket>
-using tup_brak_vec_apply = brak_vec_fun <
-	val_gen <F>,
+template <typename F, typename B = none, typename T = op::bracket>
+using tup_bra_vec_apply = bra_vec_fun <
+	val_gen <F, B>,
 	tup_vec_for <tup_vec_apply <T>, T>::template map
 >;
 
 template <typename F, typename B = atom <F>, typename T = op::bracket>
-using tup_brak_vec = brak_vec_atom <
+using tup_bra_vec = bra_vec_atom <
 	atom_gen <B>,
 	tup_vec_for <tup_vec_apply <T>, T>::template map
 >;

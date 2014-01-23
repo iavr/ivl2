@@ -122,8 +122,8 @@ struct call_test { template <typename... A> using map = can_call <F(A...)>; };
 }  // namespace details
 
 // extending definition @type/traits/result
-template <typename F, typename... A>
-struct can_call <afun::vec_apply <F>(A...)> :
+template <typename F, typename B, typename... A>
+struct can_call <afun::details::vec_apply <F, B>(A...)> :
 	vec_all <details::call_test <F>::template map, A...> { };
 
 //-----------------------------------------------------------------------------

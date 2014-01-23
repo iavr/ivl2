@@ -38,6 +38,10 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
+struct none { };
+
+//-----------------------------------------------------------------------------
+
 template <typename...> struct id_t;
 template <typename T>  struct id_t <T> { using type = T; };
 template <>            struct id_t <>  { };

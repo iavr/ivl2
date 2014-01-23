@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct key_member_caller
+struct key_member_call
 {
 	template <typename C, typename M>
 	INLINE constexpr auto operator()(C&& c, M m) const
@@ -50,7 +50,7 @@ struct key_member_caller
 		{ return key_member <M>()(fwd <C>(c)); }
 };
 
-struct key_call_caller
+struct key_call_call
 {
 	template <typename C, typename M, typename... A>
 	INLINE constexpr auto operator()(C&& c, M m, A&&... a) const
@@ -61,24 +61,12 @@ struct key_call_caller
 //-----------------------------------------------------------------------------
 
 template <typename F>
-struct op_ref_caller
+struct op_ref_call
 {
 	template <typename C, typename O>
 	INLINE constexpr auto operator()(C&& c, O&& o) const
 	-> decltype(fwd <O>(o).ref().rcall(F(), fwd <C>(c), fwd <O>(o).op()))
 		{ return fwd <O>(o).ref().rcall(F(), fwd <C>(c), fwd <O>(o).op()); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-struct atom_first_caller
-{
-	template <typename A, typename... An>
-	INLINE constexpr auto
-	operator()(A&& a, An&&... an) const
-	-> decltype(F()(fwd <A>(a).val(), fwd <An>(an)...))
-		{ return F()(fwd <A>(a).val(), fwd <An>(an)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -94,14 +82,14 @@ template <typename C, typename M, bool = is_key <M>()>
 struct op_key_member_for_t : call_first_t <pack <pow, op_member>(C, M)> { };
 
 template <typename C, typename M>
-struct op_key_member_for_t <C, M, true> : id_t <key_member_caller > { };
+struct op_key_member_for_t <C, M, true> : id_t <key_member_call> { };
 
 template <typename C, typename M>
 using op_key_member_for = type_of <op_key_member_for_t <C, M> >;
 
 // c ->* k._(a...) OR (c ->* k)(a...) VS c ->* _[&C::m]._(a...) OR (c ->* &C::m)(a...)
 template <typename C, typename M, typename... A>
-using op_key_call_for = _if <is_key <M>{}, key_call_caller, op_call>;
+using op_key_call_for = _if <is_key <M>{}, key_call_call, op_call>;
 
 using op_key_member = choose_fun <op_key_member_for>;
 using op_key_call   = choose_fun <op_key_call_for>;
@@ -113,7 +101,7 @@ using vec_op_key_call   = vec_auto  <op_key_call>;    // can be void
 template <typename C, typename M>
 using op_ref_member_for = _if <
 	is_op_ref <M>{},
-	op_ref_caller <vec_op_key_call>,
+	op_ref_call <vec_op_key_call>,
 	try_fun <vec_op_key_member, binder <vec_op_key_call> >
 >;
 
@@ -121,13 +109,13 @@ using op_ref_member = choose_fun <op_ref_member_for>;
 
 // _[b] ->* e VS c ->* m
 template <typename A, typename B>
-using atom_member_for = _if <
+using member_for = _if <
 	is_atom <A>() && !is_class <raw_type <B> >(),
-	atom_first_caller <op_ref_member>,
+	atom_call <op_ref_member>,
 	op_ref_member
 >;
 
-using atom_member = choose_fun <atom_member_for>;
+using member = choose_fun <member_for>;
 
 //-----------------------------------------------------------------------------
 
@@ -138,9 +126,7 @@ using details::op_call;
 using details::op_key_member;
 using details::op_key_call;
 using details::op_ref_member;
-using details::atom_member;
-
-namespace op { using member = atom_member; }
+using details::member;
 
 //-----------------------------------------------------------------------------
 

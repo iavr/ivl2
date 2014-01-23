@@ -106,14 +106,14 @@ struct seq_loop : arr_loop <seq_loop>
 //-----------------------------------------------------------------------------
 
 // TODO
-template <typename F> struct seq_vec_apply :
-	tup_vec_apply <F> { using tup_vec_apply <F>::tup_vec_apply; };
+template <typename F, typename B = none> struct seq_vec_apply :
+	tup_vec_apply <F, B> { using tup_vec_apply <F, B>::tup_vec_apply; };
 
-template <typename F> struct seq_vec_loop :
-	tup_vec_loop <F> { using tup_vec_loop <F>::tup_vec_loop; };
+template <typename F, typename B = none> struct seq_vec_loop :
+	tup_vec_loop <F, B> { using tup_vec_loop <F, B>::tup_vec_loop; };
 
-template <typename F> struct seq_vec_auto :
-	tup_vec_auto <F> { using tup_vec_auto <F>::tup_vec_auto; };
+template <typename F, typename B = none> struct seq_vec_auto :
+	tup_vec_auto <F, B> { using tup_vec_auto <F, B>::tup_vec_auto; };
 
 template <typename F, typename B = atom <F> > struct seq_vec :
 	tup_vec <F, B> { using tup_vec <F, B>::tup_vec; };
@@ -124,11 +124,11 @@ template <typename F, size_t I = 0> struct seq_vec_mut :
 template <typename F, size_t I = 0> struct seq_vec_copy :
 	tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
 
-template <typename F> struct seq_brak_vec_apply :
-	tup_brak_vec_apply <F> { using tup_brak_vec_apply <F>::tup_brak_vec_apply; };
+template <typename F, typename B = none> struct seq_bra_vec_apply :
+	tup_bra_vec_apply <F, B> { using tup_bra_vec_apply <F, B>::tup_bra_vec_apply; };
 
-template <typename F, typename B = atom <F> > struct seq_brak_vec :
-	tup_brak_vec <F, B> { using tup_brak_vec <F, B>::tup_brak_vec; };
+template <typename F, typename B = atom <F> > struct seq_bra_vec :
+	tup_bra_vec <F, B> { using tup_bra_vec <F, B>::tup_bra_vec; };
 
 //-----------------------------------------------------------------------------
 

@@ -72,18 +72,18 @@ struct loop : der_nfun <tup_loop, seq_loop>
 //-----------------------------------------------------------------------------
 
 // no alias: forward declared
-template <typename F> struct vec_apply : seq_vec_apply <F> { };
-template <typename F> using  vec_loop  = seq_vec_loop <F>;
-template <typename F> using  vec_auto  = seq_vec_auto <F>;
+template <typename F, typename B = none> struct vec_apply : seq_vec_apply <F, B> { };
+template <typename F, typename B = none> using  vec_loop  = seq_vec_loop <F, B>;
+template <typename F, typename B = none> using  vec_auto  = seq_vec_auto <F, B>;
 
 template <typename F, typename B = atom <F> > using vec = seq_vec <F, B>;
 
 template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
 template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
 
-template <typename F> using brak_vec_apply = seq_brak_vec_apply <F>;
+template <typename F, typename B = none> using bra_vec_apply = seq_bra_vec_apply <F, B>;
 
-template <typename F, typename B = atom <F> > using brak_vec = seq_brak_vec <F, B>;
+template <typename F, typename B = atom <F> > using bra_vec = seq_bra_vec <F, B>;
 
 //-----------------------------------------------------------------------------
 
@@ -102,8 +102,8 @@ using details::vec;
 using details::vec_mut;
 using details::vec_copy;
 
-using details::brak_vec_apply;
-using details::brak_vec;
+using details::bra_vec_apply;
+using details::bra_vec;
 
 //-----------------------------------------------------------------------------
 

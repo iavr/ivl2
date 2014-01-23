@@ -302,14 +302,14 @@ namespace details {
 
 // extending definition @type/traits/transform
 template <typename S, typename... A>
-struct create_rec <collection <S, A...> > :
-	create_rec <type_of <collection <S, A...> > > { };
+struct copy_rec <collection <S, A...> > :
+	copy_rec <type_of <collection <S, A...> > > { };
 
 template <typename... E>
-struct create_rec <pack <E...> > { using type = tuple <create <E>...>; };
+struct copy_rec <pack <E...> > { using type = tuple <copy <E>...>; };
 
 template <typename F, typename... E>
-struct create_rec <F(pack <E...>)>  { using type = create <ret <F(E...)> >; };
+struct copy_rec <F(pack <E...>)>  { using type = copy <ret <F(E...)> >; };
 
 }  // namespace details
 

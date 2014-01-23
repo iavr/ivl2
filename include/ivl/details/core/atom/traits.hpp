@@ -103,10 +103,10 @@ namespace details {
 
 // extending definition @type/traits/transform
 template <typename T, typename S>
-struct create_rec <atom <T, S> > : create_rec <type_of <atom <T, S> > > { };
+struct copy_rec <atom <T, S> > : copy_rec <type_of <atom <T, S> > > { };
 
 template <typename T>
-struct create_rec <_type <T> > { using type = atom <create <T> >; };
+struct copy_rec <_type <T> > { using type = atom <copy <T> >; };
 
 }  // namespace details
 

@@ -50,10 +50,10 @@ struct pf
 	void _() const { cout << char(P()() + C) << " "; }
 };
 
-template <char C> using vrf = afun::tmp_vec_apply <rf <C> >;
-template <char C> using vpf = afun::tmp_vec_loop <pf <C> >;
-template <char C> using arf = afun::tmp_vec_auto <rf <C> >;
-template <char C> using apf = afun::tmp_vec_auto <pf <C> >;
+template <char C> using vrf = afun::tvec_apply <rf <C> >;
+template <char C> using vpf = afun::tvec_loop <pf <C> >;
+template <char C> using arf = afun::tvec_auto <rf <C> >;
+template <char C> using apf = afun::tvec_auto <pf <C> >;
 
 //-----------------------------------------------------------------------------
 

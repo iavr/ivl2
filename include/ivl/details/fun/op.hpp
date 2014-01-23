@@ -34,15 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#define IVL_ATOM_OP(NAME)                                    \
-                                                             \
-namespace op {                                               \
-	static __attribute__ ((unused)) afun::op::NAME NAME;      \
-}                                                            \
-
-//-----------------------------------------------------------------------------
-
-#define IVL_DEF_VEC_OP(VEC, NAME)                            \
+#define IVL_VEC_OP_BY(VEC, NAME)                             \
                                                              \
 namespace fun {                                              \
 namespace op {                                               \
@@ -56,10 +48,8 @@ namespace op {                                               \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP(NAME)       IVL_DEF_VEC_OP(vec_apply,     NAME)
-#define IVL_VEC_OP_MUT(NAME)   IVL_DEF_VEC_OP(vec_mut,       NAME)
-#define IVL_VEC_OP_COPY(NAME)  IVL_DEF_VEC_OP(vec_copy,      NAME)
-#define IVL_TMP_VEC_OP(NAME)   IVL_DEF_VEC_OP(tmp_vec_apply, NAME)
+#define IVL_VEC_OP(NAME)   IVL_VEC_OP_BY(vec_apply,  NAME)
+#define IVL_TVEC_OP(NAME)  IVL_VEC_OP_BY(tvec_apply, NAME)
 
 //-----------------------------------------------------------------------------
 
@@ -88,7 +78,7 @@ using op::details::operator OP;                \
 
 #define IVL_VEC_OP1_PRE(NAME, OP)              \
                                                \
-IVL_VEC_OP_MUT(NAME)                           \
+IVL_VEC_OP_BY(vec_mut, NAME)                   \
                                                \
 namespace op {                                 \
 namespace details {                            \
@@ -111,7 +101,7 @@ using op::details::operator OP;                \
 
 #define IVL_VEC_OP1_POST(NAME, OP)             \
                                                \
-IVL_VEC_OP_COPY(NAME)                          \
+IVL_VEC_OP_BY(vec_copy, NAME)                  \
                                                \
 namespace op {                                 \
 namespace details {                            \
@@ -157,7 +147,7 @@ using op::details::operator OP;                            \
 
 #define IVL_VEC_OP2_MUT(NAME, OP)                          \
                                                            \
-IVL_VEC_OP_MUT(NAME)                                       \
+IVL_VEC_OP_BY(vec_mut, NAME)                               \
                                                            \
 namespace op {                                             \
 namespace details {                                        \
@@ -260,9 +250,10 @@ IVL_VEC_OP(ptr_call)     //  c .* m ( a... )    // non-overloadable
 
 //-----------------------------------------------------------------------------
 
-IVL_ATOM_OP(member)
-
 namespace op {
+
+static __attribute__ ((unused)) afun::member member;
+
 namespace details {
 
 template <
@@ -281,31 +272,35 @@ using op::details::operator->*;
 
 //-----------------------------------------------------------------------------
 
-IVL_VEC_OP(call)      //  t ( a... )  // member operator
-IVL_VEC_OP(bracket)   //  t [ a ]     // member operator
-IVL_VEC_OP(comma)     //  a , b       // do not overload
-IVL_VEC_OP(cond)      //  c ? a : b   // non-overloadable
+IVL_VEC_OP(call)     //  t ( a... )  // member operator
+IVL_VEC_OP(bracket)  //  t [ a ]     // member operator
+IVL_VEC_OP(comma)    //  a , b       // do not overload
+IVL_VEC_OP(cond)     //  c ? a : b   // non-overloadable
 
 //-----------------------------------------------------------------------------
 
-IVL_TMP_VEC_OP(_sizeof)   //  sizeof(T), sizeof(t)  // non-overloadable
-IVL_TMP_VEC_OP(_alignof)  //  alignof(T)            // non-overloadable
+IVL_TVEC_OP(_sizeof)   //  sizeof(T), sizeof(t)  // non-overloadable
+IVL_TVEC_OP(_alignof)  //  alignof(T)            // non-overloadable
 
 using op::_sizeof;
 using op::_alignof;
 
 //-----------------------------------------------------------------------------
 
-IVL_TMP_VEC_OP(conv)               //  (T) a                    // non-overloadable
-IVL_TMP_VEC_OP(_static_cast)       //  static_cast <T>(a)       // non-overloadable
-IVL_TMP_VEC_OP(_dynamic_cast)      //  dynamic_cast <T>(a)      // non-overloadable
-IVL_TMP_VEC_OP(_const_cast)        //  const_cast <T>(a)        // non-overloadable
-IVL_TMP_VEC_OP(_reinterpret_cast)  //  reinterpret_cast <T>(a)  // non-overloadable
+IVL_TVEC_OP(conv)               //  (T) a                    // non-overloadable
+IVL_TVEC_OP(_static_cast)       //  static_cast <T>(a)       // non-overloadable
+IVL_TVEC_OP(_dynamic_cast)      //  dynamic_cast <T>(a)      // non-overloadable
+IVL_TVEC_OP(_const_cast)        //  const_cast <T>(a)        // non-overloadable
+IVL_TVEC_OP(_reinterpret_cast)  //  reinterpret_cast <T>(a)  // non-overloadable
 
 using op::_static_cast;
 using op::_dynamic_cast;
 using op::_const_cast;
 using op::_reinterpret_cast;
+
+//-----------------------------------------------------------------------------
+
+// TODO: new, delete
 
 // //-----------------------------------------------------------------------------
 //

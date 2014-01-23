@@ -48,29 +48,47 @@ struct tmp_vec_for
 	template <typename P, typename... A>
 	using map = _if <
 		any_pack_p <P>() || any_tuple <A...>(),
-		R, term_call <T>
+		R, atom_call <T>
 	>;
 };
 
-template <typename F, template <typename...> class V, typename T = afun::pre_tmp_call>
+template <
+	typename F, template <typename...> class V,
+	typename B = none, typename T = afun::pre_tmp_call
+>
 using tmp_vec_f = tmp_vec_fun <
-	val_gen <F, V <F> >,
+	val_gen <F, B>,
 	tmp_vec_for <V <T>, T>::template map
 >;
 
-//-----------------------------------------------------------------------------
+template <typename F, typename B = none>
+using tmp_vec_apply = tmp_vec_f <F, vec_apply, B>;
 
-template <typename F> using tmp_vec_apply = tmp_vec_f <F, vec_apply>;
-template <typename F> using tmp_vec_loop  = tmp_vec_f <F, vec_loop>;
-template <typename F> using tmp_vec_auto  = tmp_vec_f <F, vec_auto>;
+template <typename F, typename B = none>
+using tmp_vec_loop  = tmp_vec_f <F, vec_loop, B>;
 
-//-----------------------------------------------------------------------------
+template <typename F, typename B = none>
+using tmp_vec_auto  = tmp_vec_f <F, vec_auto, B>;
 
 template <typename F, typename B = atom <F>, typename T = afun::pre_tmp_call>
 using tmp_vec = tmp_vec_atom <
 	atom_gen <B>,
 	tmp_vec_for <vec_auto <T>, T>::template map
 >;
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename B = none>
+using tvec_apply = vec_apply <F, tmp_vec_apply <F, B> >;
+
+template <typename F, typename B = none>
+using tvec_loop = vec_loop <F, tmp_vec_loop <F, B> >;
+
+template <typename F, typename B = none>
+using tvec_auto = vec_auto <F, tmp_vec_auto <F, B> >;
+
+template <typename F, typename B = atom <F> >
+using tvec = vec <F, tmp_vec <F, B> >;
 
 //-----------------------------------------------------------------------------
 
@@ -82,6 +100,11 @@ using details::tmp_vec_apply;
 using details::tmp_vec_loop;
 using details::tmp_vec_auto;
 using details::tmp_vec;
+
+using details::tvec_apply;
+using details::tvec_loop;
+using details::tvec_auto;
+using details::tvec;
 
 //-----------------------------------------------------------------------------
 
