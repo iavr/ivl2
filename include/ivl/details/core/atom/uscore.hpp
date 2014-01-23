@@ -42,7 +42,7 @@ namespace details {
 
 class uscore : public afun::rref
 {
-	template <typename A> using R = fun_atom <base_opt <A&&> >;
+	template <typename A> using R = ext_atom <base_opt <A&&> >;
 
 public:
 	template <typename A>

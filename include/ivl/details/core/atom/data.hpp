@@ -39,7 +39,7 @@ namespace data {
 //-----------------------------------------------------------------------------
 
 template <typename... D> struct atom { };
-template <typename... D> struct fun  { };
+template <typename... D> struct ext  { };
 
 //-----------------------------------------------------------------------------
 

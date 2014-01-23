@@ -46,7 +46,7 @@ template <typename T>
 using raw_atom = atom <T, data::raw <> >;
 
 template <typename T>
-using fun_atom = atom <T, data::fun <> >;
+using ext_atom = atom <T, data::ext <> >;
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ using fun_atom = atom <T, data::fun <> >;
 
 using details::atom;
 using details::raw_atom;
-using details::fun_atom;
+using details::ext_atom;
 
 }  // namespace atoms
 

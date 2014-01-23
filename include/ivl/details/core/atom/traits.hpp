@@ -72,7 +72,7 @@ template <typename T, typename S>
 struct atom_attr_t : numbers <0, 0, 0, 0> { };
 
 template <typename T>
-struct atom_attr_t <T, data::fun <> > : details::atom_attr_<raw_type <T> > { };
+struct atom_attr_t <T, data::ext <> > : details::atom_attr_<raw_type <T> > { };
 
 template <typename T, typename S>
 using atom_attr = type_of <atom_attr_t <T, S> >;
