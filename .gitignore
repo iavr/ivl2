@@ -10,9 +10,11 @@ test/core/op
 test/core/traits
 test/core/traits.clang
 test/core/traits.gcc
+test/tuple/expr
 test/tuple/member
 test/tuple/test
 test/tuple/tmp_vec
 test/tuple/tuple
 test/tuple/vec
+test/tuple/vec_fun
 test/tuple/vec_op

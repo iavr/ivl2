@@ -49,7 +49,7 @@ int pow(const A& a, int e) { return std::pow(a.p, e); }
 
 void run()
 {
-	// TODO: val needed only for GCC; clang working also with _
+
 	{
 		cout << "op ->*" << endl;
 		using A = array <int>;
@@ -90,11 +90,11 @@ void run()
 		cout << endl;
 
 		cout << "op ->* (custom, vec member ptr)" << endl;
-		auto Am = val(&A::p, &A::q);
-		auto Bm = val(&B::p, &B::q);
-		auto AF = val(&A::f, &A::g);
-		auto BF = val(&B::f, &B::g);
-		auto H  = val(&A::h, &B::h);
+		auto Am = _(&A::p, &A::q);
+		auto Bm = _(&B::p, &B::q);
+		auto AF = _(&A::f, &A::g);
+		auto BF = _(&B::f, &B::g);
+		auto H  = _(&A::h, &B::h);
 		cout << _(a.f(10, 'c'), a.f(10, 'd')) << endl;
 		cout << a ->* _[&A::f]._(10, _('c', 'd')) << endl;
 		cout << (a ->* &A::f)(10, _('c', 'd')) << endl;

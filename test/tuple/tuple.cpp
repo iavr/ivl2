@@ -122,12 +122,12 @@ void run()
 		int x = 0;
 
 // TODO: array bug
-// 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);
-		auto t = val(7, "hello", 56.3, a, 'c', l, p);
+// 		auto t = _(7, "hello", 56.3, a, 'c', l, b, p);
+		auto t = _(7, "hello", 56.3, a, 'c', l, p);
 		cout << t.at <1>() << endl;
 		cout << endl;
 
-		auto w = val(_(x));
+		auto w = _(_(x));
 		w.val() = _(8);
 		cout << x << endl;
 		w.val().val() = 3;
@@ -178,8 +178,8 @@ void run()
 		int* p = 0;
 
 // TODO: array bug
-// 		auto t = val(7, "hello", 56.3, a, 'c', l, b, p);
-		auto t = val(7, "hello", 56.3, a, 'c', p);
+// 		auto t = _(7, "hello", 56.3, a, 'c', l, b, p);
+		auto t = _(7, "hello", 56.3, a, 'c', p);
 		cout << t << endl;
 		cout << t.at <sizes <0, 3, 3, 2, 0, 4, 0, 5> >() << endl;
 		cout << t.at <0, 3, 3, 2, 0, 4, 0, 5 >() << endl;
@@ -199,8 +199,8 @@ void run()
 
 	{
 		cout << "zip" << endl;
-		auto n = val('a', 'b', 'c', 'd');
-		auto v = val(3.14, 2.71, -3e19, 0);
+		auto n = _('a', 'b', 'c', 'd');
+		auto v = _(3.14, 2.71, -3e19, 0);
 		cout << zip(n, v) << endl;
 		int i, j;
 		double f, g;
@@ -211,8 +211,8 @@ void run()
 
 	{
 		cout << "join" << endl;
-		auto a = val('a', 'b', 'c', 'd');
-		auto b = val(3.14, 2.71, -3e19, 0);
+		auto a = _('a', 'b', 'c', 'd');
+		auto b = _(3.14, 2.71, -3e19, 0);
 		cout << join(a, b, _(), _(0, 1)) << endl;
 		cout << endl;
 	}
@@ -222,15 +222,13 @@ void run()
 		cout << _[3].val() << endl;
 		cout << _[3] << endl;
 		cout << tup_len <decltype(_[3])>() << endl;
-		cout << head(_[3]) << " " << tail(_[3]) << endl;
-		cout << flip(_[3]) << endl;
 		cout << endl;
 	}
 
 	{
 		cout << "tup" << endl;
-		auto a = val('a', 'b', 'c', 'd');
-		auto b = val(3.14, 2.71, -3e19, 0);
+		auto a = _('a', 'b', 'c', 'd');
+		auto b = _(3.14, 2.71, -3e19, 0);
 		cout << tup("hello", "world", -19) << endl;
 		cout << tup(a, b, _(), _(0, 1)) << endl;
 		cout << tup(a, "hello", b, "world", _(), -19, _(0, 1)) << endl;

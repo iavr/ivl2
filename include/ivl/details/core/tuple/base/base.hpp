@@ -42,14 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class R, typename... A>
-INLINE constexpr R <A...>
-make(A&&... a) { return R <A...>(fwd <A>(a)...); }
-
-//-----------------------------------------------------------------------------
-
 template <template <typename...> class T>
-struct apply_
+struct make
 {
 	template <typename... A>
 	INLINE constexpr subs <T, A...>
@@ -57,7 +51,7 @@ struct apply_
 };
 
 template <template <typename...> class T>
-struct loop_
+struct _do
 {
 	template <typename... A>
 	INLINE void
@@ -83,6 +77,8 @@ class base_tup <D, C <E...>, sizes <I...> > : public access <D, E...>
 
 	template <typename T, typename R = raw_type <T> >
 	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
+
+	template <typename T> using uopt = opt <add_uref <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -122,6 +118,9 @@ private:
 	template <size_t... J>
 	using sz_if = only_if <sizeof...(J) != 1, sizes <J...> >;
 
+	template <typename K, typename T>
+	using indir = indirect_tup <K, opt <T> >;
+
 //-----------------------------------------------------------------------------
 
 public:
@@ -140,30 +139,30 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <size_t... J, typename K = sz_if <J...> >
-	INLINE indirect_tup <K, opt <D&&> >
+	INLINE indir <K, D>
 	at() && { return der_f().template at <K>(); }
 
 	template <size_t... J, typename K = sz_if <J...> >
-	INLINE indirect_tup <K, opt <D&> >
+	INLINE indir <K, D&>
 	at() & { return der().template at <K>(); }
 
 	template <size_t... J, typename K = sz_if <J...> >
-	INLINE constexpr indirect_tup <K, opt <const D&> >
+	INLINE constexpr indir <K, const D&>
 	at() const& { return der().template at <K>(); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename K>
-	INLINE indirect_tup <K, opt <D&&> >
-	at() && { return indirect_tup <K, D&&>(der_f()); }
+	INLINE indir <K, D>
+	at() && { return indir <K, D>(der_f()); }
 
 	template <typename K>
-	INLINE indirect_tup <K, opt <D&> >
-	at() & { return indirect_tup <K, D&>(der()); }
+	INLINE indir <K, D&>
+	at() & { return indir <K, D&>(der()); }
 
 	template <typename K>
-	INLINE constexpr indirect_tup <K, opt <const D&> >
-	at() const& { return indirect_tup <K, const D&>(der()); }
+	INLINE constexpr indir <K, const D&>
+	at() const& { return indir <K, const D&>(der()); }
 
 //-----------------------------------------------------------------------------
 
@@ -215,18 +214,18 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
-	template <typename... T> using app = subs <apply_tuple, opt <T&&>...>;
-	template <typename... T> using loo = subs <loop_tuple, opt <T&&>...>;
-	template <typename... T> using op  = subs <keys::op_ref, opt <T&&>...>;
-
 	template <typename... P>
 	using tmp_if = only_if <sizeof...(P), tup_tmp <P...> >;
+
+	template <typename... T> using app = subs <apply_tuple, uopt <T>...>;
+	template <typename... T> using loo = subs <loop_tuple, opt <T&&>...>;
+	template <typename... T> using op  = subs <keys::op_ref, uopt <T>...>;
 
 	template <typename F, typename... A>
 	using auto_ret = _if <tup_void <F(A...)>{}, void, app <F, A...> >;
 
 	template <typename F, typename... A>
-	using auto_for = _if <tup_void <F(A...)>{}, loop_<loo>, apply_<app> >;
+	using auto_for = _if <tup_void <F(A...)>{}, _do <loo>, make <app> >;
 
 	using _auto = afun::choose_fun <auto_for>;
 	using bra   = afun::op::bracket;
@@ -237,21 +236,21 @@ private:
 
 public:
 	template <typename A>
-	INLINE app <bra, D&&, A>
-	operator[](A&& a) && { return make <app>(bra(), der_f(), fwd <A>(a)); }
+	INLINE app <bra, D, A>
+	operator[](A&& a) && { return make <app>()(bra(), der_f(), fwd <A>(a)); }
 
 	template <typename A>
 	INLINE app <bra, D&, A>
-	operator[](A&& a) & { return make <app>(bra(), der(), fwd <A>(a)); }
+	operator[](A&& a) & { return make <app>()(bra(), der(), fwd <A>(a)); }
 
 	template <typename A>
 	INLINE constexpr app <bra, const D&, A>
-	operator[](A&& a) const& { return make <app>(bra(), der(), fwd <A>(a)); }
+	operator[](A&& a) const& { return make <app>()(bra(), der(), fwd <A>(a)); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE auto_ret <par, D&&, A...>
+	INLINE auto_ret <par, D, A...>
 	operator()(A&&... a) && { return _auto()(par(), der_f(), fwd <A>(a)...); }
 
 	template <typename... A>
@@ -265,7 +264,7 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename... P, typename... A, typename T = tmp_if <P...> >
-	INLINE auto_ret <tmp, D&&, T, A...>
+	INLINE auto_ret <tmp, D, T, A...>
 	_(A&&... a) && { return _auto()(tmp(), der_f(), T(), fwd <A>(a)...); }
 
 	template <typename... P, typename... A, typename T = tmp_if <P...> >
@@ -279,16 +278,16 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE op <D&&, A...>
-	_(A&&... a) && { return make <op>(der_f(), fwd <A>(a)...); }
+	INLINE op <D, A...>
+	_(A&&... a) && { return make <op>()(der_f(), fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE op <D&, A...>
-	_(A&&... a) & { return make <op>(der(), fwd <A>(a)...); }
+	_(A&&... a) & { return make <op>()(der(), fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE constexpr op <const D&, A...>
-	_(A&&... a) const& { return make <op>(der(), fwd <A>(a)...); }
+	_(A&&... a) const& { return make <op>()(der(), fwd <A>(a)...); }
 
 };
 

@@ -153,6 +153,14 @@ using base_opt = type_of <base_opt_t <T, R, Q> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename T> using uref_opt_t = base_opt_t <add_uref <T> >;
+template <typename T> using uref_opt = type_of <uref_opt_t <T> >;
+
+template <typename T> using rref_opt_t = base_opt_t <add_rref <T> >;
+template <typename T> using rref_opt = type_of <rref_opt_t <T> >;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace traits
 
 //-----------------------------------------------------------------------------

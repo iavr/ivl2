@@ -45,13 +45,13 @@ namespace details {
 template <typename K, typename V>
 class key_val : private raw_tuple <V>
 {
-	using KV = key_val;
-
 	template <typename T, typename R = raw_type <T> >
-	using opt = base_opt <T, R, _if <eq <R, KV>{}, V, R> >;
+	using opt = base_opt <T, R, _if <eq <R, key_val>{}, V, R> >;
 
-	template <typename D, typename... A>
-	using OR = op_ref <opt <D&&>, opt <A&&>...>;
+	template <typename T> using uopt = opt <add_uref <T> >;
+
+	template <typename O, typename... A>
+	using op = op_ref <opt <O>, uopt <A>...>;
 
 public:
 	using raw_tuple <V>::raw_tuple;
@@ -60,16 +60,16 @@ public:
 	INLINE constexpr K key() const { return K(); }
 
 	template <typename... A>
-	INLINE OR <KV&&, A...>
-	_(A&&... a) && { return OR <KV&&, A...>(mv(*this), fwd <A>(a)...); }
+	INLINE op <key_val, A...>
+	_(A&&... a) && { return op <key_val, A...>(mv(*this), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE OR <KV&, A...>
-	_(A&&... a) & { return OR <KV&, A...>(*this, fwd <A>(a)...); }
+	INLINE op <key_val&, A...>
+	_(A&&... a) & { return op <key_val&, A...>(*this, fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr OR <const KV&, A...>
-	_(A&&... a) const& { return OR <const KV&, A...>(*this, fwd <A>(a)...); }
+	INLINE constexpr op <const key_val&, A...>
+	_(A&&... a) const& { return op <const key_val&, A...>(*this, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -78,19 +78,19 @@ template <typename K>
 class key
 {
 	template <typename A>
-	using KV = key_val <K, base_opt <A&&> >;
+	using kval = key_val <K, uref_opt <A> >;
 
 	template <typename... A>
-	using OR = op_ref <K, base_opt <A&&>...>;
+	using op = op_ref <K, uref_opt <A>...>;
 
 public:
 	template <typename A>
-	INLINE constexpr KV <A>
-	operator=(A&& a) const { return KV <A>(fwd <A>(a)); }
+	INLINE constexpr kval <A>
+	operator=(A&& a) const { return kval <A>(fwd <A>(a)); }
 
 	template <typename... A>
-	INLINE constexpr OR <A...>
-	_(A&&... a) const { return OR <A...>(K(), fwd <A>(a)...); }
+	INLINE constexpr op <A...>
+	_(A&&... a) const { return op <A...>(K(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

@@ -63,7 +63,7 @@ namespace details {
 
 template <typename T>
 using atom_attr_ = numbers <
-	is_method_ptr <T>{}, is_arr <T>{}, is_fun <T>{}, is_class <T>{}
+	is_method_ptr <T>{}, (is_arr <T>() || is_fun <T>() || is_class <T>())
 >;
 
 }  // namespace details

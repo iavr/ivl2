@@ -84,17 +84,17 @@ public:
 	using B::B;
 
 	template <typename... A>
-	INLINE ret <F(E..., A...)>
+	INLINE ret <rtref <F>(rtref <E>..., A...)>
 	operator()(A&&... a) &&
 		{ return T()(der_f()).call(H()(der_f()), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE ret <F(ltref <E>..., A...)>
+	INLINE ret <ltref <F>(ltref <E>..., A...)>
 	operator()(A&&... a) &
 		{ return T()(der()).call(H()(der()), fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <F(cltref <E>..., A...)>
+	INLINE constexpr ret <cltref <F>(cltref <E>..., A...)>
 	operator()(A&&... a) const&
 		{ return T()(der()).call(H()(der()), fwd <A>(a)...); }
 };
@@ -114,27 +114,27 @@ public:
 	using B::B;
 
 	template <typename... A>
-	INLINE ret <F(A...)>
+	INLINE ret <rtref <F>(A...)>
 	operator()(A&&... a) &&
 		{ return T()(der_f()).call(H()(der_f())), H()(der_f())(fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE ret <F(A...)>
+	INLINE ret <ltref <F>(A...)>
 	operator()(A&&... a) &
 		{ return T()(der()).call(H()(der())), H()(der())(fwd <A>(a)...); }
 
 	template <typename... A>
-	INLINE constexpr ret <F(A...)>
+	INLINE constexpr ret <cltref <F>(A...)>
 	operator()(A&&... a) const&
 		{ return T()(der()).call(H()(der())), H()(der())(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename F> using binder  = rref_of <binder_<F>::template map>;
+template <typename F> using binder = uref_of <binder_<F>::template map>;
 
-using bind    = rref_of <bind_>;
-using pre_fun = rref_of <pre_fun_>;
+using bind    = uref_of <bind_>;
+using pre_fun = uref_of <pre_fun_>;
 
 //-----------------------------------------------------------------------------
 

@@ -57,10 +57,10 @@ template <
 >
 class collect <F, T, E>
 {
-	template <typename... A> using R = subs <T, F <A&&>...>;
+	template <typename... A> using R = subs <T, F <A>...>;
 
 public:
-	template <typename... A, only_if <E <A...>{}> = 0>
+	template <typename... A, only_if <E <A...>{}()> = 0>  // {}() -> {} (needed by GCC)
 	INLINE constexpr R <A...>
 	operator()(A&&... a) const { return R <A...>(fwd <A>(a)...); }
 };
@@ -69,41 +69,47 @@ public:
 
 template <
 	template <typename...> class T = pre_tuple,
-	template <typename...> class E = always
+	template <typename...> class... E
 >
-using val_of = collect <decay, T, E>;
+using val_of = collect <decay, T, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
-	template <typename...> class E = always
+	template <typename...> class... E
 >
-using rref_of = collect <base_opt, T, E>;
+using uref_of = collect <uref_opt, T, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
-	template <typename...> class E = always
+	template <typename...> class... E
 >
-using lref_of = collect <base_opt, T, E, all_lref>;
+using rref_of = collect <rref_opt, T, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
-	template <typename...> class E = always
+	template <typename...> class... E
 >
-using clref_of = collect <base_opt, T, E, all_clref>;
+using lref_of = collect <base_opt, T, all_lref, E...>;
+
+template <
+	template <typename...> class T = pre_tuple,
+	template <typename...> class... E
+>
+using clref_of = collect <base_opt, T, all_clref, E...>;
 
 //-----------------------------------------------------------------------------
 
-using tup_join = rref_of <join_tup, all_tuple>;
-using tup      = rref_of <join_tuple>;
+using tup_join = uref_of <join_tup, all_tuple>;
+using tup      = uref_of <join_tuple>;
 
-using tup_zip   = rref_of <zip_tup, all_tuple>;
-using tup_inner = rref_of <zip_tuple, any_tuple>;
+using tup_zip   = uref_of <zip_tup,   all_tuple>;
+using tup_inner = uref_of <zip_tuple, any_tuple>;
 
 //-----------------------------------------------------------------------------
 
 struct tup_head
 {
-	template <typename T, only_if <as_tup_non_empty <T>{}> = 0>
+	template <typename T, only_if <tup_non_empty <T>{}> = 0>
 	INLINE constexpr auto operator()(T&& t) const
 	-> decltype(at()._<0>(fwd <T>(t)))
 		{ return at()._<0>(fwd <T>(t)); }
@@ -113,16 +119,16 @@ struct tup_head
 
 struct tup_tail
 {
-	template <typename T, only_if <as_tup_non_empty <T>{}> = 0>
-	INLINE constexpr tail_tup <base_opt <T&&> >
-	operator()(T&& t) const { return tail_tup <base_opt <T&&> >(fwd <T>(t)); }
+	template <typename T, only_if <tup_non_empty <T>{}> = 0>
+	INLINE constexpr tail_tup <base_opt <T> >
+	operator()(T&& t) const { return tail_tup <base_opt <T> >(fwd <T>(t)); }
 };
 
 //-----------------------------------------------------------------------------
 
 struct tup_flip
 {
-	template <typename T, only_if <tup_empty <T>{} || is_atom <T>{}> = 0>
+	template <typename T, only_if <tup_empty <T>{}> = 0>
 	INLINE constexpr T&& operator()(T&& t) const { return fwd <T>(t); }
 
 	template <typename T, only_if <tup_non_empty <T>{}> = 0>
@@ -148,11 +154,13 @@ struct tup_call
 //-----------------------------------------------------------------------------
 
 using details::val_of;
+using details::uref_of;
 using details::rref_of;
 using details::lref_of;
 using details::clref_of;
 
 using val   = val_of <>;
+using uref  = uref_of <>;
 using rref  = rref_of <>;
 using lref  = lref_of <>;
 using clref = clref_of <>;
@@ -166,6 +174,7 @@ using details::tup;
 //-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) afun::val    val;
+static __attribute__ ((unused)) afun::uref   uref;
 static __attribute__ ((unused)) afun::rref   rref;
 static __attribute__ ((unused)) afun::lref   lref;
 static __attribute__ ((unused)) afun::clref  clref;

@@ -43,22 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // builtin-array atom: vec-[]
-template <typename T, typename S>
-struct store <T, S, numbers <0, 1, 0, 0> > : afun::bra_vec <T>
-{
-	using afun::bra_vec <T>::bra_vec;
-};
-
 // builtin-function atom: vec-()
-template <typename T, typename S>
-struct store <T, S, numbers <0, 0, 1, 0> > : afun::vec <T>
-{
-	using afun::vec <T>::vec;
-};
-
 // class atom: vec- [], (), _<>()
 template <typename T, typename S>
-struct store <T, S, numbers <0, 0, 0, 1> > : afun::tvec <T, afun::bra_vec <T> >
+struct store <T, S, numbers <0, 1> > : afun::tvec <T, afun::bra_vec <T> >
 {
 	using afun::tvec <T, afun::bra_vec <T> >::tvec;
 };

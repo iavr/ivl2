@@ -20,11 +20,9 @@ inc;
 struct
 {
 	template <typename X, typename Y, typename Z>
-	tuple <Y&&, Z&&, X&&>
-	operator()(X&& x, Y&& y, Z&& z)
-	{
-		return _(fwd <Y>(y), fwd <Z>(z), fwd <X>(x));
-	}
+	auto operator()(X&& x, Y&& y, Z&& z)
+	-> decltype(_(fwd <Y>(y), fwd <Z>(z), fwd <X>(x)))
+		{ return _(fwd <Y>(y), fwd <Z>(z), fwd <X>(x)); }
 }
 shift;
 
@@ -51,7 +49,7 @@ void run()
 {
 	{
 		cout << "apply unary" << endl;
-		auto t = val('a', 3.14, 2);
+		auto t = _('a', 3.14, 2);
 		cout << apply(inc, t) << endl;
 		cout << endl;
 
@@ -62,21 +60,21 @@ void run()
 
 	{
 		cout << "inner" << endl;
-		auto t = val('a', 3.14, 2);
+		auto t = _('a', 3.14, 2);
 		cout << inner(t, 'X', _(1, 2, 3, 4)) << endl;
 		cout << endl;
 	}
 
 	{
 		cout << "apply ternary (inner)" << endl;
-		auto t = val('a', 3.14, 2);
+		auto t = _('a', 3.14, 2);
 		cout << apply(shift, t, 'X', _(1, 2, 3, 4)) << endl;
 		cout << endl;
 	}
 
 	{
 		cout << "apply operator functor (inner)" << endl;
-		auto t = val('a', 3.14, 2, "hello");
+		auto t = _('a', 3.14, 2, "hello");
 		cout << t << endl;
 		cout << apply(add, t, _(1, 2, 3, 4)) << endl;
 		cout << apply(add, t, 2) << endl;
@@ -87,7 +85,7 @@ void run()
 
 	{
 		cout << "vec operator functor" << endl;
-		auto t = val('a', 3.14, 2, "hello");
+		auto t = _('a', 3.14, 2, "hello");
 		cout << t << endl;
 		cout << Add(t, _(1, 2, 3, 4)) << endl;
 		cout << Add(t, 2) << endl;
@@ -98,7 +96,7 @@ void run()
 
 	{
 		cout << "binary vec operator" << endl;
-		auto t = val('a', 3.14, 2, "hello");
+		auto t = _('a', 3.14, 2, "hello");
 		cout << t << endl;
 		cout << t + _(1, 2, 3, 4) << endl;
 		cout << t + 2 << endl;
@@ -109,7 +107,7 @@ void run()
 
 	{
 		cout << "binary vec operator" << endl;
-		auto t = val(5, 6, 7, 8);
+		auto t = _(5, 6, 7, 8);
 		cout << 1 + 2 << endl;
 		cout << t + 2 << endl;
 		cout << 2 + t << endl;
@@ -128,7 +126,7 @@ void run()
 
 	{
 		cout << "vec functor instance" << endl;
-		auto t = val('a', 3.14, 2);
+		auto t = _('a', 3.14, 2);
 		cout << _[shift](t, 'X', _(1, 2, 3, 4)) << endl;
 		cout << _[shift](_('a', 3.14, 2), 'X', _(1, 2, 3, 4)) << endl;
 		cout << shift(_('a', 3.14, 2), 'X', _(1, 2, 3, 4)) << endl;

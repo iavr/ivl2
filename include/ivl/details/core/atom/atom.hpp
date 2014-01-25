@@ -52,15 +52,15 @@ struct store : base_atom <atom <T, S>, _type <T> >
 
 // member_ptr atom
 template <typename T, typename S>
-class store <T, S, numbers <1, 0, 0, 0> > :
+class store <T, S, numbers <1, 0> > :
 	public base_atom <atom <T, S>, _type <T> >
 {
 	using B = base_atom <atom <T, S>, _type <T> >;
 	using B::val_f;
 	using B::val;
 
-	template <typename... A>
-	using op = subs <keys::op_ref, base_opt <A&&>...>;
+	template <typename O, typename... A>
+	using op = keys::op_ref <O, uref_opt <A>...>;
 
 public:
 	using B::B;
@@ -68,16 +68,16 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename... A>
-	INLINE op <T&&, A...>
-	_(A&&... a) && { return make <op>(val_f(), fwd <A>(a)...); }
+	INLINE op <T, A...>
+	_(A&&... a) && { return op <T, A...>(val_f(), fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE op <T&, A...>
-	_(A&&... a) & { return make <op>(val(), fwd <A>(a)...); }
+	_(A&&... a) & { return op <T&, A...>(val(), fwd <A>(a)...); }
 
 	template <typename... A>
 	INLINE constexpr op <const T&, A...>
-	_(A&&... a) const& { return make <op>(val(), fwd <A>(a)...); }
+	_(A&&... a) const& { return op <const T&, A...>(val(), fwd <A>(a)...); }
 
 };
 

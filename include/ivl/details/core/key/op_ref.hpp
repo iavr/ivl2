@@ -48,7 +48,7 @@ class op_ref : private raw_tuple <O, A...>
 	using B = raw_tuple <O, A...>;
 
 	template <typename T>
-	using tail = tail_tup <base_opt <T&&> >;
+	using tail = tail_tup <base_opt <T> >;
 
 	using derived <B>::der;
 	using derived <B>::der_f;
@@ -66,8 +66,8 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	INLINE tail <B&&>
-	ref() && { return tail <B&&>(der_f()); }
+	INLINE tail <B>
+	ref() && { return tail <B>(der_f()); }
 
 	INLINE tail <B&>
 	ref() & { return tail <B&>(der()); }

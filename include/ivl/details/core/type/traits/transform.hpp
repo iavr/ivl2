@@ -44,27 +44,35 @@ namespace traits {
 
 namespace details {
 
-template <typename T, bool = is_void <T>()>
-struct add_rref_t_ { using type = T; };
+template <typename T, bool = is_arr <T>(), bool = is_fun <T>()>
+struct add_uref_ : id_t <T&&> { };
 
 template <typename T>
-struct add_rref_t_<T, false> { using type = T&&; };
+struct add_uref_<T, false, false> : id_t <T> { };
+
+template <typename T, bool = is_void <T>()>
+struct add_rref_ : id_t <T> { };
+
+template <typename T>
+struct add_rref_<T, false> : id_t <T&&> { };
 
 template <typename T, bool = is_void <T>() || is_lref <T>()>
-struct add_lref_t_ { using type = T; };
+struct add_lref_ : id_t <T> { };
 
 template <typename T>
-struct add_lref_t_<T, false> { using type = T&; };
+struct add_lref_<T, false> : id_t <T&> { };
 
 }  // namespace details
 
-template <typename T> using add_rref_t = details::add_rref_t_<T>;
-template <typename T> using add_lref_t = details::add_lref_t_<T>;
+template <typename T> using add_uref_t = details::add_uref_<T>;
+template <typename T> using add_rref_t = details::add_rref_<T>;
+template <typename T> using add_lref_t = details::add_lref_<T>;
 
-template <typename T> struct remove_ref_t       { using type = T; };
-template <typename T> struct remove_ref_t <T&>  { using type = T; };
-template <typename T> struct remove_ref_t <T&&> { using type = T; };
+template <typename T> struct remove_ref_t       : id_t <T> { };
+template <typename T> struct remove_ref_t <T&>  : id_t <T> { };
+template <typename T> struct remove_ref_t <T&&> : id_t <T> { };
 
+template <typename T> using add_uref   = type_of <add_uref_t   <T> >;
 template <typename T> using add_rref   = type_of <add_rref_t   <T> >;
 template <typename T> using add_lref   = type_of <add_lref_t   <T> >;
 template <typename T> using remove_ref = type_of <remove_ref_t <T> >;
@@ -73,19 +81,19 @@ template <typename T> using remove_ref = type_of <remove_ref_t <T> >;
 
 namespace details {
 
-template <typename T> struct add_ptr_t_     { using type = T*; };
-template <typename T> struct add_ptr_t_<T*> { using type = T*; };
+template <typename T> struct add_ptr_     : id_t <T*> { };
+template <typename T> struct add_ptr_<T*> : id_t <T*> { };
 
-template <typename T> struct remove_ptr_t_     { using type = T; };
-template <typename T> struct remove_ptr_t_<T*> { using type = T; };
+template <typename T> struct remove_ptr_     : id_t <T> { };
+template <typename T> struct remove_ptr_<T*> : id_t <T> { };
 
 }  // namespace details
 
 template <typename T>
-using add_ptr_t = details::add_ptr_t_<remove_ref <T> >;
+using add_ptr_t = details::add_ptr_<remove_ref <T> >;
 
 template <typename T>
-using remove_ptr_t = details::remove_ptr_t_<remove_cv <T> >;
+using remove_ptr_t = details::remove_ptr_<remove_cv <T> >;
 
 template <typename T> using add_ptr    = type_of <add_ptr_t    <T> >;
 template <typename T> using remove_ptr = type_of <remove_ptr_t <T> >;
@@ -95,19 +103,19 @@ template <typename T> using remove_ptr = type_of <remove_ptr_t <T> >;
 namespace details {
 
 template <typename T, bool = is_ref <T>() || is_fun <T>() || is_const <T>()>
-struct add_const_t_ { using type = T;};
+struct add_const_ : id_t <T> { };
 
 template <typename T>
-struct add_const_t_<T, false> { using type = const T;};
+struct add_const_<T, false> : id_t <const T> { };
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using add_const_t = details::add_const_t_<T>;
+template <typename T> using add_const_t = details::add_const_<T>;
 
-template <typename T> struct remove_const_t           { using type = T;};
-template <typename T> struct remove_const_t <const T> { using type = T;};
+template <typename T> struct remove_const_t           : id_t <T> { };
+template <typename T> struct remove_const_t <const T> : id_t <T> { };
 
 template <typename T> using add_const    = type_of <add_const_t    <T> >;
 template <typename T> using remove_const = type_of <remove_const_t <T> >;
@@ -117,17 +125,17 @@ template <typename T> using remove_const = type_of <remove_const_t <T> >;
 namespace details {
 
 template <typename T, bool = is_ref <T>() || is_fun <T>() || is_vol <T>()>
-struct add_vol_t_ { using type = T;};
+struct add_vol_ : id_t <T> { };
 
 template <typename T>
-struct add_vol_t_<T, false> { using type = volatile T;};
+struct add_vol_<T, false> : id_t <volatile T> { };
 
 }  // namespace details
 
-template <typename T> using add_vol_t = details::add_vol_t_<T>;
+template <typename T> using add_vol_t = details::add_vol_<T>;
 
-template <typename T> struct remove_vol_t              { using type = T;};
-template <typename T> struct remove_vol_t <volatile T> { using type = T;};
+template <typename T> struct remove_vol_t              : id_t <T> { };
+template <typename T> struct remove_vol_t <volatile T> : id_t <T> { };
 
 template <typename T> using add_vol    = type_of <add_vol_t    <T> >;
 template <typename T> using remove_vol = type_of <remove_vol_t <T> >;
@@ -136,11 +144,11 @@ template <typename T> using remove_vol = type_of <remove_vol_t <T> >;
 
 namespace details {
 
-template <typename T> struct add_cv_t_ : add_const_t <add_vol <T> > { };
+template <typename T> struct add_cv_ : add_const_t <add_vol <T> > { };
 
 }  // namespace details
 
-template <typename T> using add_cv_t = details::add_cv_t_ <T>;
+template <typename T> using add_cv_t = details::add_cv_ <T>;
 template <typename T> using add_cv = type_of <add_cv_t <T> >;
 
 // remove_cv_t defined as struct because it is fwd-declared @begin.hpp
@@ -242,8 +250,8 @@ template <typename T> using decay = type_of <decay_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct reuse_t       { using type = T; };
-template <typename T> struct reuse_t <T&&> { using type = add_const <T>&; };
+template <typename T> struct reuse_t       : id_t <T> { };
+template <typename T> struct reuse_t <T&&> : id_t <add_const <T>&> { };
 
 template <typename T> using reuse = type_of <reuse_t <T> >;
 

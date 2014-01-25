@@ -44,7 +44,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // no alias: often used
-struct tup_apply : rref_of <apply_tuple, any_tuple> { };
+struct tup_apply : uref_of <apply_tuple, any_tuple> { };
 struct tup_loop_ : rref_of <loop_tuple,  any_tuple> { };
 
 struct tup_loop
