@@ -56,6 +56,10 @@ struct c_cmember : constant <R const C::*, c_cmember <R, C, M> >
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+//-----------------------------------------------------------------------------
+
 template <typename R, typename C, C &O, R C::*M>
 using c_ref_member =
 	c_op <op::ref_member(c_ref <C, O>, c_member <R, C, M>)>;
@@ -73,6 +77,17 @@ using c_ptr_member =
 template <typename R, typename C, C const *O, R const C::*M>
 using c_cptr_member =
 	c_op <op::ptr_member(c_cptr <C, O>, c_cmember <R, C, M>)>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::c_ref_member;
+using details::c_cref_member;
+using details::c_ptr_member;
+using details::c_cptr_member;
 
 //-----------------------------------------------------------------------------
 

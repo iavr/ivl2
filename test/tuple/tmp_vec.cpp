@@ -6,7 +6,6 @@ namespace test {
 
 using namespace ivl;
 using namespace ivl::types;
-namespace op = ivl::op;
 
 //-----------------------------------------------------------------------------
 

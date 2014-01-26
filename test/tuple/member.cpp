@@ -18,7 +18,6 @@ namespace test {
 
 using namespace ivl;
 using namespace ivl::types;
-namespace op = ivl::op;
 
 using ivl::size;
 using ivl::empty;

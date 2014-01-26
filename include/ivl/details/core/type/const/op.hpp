@@ -42,6 +42,10 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+//-----------------------------------------------------------------------------
+
 template <typename F, typename... A>
 using c_op = c_fun_call <F, A...>;
 
@@ -113,6 +117,55 @@ using c_const_cast = c_op <op::_const_cast(tmp <T>, A)>;
 
 template <typename T, typename A>
 using c_reinterpret_cast = c_op <op::_reinterpret_cast(tmp <T>, A)>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::c_plus;
+using details::c_minus;
+
+using details::c_add;
+using details::c_sub;
+using details::c_mul;
+using details::c_div;
+using details::c_mod;
+
+using details::c_eq;
+using details::c_neq;
+using details::c_gt;
+using details::c_lt;
+using details::c_ge;
+using details::c_le;
+
+using details::c_not;
+using details::c_and;
+using details::c_or;
+
+using details::c_bit_not;
+using details::c_bit_and;
+using details::c_bit_or;
+using details::c_bit_xor;
+
+using details::c_left;
+using details::c_right;
+
+using details::c_deref;
+using details::c_addr;
+using details::c_bracket;
+using details::c_comma;
+using details::c_cond;
+
+using details::c_sizeof;
+using details::c_alignof;
+
+using details::c_conv;
+using details::c_static_cast;
+using details::c_dynamic_cast;
+using details::c_const_cast;
+using details::c_reinterpret_cast;
 
 //-----------------------------------------------------------------------------
 

@@ -60,7 +60,7 @@ class collect <F, T, E>
 	template <typename... A> using R = subs <T, F <A>...>;
 
 public:
-	template <typename... A, only_if <E <A...>{}()> = 0>  // {}() -> {} (needed by GCC)
+	template <typename... A, only_if <E <A...>{}()> = 0>  // TODO: {}() -> {} (needed by GCC)
 	INLINE constexpr R <A...>
 	operator()(A&&... a) const { return R <A...>(fwd <A>(a)...); }
 };

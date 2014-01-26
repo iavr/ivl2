@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F>
-struct binder_
+struct bind_of_
 {
 	template <typename... E>
 	class map : private pre_tuple <E...>
@@ -131,7 +131,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename F> using binder = uref_of <binder_<F>::template map>;
+template <typename F> using bind_of = uref_of <bind_of_<F>::template map>;
 
 using bind    = uref_of <bind_>;
 using pre_fun = uref_of <pre_fun_>;
@@ -152,7 +152,7 @@ struct tup_fun
 
 //-----------------------------------------------------------------------------
 
-using details::binder;
+using details::bind_of;
 using details::bind;
 using details::pre_fun;
 using details::tup_fun;

@@ -102,7 +102,7 @@ template <typename C, typename M>
 using op_ref_member_for = _if <
 	is_op_ref <M>{},
 	op_ref_call <vec_op_key_call>,
-	try_fun <vec_op_key_member, binder <vec_op_key_call> >
+	try_fun <vec_op_key_member, bind_of <vec_op_key_call> >
 >;
 
 using op_ref_member = choose_fun <op_ref_member_for>;
