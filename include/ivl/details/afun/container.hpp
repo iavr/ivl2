@@ -42,14 +42,14 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using join  = der_nfun <tup_join,  seq_join>;
-using zip   = der_nfun <tup_zip,   seq_zip>;
-using inner = der_nfun <tup_inner, seq_inner>;
+using join  = seq_join;
+using zip   = seq_zip;
+using inner = seq_inner;
 
-using head  = der_nfun <tup_head,  seq_head>;
-using tail  = der_nfun <tup_tail,  seq_tail>;
-using flip  = der_nfun <tup_flip,  seq_flip>;
-using call  = der_nfun <tup_call,  seq_call>;
+using head  = seq_head;
+using tail  = seq_tail;
+using flip  = seq_flip;
+using call  = seq_call;
 
 //-----------------------------------------------------------------------------
 

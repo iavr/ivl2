@@ -43,15 +43,15 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // TODO
-struct seq_join  { void operator()(nat); };
-struct seq_zip   { void operator()(nat); };
-struct seq_inner { void operator()(nat); };
+struct seq_join  : tup_join { };
+struct seq_zip   : tup_zip { };
+struct seq_inner : tup_inner { };
 
 // TODO
-struct seq_head { void operator()(nat); };
-struct seq_tail { void operator()(nat); };
-struct seq_flip { void operator()(nat); };
-struct seq_call { void operator()(nat); };
+struct seq_head : tup_head { };
+struct seq_tail : tup_tail { };
+struct seq_flip : tup_flip { };
+struct seq_call : tup_call { };
 
 //-----------------------------------------------------------------------------
 

@@ -106,6 +106,29 @@ template <typename T>    using  tup_types = type_of <tup_types_t <T> >;
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename T, bool = is_tuple <T>()>
+struct common_of_ : id_t <common_p <tup_types <T> > > { };
+
+template <typename T>
+struct common_of_<T, false> : id_t <value_type_of <T> > { };
+
+}  // namespace details
+
+template <typename T> using common_of_t = details::common_of_<raw_type <T> >;
+template <typename T> using common_of = type_of <common_of_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <size_t I> using common_at = apply_at <I, common_of>;
+template <size_t I> using copy_at   = apply_at <I, copy>;
+
+template <typename... E> using common_fst = common_at <0>::template map <E...>;
+template <typename... E> using copy_fst   = copy_at <0>::template map <E...>;
+
+//-----------------------------------------------------------------------------
+
 template <size_t I, typename T>
 using tup_elem_t = tup_tx_t <T, pick_p <I, raw_types <T> > >;
 

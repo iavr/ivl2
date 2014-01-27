@@ -47,7 +47,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using fun_test = decltype(afun::tmp_call()(gen <F>(), gen <A>()...));
+using fun_test = decltype(afun::tmp_call_ret()(gen <F>(), gen <A>()...));
 
 template <typename C, typename M, typename... A>
 using method_test = decltype((gen <C>().*gen <M>())(gen <A>()...));
@@ -104,7 +104,8 @@ template <typename F, typename... A>
 struct result_t <F(A...)> :
 	details::res_complete <remove_ref <F>, F(A...)> { };
 
-template <typename... S> using result = type_of <result_t <S...> >;
+template <typename... S>
+using result = type_of <result_t <S...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -114,7 +115,8 @@ struct ret_t : ret_t <F(A...)> { };
 template <typename F, typename... A>
 struct ret_t <F(A...)> : id_t <details::fun_test <F, A...> > { };
 
-template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
+template <typename F, typename... A>
+using ret = type_of <ret_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 

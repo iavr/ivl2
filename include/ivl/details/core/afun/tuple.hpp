@@ -48,14 +48,14 @@ template <
 	template <typename...> class T,
 	template <typename...> class... E
 >
-struct collect : collect <F, T, all_cond <E...>::template map> { };
+struct make : make <F, T, all_cond <E...>::template map> { };
 
 template <
 	template <typename...> class F,
 	template <typename...> class T,
 	template <typename...> class E
 >
-class collect <F, T, E>
+class make <F, T, E>
 {
 	template <typename... A> using R = subs <T, F <A>...>;
 
@@ -71,31 +71,31 @@ template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
-using val_of = collect <decay, T, E...>;
+using val_of = make <decay, T, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
-using uref_of = collect <uref_opt, T, E...>;
+using uref_of = make <uref_opt, T, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
-using rref_of = collect <rref_opt, T, E...>;
+using rref_of = make <rref_opt, T, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
-using lref_of = collect <base_opt, T, all_lref, E...>;
+using lref_of = make <base_opt, T, all_lref, E...>;
 
 template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
-using clref_of = collect <base_opt, T, all_clref, E...>;
+using clref_of = make <base_opt, T, all_clref, E...>;
 
 //-----------------------------------------------------------------------------
 

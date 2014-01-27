@@ -53,14 +53,24 @@ struct c_gen2 : c_sig <T(T, T)>::template call <F, A1, A2> { }	;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using limits = std::numeric_limits <T>;
+namespace details {
 
-template <typename T> using c_min = c_gen <T, limits <T>::min>;
-template <typename T> using c_max = c_gen <T, limits <T>::max>;
+template <typename T> using lim = std::numeric_limits <T>;
 
-template <typename T = double> using c_eps = c_gen <T, limits <T>::epsilon>;
-template <typename T = double> using c_inf = c_gen <T, limits <T>::infinity>;
-template <typename T = double> using c_nan = c_gen <T, limits <T>::quiet_NaN>;
+template <typename T> using c_min = c_gen <T, lim <T>::min>;
+template <typename T> using c_max = c_gen <T, lim <T>::max>;
+
+template <typename T = double> using c_eps = c_gen <T, lim <T>::epsilon>;
+template <typename T = double> using c_inf = c_gen <T, lim <T>::infinity>;
+template <typename T = double> using c_nan = c_gen <T, lim <T>::quiet_NaN>;
+
+}  // namespace details
+
+using details::c_min;
+using details::c_max;
+using details::c_eps;
+using details::c_inf;
+using details::c_nan;
 
 //-----------------------------------------------------------------------------
 

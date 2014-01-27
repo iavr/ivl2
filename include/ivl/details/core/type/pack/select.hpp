@@ -123,6 +123,15 @@ template <typename... E> using snd = pick <1, E...>;
 
 //-----------------------------------------------------------------------------
 
+template <size_t I, template <typename> class F>
+struct apply_at
+{
+	template <typename... A>
+	using map = F <pick <I, A...> >;
+};
+
+//-----------------------------------------------------------------------------
+
 template <size_t N, typename T> struct rep_t;
 template <size_t N, typename T> using rep = type_of <rep_t <N, T> >;
 

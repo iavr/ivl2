@@ -111,12 +111,36 @@ template <typename S, typename D> using is_conv = is_conv_ <S, D>;
 
 //-----------------------------------------------------------------------------
 
+template <typename P> struct common_pt;
+template <typename P> using  common_p = type_of <common_pt <P> >;
+
+template <template <typename...> class C, typename E>
+struct common_pt <C <E> > : id_t <E> { };
+
+template <template <typename...> class C, typename E, typename F>
+struct common_pt <C <E, F> > :
+	remove_ref_t <decltype(gen <bool>() ? gen <E>() : gen <F>())> { };
+
+template <
+	template <typename...> class C,
+	typename E, typename F, typename... G
+>
+struct common_pt <C <E, F, G...> > :
+	common_pt <C <common_p <C <E, F> >, G...> > { };
+
+template <typename... T> using common_t = common_pt <pack <T...> >;
+template <typename... T> using common = type_of <common_t <T...> >;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::is_base_eq;
 using details::is_base;
 using details::is_related;
 using details::is_conv;
+using details::common_p;
+using details::common;
 
 //-----------------------------------------------------------------------------
 

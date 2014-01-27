@@ -95,43 +95,6 @@ template <typename T> using derived_type_of = typename T::derived_type;
 
 //-----------------------------------------------------------------------------
 
-template <typename... F> struct der_nfun;
-
-template <typename F> struct der_nfun <F> : F { };
-
-template <typename F, typename... Fn>
-class der_nfun <F, Fn...> : public F, public der_nfun <Fn...>
-{
-	using B = der_nfun <Fn...>;
-
-public:
-	using F::operator();
-	using B::operator();
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename... F> struct der_tfun;
-
-template <typename F> struct der_tfun <F> : F { };
-
-template <typename F, typename... Fn>
-class der_tfun <F, Fn...> : public F, public der_tfun <Fn...>
-{
-	using B = der_tfun <Fn...>;
-
-public:
-	using F::_;
-	using B::_;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename... F> struct der_fun :
-	der_nfun <F...>, der_tfun <F...> { };
-
-//-----------------------------------------------------------------------------
-
 }  // namespace types
 
 using types::derived;

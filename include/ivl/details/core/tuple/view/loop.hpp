@@ -61,21 +61,29 @@ class loop_store <F, pack <A...>, sizes <I...> > : public base_tup <
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtel <J, P>
+	INLINE nat
 	ref_at() && { return fun::fwd()(_at._<J>(arg <I>::fwd())...), nat(); }
 
 	template <size_t J>
-	INLINE ltel <J, P>
+	INLINE nat
 	ref_at() & { return fun::get()(_at._<J>(arg <I>::get())...), nat(); }
 
 	template <size_t J>
-	INLINE constexpr cltel <J, P>
+	INLINE constexpr nat
 	ref_at() const& { return fun::get()(_at._<J>(arg <I>::get())...), nat(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using B::B;
+
+//-----------------------------------------------------------------------------
+
+	INLINE rtref <F> loop() && { return B::loop_f(), fun::fwd(); }
+	INLINE ltref <F> loop() &  { return B::loop(), fun::get()(); }
+
+	INLINE constexpr cltref <F> loop() const& { return B::loop(), fun::get(); }
+
 };
 
 //-----------------------------------------------------------------------------

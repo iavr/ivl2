@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_VEC_HPP
-#define IVL_DETAILS_CORE_VEC_VEC_HPP
+#ifndef IVL_DETAILS_AFUN_LIMITS_HPP
+#define IVL_DETAILS_AFUN_LIMITS_HPP
 
 #include <ivl/ivl>
 
@@ -42,65 +42,72 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using apply = seq_apply;
+namespace lim {
 
 //-----------------------------------------------------------------------------
 
-template <typename S>
-class sep_loop : public seq_sep_loop <S, sep_loop <S> >
-{
-	S&& s;
+template <typename T>
+using limits = std::numeric_limits <T>;
 
-public:
-	explicit INLINE constexpr sep_loop(S&& s) : s{fwd <S>(s)} { }
-	INLINE S&& sep() const { return fwd <S>(s); }
+//-----------------------------------------------------------------------------
+
+struct min
+{
+	template <typename T>
+	INLINE T _() const { return limits <T>::min(); }
+};
+
+struct max
+{
+	template <typename T>
+	INLINE T _() const { return limits <T>::max(); }
 };
 
 //-----------------------------------------------------------------------------
 
-struct loop : seq_loop
+struct eps
 {
-	// TODO: keys
-	template <typename S>
-	INLINE sep_loop <S>
-	operator[](S&& s) const { return sep_loop <S>(fwd <S>(s)); }
+	template <typename T = double>
+	INLINE T _() const { return limits <T>::epsilon(); }
+};
+
+struct inf
+{
+	template <typename T = double>
+	INLINE T _() const { return limits <T>::infinity(); }
+};
+
+struct nan
+{
+	template <typename T = double>
+	INLINE T _() const { return limits <T>::quiet_NaN(); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-using accum = seq_accum <F>;
-
-template <
-	typename F, typename I = F,
-	template <typename...> class C = common_fst
->
-struct fold
+struct inf_min
 {
-	template <typename... A, typename T = copy <C <A...> > >
-	INLINE constexpr T
-	operator()(A&&... a) const
-		{ return accum <F>()(I().template _<T>(), fwd <A>(a)...); }
+	template <typename T>
+	INLINE T _() const
+	{
+		return limits <T>::has_infinity ?
+			-limits <T>::infinity() : limits <T>::min();
+	}
 };
 
-template <typename F, typename I = F>
-using collect = fold <F, I, copy_fst>;
+struct inf_max
+{
+	template <typename T>
+	INLINE T _() const
+	{
+		return limits <T>::has_infinity ?
+			limits <T>::infinity() : limits <T>::max();
+	}
+};
 
 //-----------------------------------------------------------------------------
 
-// no alias: fwd-declared
-template <typename F, typename B = none> struct vec_apply : seq_vec_apply <F, B> { };
-template <typename F, typename B = none> using  vec_loop  = seq_vec_loop <F, B>;
-template <typename F, typename B = none> using  vec_auto  = seq_vec_auto <F, B>;
-
-template <typename F, typename B = atom <F> > using vec = seq_vec <F, B>;
-
-template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
-template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
-
-template <typename F, typename B = none> using bra_vec_apply = seq_bra_vec_apply <F, B>;
-
-template <typename F, typename B = atom <F> > using bra_vec = seq_bra_vec <F, B>;
+}  // namespace lim
 
 //-----------------------------------------------------------------------------
 
@@ -108,19 +115,17 @@ template <typename F, typename B = atom <F> > using bra_vec = seq_bra_vec <F, B>
 
 //-----------------------------------------------------------------------------
 
-using details::apply;
-using details::loop;
+namespace lim {
 
-using details::vec_apply;
-using details::vec_loop;
-using details::vec_auto;
-using details::vec;
+using details::lim::min;
+using details::lim::max;
+using details::lim::eps;
+using details::lim::inf;
+using details::lim::nan;
+using details::lim::inf_min;
+using details::lim::inf_max;
 
-using details::vec_mut;
-using details::vec_copy;
-
-using details::bra_vec_apply;
-using details::bra_vec;
+}  // namespace lim
 
 //-----------------------------------------------------------------------------
 
@@ -128,8 +133,17 @@ using details::bra_vec;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::apply  apply;
-static __attribute__ ((unused)) afun::loop   loop;
+namespace lim {
+
+static __attribute__ ((unused)) afun::lim::min     min;
+static __attribute__ ((unused)) afun::lim::max     max;
+static __attribute__ ((unused)) afun::lim::eps     eps;
+static __attribute__ ((unused)) afun::lim::inf     inf;
+static __attribute__ ((unused)) afun::lim::nan     nan;
+static __attribute__ ((unused)) afun::lim::inf_min inf_min;
+static __attribute__ ((unused)) afun::lim::inf_max inf_max;
+
+}  // namespace lim
 
 //-----------------------------------------------------------------------------
 
@@ -137,4 +151,4 @@ static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_VEC_HPP
+#endif  // IVL_DETAILS_AFUN_LIMITS_HPP

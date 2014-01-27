@@ -36,6 +36,8 @@
 
 #include "afun/array.hpp"
 #include "afun/container.hpp"
+#include "afun/limits.hpp"
+#include "afun/extrema.hpp"
 
 #include "fun/begin.hpp"
 #include "fun/member.hpp"

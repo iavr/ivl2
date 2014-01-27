@@ -111,15 +111,15 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
-	template <size_t J>
-	INLINE rtel <J, P>
-	at_f() { return der_f().template ref_at <J>(); }
-
 	template <size_t... J>
 	using sz_if = only_if <sizeof...(J) != 1, sizes <J...> >;
 
 	template <typename K, typename T>
 	using indir = indirect_tup <K, opt <T> >;
+
+	template <size_t J>
+	INLINE rtel <J, P>
+	at_f() { return der_f().template ref_at <J>(); }
 
 //-----------------------------------------------------------------------------
 
@@ -207,6 +207,10 @@ public:
 
 //-----------------------------------------------------------------------------
 
+protected:
+	INLINE void loop_f()      { thru{at_f <I>()...}; }
+
+public:
 	INLINE void loop() &&     { thru{at_f <I>()...}; }
 	INLINE void loop() &      { thru{at <I>()...}; }
 	INLINE void loop() const& { thru{at <I>()...}; }

@@ -49,9 +49,9 @@ struct tup_loop_ : rref_of <loop_tuple,  any_tuple> { };
 
 struct tup_loop
 {
-	template <typename... T>
-	INLINE void operator()(T&&... t) const
-		{ tup_loop_()(fwd <T>(t)...).loop(); }
+	template <typename F, typename... A, only_if <any_tuple <A...>{}> = 0>
+	INLINE void operator()(F&& f, A&&... a) const
+		{ tup_loop_()(fwd <F>(f), fwd <A>(a)...).loop(); }
 };
 
 template <typename F, typename... A>
@@ -74,6 +74,21 @@ struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 		S&& s = fwd <S>(this->der().sep());
 		tup_loop()(pre_fun()(fwd <F>(f), fwd <S>(s)), tup_tail()(fwd <T>(t)));
 	}
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+class tup_accum
+{
+	template <typename T>
+	using acc = typename bind_of_<F>::template map <T>;
+
+public:
+	template <typename I, typename... A, typename T = copy <I> >
+	INLINE constexpr T
+	operator()(I&& i, A&&... a) const
+		{ return tup_loop_()(acc <T>(fwd <I>(i)), fwd <A>(a)...).loop().val(); }
 };
 
 //-----------------------------------------------------------------------------

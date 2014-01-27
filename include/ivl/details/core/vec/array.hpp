@@ -43,48 +43,56 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // TODO
-struct seq_apply { void operator()(nat); };
+struct seq_apply : tup_apply { };
 
 //-----------------------------------------------------------------------------
 
 template <typename D>
 struct arr_loop : derived <D, arr_loop <D> >
 {
-	template <typename F, typename A1, only_if <is_array <A1>{}> = 0>
-	INLINE void operator()(F&& f, A1&& a1) const
+	template <typename F, typename A, only_if <is_array <A>{}> = 0>
+	INLINE void operator()(F&& f, A&& a) const
 	{
-		this->der().iter(fwd <F>(f), fwd <A1>(a1).begin(), fwd <A1>(a1).end());
+		this->der().iter(fwd <F>(f), fwd <A>(a).begin(), fwd <A>(a).end());
 	}
 
 	template <
-		typename F, typename A1, typename A2,
-		only_if <is_array <A1>{} && is_array <A2>{}> = 0
+		typename F, typename A, typename B,
+		only_if <is_array <A>{} && is_array <B>{}> = 0
 	>
-	INLINE void operator()(F&& f, A1&& a1, A2&& a2) const
+	INLINE void operator()(F&& f, A&& a, B&& b) const
 	{
 		this->der().iter(fwd <F>(f),
-			fwd <A1>(a1).begin(), fwd <A1>(a1).end(), fwd <A2>(a2).begin());
+			fwd <A>(a).begin(), fwd <A>(a).end(), fwd <B>(b).begin());
 	}
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename S, typename D>
-struct seq_sep_loop : arr_loop <D>
+class seq_sep_loop : public tup_sep_loop <S, D>, public arr_loop <D>
 {
+protected:
+	using arr_loop <D>::der;
+
+public:
+	using tup_sep_loop <S, D>::operator();
+	using arr_loop <D>::operator();
+
 	template <typename F, typename B, typename E>
 	INLINE void iter(F&& f, const B& b, const E& e) const
 	{
 		if (b != e) f(*b);
 		for (B i = b + 1; i != e; ++i)
-			fwd <F>(f)(fwd <S>(this->der().sep())), fwd <F>(f)(*i);
+			fwd <F>(f)(fwd <S>(der().sep())), fwd <F>(f)(*i);
 	}
 };
 
 //-----------------------------------------------------------------------------
 
-struct seq_loop : arr_loop <seq_loop>
+struct seq_loop : tup_loop, arr_loop <seq_loop>
 {
+	using tup_loop::operator();
 	using arr_loop <seq_loop>::operator();
 
 	template <typename F, typename B, typename E>
@@ -102,6 +110,12 @@ struct seq_loop : arr_loop <seq_loop>
 			fwd <F>(f)(*i, *j);
 	}
 };
+
+//-----------------------------------------------------------------------------
+
+// TODO
+template <typename F>
+struct seq_accum : tup_accum <F> { };
 
 //-----------------------------------------------------------------------------
 

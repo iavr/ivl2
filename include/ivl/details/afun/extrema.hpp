@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_CALL_HPP
-#define IVL_DETAILS_CORE_AFUN_CALL_HPP
+#ifndef IVL_DETAILS_AFUN_EXTREMA_HPP
+#define IVL_DETAILS_AFUN_EXTREMA_HPP
 
 #include <ivl/ivl>
 
@@ -42,37 +42,54 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-struct try_fun_p
+template <typename L>
+struct min_fun : lim::inf_max
 {
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
-		{ return call_first <F(A...)>()(fwd <A>(a)...); }
+	template <typename A, typename E>
+	INLINE void operator()(A&& a, E&& e) const
+		{ if (L()(fwd <E>(e), fwd <A>(a))) a = fwd <E>(e); }
 };
 
-template <typename... F>
-using try_fun = try_fun_p <pack <F...> >;
+template <typename L>
+struct max_fun : lim::inf_min
+{
+	template <typename A, typename E>
+	INLINE void operator()(A&& a, E&& e) const
+		{ if (L()(fwd <A>(a), fwd <E>(e))) a = fwd <E>(e); }
+};
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class C>
-struct choose_fun
+template <typename L>
+struct min_off_fun : lim::inf_max
 {
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <C, A...>()(fwd <A>(a)...))
-		{ return subs <C, A...>()(fwd <A>(a)...); }
+	template <typename A, typename E, typename P>
+	INLINE void operator()(A&& a, E&& e, P&& p) const
+		{ if (L()(fwd <E>(e), fwd <A>(a))) a = _(fwd <E>(e), fwd <P>(p)); }
 };
+
+template <typename L>
+struct max_off_fun : lim::inf_min
+{
+	template <typename A, typename E, typename P>
+	INLINE void operator()(A&& a, E&& e, P&& p) const
+		{ if (L()(fwd <A>(a), fwd <E>(e))) a = _(fwd <E>(e), fwd <P>(p)); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename L = op::lt> using min_of = fold <min_fun <L> >;
+template <typename L = op::lt> using max_of = fold <max_fun <L> >;
+
+using min = min_of <>;
+using max = max_of <>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-//-----------------------------------------------------------------------------
-
-using details::try_fun;
-using details::choose_fun;
+using details::min;
+using details::max;
 
 //-----------------------------------------------------------------------------
 
@@ -80,8 +97,13 @@ using details::choose_fun;
 
 //-----------------------------------------------------------------------------
 
+static __attribute__ ((unused)) afun::min min;
+static __attribute__ ((unused)) afun::max max;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ivl
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_CALL_HPP
+#endif  // IVL_DETAILS_AFUN_EXTREMA_HPP

@@ -133,6 +133,17 @@ struct tmp_call
 		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
 };
 
+struct tmp_call_ret
+{
+	template <typename F, typename... A>
+	auto operator()(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(fwd <A>(a)...));
+
+	template <typename F, typename... P, typename... A>
+	auto operator()(F&& f, types::tmp <P...>, A&&... a) const
+	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...));
+};
+
 //-----------------------------------------------------------------------------
 
 }  // namespace afun
