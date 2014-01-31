@@ -133,6 +133,23 @@ template <typename... T> using common = type_of <common_t <T...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename D, typename P>
+struct common_or_pt : common_pt <P> { };
+
+template <typename D, template <typename...> class C>
+struct common_or_pt <D, C <> > : id_t <D> { };
+
+template <typename D, typename P>
+using common_or_p = type_of <common_or_pt <D, P> >;
+
+template <typename D, typename... T>
+using common_or_t = common_or_pt <D, pack <T...> >;
+
+template <typename D, typename... T>
+using common_or = type_of <common_or_t <D, T...> >;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::is_base_eq;

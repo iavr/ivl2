@@ -114,12 +114,6 @@ struct seq_loop : tup_loop, arr_loop <seq_loop>
 //-----------------------------------------------------------------------------
 
 // TODO
-template <typename F>
-struct seq_accum : tup_accum <F> { };
-
-//-----------------------------------------------------------------------------
-
-// TODO
 template <typename F, typename B = none> struct seq_vec_apply :
 	tup_vec_apply <F, B> { using tup_vec_apply <F, B>::tup_vec_apply; };
 
@@ -143,6 +137,25 @@ template <typename F, typename B = none> struct seq_bra_vec_apply :
 
 template <typename F, typename B = atom <F> > struct seq_bra_vec :
 	tup_bra_vec <F, B> { using tup_bra_vec <F, B>::tup_bra_vec; };
+
+//-----------------------------------------------------------------------------
+
+// TODO
+template <typename F> struct seq_accum     : tup_accum <F> { };
+template <typename F> struct seq_accum_off : tup_accum_off <F> { };
+
+template <
+	typename F, typename I = F, typename E = get_fun <0>,
+	template <typename> class R = common_of,
+	typename XI = id_fun, typename XE = id_fun, typename U = seq_accum <F>
+>
+struct seq_fold : tup_fold <F, I, E, R, XI, XE, U> { };
+
+template <
+	typename F, typename I = F, typename E = get_fun <0>,
+	template <typename> class R = common_of
+>
+struct seq_fold_off : tup_fold_off <F, I, E, R> { };
 
 //-----------------------------------------------------------------------------
 

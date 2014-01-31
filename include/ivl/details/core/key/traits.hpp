@@ -58,8 +58,9 @@ struct is_op_ref_<keys::op_ref <O, A...> > : _true { };
 template <typename T>
 using is_key = details::is_key_<raw_type <T> >;
 
+// no alias: fwd-declared
 template <typename T>
-using is_op_ref = details::is_op_ref_<raw_type <T> >;
+struct is_op_ref : details::is_op_ref_<raw_type <T> > { };
 
 //-----------------------------------------------------------------------------
 

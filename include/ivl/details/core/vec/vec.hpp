@@ -68,39 +68,63 @@ struct loop : seq_loop
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-using accum = seq_accum <F>;
-
-template <
-	typename F, typename I = F,
-	template <typename...> class C = common_fst
->
-struct fold
-{
-	template <typename... A, typename T = copy <C <A...> > >
-	INLINE constexpr T
-	operator()(A&&... a) const
-		{ return accum <F>()(I().template _<T>(), fwd <A>(a)...); }
-};
-
-template <typename F, typename I = F>
-using collect = fold <F, I, copy_fst>;
-
-//-----------------------------------------------------------------------------
-
 // no alias: fwd-declared
-template <typename F, typename B = none> struct vec_apply : seq_vec_apply <F, B> { };
-template <typename F, typename B = none> using  vec_loop  = seq_vec_loop <F, B>;
-template <typename F, typename B = none> using  vec_auto  = seq_vec_auto <F, B>;
+template <typename F, typename B = none>
+struct vec_apply : seq_vec_apply <F, B> { };
 
-template <typename F, typename B = atom <F> > using vec = seq_vec <F, B>;
+template <typename F, typename B = none>
+using vec_loop = seq_vec_loop <F, B>;
+
+template <typename F, typename B = none>
+using vec_auto = seq_vec_auto <F, B>;
+
+template <typename F, typename B = atom <F> >
+using vec = seq_vec <F, B>;
 
 template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
 template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
 
-template <typename F, typename B = none> using bra_vec_apply = seq_bra_vec_apply <F, B>;
+template <typename F, typename B = none>
+using bra_vec_apply = seq_bra_vec_apply <F, B>;
 
-template <typename F, typename B = atom <F> > using bra_vec = seq_bra_vec <F, B>;
+template <typename F, typename B = atom <F> >
+using bra_vec = seq_bra_vec <F, B>;
+
+//-----------------------------------------------------------------------------
+
+template <typename F> using accum     = seq_accum <F>;
+template <typename F> using accum_off = seq_accum_off <F>;
+
+template <
+	typename F, typename I = F, typename E = get_fun <0>,
+	template <typename> class R = common_of,
+	typename XI = id_fun, typename XE = id_fun, typename U = accum <F>
+>
+using fold = seq_fold <F, I, E, R, XI, XE, U>;
+
+template <
+	typename F, typename I = F, typename E = get_fun <0>,
+	template <typename> class R = common_of
+>
+using fold_off = seq_fold_off <F, I, E, R>;
+
+template <typename F, typename I = F, typename E = get_fun <0> >
+using collect = fold <F, I, E, copy>;
+
+template <typename F, typename I = F, typename E = get_fun <0> >
+using collect_off = fold_off <F, I, E, copy>;
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+struct vec_fold : F, vec_apply <arg_fun_of <F> >
+{
+	using vec_apply <arg_fun_of <F> >::operator();
+
+	template <typename T, only_if <is_tuple <T>{}> = 0>
+	INLINE constexpr ret <F(T)>
+	operator()(T&& t) const { return F::operator()(fwd <T>(t)); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -115,12 +139,19 @@ using details::vec_apply;
 using details::vec_loop;
 using details::vec_auto;
 using details::vec;
-
 using details::vec_mut;
 using details::vec_copy;
-
 using details::bra_vec_apply;
 using details::bra_vec;
+
+using details::accum;
+using details::accum_off;
+using details::fold;
+using details::fold_off;
+using details::collect;
+using details::collect_off;
+
+using details::vec_fold;
 
 //-----------------------------------------------------------------------------
 

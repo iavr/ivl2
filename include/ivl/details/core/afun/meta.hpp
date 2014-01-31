@@ -42,17 +42,48 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-struct try_fun_p
+struct id_fun
+{
+	template <typename A>
+	INLINE constexpr A&&
+	operator()(A&& a) const { return fwd <A>(a); }
+};
+
+struct cp_fun
+{
+	template <typename A>
+	INLINE constexpr copy <A>
+	operator()(A&& a) const { return fwd <A>(a); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <size_t I>
+struct get_fun
+{
+	template <typename... A>
+	INLINE constexpr pick <I, A...>&&
+	operator()(A&&... a) const { return get <I>(fwd <A>(a)...); }
+};
+
+template <size_t I>
+struct get_cp_fun
+{
+	template <typename... A>
+	INLINE constexpr copy <pick <I, A...> >
+	operator()(A&&... a) const { return get <I>(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... E>
+struct bind_fun
 {
 	template <typename... A>
 	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
-		{ return call_first <F(A...)>()(fwd <A>(a)...); }
+	-> decltype(F()(E()..., fwd <A>(a)...))
+		{ return F()(E()..., fwd <A>(a)...); }
 };
-
-template <typename... F>
-using try_fun = try_fun_p <pack <F...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -67,12 +98,32 @@ struct choose_fun
 
 //-----------------------------------------------------------------------------
 
+template <typename F>
+struct try_fun_p
+{
+	template <typename... A>
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
+		{ return call_first <F(A...)>()(fwd <A>(a)...); }
+};
+
+template <typename... F>
+using try_fun = try_fun_p <pack <F...> >;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-using details::try_fun;
+using details::id_fun;
+using details::cp_fun;
+using details::get_fun;
+using details::get_cp_fun;
+using details::bind_fun;
 using details::choose_fun;
+using details::try_fun;
+
 
 //-----------------------------------------------------------------------------
 

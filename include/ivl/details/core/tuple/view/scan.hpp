@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_AFUN_CONTAINER_HPP
-#define IVL_DETAILS_AFUN_CONTAINER_HPP
+#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_SCAN_HPP
+#define IVL_DETAILS_CORE_TUPLE_VIEW_SCAN_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace tuples {
 
 //-----------------------------------------------------------------------------
 
@@ -42,17 +42,64 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using join  = seq_join;
-using zip   = seq_zip;
-using inner = seq_inner;
+template <typename F, typename A, typename I = sz_rng_of_p <A> >
+class scan_store;
 
-using head  = seq_head;
-using tail  = seq_tail;
-using flip  = seq_flip;
-using call  = tup_call;
+template <typename F, typename... A, size_t... I>
+class scan_store <F, pack <A...>, sizes <I...> > : public base_tup <
+	scan_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
+>
+{
+	using P = rep <tran_len <tup_types <A>...>{}, nat>;
+	using B = base_tup <scan_tup <F, A...>, P>;
 
-template <template <typename...> class O = base_opt>
-using tail_of = seq_tail_of <O>;
+	using fun = elem_at <0, F, A...>;
+	template <size_t J> using arg = elem_at <J + 1, F, A...>;
+
+	friend base_type_of <B>;
+
+//-----------------------------------------------------------------------------
+
+	template <size_t J>
+	INLINE nat
+	ref_at() && { return fun::fwd()(J, _at._<J>(arg <I>::fwd())...), nat(); }
+
+	template <size_t J>
+	INLINE nat
+	ref_at() & { return fun::get()(J, _at._<J>(arg <I>::get())...), nat(); }
+
+	template <size_t J>
+	INLINE constexpr nat
+	ref_at() const& { return fun::get()(J, _at._<J>(arg <I>::get())...), nat(); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+//-----------------------------------------------------------------------------
+
+	INLINE rtref <F> loop() && { return B::loop_f(), fun::fwd(); }
+	INLINE ltref <F> loop() &  { return B::loop(), fun::get()(); }
+
+	INLINE constexpr cltref <F> loop() const& { return B::loop(), fun::get(); }
+
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F>
+class collection <data::scan <>, F>;
+
+template <typename F, typename... A>
+class collection <data::scan <>, F, A...> : public scan_store <F, pack <A...> >
+{
+	using B = scan_store <F, pack <A...> >;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
+};
 
 //-----------------------------------------------------------------------------
 
@@ -60,29 +107,7 @@ using tail_of = seq_tail_of <O>;
 
 //-----------------------------------------------------------------------------
 
-using details::join;
-using details::zip;
-using details::inner;
-
-using details::head;
-using details::tail;
-using details::flip;
-using details::call;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::join  join;
-static __attribute__ ((unused)) afun::zip   zip;
-static __attribute__ ((unused)) afun::inner inner;
-
-static __attribute__ ((unused)) afun::head  head;
-static __attribute__ ((unused)) afun::tail  tail;
-static __attribute__ ((unused)) afun::flip  flip;
-static __attribute__ ((unused)) afun::call  call;
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 
@@ -90,4 +115,4 @@ static __attribute__ ((unused)) afun::call  call;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_AFUN_CONTAINER_HPP
+#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_SCAN_HPP

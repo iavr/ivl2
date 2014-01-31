@@ -43,6 +43,8 @@ namespace details {
 using namespace types;
 using namespace tuples;
 
+using tuples::details::_at;
+
 template <typename K> struct key;
 
 }  // namespace details
@@ -61,6 +63,14 @@ template <typename... M> struct key_member;
 template <typename... M> struct key_call;
 
 }  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+namespace fun {
+
+template <typename K> struct io_fun;
+
+}  // namespace fun
 
 //-----------------------------------------------------------------------------
 

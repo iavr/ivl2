@@ -108,6 +108,10 @@ public:
 	INLINE D& operator=(T&& t)
 		{ return thru{at <I>() = _at._<I>(fwd <T>(t))...}, der(); }
 
+	template <typename O, only_if <tup_op_ref_assign <O, length>{}> = 0>
+	INLINE D& operator=(O&& o)
+		{ return fwd <O>(o).template io <I...>(der()), der(); }
+
 //-----------------------------------------------------------------------------
 
 private:
@@ -175,7 +179,7 @@ public:
 	call(F&& f, A&&... a) & { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr ret <F(cltref <E>..., A...)>
+	INLINE constexpr res <F(cltref <E>..., A...)>
 	call(F&& f, A&&... a) const& { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
@@ -189,7 +193,7 @@ public:
 	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr ret <F(A..., cltref <E>...)>
+	INLINE constexpr res <F(A..., cltref <E>...)>
 	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 //-----------------------------------------------------------------------------

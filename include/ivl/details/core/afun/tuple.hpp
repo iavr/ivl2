@@ -97,6 +97,12 @@ template <
 >
 using clref_of = make <base_opt, T, all_clref, E...>;
 
+using val   = val_of <>;
+using uref  = uref_of <>;
+using rref  = rref_of <>;
+using lref  = lref_of <>;
+using clref = clref_of <>;
+
 //-----------------------------------------------------------------------------
 
 using tup_join = uref_of <join_tup, all_tuple>;
@@ -109,6 +115,9 @@ using tup_inner = uref_of <zip_tuple, any_tuple>;
 
 struct tup_head
 {
+	template <typename T, only_if <!is_tuple <T>{}> = 0>
+	INLINE constexpr T&& operator()(T&& t) const { return fwd <T>(t); }
+
 	template <typename T, only_if <tup_non_empty <T>{}> = 0>
 	INLINE constexpr auto operator()(T&& t) const
 	-> decltype(at()._<0>(fwd <T>(t)))
@@ -117,12 +126,18 @@ struct tup_head
 
 //-----------------------------------------------------------------------------
 
-struct tup_tail
+template <template <typename...> class O = base_opt>
+struct tup_tail_of
 {
+	template <typename T, only_if <!is_tuple <T>{}> = 0>
+	INLINE constexpr T&& operator()(T&& t) const { return fwd <T>(t); }
+
 	template <typename T, only_if <tup_non_empty <T>{}> = 0>
-	INLINE constexpr tail_tup <base_opt <T> >
-	operator()(T&& t) const { return tail_tup <base_opt <T> >(fwd <T>(t)); }
+	INLINE constexpr tail_tup <subs <O, T> >
+	operator()(T&& t) const { return tail_tup <subs <O, T> >(fwd <T>(t)); }
 };
+
+using tup_tail = tup_tail_of <>;
 
 //-----------------------------------------------------------------------------
 
@@ -139,13 +154,62 @@ struct tup_flip
 
 //-----------------------------------------------------------------------------
 
+struct arg_call
+{
+	template <typename F, typename... A>
+	INLINE constexpr auto operator()(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(uref()(fwd <A>(a)...)))
+		{ return fwd <F>(f)(uref()(fwd <A>(a)...)); }
+};
+
+//-----------------------------------------------------------------------------
+
 struct tup_call
 {
-	template <typename F, typename T>
-	INLINE constexpr auto operator()(F&& f, T&& t) const
-	-> decltype(fwd <T>(t).call(fwd <F>(f)))
-		{ return fwd <T>(t).call(fwd <F>(f)); }
+	template <
+		typename F, typename T, typename... A,
+		only_if <is_tuple <T>{}>
+	= 0>
+	INLINE constexpr auto operator()(F&& f, T&& t, A&&... a) const
+	-> decltype(fwd <T>(t).call(fwd <F>(f), fwd <A>(a)...))
+		{ return fwd <T>(t).call(fwd <F>(f), fwd <A>(a)...); }
 };
+
+//-----------------------------------------------------------------------------
+
+class head_call
+{
+	using H = tup_head;
+	using L = tup_tail;
+
+public:
+	template <
+		typename F, typename T, typename... A,
+		only_if <is_tuple <T>{}>
+	= 0>
+	INLINE constexpr auto operator()(F&& f, T&& t, A&&... a) const
+	-> decltype(fwd <F>(f)(H()(fwd <T>(t)), L()(fwd <T>(t)), fwd <A>(a)...))
+		{ return fwd <F>(f)(H()(fwd <T>(t)), L()(fwd <T>(t)), fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+struct pre_call
+{
+	template <
+		typename F, typename T, typename... A,
+		only_if <is_tuple <T>{}>
+	= 0>
+	INLINE constexpr ret <F(A...)>
+	operator()(F&& f, T&& t, A&&... a) const
+		{ return fwd <T>(t).call(fwd <F>(f)), fwd <F>(f)(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F> using arg_fun_of = bind_fun <arg_call, F>;
+template <typename F> using tup_fun_of = bind_fun <tup_call, F>;
+template <typename F> using head_fun_of = bind_fun <head_call, F>;
 
 //-----------------------------------------------------------------------------
 
@@ -159,13 +223,21 @@ using details::rref_of;
 using details::lref_of;
 using details::clref_of;
 
-using val   = val_of <>;
-using uref  = uref_of <>;
-using rref  = rref_of <>;
-using lref  = lref_of <>;
-using clref = clref_of <>;
+using details::val;
+using details::uref;
+using details::rref;
+using details::lref;
+using details::clref;
 
 using details::tup;
+
+using details::arg_call;
+using details::tup_call;
+using details::head_call;
+
+using details::arg_fun_of;
+using details::tup_fun_of;
+using details::head_fun_of;
 
 //-----------------------------------------------------------------------------
 

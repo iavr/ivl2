@@ -67,6 +67,9 @@ using apply_tup = collection <data::apply <>, F, A...>;
 template <typename F, typename... A>
 using loop_tup = collection <data::loop <>, F, A...>;
 
+template <typename F, typename... A>
+using scan_tup = collection <data::scan <>, F, A...>;
+
 template <typename... U> using zip_tup  = collection <data::zip <>,  U...>;
 template <typename... U> using join_tup = collection <data::join <>, U...>;
 
@@ -77,6 +80,9 @@ using apply_tuple = apply_tup <F, atom_of <A>...>;
 
 template <typename F, typename... A>
 using loop_tuple = loop_tup <F, atom_of <A>...>;
+
+template <typename F, typename... A>
+using scan_tuple = scan_tup <F, atom_of <A>...>;
 
 template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
 template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
@@ -92,11 +98,13 @@ using details::indirect_tup;
 
 using details::apply_tup;
 using details::loop_tup;
+using details::scan_tup;
 using details::zip_tup;
 using details::join_tup;
 
 using details::apply_tuple;
 using details::loop_tuple;
+using details::scan_tuple;
 using details::zip_tuple;
 using details::join_tuple;
 

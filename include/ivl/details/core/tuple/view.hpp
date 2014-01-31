@@ -32,6 +32,7 @@
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
 #include "view/loop.hpp"
+#include "view/scan.hpp"
 #include "view/zip.hpp"
 #include "view/join.hpp"
 

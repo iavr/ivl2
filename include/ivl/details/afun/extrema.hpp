@@ -63,33 +63,51 @@ struct max_fun : lim::inf_min
 template <typename L>
 struct min_off_fun : lim::inf_max
 {
-	template <typename A, typename E, typename P>
-	INLINE void operator()(A&& a, E&& e, P&& p) const
-		{ if (L()(fwd <E>(e), fwd <A>(a))) a = _(fwd <E>(e), fwd <P>(p)); }
+	template <typename A, typename P, typename E>
+	INLINE void operator()(A&& a, P&& p, E&& e) const
+	{
+		if (L()(fwd <E>(e), fwd <A>(a).fst()))
+			a = uref()(fwd <E>(e), fwd <P>(p));
+	}
 };
 
 template <typename L>
 struct max_off_fun : lim::inf_min
 {
-	template <typename A, typename E, typename P>
-	INLINE void operator()(A&& a, E&& e, P&& p) const
-		{ if (L()(fwd <A>(a), fwd <E>(e))) a = _(fwd <E>(e), fwd <P>(p)); }
+	template <typename A, typename P, typename E>
+	INLINE void operator()(A&& a, P&& p, E&& e) const
+	{
+		if (L()(fwd <A>(a).fst(), fwd <E>(e)))
+			a = uref()(fwd <E>(e), fwd <P>(p));
+	}
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename L = op::lt> using min_of = fold <min_fun <L> >;
 template <typename L = op::lt> using max_of = fold <max_fun <L> >;
+template <typename L = op::lt> using min_off_of = fold_off <min_off_fun <L> >;
+template <typename L = op::lt> using max_off_of = fold_off <max_off_fun <L> >;
 
 using min = min_of <>;
 using max = max_of <>;
+using min_off = min_off_of <>;
+using max_off = max_off_of <>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
+//-----------------------------------------------------------------------------
+
+using details::min_of;
+using details::max_of;
+using details::min_off_of;
+using details::max_off_of;
 using details::min;
 using details::max;
+using details::min_off;
+using details::max_off;
 
 //-----------------------------------------------------------------------------
 
@@ -97,8 +115,8 @@ using details::max;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::min min;
-static __attribute__ ((unused)) afun::max max;
+static __attribute__ ((unused)) afun::min_off min_off;
+static __attribute__ ((unused)) afun::max_off max_off;
 
 //-----------------------------------------------------------------------------
 

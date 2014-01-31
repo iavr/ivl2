@@ -46,13 +46,18 @@ namespace details {
 // no alias: often used
 struct tup_apply : uref_of <apply_tuple, any_tuple> { };
 struct tup_loop_ : rref_of <loop_tuple,  any_tuple> { };
+struct tup_scan_ : rref_of <scan_tuple,  any_tuple> { };
 
-struct tup_loop
+template <typename L>
+struct tup_loop_of
 {
 	template <typename F, typename... A, only_if <any_tuple <A...>{}> = 0>
 	INLINE void operator()(F&& f, A&&... a) const
-		{ tup_loop_()(fwd <F>(f), fwd <A>(a)...).loop(); }
+		{ L()(fwd <F>(f), fwd <A>(a)...).loop(); }
 };
+
+using tup_loop = tup_loop_of <tup_loop_>;
+using tup_scan = tup_loop_of <tup_scan_>;
 
 template <typename F, typename... A>
 using tup_auto_for = _if <vec_void <F(A...)>{}, tup_loop, tup_apply>;
@@ -74,21 +79,6 @@ struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 		S&& s = fwd <S>(this->der().sep());
 		tup_loop()(pre_fun()(fwd <F>(f), fwd <S>(s)), tup_tail()(fwd <T>(t)));
 	}
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-class tup_accum
-{
-	template <typename T>
-	using acc = typename bind_of_<F>::template map <T>;
-
-public:
-	template <typename I, typename... A, typename T = copy <I> >
-	INLINE constexpr T
-	operator()(I&& i, A&&... a) const
-		{ return tup_loop_()(acc <T>(fwd <I>(i)), fwd <A>(a)...).loop().val(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -117,10 +107,10 @@ template <typename F, typename B = none>
 using tup_vec_apply = tup_vec_f <F, tup_apply, B>;
 
 template <typename F, typename B = none>
-using tup_vec_loop  = tup_vec_f <F, tup_loop, B>;
+using tup_vec_loop = tup_vec_f <F, tup_loop, B>;
 
 template <typename F, typename B = none>
-using tup_vec_auto  = tup_vec_f <F, tup_auto, B>;
+using tup_vec_auto = tup_vec_f <F, tup_auto, B>;
 
 template <typename F, typename B = atom <F> >
 using tup_vec = vec_atom <
@@ -146,6 +136,89 @@ template <typename F, typename B = atom <F>, typename T = op::bracket>
 using tup_bra_vec = bra_vec_atom <
 	atom_gen <B>,
 	tup_vec_for <tup_vec_apply <T>, T>::template map
+>;
+
+//-----------------------------------------------------------------------------
+
+template <typename F, size_t I = 0>
+struct mut_fun
+{
+	template <
+		typename... A,
+		only_if <!is_const <remove_ref <pick <I, A...> > >()>
+	= 0>
+	INLINE constexpr ret <F(A...)>
+	operator()(A&&... a) const { return F()(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename L = tup_loop_>
+class tup_accum
+{
+	template <typename T> using acc = bind_args <mut_fun <F>, T>;
+
+public:
+	template <
+		typename I, typename... A, typename T = copy <I>,
+		only_if <any_tuple <A...>{}>
+	= 0>
+	INLINE constexpr T
+	operator()(I&& i, A&&... a) const
+		{ return L()(acc <T>(fwd <I>(i)), fwd <A>(a)...).loop().val(); }
+};
+
+template <typename F>
+using tup_accum_off = tup_accum <F, tup_scan_>;
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename F, typename I = F, typename E = get_fun <0>,
+	template <typename> class R = common_of,
+	typename XI = id_fun, typename XE = id_fun, typename U = tup_accum <F>
+>
+class tup_fold
+{
+	template <typename T, typename... A>
+	INLINE constexpr copy <ret <XI(T)> >
+	op(_true, A&&... a) const { return XI()(I().template _<T>()); }
+
+	template <typename T, typename... A>
+	INLINE constexpr copy <ret <XI(T)> >
+	op(_false, A&&... a) const
+	{
+		return U()(XE()(E()(static_cast <R <A> >(tup_head()(fwd <A>(a)))...)),
+			tup_tail_of <rref_opt>()(fwd <A>(a))...);  // TODO: tail shifts real offset by -1 !!
+	}
+
+public:
+	template <
+		typename... A, typename T = copy <ret <E(R <A>...)> >,
+		only_if <any_tuple <A...>{}>
+	= 0>
+	INLINE constexpr copy <ret <XI(T)> >
+	operator()(A&&... a) const
+		{ return op <T>(any_empty <A...>{}, fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <size_t O>
+struct add_offset
+{
+	template <typename A>
+	INLINE constexpr pre_tuple <rref_opt <A>, size_t>
+	operator()(A&& a) const
+		{ return pre_tuple <rref_opt <A>, size_t>(fwd <A>(a), O); }
+};
+
+template <
+	typename F, typename I = F, typename E = get_fun <0>,
+	template <typename> class R = common_of
+>
+using tup_fold_off = tup_fold <
+	F, I, E, R, add_offset <size_t(-1)>, add_offset <0>, tup_accum_off <F>
 >;
 
 //-----------------------------------------------------------------------------

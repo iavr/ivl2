@@ -30,7 +30,7 @@
 
 #include "afun/fun.hpp"
 #include "afun/tuple.hpp"
-#include "afun/meta_inst.hpp"
+#include "afun/meta_tup.hpp"
 #include "afun/construct.hpp"
 #include "afun/stream.hpp"
 

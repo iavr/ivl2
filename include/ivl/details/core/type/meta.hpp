@@ -64,10 +64,6 @@ struct compose
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class F> using hold = compose <id_t, F>;
-
-//-----------------------------------------------------------------------------
-
 template <template <typename...> class F>
 struct neg
 {

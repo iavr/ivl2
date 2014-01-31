@@ -42,16 +42,24 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename O, typename... A>
-class op_ref : private raw_tuple <O, A...>
+template <typename O, typename R, typename I = sz_rng_of_p <R> >
+class op_ref_store;
+
+template <typename O, typename... A, size_t... I>
+class op_ref_store <O, pack <A...>, sizes <I...> > :
+	private raw_tuple <O, A...>
 {
 	using B = raw_tuple <O, A...>;
 
-	template <typename T>
-	using tail = tail_tup <base_opt <T> >;
-
 	using derived <B>::der;
 	using derived <B>::der_f;
+
+	using _op = elem_at <0, O, A...>;
+	template <size_t J>   using _ref = elem_at <J + 1, O, A...>;
+	template <typename T> using tail = tail_tup <base_opt <T> >;
+
+	template <typename, typename, typename>
+	friend struct tuples::base_tup;
 
 //-----------------------------------------------------------------------------
 
@@ -60,21 +68,49 @@ public:
 
 //-----------------------------------------------------------------------------
 
+protected:
+	INLINE           rtref <O>  op_f()      { return at._<0>(der_f()); }
+
+public:
 	INLINE           rtref <O>  op() &&     { return at._<0>(der_f()); }
 	INLINE           ltref <O>  op() &      { return at._<0>(der()); }
 	INLINE constexpr cltref <O> op() const& { return at._<0>(der()); }
 
 //-----------------------------------------------------------------------------
 
-	INLINE tail <B>
-	ref() && { return tail <B>(der_f()); }
+protected:
+	INLINE tail <B>  ref_f()  { return tail <B>(der_f()); }
 
-	INLINE tail <B&>
-	ref() & { return tail <B&>(der()); }
+public:
+	INLINE tail <B>  ref() && { return tail <B>(der_f()); }
+	INLINE tail <B&> ref() &  { return tail <B&>(der()); }
 
 	INLINE constexpr tail <const B&>
 	ref() const& { return tail <const B&>(der()); }
 
+//-----------------------------------------------------------------------------
+
+protected:
+	template <size_t... J, typename T>
+	INLINE void io(T&& t) &&
+		{ _op::fwd().io(_at._<J>(fwd <T>(t))..., sep(), _ref <I>::fwd()...); }
+
+	template <size_t... J, typename T>
+	INLINE void io(T&& t) &
+		{ _op::get().io(_at._<J>(fwd <T>(t))..., sep(), _ref <I>::get()...); }
+
+	template <size_t... J, typename T>
+	INLINE void io(T&& t) const&
+		{ _op::get().io(_at._<J>(fwd <T>(t))..., sep(), _ref <I>::get()...); }
+
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename O, typename... A>
+struct op_ref : op_ref_store <O, pack <A...> >
+{
+	using op_ref_store <O, pack <A...> >::op_ref_store;
 };
 
 //-----------------------------------------------------------------------------

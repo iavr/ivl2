@@ -87,11 +87,22 @@ as(A&& a) { return static_cast <const raw_type <T>&>(a); }
 //-----------------------------------------------------------------------------
 
 template <size_t I, typename A, typename... An, only_if <I> = 0>
-pick <I - 1, An...>&&
+INLINE constexpr pick <I - 1, An...>&&
 get(A&& a, An&&... an) { return get <I - 1>(fwd <An>(an)...); }
 
 template <size_t I, typename A, typename... An, only_if <!I> = 0>
-A&& get(A&& a, An&&... an) { return fwd <A>(a); }
+INLINE constexpr A&&
+get(A&& a, An&&... an) { return fwd <A>(a); }
+
+//-----------------------------------------------------------------------------
+
+template <size_t I, typename... A>
+INLINE constexpr copy <pick <I, A...> >
+get_cp(A&&... a) { return get <I>(fwd <A>(a)...); }
+
+template <typename A>
+INLINE constexpr copy <A>
+cp(A&& a) { return fwd <A>(a); }
 
 //-----------------------------------------------------------------------------
 
@@ -105,6 +116,8 @@ using types::traits::mv;
 using types::traits::fwd;
 using types::traits::as;
 using types::traits::get;
+using types::traits::get_cp;
+using types::traits::cp;
 
 //-----------------------------------------------------------------------------
 

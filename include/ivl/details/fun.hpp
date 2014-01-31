@@ -43,6 +43,7 @@
 #include "fun/member.hpp"
 #include "fun/op.hpp"
 #include "fun/swap.hpp"
+#include "fun/extrema.hpp"
 
 //-----------------------------------------------------------------------------
 

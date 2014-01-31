@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_AFUN_CONTAINER_HPP
-#define IVL_DETAILS_AFUN_CONTAINER_HPP
+#ifndef IVL_DETAILS_FUN_EXTREMA_HPP
+#define IVL_DETAILS_FUN_EXTREMA_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace fun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,47 +42,43 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using join  = seq_join;
-using zip   = seq_zip;
-using inner = seq_inner;
+// TODO: vec-min_off
+template <typename L = op::lt>
+struct min_of : afun::vec_fold <afun::min_of <L> >, afun::lim::min
+{
+	template <typename M, typename P, typename A>
+	void io(M& m, P& p, sep, A&& a)
+		{ lref(m, p) = afun::min_off_of <L>()(fwd <A>(a)); }
+};
 
-using head  = seq_head;
-using tail  = seq_tail;
-using flip  = seq_flip;
-using call  = tup_call;
+template <typename L = op::lt>
+struct max_of : afun::vec_fold <afun::max_of <L> >, afun::lim::max
+{
+	template <typename M, typename P, typename A>
+	void io(M& m, P& p, sep, A&& a)
+		{ lref(m, p) = afun::max_off_of <L>()(fwd <A>(a)); }
+};
 
-template <template <typename...> class O = base_opt>
-using tail_of = seq_tail_of <O>;
+using min = min_of <>;
+using max = max_of <>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-//-----------------------------------------------------------------------------
-
-using details::join;
-using details::zip;
-using details::inner;
-
-using details::head;
-using details::tail;
-using details::flip;
-using details::call;
+using details::min_of;
+using details::max_of;
+using details::min;
+using details::max;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+}  // namespace fun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::join  join;
-static __attribute__ ((unused)) afun::zip   zip;
-static __attribute__ ((unused)) afun::inner inner;
-
-static __attribute__ ((unused)) afun::head  head;
-static __attribute__ ((unused)) afun::tail  tail;
-static __attribute__ ((unused)) afun::flip  flip;
-static __attribute__ ((unused)) afun::call  call;
+IVL_KEY_TMP(min, fun::min)
+IVL_KEY_TMP(max, fun::max)
 
 //-----------------------------------------------------------------------------
 
@@ -90,4 +86,4 @@ static __attribute__ ((unused)) afun::call  call;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_AFUN_CONTAINER_HPP
+#endif  // IVL_DETAILS_FUN_EXTREMA_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN__META_INST__HPP
-#define IVL_DETAILS_CORE_AFUN__META_INST__HPP
+#ifndef IVL_DETAILS_CORE_AFUN__META_TUP__HPP
+#define IVL_DETAILS_CORE_AFUN__META_TUP__HPP
 
 #include <ivl/ivl>
 
@@ -42,110 +42,50 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename C, typename F, typename... E>
+class binder : public pre_tuple <E...>
+{
+	using B = pre_tuple <E...>;
+	using B::der_f;
+	using B::der;
+
+public:
+	using B::B;
+
+	template <typename... A>
+	INLINE ret <C(F, B&&, A...)>
+	operator()(A&&... a) && { return C()(F(), der_f(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE ret <C(F, B&, A...)>
+	operator()(A&&... a) & { return C()(F(), der(), fwd <A>(a)...); }
+
+	template <typename... A>
+	INLINE constexpr res <C(F, const B&, A...)>
+	operator()(A&&... a) const& { return C()(F(), der(), fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... E>
+using bind_tup = binder <op::call, F, E...>;
+
+template <typename F, typename... E>
+using bind_args = binder <tup_call, F, E...>;
+
+template <typename F, typename... E>
+using bind_ = bind_args <op::call, F, E...>;
+
+template <typename F, typename... E>
+using pre_fun_ = bind_tup <head_fun_of <pre_call>, F, E...>;
+
+//-----------------------------------------------------------------------------
+
 template <typename F>
-struct bind_of_
-{
-	template <typename... E>
-	class map : public pre_tuple <E...>
-	{
-		using B = pre_tuple <E...>;
-		using B::der_f;
-		using B::call;
-
-	public:
-		using B::B;
-
-		template <typename... A>
-		INLINE ret <F(rtref <E>..., A...)>
-		operator()(A&&... a) && { return der_f().call(F(), fwd <A>(a)...); }
-
-		template <typename... A>
-		INLINE ret <F(ltref <E>..., A...)>
-		operator()(A&&... a) & { return call(F(), fwd <A>(a)...); }
-
-		template <typename... A>
-		INLINE constexpr ret <F(cltref <E>..., A...)>
-		operator()(A&&... a) const& { return call(F(), fwd <A>(a)...); }
-	};
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... E>
-class bind_ : protected raw_tuple <F, E...>
-{
-	using B = raw_tuple <F, E...>;
-	using H = tup_head;
-	using T = tup_tail;
-	using B::der_f;
-	using B::der;
-
-public:
-	using B::B;
-
-	template <typename... A>
-	INLINE ret <rtref <F>(rtref <E>..., A...)>
-	operator()(A&&... a) &&
-		{ return T()(der_f()).call(H()(der_f()), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE ret <ltref <F>(ltref <E>..., A...)>
-	operator()(A&&... a) &
-		{ return T()(der()).call(H()(der()), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE constexpr ret <cltref <F>(cltref <E>..., A...)>
-	operator()(A&&... a) const&
-		{ return T()(der()).call(H()(der()), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... E>
-class pre_fun_ : protected raw_tuple <F, E...>
-{
-	using B = raw_tuple <F, E...>;
-	using B::der;
-	using B::der_f;
-	using H = tup_head;
-	using T = tup_tail;
-
-public:
-	using B::B;
-
-	template <typename... A>
-	INLINE ret <rtref <F>(A...)>
-	operator()(A&&... a) &&
-		{ return T()(der_f()).call(H()(der_f())), H()(der_f())(fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE ret <ltref <F>(A...)>
-	operator()(A&&... a) &
-		{ return T()(der()).call(H()(der())), H()(der())(fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE constexpr ret <cltref <F>(A...)>
-	operator()(A&&... a) const&
-		{ return T()(der()).call(H()(der())), H()(der())(fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F> using
-bind_of = uref_of <bind_of_<F>::template map>;
+using bind_of = uref_of <types::bind <bind_args, F>::template map>;
 
 using bind    = uref_of <bind_>;
 using pre_fun = uref_of <pre_fun_>;
-
-//-----------------------------------------------------------------------------
-
-struct tup_fun
-{
-	template <typename F>
-	INLINE constexpr auto operator()(F&& f) const
-	-> decltype(bind()(tup_call(), fwd <F>(f)))
-		{ return bind()(tup_call(), fwd <F>(f)); }
-};
 
 //-----------------------------------------------------------------------------
 
@@ -156,7 +96,6 @@ struct tup_fun
 using details::bind_of;
 using details::bind;
 using details::pre_fun;
-using details::tup_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -166,7 +105,6 @@ using details::tup_fun;
 
 static __attribute__ ((unused)) afun::bind     bind;
 static __attribute__ ((unused)) afun::pre_fun  pre_fun;
-static __attribute__ ((unused)) afun::tup_fun  tup_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -174,4 +112,4 @@ static __attribute__ ((unused)) afun::tup_fun  tup_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN__META_INST__HPP
+#endif  // IVL_DETAILS_CORE_AFUN__META_TUP__HPP

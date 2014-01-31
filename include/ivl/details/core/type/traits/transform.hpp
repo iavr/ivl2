@@ -151,7 +151,7 @@ template <typename T> struct add_cv_ : add_const_t <add_vol <T> > { };
 template <typename T> using add_cv_t = details::add_cv_ <T>;
 template <typename T> using add_cv = type_of <add_cv_t <T> >;
 
-// remove_cv_t defined as struct because it is fwd-declared @begin.hpp
+// no alias: fwd-declared
 // remove_cv defined @begin.hpp
 template <typename T>
 struct remove_cv_t : remove_vol_t <remove_const <T> > { };

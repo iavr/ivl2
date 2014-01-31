@@ -95,10 +95,25 @@ public:
 
 //-----------------------------------------------------------------------------
 
+template <typename K, typename F>
+struct key_fun : key <K>, F { using key <K>::operator=; };
+
+template <typename K, typename F>
+struct key_tmp : key <K>, F
+{
+	using key <K>::operator=;
+	using key <K>::_;
+	using F::_;
+};
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::key_val;
 using details::key;
+using details::key_fun;
+using details::key_tmp;
 
 //-----------------------------------------------------------------------------
 

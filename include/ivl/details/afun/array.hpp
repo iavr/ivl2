@@ -51,7 +51,9 @@ struct seq_inner : tup_inner { };
 struct seq_head : tup_head { };
 struct seq_tail : tup_tail { };
 struct seq_flip : tup_flip { };
-struct seq_call : tup_call { };
+
+template <template <typename...> class O = base_opt>
+struct seq_tail_of : tup_tail_of <O> { };
 
 //-----------------------------------------------------------------------------
 

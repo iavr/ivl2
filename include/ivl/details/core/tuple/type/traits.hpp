@@ -58,24 +58,6 @@ using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using all_tuple_p = all_p <is_tuple, P>;
-template <typename P> using any_tuple_p = any_p <is_tuple, P>;
-
-template <typename... E> using all_tuple = all_tuple_p <pack <E...> >;
-template <typename... E> using any_tuple = any_tuple_p <pack <E...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename P> using all_rref_p  = all_p <is_rref, P>;
-template <typename P> using all_lref_p  = all_p <is_lref, P>;
-template <typename P> using all_clref_p = all_p <is_clref, P>;
-
-template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
-template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
-template <typename... E> using all_clref = all_clref_p <pack <E...> >;
-
-//-----------------------------------------------------------------------------
-
 template <typename T> using tup_len = length_of <raw_type <T> >;
 
 template <typename T>
@@ -86,6 +68,47 @@ using tup_non_empty = expr <is_tuple <T>() && tup_len <T>()>;
 
 template <typename T>
 using as_tup_non_empty = expr <as_tuple <T>() && tup_len <T>()>;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+// TODO: specialize for sequence
+template <typename T, bool = is_tuple <T>()>
+struct empty_ : _false { };
+
+template <typename T>
+struct empty_<T, true> : expr <!tup_len <T>()> { };
+
+}  // namespace details
+
+template <typename T> using empty = details::empty_<raw_type <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using all_tuple_p = all_p <is_tuple, P>;
+template <typename P> using any_tuple_p = any_p <is_tuple, P>;
+
+template <typename... E> using all_tuple = all_tuple_p <pack <E...> >;
+template <typename... E> using any_tuple = any_tuple_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using all_empty_p = all_p <empty, P>;
+template <typename P> using any_empty_p = any_p <empty, P>;
+
+template <typename... E> using all_empty = all_empty_p <pack <E...> >;
+template <typename... E> using any_empty = any_empty_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using all_rref_p  = all_p <is_rref, P>;
+template <typename P> using all_lref_p  = all_p <is_lref, P>;
+template <typename P> using all_clref_p = all_p <is_clref, P>;
+
+template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
+template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
+template <typename... E> using all_clref = all_clref_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -108,11 +131,12 @@ template <typename T>    using  tup_types = type_of <tup_types_t <T> >;
 
 namespace details {
 
+// TODO: define for sequences
 template <typename T, bool = is_tuple <T>()>
-struct common_of_ : id_t <common_p <tup_types <T> > > { };
+struct common_of_ : id_t <T> { };
 
 template <typename T>
-struct common_of_<T, false> : id_t <value_type_of <T> > { };
+struct common_of_<T, true> : id_t <common_or_p <int, tup_types <T> > > { };
 
 }  // namespace details
 
@@ -202,6 +226,12 @@ template <typename P, typename T> struct tup_cons_<P, T, false>   : _false { };
 template <typename T, typename P> struct tup_conv_<T, P, false>   : _false { };
 template <typename P, typename T> struct tup_assign_<P, T, false> : _false { };
 
+template <typename P, typename T, typename R = tref_types <P> >
+struct tup_atom_assign_;
+
+template <typename P, typename T, typename... E>
+struct tup_atom_assign_<P, T, pack <E...> > : _and <is_assign <E, T>...> { };
+
 }  // namespace details
 
 //-----------------------------------------------------------------------------
@@ -225,10 +255,13 @@ template <typename C, typename T>
 using tup_assign = details::tup_assign_<C, T>;
 
 template <typename C, typename T, bool = tup_assign <C, T>()>
-struct tup_atom_assign : tup_assign <C, rep <length_of <C>{}, T> > { };
+struct tup_atom_assign : details::tup_atom_assign_<C, T> { };
 
 template <typename C, typename T>
 struct tup_atom_assign <C, T, true> : _false { };
+
+template <typename T, size_t L> struct tup_op_ref_assign : is_op_ref <T> { };
+template <typename T>           struct tup_op_ref_assign <T, 1>: _false { };
 
 //-----------------------------------------------------------------------------
 

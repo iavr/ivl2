@@ -120,6 +120,17 @@ using ret = type_of <ret_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename F, typename... A>
+struct res_t : res_t <F(A...)> { };
+
+template <typename F, typename... A>
+struct res_t <F(A...)> : ret_sfinae <details::fun_test, F, A...> { };
+
+template <typename F, typename... A>
+using res = type_of <res_t <F, A...> >;
+
+//-----------------------------------------------------------------------------
+
 // extended elsewhere
 template <typename F, typename... A>
 struct can_call : can_call <F(A...)> { };

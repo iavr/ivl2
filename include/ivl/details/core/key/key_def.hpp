@@ -32,18 +32,38 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#define IVL_KEY_INST(KEY, INST)                    \
+#define IVL_KEY(KEY)                               \
                                                    \
 namespace key {                                    \
                                                    \
 struct KEY : ::ivl::keys::key <KEY>                \
 {                                                  \
-	using ::ivl::keys::key <KEY>::operator=;        \
+	using key <KEY>::operator=;                     \
 };                                                 \
                                                    \
 }                                                  \
                                                    \
-static __attribute__ ((unused)) key::KEY INST;     \
+static __attribute__ ((unused)) key::KEY KEY;      \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_KEY_BASE(BASE, KEY, FUN)               \
+                                                   \
+namespace key {                                    \
+                                                   \
+struct KEY : ::ivl::keys::BASE <KEY, FUN>          \
+{                                                  \
+	using BASE <KEY, FUN>::operator=;               \
+};                                                 \
+                                                   \
+}                                                  \
+                                                   \
+static __attribute__ ((unused)) key::KEY KEY;      \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_KEY_FUN(KEY, FUN)  IVL_KEY_BASE(key_fun, KEY, FUN)
+#define IVL_KEY_TMP(KEY, FUN)  IVL_KEY_BASE(key_tmp, KEY, FUN)
 
 //-----------------------------------------------------------------------------
 
@@ -87,16 +107,24 @@ struct key_call <key::MEMBER>                                 \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_KEY_INST_MEMBER(KEY, INST)    \
+#define IVL_KEY_MEMBER(KEY)               \
                                           \
-IVL_KEY_INST(KEY, INST)                   \
-                                          \
+IVL_KEY(KEY)                              \
 IVL_MEMBER(KEY)                           \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_KEY(KEY)          IVL_KEY_INST(KEY, KEY)
-#define IVL_KEY_MEMBER(KEY)   IVL_KEY_INST_MEMBER(KEY, KEY)
+#define IVL_KEY_FUN_MEMBER(KEY, FUN)      \
+                                          \
+IVL_KEY_FUN(KEY, FUN)                     \
+IVL_MEMBER(KEY)                           \
+
+//-----------------------------------------------------------------------------
+
+#define IVL_KEY_TMP_MEMBER(KEY, FUN)      \
+                                          \
+IVL_KEY_TMP(KEY, FUN)                     \
+IVL_MEMBER(KEY)                           \
 
 //-----------------------------------------------------------------------------
 
