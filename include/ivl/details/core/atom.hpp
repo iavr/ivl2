@@ -29,12 +29,8 @@
 //-----------------------------------------------------------------------------
 
 #include "atom/begin.hpp"
-#include "atom/data.hpp"
-#include "atom/atoms.hpp"
-#include "atom/traits.hpp"
-#include "atom/base.hpp"
-#include "atom/atom.hpp"
-#include "atom/raw.hpp"
+#include "atom/type.hpp"
+#include "atom/store.hpp"
 
 //-----------------------------------------------------------------------------
 

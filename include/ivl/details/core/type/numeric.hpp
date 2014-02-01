@@ -45,7 +45,7 @@ namespace numeric {
 template <typename T, T N> using integral = c_integral <T, N>;
 
 template <typename T, T... N>
-struct integrals : value <T>, type_sequence <integrals <T, N...> > { };
+struct integrals : value <T>, type_seq <integrals <T, N...> > { };
 
 template <typename T> using empty = integrals <T>;
 

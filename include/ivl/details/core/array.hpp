@@ -29,9 +29,7 @@
 //-----------------------------------------------------------------------------
 
 #include "array/begin.hpp"
-#include "array/data.hpp"
-#include "array/array.hpp"
-#include "array/traits.hpp"
+#include "array/type.hpp"
 
 //-----------------------------------------------------------------------------
 

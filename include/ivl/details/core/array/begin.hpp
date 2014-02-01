@@ -45,6 +45,18 @@ using namespace types;
 
 //-----------------------------------------------------------------------------
 
+namespace types {
+namespace traits {
+namespace details {
+
+using namespace arrays;
+
+}  // namespace details
+}  // namespace traits
+}  // namespace types
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ivl
 
 //-----------------------------------------------------------------------------

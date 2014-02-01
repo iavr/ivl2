@@ -55,24 +55,24 @@ template <typename... T> using id = type_of <id_t <T...> >;
 
 template <typename P> using length = type_of <length_t <P> >;
 
-template <size_t L> struct sequence { static constexpr size_t length = L; };
+template <size_t L> struct seq { static constexpr size_t length = L; };
 
 template <typename T>
-struct type_sequence : id_t <T>, sequence <length <T>{}> { };
+struct type_seq : id_t <T>, seq <length <T>{}> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct _type : type_sequence <_type <T> > { };
+struct _type : type_seq <_type <T> > { };
 
 template <typename... E>
-struct pack : type_sequence <pack <E...> > { };
+struct pack : type_seq <pack <E...> > { };
 
 template <typename... E>
-struct tmp : type_sequence <tmp <E...> > { };
+struct tmp : type_seq <tmp <E...> > { };
 
 template <size_t L, typename T>
-struct repeat : type_sequence <repeat <L, T> > { };
+struct repeat : type_seq <repeat <L, T> > { };
 
 //-----------------------------------------------------------------------------
 

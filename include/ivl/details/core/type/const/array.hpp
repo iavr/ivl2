@@ -43,7 +43,7 @@ namespace constants {
 //-----------------------------------------------------------------------------
 
 template <typename T, T... N>
-class c_int_array : public sequence <sizeof...(N)>,
+class c_int_array : public seq <sizeof...(N)>,
 	public constant <const T(&)[sizeof...(N)], c_int_array <T, N...> >
 {
 	using V = value_type_of <c_int_array>;
@@ -65,7 +65,7 @@ public:
 namespace details {
 
 template <template <typename...> class C, typename T, typename... A>
-class c_array_cons : public sequence <sizeof...(A)>,
+class c_array_cons : public seq <sizeof...(A)>,
 	public constant <const T(&)[sizeof...(A)], c_array_cons <C, T, A...> >
 {
 	using V = value_type_of <c_array_cons>;
