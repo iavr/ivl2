@@ -23,15 +23,49 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_HPP
-#define IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+#ifndef IVL_DETAILS_ARRAY_TRAITS_HPP
+#define IVL_DETAILS_ARRAY_TRAITS_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "type/data.hpp"
-#include "type/collection.hpp"
-#include "type/traits.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+namespace types {
+
+//-----------------------------------------------------------------------------
+
+namespace traits {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T>
+struct is_array_ : _false { };
+
+template <typename T, typename S>
+struct is_array_<array <T, S> > : _true { };
+
+}  // namespace details
+
+template <typename T> using is_array = details::is_array_<raw_type <T> >;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace traits
+
+//-----------------------------------------------------------------------------
+
+}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_ARRAY_TRAITS_HPP

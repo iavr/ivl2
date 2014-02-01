@@ -38,8 +38,10 @@ void run()
 	{
 		cout << "sizeof, alignof, C-style conversion" << endl;
 		using S = pack <char, int, double>;
-		using T = pack <char, int, double, array <double> >;
-		cout << _sizeof(_('a', 5, 3.14, array <double>())) << endl;
+// 		using T = pack <char, int, double, array <double> >;  // TODO: ARRAY
+// 		cout << _sizeof(_('a', 5, 3.14, array <double>())) << endl;  // TODO: ARRAY
+		using T = pack <char, int, double>;
+		cout << _sizeof(_('a', 5, 3.14)) << endl;
 		cout << _sizeof._<T>() << endl;
 		cout << _alignof._<T>() << endl;
 		float x = '0' + 3.14;

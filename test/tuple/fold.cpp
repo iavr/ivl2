@@ -68,6 +68,17 @@ void run()
 		_(max._()) = max._();
 		cout << endl;
 	}
+
+	{
+		cout << "foo min" << endl;
+		auto t = foos(14, 7, 3, -8, 9, 0);
+		cout << endl;
+		cout << "begin" << endl;
+		cout << min(t) << endl;
+		cout << "end" << endl;
+		cout << endl;
+	}
+
 }
 
 //-----------------------------------------------------------------------------

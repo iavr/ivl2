@@ -28,6 +28,7 @@
 
 //-----------------------------------------------------------------------------
 
+#include "tuple/begin.hpp"
 #include "tuple/type.hpp"
 #include "tuple/base.hpp"
 #include "tuple/store.hpp"

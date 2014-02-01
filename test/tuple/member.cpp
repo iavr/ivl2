@@ -35,7 +35,8 @@ struct A
 
 struct B
 {
-	array <int> p;
+// 	array <int> p;  // TODO: ARRAY
+	int p;
 	double q;
 	int f(int x, char c) const { return x;}
 	double g(double x, int i) const { return 3 * x; }
@@ -51,7 +52,8 @@ void run()
 
 	{
 		cout << "op ->*" << endl;
-		using A = array <int>;
+// 		using A = array <int>;  // TODO: ARRAY
+		using A = std::vector <int>;
 		using V = std::vector <double>;
 		A a(3);
 		V v(5);
@@ -69,7 +71,8 @@ void run()
 	{
 		cout << "op ->* (custom, key)" << endl;
 		A a{4, "hello"};
-		B b{array <int>(3, 2), 3.14};
+// 		B b{array <int>(3, 2), 3.14};  // TODO: ARRAY
+		B b{3, 3.14};
 		auto t = _(a, b);
 		auto m = _(p, q);
 		auto F = _(f, g);

@@ -64,7 +64,8 @@ void run()
 	{
 		cout << "op []" << endl;
 		int a[] = {7, 9, -2, 0};
-		array <double> b[] = {{2, 3.14}, {1, 2}, {3, 7}};
+		double b[] = {2, 3.14, 6.28};
+// 		array <double> b[] = {{2, 3.14}, {1, 2}, {3, 7}};  // TODO: ARRAY
 		const char c[] = "hello";
 		std::vector <string> d = { "hello", ",", "world" };
 		auto t = _(a, b, c, d);

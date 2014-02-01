@@ -23,15 +23,33 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_HPP
-#define IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+#ifndef IVL_DETAILS_ARRAY_DATA_HPP
+#define IVL_DETAILS_ARRAY_DATA_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "type/data.hpp"
-#include "type/collection.hpp"
-#include "type/traits.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+namespace data {
+
+//-----------------------------------------------------------------------------
+
+template <typename... A> struct array { };
+template <typename... A> struct fixed { };
+template <typename... A> struct heap { };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace data
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_ARRAY_DATA_HPP

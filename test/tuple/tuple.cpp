@@ -57,13 +57,15 @@ void run()
 {
 	{
 		cout << "streaming:" << endl;
-		array <int> a(2);
-		const array <double> b(4, -8);
+// 		array <int> a(2);  // TODO: ARRAY
+// 		const array <double> b(4, -8);  // TODO: ARRAY
 		int l[] = { 1, 2, 3 };
 		int* p = 0;
 
-		cout << _(7, "hello", 56.3, a, 'c', b, p) << endl;
-		cout << _(7, "hello", 56.3, a, 'c', _(3.14, "world!"), b, p) << endl;
+// 		cout << _(7, "hello", 56.3, a, 'c', b, p) << endl;
+// 		cout << _(7, "hello", 56.3, a, 'c', _(3.14, "world!"), b, p) << endl;
+		cout << _(7, "hello", 56.3, 'c', p) << endl;
+		cout << _(7, "hello", 56.3, 'c', _(3.14, "world!"), p) << endl;
 		cout << endl;
 	}
 
@@ -115,14 +117,16 @@ void run()
 
 	{
 		cout << "auto tuple type:" << endl;
-		array <int> a(2);
-		const array <double> b(4, -8);
+		double a = 2;
+// 		array <int> a(2);  // TODO: ARRAY
+// // 		const array <double> b(4, -8);
 		int l[] = {1, 2, 3};
 		int* p = 0;
 		int x = 0;
 
 // TODO: array bug
-// 		auto t = _(7, "hello", 56.3, a, 'c', l, b, p);
+// // 		auto t = _(7, "hello", 56.3, a, 'c', l, b, p);
+// 		auto t = _(7, "hello", 56.3, a, 'c', l, p);  // TODO: ARRAY
 		auto t = _(7, "hello", 56.3, a, 'c', l, p);
 		cout << t.at <1>() << endl;
 		cout << endl;
@@ -172,17 +176,19 @@ void run()
 
 	{
 		cout << "indirect tuple:" << endl;
-		array <int> a(2);
-		const array <double> b(4, -8);
+		double a = 2;
+// 		array <int> a(2);  // TODO: ARRAY
+// // 		const array <double> b(4, -8);
 		int l[] = { 1, 2, 3 };
 		int* p = 0;
 
 // TODO: array bug
-// 		auto t = _(7, "hello", 56.3, a, 'c', l, b, p);
+// // 		auto t = _(7, "hello", 56.3, a, 'c', l, b, p);
+// 		auto t = _(7, "hello", 56.3, a, 'c', p);  // TODO: ARRAY
 		auto t = _(7, "hello", 56.3, a, 'c', p);
 		cout << t << endl;
 		cout << t.at <sizes <0, 3, 3, 2, 0, 4, 0, 5> >() << endl;
-		cout << t.at <0, 3, 3, 2, 0, 4, 0, 5 >() << endl;
+		cout << t.at <0, 3, 3, 2, 0, 4, 0, 5>() << endl;
 		t.at <sz_range <0, 4, 2> >() = _(-7, 3.14, 'd');
 		cout << t << endl;
 		cout << endl;

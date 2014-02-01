@@ -23,15 +23,24 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_HPP
-#define IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_HPP
+#define IVL_DETAILS_CORE_ARRAY_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "type/data.hpp"
-#include "type/collection.hpp"
-#include "type/traits.hpp"
+#include "array/begin.hpp"
+#include "array/data.hpp"
+#include "array/array.hpp"
+#include "array/traits.hpp"
+
+#include "vec/array.hpp"
+#include "vec/vec.hpp"
+#include "vec/tmp.hpp"
+#include "atom/vec.hpp"
+#include "atom/uscore.hpp"
+
+// #include "array/heap.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_HPP

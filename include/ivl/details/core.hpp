@@ -44,6 +44,8 @@
 #include "core/vec.hpp"
 #include "core/mem.hpp"
 #include "core/math.hpp"
+#include "core/array.hpp"
+#include "core/foo.hpp"
 
 //-----------------------------------------------------------------------------
 
