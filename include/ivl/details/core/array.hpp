@@ -33,14 +33,6 @@
 #include "array/array.hpp"
 #include "array/traits.hpp"
 
-#include "vec/array.hpp"
-#include "vec/vec.hpp"
-#include "vec/tmp.hpp"
-#include "atom/vec.hpp"
-#include "atom/uscore.hpp"
-
-// #include "array/heap.hpp"
-
 //-----------------------------------------------------------------------------
 
 #endif  // IVL_DETAILS_CORE_ARRAY_HPP

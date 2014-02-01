@@ -40,19 +40,20 @@ namespace arrays {
 
 namespace details {
 
-using std::basic_ostream;
-
 //-----------------------------------------------------------------------------
 
-template <typename C, typename R, typename T, typename S>
-INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, array <T, S>&& a)
-	{ return s << "[ ",  loop[" "](out_stream(s), mv(a)),  s << " ]"; }
-
-template <typename C, typename R, typename T, typename S>
-INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, const array <T, S>& a)
-	{ return s << "[ ",  loop[" "](out_stream(s), a),  s << " ]"; }
+template <
+	typename S, typename A,
+	only_if <is_stream <S>() && is_array <A>()>
+= 0>
+INLINE S&&
+operator<<(S&& s, A&& a)
+{
+	return
+		fwd <S>(s) << "[ ",
+		loop[" "](bind_left(fwd <S>(s)), fwd <A>(a)),
+		fwd <S>(s) << " ]";
+}
 
 //-----------------------------------------------------------------------------
 

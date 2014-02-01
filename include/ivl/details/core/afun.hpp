@@ -31,8 +31,7 @@
 #include "afun/fun.hpp"
 #include "afun/tuple.hpp"
 #include "afun/meta_tup.hpp"
-#include "afun/construct.hpp"
-#include "afun/stream.hpp"
+#include "afun/meta_op.hpp"
 
 //-----------------------------------------------------------------------------
 

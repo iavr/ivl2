@@ -36,16 +36,19 @@
 #include "core/include.hpp"
 #include "core/using.hpp"
 #include "core/platform.hpp"
+#include "core/mem.hpp"
 #include "core/type.hpp"
 #include "core/tuple.hpp"
 #include "core/atom.hpp"
+#include "core/loop.hpp"
+#include "core/array.hpp"
 #include "core/key.hpp"
 #include "core/afun.hpp"
 #include "core/vec.hpp"
-#include "core/mem.hpp"
+#include "core/uscore.hpp"
 #include "core/math.hpp"
-#include "core/array.hpp"
 #include "core/foo.hpp"
+#include "core/stream.hpp"
 
 //-----------------------------------------------------------------------------
 

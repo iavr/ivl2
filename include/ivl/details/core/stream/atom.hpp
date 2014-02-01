@@ -40,19 +40,14 @@ namespace atoms {
 
 namespace details {
 
-using std::basic_ostream;
-
 //-----------------------------------------------------------------------------
 
-template <typename C, typename R, typename T, typename S>
-INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, atom <T, S>&& a)
-	{ return s << mv(a).val(); }
-
-template <typename C, typename R, typename T, typename S>
-INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, const atom <T, S>& a)
-	{ return s << a.val(); }
+template <
+	typename S, typename A,
+	only_if <is_stream <S>() && is_atom <A>()>
+= 0>
+INLINE S&&
+operator<<(S&& s, A&& a) { return fwd <S>(s) << fwd <A>(a).val(); }
 
 //-----------------------------------------------------------------------------
 

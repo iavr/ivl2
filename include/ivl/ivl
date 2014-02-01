@@ -31,7 +31,6 @@
 
 #include "version.hpp"
 #include "core"
-// #include "array"
 #include "fun"
 
 //-----------------------------------------------------------------------------

@@ -23,32 +23,79 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_HPP
-#define IVL_DETAILS_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_AFUN__META_OP__HPP
+#define IVL_DETAILS_CORE_AFUN__META_OP__HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "array/begin.hpp"
-#include "array/data.hpp"
-#include "array/array.hpp"
-#include "array/traits.hpp"
-
-#include "core/vec/array.hpp"
-#include "core/vec/vec.hpp"
-#include "core/vec/tmp.hpp"
-#include "core/atom/vec.hpp"
-#include "core/atom/uscore.hpp"
-
-#include "array/heap.hpp"
+#define IVL_BIND_OP(NAME)                   \
+                                            \
+namespace afun {                            \
+                                            \
+using bind_##NAME = bind_of <op::NAME>;     \
+                                            \
+}                                           \
+                                            \
+static __attribute__ ((unused))             \
+	afun::bind_##NAME bind_##NAME;           \
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/pop.hpp"
+IVL_BIND_OP(add)
+IVL_BIND_OP(sub)
+IVL_BIND_OP(mul)
+IVL_BIND_OP(div)
+IVL_BIND_OP(mod)
+
+IVL_BIND_OP(eq)
+IVL_BIND_OP(neq)
+IVL_BIND_OP(gt)
+IVL_BIND_OP(lt)
+IVL_BIND_OP(ge)
+IVL_BIND_OP(le)
+
+IVL_BIND_OP(_and)
+IVL_BIND_OP(_or)
+IVL_BIND_OP(bit_and)
+IVL_BIND_OP(bit_or)
+IVL_BIND_OP(bit_xor)
+
+IVL_BIND_OP(left)
+IVL_BIND_OP(right)
+IVL_BIND_OP(assign)
+
+IVL_BIND_OP(add_as)
+IVL_BIND_OP(sub_as)
+IVL_BIND_OP(mul_as)
+IVL_BIND_OP(div_as)
+IVL_BIND_OP(mod_as)
+
+IVL_BIND_OP(and_as)
+IVL_BIND_OP(or_as)
+IVL_BIND_OP(xor_as)
+IVL_BIND_OP(left_as)
+IVL_BIND_OP(right_as)
+
+IVL_BIND_OP(ref_member)
+IVL_BIND_OP(ptr_member)
+IVL_BIND_OP(ref_call)
+IVL_BIND_OP(ptr_call)
+
+IVL_BIND_OP(call)
+IVL_BIND_OP(bracket)
+IVL_BIND_OP(comma)
+IVL_BIND_OP(cond)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_HPP
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_AFUN__META_OP__HPP

@@ -32,8 +32,6 @@
 
 //-----------------------------------------------------------------------------
 
-#include "core/stream.hpp"
-
 #include "afun/array.hpp"
 #include "afun/container.hpp"
 #include "afun/limits.hpp"

@@ -32,6 +32,9 @@
 #include "vec/traits.hpp"
 #include "vec/fun.hpp"
 #include "vec/tuple.hpp"
+#include "vec/array.hpp"
+#include "vec/vec.hpp"
+#include "vec/tmp.hpp"
 
 //-----------------------------------------------------------------------------
 

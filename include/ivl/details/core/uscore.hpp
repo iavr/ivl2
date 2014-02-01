@@ -23,49 +23,14 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_TRAITS_HPP
-#define IVL_DETAILS_ARRAY_TRAITS_HPP
-
-#include <ivl/ivl>
+#ifndef IVL_DETAILS_CORE_USCORE_HPP
+#define IVL_DETAILS_CORE_USCORE_HPP
 
 //-----------------------------------------------------------------------------
 
-namespace ivl {
+#include "atom/vec.hpp"
+#include "atom/uscore.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-
-//-----------------------------------------------------------------------------
-
-namespace traits {
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-template <typename T>
-struct is_array_ : _false { };
-
-template <typename T, typename S>
-struct is_array_<array <T, S> > : _true { };
-
-}  // namespace details
-
-template <typename T> using is_array = details::is_array_<raw_type <T> >;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace traits
-
-//-----------------------------------------------------------------------------
-
-}  // namespace types
-
-//-----------------------------------------------------------------------------
-
-}  // namespace ivl
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_DETAILS_ARRAY_TRAITS_HPP
+#endif  // IVL_DETAILS_CORE_USCORE_HPP

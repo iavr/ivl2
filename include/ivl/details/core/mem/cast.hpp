@@ -47,21 +47,22 @@ INLINE T& vary(const T& r) { return const_cast <T&>(r); }
 //-----------------------------------------------------------------------------
 
 template <typename T>
-INLINE       void* away(T&       r) { return reinterpret_cast <void*>      (r); }
+INLINE void* away(T& r) { return reinterpret_cast <void*> (r); }
 
 template <typename T>
-INLINE const void* away(const T& r) { return reinterpret_cast <const void*>(r); }
+INLINE const void* away(const T& r)
+	{ return reinterpret_cast <const void*>(r); }
 
 //-----------------------------------------------------------------------------
 
 template <typename T>
-INLINE       void* away(T*       p) { return static_cast <void*>      (p); }
+INLINE void* away(T* p) { return static_cast <void*> (p); }
 
 template <typename T>
 INLINE const void* away(const T* p) { return static_cast <const void*>(p); }
 
 template <typename T>
-INLINE       void* ref (T&       r) { return away(&r); }
+INLINE void* ref (T& r) { return away(&r); }
 
 template <typename T>
 INLINE const void* ref (const T& r) { return away(&r); }
@@ -69,20 +70,20 @@ INLINE const void* ref (const T& r) { return away(&r); }
 //-----------------------------------------------------------------------------
 
 template <typename T>
-INLINE       T* back (void*       p) { return static_cast <T*>      (p); }
+INLINE T* back (void* p) { return static_cast <T*>(p); }
 
 template <typename T>
 INLINE const T* back (const void* p) { return static_cast <const T*>(p); }
 
 template <typename T>
-INLINE       T& deref(void*       p) { return *back <T>(p); }
+INLINE T& deref(void* p) { return *back <T>(p); }
 
 template <typename T>
 INLINE const T& deref(const void* p) { return *back <T>(p); }
 
 //-----------------------------------------------------------------------------
 
-INLINE void*       peek(void*       p) { return deref <void*>      (p); }
+INLINE void*       peek(void* p) { return deref <void*>(p); }
 INLINE const void* peek(const void* p) { return deref <const void*>(p); }
 
 //-----------------------------------------------------------------------------

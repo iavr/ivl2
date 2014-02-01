@@ -40,19 +40,20 @@ namespace tuples {
 
 namespace details {
 
-using std::basic_ostream;
-
 //-----------------------------------------------------------------------------
 
-template <typename C, typename R, typename S, typename... A>
-INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, collection <S, A...>&& t)
-	{ return s << "(",  loop[", "](out_stream(s), mv(t)),  s << ")"; }
-
-template <typename C, typename R, typename S, typename... A>
-INLINE basic_ostream <C, R>&
-operator<<(basic_ostream <C, R>& s, const collection <S, A...>& t)
-	{ return s << "(",  loop[", "](out_stream(s), t),  s << ")"; }
+template <
+	typename S, typename T,
+	only_if <is_stream <S>() && is_tuple <T>()>
+= 0>
+INLINE S&&
+operator<<(S&& s, T&& t)
+{
+	return
+		fwd <S>(s) << "(",
+		loop[", "](bind_left(fwd <S>(s)), fwd <T>(t)),
+		fwd <S>(s) << ")";
+}
 
 //-----------------------------------------------------------------------------
 

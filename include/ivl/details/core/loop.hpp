@@ -23,32 +23,13 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_ARRAY_HPP
-#define IVL_DETAILS_ARRAY_ARRAY_HPP
-
-#include <ivl/ivl>
+#ifndef IVL_DETAILS_CORE_LOOP_HPP
+#define IVL_DETAILS_CORE_LOOP_HPP
 
 //-----------------------------------------------------------------------------
 
-namespace ivl {
+#include "loop/array.hpp"
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
-namespace details {
-
-template <typename T, typename S = data::heap <> >
-class array;
-
-}  // namespace details
-}  // namespace arrays
-
-using arrays::details::array;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace ivl
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_DETAILS_ARRAY_ARRAY_HPP
+#endif  // IVL_DETAILS_CORE_LOOP_HPP

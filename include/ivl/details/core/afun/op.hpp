@@ -160,6 +160,8 @@ IVL_OP2(mul, *)
 IVL_OP2(div, /)
 IVL_OP2(mod, %)
 
+//-----------------------------------------------------------------------------
+
 IVL_OP2(eq,  ==)
 IVL_OP2(neq, !=)
 IVL_OP2(gt,  >)
@@ -175,12 +177,13 @@ IVL_OP1(bit_not, ~)
 IVL_OP2(bit_and, &)
 IVL_OP2(bit_or,  |)
 IVL_OP2(bit_xor, ^)
-IVL_OP2_MUT(left,  <<)
-IVL_OP2_MUT(right, >>)
 
 //-----------------------------------------------------------------------------
 
+IVL_OP2_MUT(left,  <<)
+IVL_OP2_MUT(right, >>)
 IVL_OP2_MUT(assign, =)
+
 IVL_OP2_MUT(add_as, +=)
 IVL_OP2_MUT(sub_as, -=)
 IVL_OP2_MUT(mul_as, *=)

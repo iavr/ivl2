@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_STREAM_HPP
-#define IVL_DETAILS_CORE_AFUN_STREAM_HPP
+#ifndef IVL_DETAILS_CORE_LOOP_ARRAY_HPP
+#define IVL_DETAILS_CORE_LOOP_ARRAY_HPP
 
 #include <ivl/ivl>
 
@@ -42,26 +42,69 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S>
-class out_stream_
-{
-	S& s;
-
-public:
-	out_stream_(S& s) : s(s) { }
-
-	template <typename A>
-	INLINE S& operator()(A&& a) const { return s << fwd <A>(a); }
-};
-
-//-----------------------------------------------------------------------------
-
-struct out_stream
-{
-	template <typename S>
-	INLINE constexpr out_stream_<S>
-	operator()(S& s) const { return out_stream_<S>(s); }
-};
+// template <typename D>
+// struct arr_loop : derived <D, arr_loop <D> >
+// {
+// 	template <typename F, typename A, only_if <is_array <A>{}> = 0>
+// 	INLINE void operator()(F&& f, A&& a) const
+// 	{
+// 		this->der().iter(fwd <F>(f), fwd <A>(a).begin(), fwd <A>(a).end());
+// 	}
+//
+// 	template <
+// 		typename F, typename A, typename B,
+// 		only_if <is_array <A>{} && is_array <B>{}> = 0
+// 	>
+// 	INLINE void operator()(F&& f, A&& a, B&& b) const
+// 	{
+// 		this->der().iter(fwd <F>(f),
+// 			fwd <A>(a).begin(), fwd <A>(a).end(), fwd <B>(b).begin());
+// 	}
+// };
+//
+// //-----------------------------------------------------------------------------
+//
+// template <typename S, typename D>
+// class seq_sep_loop : public tup_sep_loop <S, D>, public arr_loop <D>
+// {
+// protected:
+// 	using arr_loop <D>::der;
+//
+// public:
+// 	using tup_sep_loop <S, D>::operator();
+// 	using arr_loop <D>::operator();
+//
+// 	template <typename F, typename B, typename E>
+// 	INLINE void iter(F&& f, const B& b, const E& e) const
+// 	{
+// 		if (b != e) f(*b);
+// 		for (B i = b + 1; i != e; ++i)
+// 			fwd <F>(f)(fwd <S>(der().sep())), fwd <F>(f)(*i);
+// 	}
+// };
+//
+// //-----------------------------------------------------------------------------
+//
+// struct seq_loop : tup_loop, arr_loop <seq_loop>
+// {
+// 	using tup_loop::operator();
+// 	using arr_loop <seq_loop>::operator();
+//
+// 	template <typename F, typename B, typename E>
+// 	INLINE void iter(F&& f, const B& b, const E& e) const
+// 	{
+// 		for (B i = b; i != e; ++i)
+// 			fwd <F>(f)(*i);
+// 	}
+//
+// 	template <typename F, typename B, typename E, typename D>
+// 	INLINE void iter(F&& f, const B& b, const E& e, const D& d) const
+// 	{
+// 		D j = d;
+// 		for (B i = b; i != e; ++i, ++j)
+// 			fwd <F>(f)(*i, *j);
+// 	}
+// };
 
 //-----------------------------------------------------------------------------
 
@@ -69,15 +112,7 @@ struct out_stream
 
 //-----------------------------------------------------------------------------
 
-using details::out_stream;
-
-//-----------------------------------------------------------------------------
-
 }  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::out_stream out_stream;
 
 //-----------------------------------------------------------------------------
 
@@ -85,4 +120,4 @@ static __attribute__ ((unused)) afun::out_stream out_stream;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_STREAM_HPP
+#endif  // IVL_DETAILS_CORE_LOOP_ARRAY_HPP
