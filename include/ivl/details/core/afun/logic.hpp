@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
-#define IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_AFUN_LOGIC_HPP
+#define IVL_DETAILS_CORE_AFUN_LOGIC_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,39 +42,37 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C> class sequence;
+struct and_fun
+{
+	INLINE constexpr bool operator()() const { return true; }
 
-//-----------------------------------------------------------------------------
+	template <typename A, typename... An>
+	INLINE constexpr bool operator()(A&& a, An&&... an) const
+		{ return fwd <A>(a) && operator()(fwd <An>(an)...); }
+};
 
-template <typename T, size_t... N>
-struct array_t : id_t <sequence <T, data::fixed <sizes <N...> > > > { };
+struct or_fun
+{
+	INLINE constexpr bool operator()() const { return false; }
 
-template <typename T>
-struct array_t <T> : id_t <sequence <T, data::heap <> > > { };
-
-template <typename T, size_t... N>
-using array = type_of <array_t <T, N...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T, typename K, typename U>
-using indirect_array = sequence <T, data::indirect <K, U> >;
-
-template <typename T, size_t... N>
-using aggr_array = sequence <T, data::aggr <sizes <N...> > >;
+	template <typename A, typename... An>
+	INLINE constexpr bool operator()(A&& a, An&&... an) const
+		{ return fwd <A>(a) || operator()(fwd <An>(an)...); }
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::sequence;
+using details::and_fun;
+using details::or_fun;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace arrays
+}  // namespace afun
 
-using arrays::details::array;
-using arrays::details::aggr_array;
+static __attribute__ ((unused)) afun::and_fun and_fun;
+static __attribute__ ((unused)) afun::or_fun or_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -82,4 +80,4 @@ using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#endif  // IVL_DETAILS_CORE_AFUN_LOGIC_HPP

@@ -30,6 +30,11 @@
 
 #include "array/begin.hpp"
 #include "array/type.hpp"
+#include "loop.hpp"
+#include "array/iter.hpp"
+#include "array/base.hpp"
+#include "array/store.hpp"
+#include "array/view.hpp"
 
 //-----------------------------------------------------------------------------
 

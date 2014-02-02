@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
-#define IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_LOOP_TRAITS_HPP
+#define IVL_DETAILS_CORE_LOOP_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -34,47 +34,24 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C> class sequence;
+template <typename... T>
+using seq_prim = first <expr <raw_type <T>::finite>...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T, size_t... N>
-struct array_t : id_t <sequence <T, data::fixed <sizes <N...> > > > { };
-
-template <typename T>
-struct array_t <T> : id_t <sequence <T, data::heap <> > > { };
-
-template <typename T, size_t... N>
-using array = type_of <array_t <T, N...> >;
+}  // namespace traits
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename K, typename U>
-using indirect_array = sequence <T, data::indirect <K, U> >;
-
-template <typename T, size_t... N>
-using aggr_array = sequence <T, data::aggr <sizes <N...> > >;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace details
-
-using details::sequence;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace arrays
-
-using arrays::details::array;
-using arrays::details::aggr_array;
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -82,4 +59,4 @@ using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#endif  // IVL_DETAILS_CORE_LOOP_TRAITS_HPP

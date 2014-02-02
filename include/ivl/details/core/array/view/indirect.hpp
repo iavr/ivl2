@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
-#define IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_VIEW_INDIRECT_HPP
+#define IVL_DETAILS_CORE_ARRAY_VIEW_INDIRECT_HPP
 
 #include <ivl/ivl>
 
@@ -42,39 +42,48 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C> class sequence;
-
-//-----------------------------------------------------------------------------
-
-template <typename T, size_t... N>
-struct array_t : id_t <sequence <T, data::fixed <sizes <N...> > > > { };
-
-template <typename T>
-struct array_t <T> : id_t <sequence <T, data::heap <> > > { };
-
-template <typename T, size_t... N>
-using array = type_of <array_t <T, N...> >;
-
-//-----------------------------------------------------------------------------
-
 template <typename T, typename K, typename U>
-using indirect_array = sequence <T, data::indirect <K, U> >;
-
-template <typename T, size_t... N>
-using aggr_array = sequence <T, data::aggr <sizes <N...> > >;
+class sequence <T, data::indirect <K, U> > :
+	public base_seq <T, sequence <T, data::indirect <K, U> > >,
+	private raw_tuple <K, U>
+{
+// 	using S  = size_t;
+// 	using R  = T&;
+// 	using CR = const T&;
+// 	using P  = T*;
+// 	using CP = const T*;
+// 	using I  = indirect_iter <T, K, U>;
+// 	using CI = indirect_iter <const T, K, U>;
+//
+// 	using B = base_seq <T, sequence>;
+// 	friend B;
+//
+// //-----------------------------------------------------------------------------
+//
+// 	INLINE           R  _at(S n)       { return data()[n]; }
+// 	INLINE constexpr CR _at(S n) const { return data()[n]; }
+//
+// //-----------------------------------------------------------------------------
+//
+// public:
+//
+// 	INLINE constexpr size_t size()     const { return N; }
+// 	INLINE constexpr size_t max_size() const { return N; }
+// 	INLINE constexpr bool   empty()    const { return N == 0; }
+//
+// 	INLINE I  begin()       { return data(); }
+// 	INLINE CI begin() const { return data(); }
+// 	INLINE I  end()         { return data() + N; }
+// 	INLINE CI end()   const { return data() + N; }
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::sequence;
-
 //-----------------------------------------------------------------------------
 
 }  // namespace arrays
-
-using arrays::details::array;
-using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
@@ -82,4 +91,4 @@ using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_VIEW_INDIRECT_HPP

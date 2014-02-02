@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_BEGIN_HPP
-#define IVL_DETAILS_ARRAY_BEGIN_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_BEGIN_HPP
+#define IVL_DETAILS_CORE_ARRAY_BEGIN_HPP
 
 #include <ivl/ivl>
 
@@ -45,6 +45,16 @@ using namespace types;
 
 //-----------------------------------------------------------------------------
 
+namespace afun {
+namespace details {
+
+using namespace arrays;
+
+}  // namespace details
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
+
 namespace types {
 namespace traits {
 namespace details {
@@ -61,4 +71,4 @@ using namespace arrays;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_BEGIN_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_BEGIN_HPP

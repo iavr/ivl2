@@ -44,6 +44,23 @@ namespace packs {
 
 namespace details {
 
+template <typename P, size_t N = 0, bool = is_null <P>{}> struct first_;
+
+template <template <typename...> class C, typename... B, size_t N>
+struct first_<C <_true, B...>, N, false> : size <N> { };
+
+template <template <typename...> class C, typename... B, size_t N>
+struct first_<C <_false, B...>, N, false> : first_<C <B...>, N + 1> { };
+
+}  // namespace details
+
+template <typename P>    using first_p = details::first_<P>;
+template <typename... B> using first = first_p <pack <B...> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
 template <typename P, bool = is_null <P>{}>
 struct _and_p_ : _if <car <P>{}, _and_p_<cdr <P> >, _false> { };
 

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_DATA_HPP
-#define IVL_DETAILS_ARRAY_DATA_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_DATA_HPP
+#define IVL_DETAILS_CORE_ARRAY_TYPE_DATA_HPP
 
 #include <ivl/ivl>
 
@@ -38,9 +38,12 @@ namespace data {
 
 //-----------------------------------------------------------------------------
 
-template <typename S> struct fixed { };
+template <typename... D> struct rev { };
+template <typename... D> struct iter { };
 
-template <typename... A> struct heap { };
+template <typename... D> struct aggr { };
+template <typename... D> struct fixed { };
+template <typename... D> struct heap { };
 
 //-----------------------------------------------------------------------------
 
@@ -52,4 +55,4 @@ template <typename... A> struct heap { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_DATA_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_DATA_HPP

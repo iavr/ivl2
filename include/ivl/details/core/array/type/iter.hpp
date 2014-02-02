@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
-#define IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_ITER_HPP
+#define IVL_DETAILS_CORE_ARRAY_TYPE_ITER_HPP
 
 #include <ivl/ivl>
 
@@ -42,39 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C> class sequence;
+template <typename T, typename S> class iterator;
+template <typename T, typename S> class traversor;
 
-//-----------------------------------------------------------------------------
+template <typename T> using rev_iter  = iterator <T, data::rev <> >;
+template <typename T> using iter_iter = iterator <T, data::iter <> >;
+template <typename T> using atom_iter = iterator <T, data::atom <> >;
 
-template <typename T, size_t... N>
-struct array_t : id_t <sequence <T, data::fixed <sizes <N...> > > > { };
-
-template <typename T>
-struct array_t <T> : id_t <sequence <T, data::heap <> > > { };
-
-template <typename T, size_t... N>
-using array = type_of <array_t <T, N...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T, typename K, typename U>
-using indirect_array = sequence <T, data::indirect <K, U> >;
-
-template <typename T, size_t... N>
-using aggr_array = sequence <T, data::aggr <sizes <N...> > >;
+template <typename T> using iter_trav = traversor <T, data::iter <> >;
+template <typename T> using atom_trav = traversor <T, data::atom <> >;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::sequence;
+using details::iterator;
+using details::traversor;
+
+using details::rev_iter;
+using details::iter_iter;
+using details::atom_iter;
+
+using details::iter_trav;
+using details::atom_trav;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace arrays
-
-using arrays::details::array;
-using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
@@ -82,4 +76,4 @@ using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_ARRAY_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_ITER_HPP

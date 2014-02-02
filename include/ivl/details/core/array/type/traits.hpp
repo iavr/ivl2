@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_TRAITS_HPP
-#define IVL_DETAILS_ARRAY_TRAITS_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_TRAITS_HPP
+#define IVL_DETAILS_CORE_ARRAY_TYPE_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -47,13 +47,78 @@ namespace details {
 template <typename T>
 struct is_array_ : _false { };
 
-template <typename T, typename S>
-struct is_array_<sequence <T, S> > : _true { };
+template <typename T, typename C>
+struct is_array_<sequence <T, C> > : _true { };
+
+template <typename T>
+struct is_trav_ : _false { };
+
+template <typename T, typename C>
+struct is_trav_<traversor <T, C> > : _true { };
 
 }  // namespace details
 
+// no alias: fwd-declared
 template <typename T>
-using is_array = details::is_array_<raw_type <T> >;
+struct is_array : details::is_array_<raw_type <T> > { };
+
+// no alias: fwd-declared
+template <typename T>
+struct is_trav : details::is_trav_<raw_type <T> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using all_array_p = all_p <is_array, P>;
+template <typename P> using any_array_p = any_p <is_array, P>;
+
+template <typename... E> using all_array = all_array_p <pack <E...> >;
+template <typename... E> using any_array = any_array_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using all_trav_p = all_p <is_trav, P>;
+template <typename P> using any_trav_p = any_p <is_trav, P>;
+
+template <typename... E> using all_trav = all_trav_p <pack <E...> >;
+template <typename... E> using any_trav = any_trav_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename C> struct seq_iter_t;
+template <typename T, typename C> struct seq_citer_t;
+template <typename T, typename C> using seq_iter = type_of <seq_iter_t <T, C> >;
+template <typename T, typename C> using seq_citer = type_of <seq_citer_t <T, C> >;
+
+template <typename T, size_t N>
+struct seq_iter_t  <T, data::fixed <sizes <N> > > : id_t <T*> { };
+
+template <typename T, size_t N>
+struct seq_citer_t  <T, data::fixed <sizes <N> > > : id_t <T*> { };
+
+template <typename T, size_t N>
+struct seq_iter_t <T, data::aggr <sizes <N> > > : id_t <T*> { };
+
+template <typename T, size_t N>
+struct seq_citer_t <T, data::aggr <sizes <N> > > : id_t <T*> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename I> struct it_val_t : id_t <typename I::value_type> { };
+template <typename T> struct it_val_t <T*>: id_t <T> { };
+
+template <typename I> struct it_diff_t : id_t <typename I::difference_type> { };
+template <typename T> struct it_diff_t <T*>: id_t <ptrdiff_t> { };
+
+template <typename I> struct it_ref_t : id_t <typename I::reference> { };
+template <typename T> struct it_ref_t <T*>: id_t <T&> { };
+
+template <typename I> struct it_ptr_t : id_t <typename I::pointer> { };
+template <typename T> struct it_ptr_t <T*>: id_t <T*> { };
+
+template <typename I> using it_val  = type_of <it_val_t <I> >;
+template <typename I> using it_diff = type_of <it_diff_t <I> >;
+template <typename I> using it_ref  = type_of <it_ref_t <I> >;
+template <typename I> using it_ptr  = type_of <it_ptr_t <I> >;
 
 //-----------------------------------------------------------------------------
 
@@ -69,4 +134,4 @@ using is_array = details::is_array_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_TRAITS_HPP
+#endif  // IVL_DETAILC_CORE_ARRAY_TYPE_TRAITS_HPP

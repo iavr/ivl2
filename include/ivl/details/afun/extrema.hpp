@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename L>
+template <typename L = op::lt>
 struct min_fun : lim::inf_max
 {
 	template <typename A, typename E>
@@ -50,7 +50,7 @@ struct min_fun : lim::inf_max
 		{ if (L()(fwd <E>(e), fwd <A>(a))) a = fwd <E>(e); }
 };
 
-template <typename L>
+template <typename L = op::lt>
 struct max_fun : lim::inf_min
 {
 	template <typename A, typename E>
@@ -60,7 +60,7 @@ struct max_fun : lim::inf_min
 
 //-----------------------------------------------------------------------------
 
-template <typename L>
+template <typename L = op::lt>
 struct min_off_fun : lim::inf_max
 {
 	template <typename A, typename P, typename E>
@@ -71,7 +71,7 @@ struct min_off_fun : lim::inf_max
 	}
 };
 
-template <typename L>
+template <typename L = op::lt>
 struct max_off_fun : lim::inf_min
 {
 	template <typename A, typename P, typename E>

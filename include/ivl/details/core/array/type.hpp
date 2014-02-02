@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 
 #include "type/data.hpp"
+#include "type/iter.hpp"
 #include "type/array.hpp"
 #include "type/traits.hpp"
 

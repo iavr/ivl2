@@ -42,73 +42,81 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// template <typename D>
-// struct arr_loop : derived <D, arr_loop <D> >
-// {
-// 	template <typename F, typename A, only_if <is_array <A>{}> = 0>
-// 	INLINE void operator()(F&& f, A&& a) const
-// 	{
-// 		this->der().iter(fwd <F>(f), fwd <A>(a).begin(), fwd <A>(a).end());
-// 	}
-//
-// 	template <
-// 		typename F, typename A, typename B,
-// 		only_if <is_array <A>{} && is_array <B>{}> = 0
-// 	>
-// 	INLINE void operator()(F&& f, A&& a, B&& b) const
-// 	{
-// 		this->der().iter(fwd <F>(f),
-// 			fwd <A>(a).begin(), fwd <A>(a).end(), fwd <B>(b).begin());
-// 	}
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// template <typename S, typename D>
-// class seq_sep_loop : public tup_sep_loop <S, D>, public arr_loop <D>
-// {
-// protected:
-// 	using arr_loop <D>::der;
-//
-// public:
-// 	using tup_sep_loop <S, D>::operator();
-// 	using arr_loop <D>::operator();
-//
-// 	template <typename F, typename B, typename E>
-// 	INLINE void iter(F&& f, const B& b, const E& e) const
-// 	{
-// 		if (b != e) f(*b);
-// 		for (B i = b + 1; i != e; ++i)
-// 			fwd <F>(f)(fwd <S>(der().sep())), fwd <F>(f)(*i);
-// 	}
-// };
-//
-// //-----------------------------------------------------------------------------
-//
-// struct seq_loop : tup_loop, arr_loop <seq_loop>
-// {
-// 	using tup_loop::operator();
-// 	using arr_loop <seq_loop>::operator();
-//
-// 	template <typename F, typename B, typename E>
-// 	INLINE void iter(F&& f, const B& b, const E& e) const
-// 	{
-// 		for (B i = b; i != e; ++i)
-// 			fwd <F>(f)(*i);
-// 	}
-//
-// 	template <typename F, typename B, typename E, typename D>
-// 	INLINE void iter(F&& f, const B& b, const E& e, const D& d) const
-// 	{
-// 		D j = d;
-// 		for (B i = b; i != e; ++i, ++j)
-// 			fwd <F>(f)(*i, *j);
-// 	}
-// };
+struct trav
+{
+	template <typename A, only_if <is_array <A>{}> = 0>
+	INLINE auto operator()(A&& a) const
+	-> decltype(fwd <A>(a).trav())
+		{ return fwd <A>(a).trav(); }
+
+	template <typename A, only_if <is_trav <A>{}> = 0>
+	INLINE A&& operator()(A&& a) const { return fwd <A>(a); }
+
+	template <typename A, only_if <!is_array <A>() && !is_trav <A>()> = 0>
+	INLINE constexpr atom_trav <A>
+	operator()(A&& a) const { return atom_trav <A>(fwd <A>(a)); }
+};
+
+//-----------------------------------------------------------------------------
+
+struct seq_more
+{
+	template <typename... T>
+	INLINE constexpr bool operator()(T&&... t) const
+		{ return get <seq_prim <T...>{}>(fwd <T>(t)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename S, typename M = seq_more>
+class seq_sep_loop : raw_tuple <S>
+{
+	using B = raw_tuple <S>;
+
+protected:
+	using B::val;
+
+public:
+	using B::B;
+
+	template <typename F, typename... A, only_if <any_array <A...>{}> = 0>
+	INLINE F&& operator()(F&& f, A&&... a) const
+		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
+
+	template <typename F, typename... T, only_if <all_trav <T...>{}> = 0>
+	INLINE F&& operator()(F&& f, T&&... t) const
+	{
+		if (!M()(t...)) return fwd <F>(f);
+		fwd <F>(f)(*t...);
+		for (thru{++t...}; M()(t...); thru{++t...})
+			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
+		return fwd <F>(f);
+	}
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename M = seq_more>
+struct seq_loop
+{
+	template <typename F, typename... A, only_if <any_array <A...>{}> = 0>
+	INLINE F&& operator()(F&& f, A&&... a) const
+		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
+
+	template <typename F, typename... T, only_if <all_trav <T...>{}> = 0>
+	INLINE F&& operator()(F&& f, T&&... t) const
+	{
+		for (; M()(t...); thru{++t...})
+			fwd <F>(f)(*t...);
+		return fwd <F>(f);
+	}
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
+
+using details::trav;
 
 //-----------------------------------------------------------------------------
 

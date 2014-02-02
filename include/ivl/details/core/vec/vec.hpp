@@ -47,23 +47,21 @@ using apply = seq_apply;
 //-----------------------------------------------------------------------------
 
 template <typename S>
-class sep_loop : public seq_sep_loop <S, sep_loop <S> >
+struct sep_loop : tup_sep_loop <S>
 {
-	S&& s;
-
-public:
-	explicit INLINE constexpr sep_loop(S&& s) : s{fwd <S>(s)} { }
-	INLINE S&& sep() const { return fwd <S>(s); }
+	using tup_sep_loop <S>::tup_sep_loop;
+	using tup_sep_loop <S>::operator();
+	using seq_sep_loop <S>::operator();
 };
 
 //-----------------------------------------------------------------------------
 
-struct loop : seq_loop
+struct loop : tup_loop
 {
 	// TODO: keys
 	template <typename S>
-	INLINE sep_loop <S>
-	operator[](S&& s) const { return sep_loop <S>(fwd <S>(s)); }
+	INLINE sep_loop <uref_opt <S> >
+	operator[](S&& s) const { return sep_loop <uref_opt <S> >(fwd <S>(s)); }
 };
 
 //-----------------------------------------------------------------------------

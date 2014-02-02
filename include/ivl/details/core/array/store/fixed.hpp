@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -43,25 +43,59 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-class sequence <T, data::fixed <sizes <N> > >
+struct fixed_store
 {
-public:
-	using value_type = T;
+	T a[N];
 
-// 	template <typename A = int, only_if <_and <is_cons <E>...>{}, A> = 0>
-// 	explicit INLINE constexpr sequence() : B(yes) { }
-//
-// 	template <typename... A, only_if <tup_conv <pack <A...>, P>{}> = 0>
-// 	INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
-//
-// 	template <typename... A, only_if <tup_explicit <P, pack <A...> >{}> = 0>
-// 	explicit INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
-//
-// 	template <typename T, only_if <tup_tup_conv <T, P>{}> = 0>
-// 	INLINE constexpr sequence(T&& t) : B(fwd <T>(t)) { }
-//
-// 	template <typename T, only_if <tup_tup_explicit <P, T>{}> = 0>
-// 	explicit INLINE constexpr sequence(T&& t) : B(fwd <T>(t)) { }
+	INLINE T*       data()       { return a; }
+	INLINE const T* data() const { return a; }
+};
+
+template <typename T>
+struct fixed_store <T, 0>
+{
+	INLINE T*       data()       { return nullptr; }
+	INLINE const T* data() const { return nullptr; }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename T, size_t N>
+class sequence <T, data::fixed <sizes <N> > > :
+	public base_seq <T, sequence <T, data::fixed <sizes <N> > > >,
+	private fixed_store <T, N>
+{
+	using S  = size_t;
+	using R  = T&;
+	using CR = const T&;
+	using P  = T*;
+	using CP = const T*;
+	using I  = T*;
+	using CI = const T*;
+
+	using D = fixed_store <T, N>;
+	using D::data;
+
+	using B = base_seq <T, sequence>;
+	friend B;
+
+//-----------------------------------------------------------------------------
+
+	INLINE           R  _at(S n)       { return data()[n]; }
+	INLINE constexpr CR _at(S n) const { return data()[n]; }
+
+//-----------------------------------------------------------------------------
+
+public:
+
+	INLINE constexpr size_t size()     const { return N; }
+	INLINE constexpr size_t max_size() const { return N; }
+	INLINE constexpr bool   empty()    const { return N == 0; }
+
+	INLINE I  begin()       { return data(); }
+	INLINE CI begin() const { return data(); }
+	INLINE I  end()         { return data() + N; }
+	INLINE CI end()   const { return data() + N; }
 };
 
 //-----------------------------------------------------------------------------
@@ -70,7 +104,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuples
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 

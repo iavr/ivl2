@@ -23,36 +23,13 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_HPP
-#define IVL_DETAILS_CORE_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_BASE_HPP
+#define IVL_DETAILS_CORE_ARRAY_BASE_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "core/macro/push.hpp"
+#include "base/base.hpp"
 
 //-----------------------------------------------------------------------------
 
-#include "core/debug.hpp"
-#include "core/include.hpp"
-#include "core/using.hpp"
-#include "core/platform.hpp"
-#include "core/mem.hpp"
-#include "core/type.hpp"
-#include "core/tuple.hpp"
-#include "core/atom.hpp"
-#include "core/array.hpp"
-#include "core/key.hpp"
-#include "core/afun.hpp"
-#include "core/vec.hpp"
-#include "core/uscore.hpp"
-#include "core/math.hpp"
-#include "core/foo.hpp"
-#include "core/stream.hpp"
-
-//-----------------------------------------------------------------------------
-
-#include "core/macro/pop.hpp"
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_DETAILS_CORE_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_BASE_HPP

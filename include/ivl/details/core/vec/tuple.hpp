@@ -56,7 +56,12 @@ struct tup_loop_of
 		{ L()(fwd <F>(f), fwd <A>(a)...).loop(); }
 };
 
-using tup_loop = tup_loop_of <tup_loop_>;
+struct tup_loop : tup_loop_of <tup_loop_>, seq_loop <>
+{
+	using seq_loop <>::operator();
+	using tup_loop_of <tup_loop_>::operator();
+};
+
 using tup_scan = tup_loop_of <tup_scan_>;
 
 template <typename F, typename... A>
@@ -66,9 +71,17 @@ using tup_auto = afun::choose_fun <tup_auto_for>;
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename D>
-struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
+template <typename S>
+class tup_sep_loop : public seq_sep_loop <S>
 {
+	using B = seq_sep_loop <S>;
+
+protected:
+	using B::val;
+
+public:
+	using B::B;
+
 	template <typename F, typename T, only_if <tup_empty <T>{}> = 0>
 	INLINE void operator()(F&& f, T&& t) const { };
 
@@ -76,7 +89,7 @@ struct tup_sep_loop : derived <D, tup_sep_loop <S, D> >
 	INLINE void operator()(F&& f, T&& t) const
 	{
 		fwd <F>(f)(tup_head()(fwd <T>(t)));
-		S&& s = fwd <S>(this->der().sep());
+		S&& s = fwd <S>(val());
 		tup_loop()(pre_fun()(fwd <F>(f), fwd <S>(s)), tup_tail()(fwd <T>(t)));
 	}
 };
