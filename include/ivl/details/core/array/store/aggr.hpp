@@ -63,14 +63,14 @@ INLINE T* aggr_ptr(A&&) { return nullptr; }
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-class sequence <T, data::aggr <sizes <N> > >
+class sequence <data::aggr <>, T, sizes <N> >
 {
 	using R  = T&;
 	using CR = const T&;
 	using I  = T*;
 	using CI = const T*;
-	using U  = iter_trav <T*>;
-	using CU = iter_trav <const T*>;
+	using U  = iter_trav <T*, R>;
+	using CU = iter_trav <const T*, CR>;
 
 	template <typename J> using V = rev_iter <J>;
 

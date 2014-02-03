@@ -42,11 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename K, typename U>
-class sequence <T, data::indirect <K, U> > :
-	public base_seq <T, sequence <T, data::indirect <K, U> > >,
-	private raw_tuple <K, U>
-{
+// template <typename T, typename K, typename U>
+// class sequence <T, data::indirect <K, U> > :
+// 	public base_seq <T, sequence <T, data::indirect <K, U> > >,
+// 	private raw_tuple <K, U>
+// {
 // 	using S  = size_t;
 // 	using R  = T&;
 // 	using CR = const T&;
@@ -75,7 +75,7 @@ class sequence <T, data::indirect <K, U> > :
 // 	INLINE CI begin() const { return data(); }
 // 	INLINE I  end()         { return data() + N; }
 // 	INLINE CI end()   const { return data() + N; }
-};
+// };
 
 //-----------------------------------------------------------------------------
 

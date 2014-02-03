@@ -145,14 +145,6 @@ template <typename T> using common_of = type_of <common_of_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <size_t I> using common_at = apply_at <I, common_of>;
-template <size_t I> using copy_at   = apply_at <I, copy>;
-
-template <typename... E> using common_fst = common_at <0>::template map <E...>;
-template <typename... E> using copy_fst   = copy_at <0>::template map <E...>;
-
-//-----------------------------------------------------------------------------
-
 template <size_t I, typename T>
 using tup_elem_t = tup_tx_t <T, pick_p <I, raw_types <T> > >;
 

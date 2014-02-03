@@ -57,7 +57,10 @@ protected:
 public:
 	using elems <D>::elems;
 
+protected:
 	INLINE           rtref <E>  val_f()      { return _at._<0>(der_f()); }
+
+public:
 	INLINE           rtref <E>  val() &&     { return _at._<0>(der_f()); }
 	INLINE           ltref <E>  val() &      { return _at._<0>(der()); }
 	INLINE constexpr cltref <E> val() const& { return _at._<0>(der()); }
@@ -75,12 +78,15 @@ protected:
 public:
 	using elems <D>::elems;
 
+protected:
 	INLINE           rtref <E0>  fst_f()      { return _at._<0>(der_f()); }
+	INLINE           rtref <E1>  snd_f()      { return _at._<1>(der_f()); }
+
+public:
 	INLINE           rtref <E0>  fst() &&     { return _at._<0>(der_f()); }
 	INLINE           ltref <E0>  fst() &      { return _at._<0>(der()); }
 	INLINE constexpr cltref <E0> fst() const& { return _at._<0>(der()); }
 
-	INLINE           rtref <E1>  snd_f()      { return _at._<1>(der_f()); }
 	INLINE           rtref <E1>  snd() &&     { return _at._<1>(der_f()); }
 	INLINE           ltref <E1>  snd() &      { return _at._<1>(der()); }
 	INLINE constexpr cltref <E1> snd() const& { return _at._<1>(der()); }

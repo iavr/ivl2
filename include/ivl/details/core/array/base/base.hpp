@@ -42,83 +42,76 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename D> class base_seq;
-
-template <typename T, typename C>
-class base_seq <T, sequence <T, C> > :
-	public derived <sequence <T, C> >
+template <
+	typename T, template <typename...> class I = ptr_iter,
+	template <typename...> class V = ptr_trav,
+	typename S = size_t, typename D = ptrdiff_t
+>
+struct seq_types
 {
-	using S  = size_t;
-	using D  = ptrdiff_t;
-	using R  = T&;
-	using CR = const T&;
-	using P  = T*;
-	using CP = const T*;
-	using I  = seq_iter <T, C>;
-	using CI = seq_citer <T, C>;
-	using U  = iter_trav <I>;
-	using CU = iter_trav <CI>;
-
-	template <typename J> using V = rev_iter <J>;
-
-	using B = derived <sequence <T, C> >;
-
-//-----------------------------------------------------------------------------
-
-	INLINE I  b()       { return der().begin(); }
-	INLINE CI b() const { return der().begin(); }
-	INLINE I  e()       { return der().end(); }
-	INLINE CI e() const { return der().end(); }
-
-//-----------------------------------------------------------------------------
-
-protected:
-	using B::der;
-
-//-----------------------------------------------------------------------------
-
-public:
 	using value_type = T;
 	using size_type = S;
 	using difference_type = D;
 
-	using reference = R;
-	using const_reference = CR;
-	using pointer = P;
-	using const_pointer = CP;
+	using iterator = I <T, ltref <T> >;
+	using fwd_iterator = I <T, rtref <T> >;
+	using const_iterator = I <const T, cltref <T> >;
 
-	using iterator = I;
-	using const_iterator = CI;
-	using reverse_iterator = V <I>;
-	using const_reverse_iterator = V <CI>;
-	using traversor = U;
-	using const_traversor = CU;
+	using traversor = V <T, ltref <T> >;
+	using fwd_traversor = V <T, rtref <T> >;
+	using const_traversor = V <const T, cltref <T> >;
+};
 
 //-----------------------------------------------------------------------------
 
-	INLINE           U  trav()        { return U(b(), e()); }
-	INLINE constexpr CU trav()  const { return CU(b(), e()); }
-	INLINE constexpr CU ctrav() const { return trav(); }
-
-	INLINE V <I>  rbegin()       { return V <I>(e()); }
-	INLINE V <CI> rbegin() const { return V <CI>(e()); }
-	INLINE V <I>  rend()         { return V <I>(b()); }
-	INLINE V <CI> rend()   const { return V <CI>(b()); }
-
-	INLINE CI     cbegin()  const { return b(); }
-	INLINE CI     cend()    const { return e(); }
-	INLINE V <CI> crbegin() const { return rbegin(); }
-	INLINE V <CI> crend()   const { return rend(); }
-
-	INLINE           R  front()       { return *b(); }
-	INLINE constexpr CR front() const { return *b(); }
-	INLINE           R  back()        { return *(e() - 1); }
-	INLINE constexpr CR back()  const { return *(e() - 1); }
+template <typename D, typename ST>
+class base_seq : public derived <D>, public ST
+{
+	using T  = seq_val <ST>;
+	using S  = seq_size <ST>;
+	using R  = ltref <T>;
+	using RF = rtref <T>;
+	using RC = cltref <T>;
+	using I  = seq_iter <ST>;
+	using IF = seq_fwd_iter <ST>;
+	using IC = seq_const_iter <ST>;
 
 //-----------------------------------------------------------------------------
 
-	INLINE           R  operator[](S n)       { return der()._at(n); }
-	INLINE constexpr CR operator[](S n) const { return der()._at(n); }
+	INLINE           IF b_f()      { return der_f().begin(); }
+	INLINE           IF b() &&     { return der_f().begin(); }
+	INLINE           I  b() &      { return der().begin(); }
+	INLINE constexpr IC b() const& { return der().begin(); }
+
+	INLINE           IF e_f()      { return der_f().end(); }
+	INLINE           IF e() &&     { return der_f().end(); }
+	INLINE           I  e() &      { return der().end(); }
+	INLINE constexpr IC e() const& { return der().end(); }
+
+//-----------------------------------------------------------------------------
+
+protected:
+	using derived <D>::der_f;
+	using derived <D>::der;
+
+//-----------------------------------------------------------------------------
+
+public:
+	INLINE constexpr bool empty() const { return der().size() == 0; }
+
+	INLINE           RF front() &&     { return *b_f(); }
+	INLINE           R  front() &      { return *b(); }
+	INLINE constexpr RC front() const& { return *b(); }
+
+	INLINE           RF back() &&     { return e_f()[-1]; }
+	INLINE           R  back() &      { return e()[-1]; }
+	INLINE constexpr RC back() const& { return e()[-1]; }
+
+//-----------------------------------------------------------------------------
+
+	INLINE           RF operator[](S n) &&     { return b_f()[n]; }
+	INLINE           R  operator[](S n) &      { return b()[n]; }
+	INLINE constexpr RC operator[](S n) const& { return b()[n]; }
 };
 
 //-----------------------------------------------------------------------------

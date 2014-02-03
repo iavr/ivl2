@@ -42,26 +42,32 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C> class sequence;
+template <typename C, typename... A> class sequence;
 
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t... N>
-struct array_t : id_t <sequence <T, data::fixed <sizes <N...> > > > { };
+using aggr_array = sequence <data::aggr <>, T, sizes <N...> >;
+
+template <typename T, size_t... N>
+using fixed_array = sequence <data::fixed <>, T, sizes <N...> >;
 
 template <typename T>
-struct array_t <T> : id_t <sequence <T, data::heap <> > > { };
+using heap_array = sequence <data::heap <>, T>;
+
+template <typename T, typename K, typename U>
+using indirect_array = sequence <data::indirect <>, K, U>;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, size_t... N>
+struct array_t : id_t <fixed_array <T, N...> > { };
+
+template <typename T>
+struct array_t <T> : id_t <heap_array <T> > { };
 
 template <typename T, size_t... N>
 using array = type_of <array_t <T, N...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T, typename K, typename U>
-using indirect_array = sequence <T, data::indirect <K, U> >;
-
-template <typename T, size_t... N>
-using aggr_array = sequence <T, data::aggr <sizes <N...> > >;
 
 //-----------------------------------------------------------------------------
 

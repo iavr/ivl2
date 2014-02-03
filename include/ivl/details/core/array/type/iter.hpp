@@ -42,15 +42,21 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename S> class iterator;
-template <typename T, typename S> class traversor;
+template <typename C, typename... A> class iterator;
+template <typename C, typename... A> class traversor;
 
-template <typename T> using rev_iter  = iterator <T, data::rev <> >;
-template <typename T> using iter_iter = iterator <T, data::iter <> >;
-template <typename T> using atom_iter = iterator <T, data::atom <> >;
+template <typename I, typename R>
+using iter_iter = iterator <data::iter <>, I, R>;
 
-template <typename T> using iter_trav = traversor <T, data::iter <> >;
-template <typename T> using atom_trav = traversor <T, data::atom <> >;
+template <typename I, typename R>
+using iter_trav = traversor <data::iter <>, I, R>;
+
+template <typename I> using rev_iter  = iterator <data::rev <>, I>;
+template <typename T> using atom_iter = iterator <data::atom <>, T>;
+template <typename T> using atom_trav = traversor <data::atom <>, T>;
+
+template <typename T, typename R> using ptr_iter = iter_iter <T*, R>;
+template <typename T, typename R> using ptr_trav = iter_trav <T*, R>;
 
 //-----------------------------------------------------------------------------
 

@@ -12,21 +12,16 @@ void run()
 {
 
 	{
-		cout << "aggr empty array" << endl;
+		cout << "aggr array" << endl;
 		aggr_array <int, 0> x{{}};
+		aggr_array <int, 5> y{{5, 9, 7, -2, 0}};
 		cout << "x = " << x << endl;
+		cout << "y = " << y << endl;
 		cout << endl;
 	}
 
 	{
-		cout << "aggr array by initializer list" << endl;
-		aggr_array <int, 5> x{{5, 9, 7, -2, 0}};
-		cout << "x = " << x << endl;
-		cout << endl;
-	}
-
-	{
-		cout << "array by element-wise assignment" << endl;
+		cout << "array by element assignment" << endl;
 		constexpr size_t N = 11;
 		array <int, N> x;
 		for (size_t n = 0; n < N; n++)

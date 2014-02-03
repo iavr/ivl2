@@ -47,14 +47,14 @@ namespace details {
 template <typename T>
 struct is_array_ : _false { };
 
-template <typename T, typename C>
-struct is_array_<sequence <T, C> > : _true { };
+template <typename C, typename... A>
+struct is_array_<sequence <C, A...> > : _true { };
 
 template <typename T>
 struct is_trav_ : _false { };
 
-template <typename T, typename C>
-struct is_trav_<traversor <T, C> > : _true { };
+template <typename C, typename... A>
+struct is_trav_<traversor <C, A...> > : _true { };
 
 }  // namespace details
 
@@ -84,36 +84,27 @@ template <typename... E> using any_trav = any_trav_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C> struct seq_iter_t;
-template <typename T, typename C> struct seq_citer_t;
-template <typename T, typename C> using seq_iter = type_of <seq_iter_t <T, C> >;
-template <typename T, typename C> using seq_citer = type_of <seq_citer_t <T, C> >;
-
-template <typename T, size_t N>
-struct seq_iter_t  <T, data::fixed <sizes <N> > > : id_t <T*> { };
-
-template <typename T, size_t N>
-struct seq_citer_t  <T, data::fixed <sizes <N> > > : id_t <T*> { };
-
-template <typename T, size_t N>
-struct seq_iter_t <T, data::aggr <sizes <N> > > : id_t <T*> { };
-
-template <typename T, size_t N>
-struct seq_citer_t <T, data::aggr <sizes <N> > > : id_t <T*> { };
+template <typename A> using seq_val        = typename A::value_type;
+template <typename A> using seq_size       = typename A::size_type;
+template <typename A> using seq_diff       = typename A::difference_type;
+template <typename A> using seq_iter       = typename A::iterator;
+template <typename A> using seq_fwd_iter   = typename A::fwd_iterator;
+template <typename A> using seq_const_iter = typename A::const_iterator;
+template <typename A> using seq_trav       = typename A::traversor;
+template <typename A> using seq_fwd_trav   = typename A::fwd_traversor;
+template <typename A> using seq_const_trav = typename A::const_traversor;
 
 //-----------------------------------------------------------------------------
 
-template <typename I> struct it_val_t : id_t <typename I::value_type> { };
-template <typename T> struct it_val_t <T*>: id_t <T> { };
-
+template <typename I> struct it_val_t  : id_t <typename I::value_type> { };
 template <typename I> struct it_diff_t : id_t <typename I::difference_type> { };
-template <typename T> struct it_diff_t <T*>: id_t <ptrdiff_t> { };
+template <typename I> struct it_ref_t  : id_t <typename I::reference> { };
+template <typename I> struct it_ptr_t  : id_t <typename I::pointer> { };
 
-template <typename I> struct it_ref_t : id_t <typename I::reference> { };
-template <typename T> struct it_ref_t <T*>: id_t <T&> { };
-
-template <typename I> struct it_ptr_t : id_t <typename I::pointer> { };
-template <typename T> struct it_ptr_t <T*>: id_t <T*> { };
+template <typename T> struct it_val_t <T*>  : id_t <T> { };
+template <typename T> struct it_diff_t <T*> : id_t <ptrdiff_t> { };
+template <typename T> struct it_ref_t <T*>  : id_t <T&> { };
+template <typename T> struct it_ptr_t <T*>  : id_t <T*> { };
 
 template <typename I> using it_val  = type_of <it_val_t <I> >;
 template <typename I> using it_diff = type_of <it_diff_t <I> >;
