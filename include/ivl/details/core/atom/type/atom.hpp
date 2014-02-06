@@ -60,6 +60,18 @@ using details::ext_atom;
 
 //-----------------------------------------------------------------------------
 
+namespace tuples {
+namespace details {
+
+// extending definition @tuple/type/collection
+template <typename T, typename S>
+struct tup_data_t <atoms::atom <T, S> > : pack <T> { };
+
+}  // namespace tuples
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ivl
 
 //-----------------------------------------------------------------------------

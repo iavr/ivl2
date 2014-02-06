@@ -197,6 +197,31 @@ template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
 
 //-----------------------------------------------------------------------------
 
+template <
+	template <typename> class R,
+	template <typename> class L,
+	template <typename> class C
+>
+struct choose_ref
+{
+	template <typename T> struct map_t;
+	template <typename T> using  map = type_of <map_t <T> >;
+	template <typename T> struct map_t <T&&>      : id_t <R <T> > { };
+	template <typename T> struct map_t <T&>       : id_t <L <T> > { };
+	template <typename T> struct map_t <const T&> : id_t <C <T> > { };
+};
+
+template <typename C, typename T>
+using choose_r = typename C::template map <T&&>;
+
+template <typename C, typename T>
+using choose_l = typename C::template map <T&>;
+
+template <typename C, typename T>
+using choose_cl = typename C::template map <const T&>;
+
+//-----------------------------------------------------------------------------
+
 template <typename T>
 using ref2ptr_t = _if <is_ref <T>{}, add_ptr_t <remove_ref <T> >, id_t <T> >;
 

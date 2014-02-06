@@ -67,21 +67,21 @@ public:
 //-----------------------------------------------------------------------------
 
 public:
-	INLINE           rtref <E>  val_f()      { return U::fwd(); }
-	INLINE           rtref <E>  val() &&     { return U::fwd(); }
-	INLINE           ltref <E>  val() &      { return U::get(); }
-	INLINE constexpr cltref <E> val() const& { return U::get(); }
+	INLINE           r_ref <E>  val_f()      { return U::fwd(); }
+	INLINE           r_ref <E>  val() &&     { return U::fwd(); }
+	INLINE           l_ref <E>  val() &      { return U::get(); }
+	INLINE constexpr cl_ref <E> val() const& { return U::get(); }
 
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtref <E> at() && { return U::fwd(); }
+	INLINE r_ref <E> at() && { return U::fwd(); }
 
 	template <size_t J>
-	INLINE ltref <E> at() & { return U::get(); }
+	INLINE l_ref <E> at() & { return U::get(); }
 
 	template <size_t J>
-	INLINE constexpr cltref <E> at() const& { return U::get(); }
+	INLINE constexpr cl_ref <E> at() const& { return U::get(); }
 
 };
 

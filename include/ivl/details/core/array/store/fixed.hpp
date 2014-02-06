@@ -43,70 +43,91 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-struct fixed_store
+class fixed_store
 {
 	T a[N];
 
+protected:
 	INLINE T*       data()       { return a; }
 	INLINE const T* data() const { return a; }
+
+public:
+	INLINE constexpr fixed_store() { }
+
+	INLINE fixed_store(initializer_list <T>&& l)
+	{
+		afun::details::seq_loop <>()(construct, afun::ptr_iter()(a), afun::rng_trav()(l));
+	}
 };
 
 template <typename T>
 struct fixed_store <T, 0>
 {
+protected:
 	INLINE T*       data()       { return nullptr; }
 	INLINE const T* data() const { return nullptr; }
+
+public:
+	INLINE constexpr fixed_store() { }
+
+	INLINE constexpr fixed_store(initializer_list <T> l) { }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-class sequence <data::fixed <>, T, sizes <N> > :
-	public base_seq <sequence <data::fixed <>, T, sizes <N> >, seq_types <T> >,
-	fixed_store <T, N>
-{
-	friend base_seq <sequence, seq_types <T> >;
-
-	using F  = fixed_store <T, N>;
-	using ST = seq_types <T>;
-
-	using I  = seq_iter <ST>;
-	using IF = seq_fwd_iter <ST>;
-	using IC = seq_const_iter <ST>;
-	using V  = seq_trav <ST>;
-	using VF = seq_fwd_trav <ST>;
-	using VC = seq_const_trav <ST>;
+struct seq_data_t <fixed_array <T, N> > : id_t <fixed_store <T, N> > { };
 
 //-----------------------------------------------------------------------------
 
-	INLINE T*       b()       { return F::data(); }
-	INLINE const T* b() const { return F::data(); }
-	INLINE T*       e()       { return F::data() + N; }
-	INLINE const T* e() const { return F::data() + N; }
+template <typename T, size_t N>
+class sequence <data::fixed <>, T, sizes <N> > :
+	public base_seq <fixed_array <T, N>, seq_types <T> >,
+	seq_data <fixed_array <T, N> >
+{
+	friend base_seq <sequence, seq_types <T> >;
+
+	using D  = seq_data <sequence>;
+	using ST = seq_types <T>;
+
+	using IR = r_iter <ST>;
+	using IL = l_iter <ST>;
+	using IC = cl_iter <ST>;
+
+	using VR = r_trav <ST>;
+	using VL = l_trav <ST>;
+	using VC = cl_trav <ST>;
+
+
+//-----------------------------------------------------------------------------
+
+	INLINE T*       b()       { return D::data(); }
+	INLINE const T* b() const { return D::data(); }
+	INLINE T*       e()       { return D::data() + N; }
+	INLINE const T* e() const { return D::data() + N; }
 
 //-----------------------------------------------------------------------------
 
 public:
+	using D::D;
 
-	INLINE constexpr size_t max_size() const { return N; }
 	INLINE constexpr size_t size()     const { return N; }
 
-	INLINE           IF begin() &&     { return IF(b()); }
-	INLINE           I  begin() &      { return I(b()); }
+	INLINE           IR begin() &&     { return IR(b()); }
+	INLINE           IL begin() &      { return IL(b()); }
 	INLINE constexpr IC begin() const& { return IC(b()); }
 
-	INLINE           IF end() &&     { return IF(e()); }
-	INLINE           I  end() &      { return I(e()); }
+	INLINE           IR end() &&     { return IR(e()); }
+	INLINE           IL end() &      { return IL(e()); }
 	INLINE constexpr IC end() const& { return IC(e()); }
 
-	INLINE           VF trav() &&     { return VF(b(), e()); }
-	INLINE           V  trav() &      { return V (b(), e()); }
+	INLINE           VR trav() &&     { return VR(b(), e()); }
+	INLINE           VL trav() &      { return VL(b(), e()); }
 	INLINE constexpr VC trav() const& { return VC(b(), e()); }
 
-	INLINE           IF data() &&     { return IF(b()); }
-	INLINE           I  data() &      { return I(b()); }
+	INLINE           IR data() &&     { return IR(b()); }
+	INLINE           IL data() &      { return IL(b()); }
 	INLINE constexpr IC data() const& { return IC(b()); }
-
 };
 
 //-----------------------------------------------------------------------------

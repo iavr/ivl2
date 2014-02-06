@@ -30,6 +30,34 @@ void run()
 		cout << endl;
 	}
 
+	{
+		cout << "array by initializer list" << endl;
+		foo f4(4), f5(5), f6(6);
+		cout << endl << "begin" << endl;
+		array <foo, 3> x{f4, f5, f6};
+		cout << "end" << endl << endl;
+		cout << "x = " << x << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "indirect array" << endl;
+		constexpr size_t N = 11;
+		array <int, N> x;
+		for (size_t n = 0; n < N; n++)
+			x[n] = 2 * n;
+		array <int, 4> i;
+		i[0] = 5; i[1] = 8; i[2] = 0; i[3] = 8;
+		cout << "x = " << x << endl;
+		cout << "x[i] = " << x[i] << endl;
+
+// 		array <array <int, 4>, 2> j;
+// 		j[0] = i; j[1] = i;
+// 		cout << "x[j] = " << x[j] << endl;
+
+		cout << endl;
+	}
+
 }
 
 //-----------------------------------------------------------------------------

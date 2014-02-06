@@ -32,6 +32,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+using std::initializer_list;
 using std::string;
 using std::cout;
 using std::cerr;

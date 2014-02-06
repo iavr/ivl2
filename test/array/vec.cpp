@@ -21,7 +21,7 @@ void run()
 			x[n] = 2 * n;
 
 		cout << "x = " << x << endl;
-		cout << "x = ", loop(op::left, cout, x), cout << endl;
+		cout << "x = ", loop(op::left, cout, mv(x)), cout << endl;
 		cout << endl;
 	}
 

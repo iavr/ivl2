@@ -171,29 +171,29 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
-	INLINE ret <F(rtref <E>..., A...)>
+	INLINE ret <F(r_ref <E>..., A...)>
 	call(F&& f, A&&... a) && { return fwd <F>(f)(at_f <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE ret <F(ltref <E>..., A...)>
+	INLINE ret <F(l_ref <E>..., A...)>
 	call(F&& f, A&&... a) & { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr res <F(cltref <E>..., A...)>
+	INLINE constexpr res <F(cl_ref <E>..., A...)>
 	call(F&& f, A&&... a) const& { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
-	INLINE ret <F(A..., rtref <E>...)>
+	INLINE ret <F(A..., r_ref <E>...)>
 	rcall(F&& f, A&&... a) && { return fwd <F>(f)(fwd <A>(a)..., at_f <I>()...); }
 
 	template <typename F, typename... A>
-	INLINE ret <F(A..., ltref <E>...)>
+	INLINE ret <F(A..., l_ref <E>...)>
 	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr res <F(A..., cltref <E>...)>
+	INLINE constexpr res <F(A..., cl_ref <E>...)>
 	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 //-----------------------------------------------------------------------------

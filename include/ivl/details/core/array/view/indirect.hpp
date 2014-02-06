@@ -42,40 +42,67 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// template <typename T, typename K, typename U>
-// class sequence <T, data::indirect <K, U> > :
-// 	public base_seq <T, sequence <T, data::indirect <K, U> > >,
-// 	private raw_tuple <K, U>
-// {
-// 	using S  = size_t;
-// 	using R  = T&;
-// 	using CR = const T&;
-// 	using P  = T*;
-// 	using CP = const T*;
-// 	using I  = indirect_iter <T, K, U>;
-// 	using CI = indirect_iter <const T, K, U>;
-//
-// 	using B = base_seq <T, sequence>;
-// 	friend B;
-//
-// //-----------------------------------------------------------------------------
-//
-// 	INLINE           R  _at(S n)       { return data()[n]; }
-// 	INLINE constexpr CR _at(S n) const { return data()[n]; }
-//
-// //-----------------------------------------------------------------------------
-//
-// public:
-//
-// 	INLINE constexpr size_t size()     const { return N; }
-// 	INLINE constexpr size_t max_size() const { return N; }
-// 	INLINE constexpr bool   empty()    const { return N == 0; }
-//
-// 	INLINE I  begin()       { return data(); }
-// 	INLINE CI begin() const { return data(); }
-// 	INLINE I  end()         { return data() + N; }
-// 	INLINE CI end()   const { return data() + N; }
-// };
+template <typename K, typename U>
+using indirect_types =
+	seq_types <seq_val <U>, K, indirect_iter, indirect_trav, seq_size <K>, U>;
+
+template <typename K, typename U>
+struct seq_data_t <indirect_array <K, U> > : id_t <raw_tuple <K, U> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename K, typename U>
+class sequence <data::indirect <>, K, U> :
+	public base_seq <indirect_array <K, U>, indirect_types <K, U> >,
+	seq_data <indirect_array <K, U> >
+{
+	friend base_seq <sequence, indirect_types <K, U> >;
+
+	using ST = indirect_types <K, U>;
+
+	using IR = r_iter <ST>;
+	using IL = l_iter <ST>;
+	using IC = cl_iter <ST>;
+
+	using VR = r_trav <ST>;
+	using VL = l_trav <ST>;
+	using VC = cl_trav <ST>;
+
+	using E = raw_tuple <K, U>;
+	using idx   = elem <0, K>;
+	using under = elem <1, U>;
+
+//-----------------------------------------------------------------------------
+
+	INLINE           r_ref <K>  i_f()      { return idx::fwd(); }
+	INLINE           r_ref <K>  i() &&     { return idx::fwd(); }
+	INLINE           l_ref <K>  i() &      { return idx::get(); }
+	INLINE constexpr cl_ref <K> i() const& { return idx::get(); }
+
+	INLINE           r_ref <U>  u_f()      { return under::fwd(); }
+	INLINE           r_ref <U>  u() &&     { return under::fwd(); }
+	INLINE           l_ref <U>  u() &      { return under::get(); }
+	INLINE constexpr cl_ref <U> u() const& { return under::get(); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using E::E;
+
+	INLINE constexpr size_t size() const { return i().size(); }
+
+	INLINE           IR begin() &&     { return IR(i_f().begin(), u_f()); }
+	INLINE           IL begin() &      { return IL(i().begin(),   u()); }
+	INLINE constexpr IC begin() const& { return IC(i().begin(),   u()); }
+
+	INLINE           IR end() &&     { return IR(i_f().end(), u_f()); }
+	INLINE           IL end() &      { return IL(i().end(),   u()); }
+	INLINE constexpr IC end() const& { return IC(i().end(),   u()); }
+
+	INLINE           VR trav() &&     { return VR(i_f().trav(), u_f()); }
+	INLINE           VL trav() &      { return VL(i().trav(),   u()); }
+	INLINE constexpr VC trav() const& { return VC(i().trav(),   u()); }
+};
 
 //-----------------------------------------------------------------------------
 

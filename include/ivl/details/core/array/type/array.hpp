@@ -55,7 +55,7 @@ using fixed_array = sequence <data::fixed <>, T, sizes <N...> >;
 template <typename T>
 using heap_array = sequence <data::heap <>, T>;
 
-template <typename T, typename K, typename U>
+template <typename K, typename U>
 using indirect_array = sequence <data::indirect <>, K, U>;
 
 //-----------------------------------------------------------------------------
@@ -74,6 +74,11 @@ using array = type_of <array_t <T, N...> >;
 }  // namespace details
 
 using details::sequence;
+
+using details::fixed_array;
+using details::heap_array;
+
+using details::indirect_array;
 
 //-----------------------------------------------------------------------------
 

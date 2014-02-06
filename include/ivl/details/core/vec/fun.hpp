@@ -58,7 +58,7 @@ struct mut_call
 	template <typename F, typename... A>
 	INLINE constexpr pick <I, A...>&&
 	operator()(F&& f, A&&... a) const
-		{ return C()(fwd <F>(f), fwd <A>(a)...), get <I>(fwd <A>(a)...); }
+		{ return C()(fwd <F>(f), fwd <A>(a)...), get <I>()(fwd <A>(a)...); }
 };
 
 template <typename C, size_t I = 0>

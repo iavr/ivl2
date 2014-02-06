@@ -43,6 +43,11 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
+struct tup_data_t <indirect_tup <K, U> > : pack <U> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename K, typename U>
 class collection <data::indirect <>, K, U> : public
 	base_tup <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
 {

@@ -39,6 +39,7 @@ namespace details {
 
 using namespace mem;
 using namespace types;
+using namespace tuples;
 
 }  // namespace details
 }  // namespace arrays

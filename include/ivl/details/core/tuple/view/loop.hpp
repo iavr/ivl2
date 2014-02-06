@@ -79,10 +79,10 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	INLINE rtref <F> loop() && { return B::loop_f(), fun::fwd(); }
-	INLINE ltref <F> loop() &  { return B::loop(), fun::get()(); }
+	INLINE r_ref <F> loop() && { return B::loop_f(), fun::fwd(); }
+	INLINE l_ref <F> loop() &  { return B::loop(), fun::get()(); }
 
-	INLINE constexpr cltref <F> loop() const& { return B::loop(), fun::get(); }
+	INLINE constexpr cl_ref <F> loop() const& { return B::loop(), fun::get(); }
 
 };
 

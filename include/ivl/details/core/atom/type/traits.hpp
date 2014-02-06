@@ -112,12 +112,6 @@ struct copy_rec <_type <T> > { using type = atom <copy <T> >; };
 
 //-----------------------------------------------------------------------------
 
-// extending definition @tuple/type/traits
-template <typename T, typename S>
-struct under_t <atoms::atom <T, S> > : pack <T> { };
-
-//-----------------------------------------------------------------------------
-
 }  // namespace traits
 
 //-----------------------------------------------------------------------------

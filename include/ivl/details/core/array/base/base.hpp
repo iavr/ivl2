@@ -42,25 +42,43 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <template <typename...> class T>
+struct make
+{
+	template <typename... A>
+	INLINE constexpr subs <T, A...>
+	operator()(A&&... a) const { return subs <T, A...>(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
 template <
-	typename T, template <typename...> class I = ptr_iter,
-	template <typename...> class V = ptr_trav,
-	typename S = size_t, typename D = ptrdiff_t
+	typename T, typename D = T*,
+	template <typename...> class I = iter_iter,
+	template <typename...> class V = iter_trav,
+	typename S = seq_size <D>, typename... U
 >
 struct seq_types
 {
+	using types = seq_types;
 	using value_type = T;
 	using size_type = S;
-	using difference_type = D;
 
-	using iterator = I <T, ltref <T> >;
-	using fwd_iterator = I <T, rtref <T> >;
-	using const_iterator = I <const T, cltref <T> >;
+	using fwd_iterator   = I <r_iter <D>,  r_ref <T>,  r_ref <U>...>;
+	using iterator       = I <l_iter <D>,  l_ref <T>,  l_ref <U>...>;
+	using const_iterator = I <cl_iter <D>, cl_ref <T>, cl_ref <U>...>;
 
-	using traversor = V <T, ltref <T> >;
-	using fwd_traversor = V <T, rtref <T> >;
-	using const_traversor = V <const T, cltref <T> >;
+	using fwd_traversor   = V <r_trav <D>,  r_ref <T>,  r_ref <U>...>;
+	using traversor       = V <l_trav <D>,  l_ref <T>,  l_ref <U>...>;
+	using const_traversor = V <cl_trav <D>, cl_ref <T>, cl_ref <U>...>;
+
+	using difference_type = seq_diff <iterator>;
 };
+
+//-----------------------------------------------------------------------------
+
+template <typename A> struct seq_data_t;
+template <typename A> using  seq_data = type_of <seq_data_t <A> >;
 
 //-----------------------------------------------------------------------------
 
@@ -69,23 +87,25 @@ class base_seq : public derived <D>, public ST
 {
 	using T  = seq_val <ST>;
 	using S  = seq_size <ST>;
-	using R  = ltref <T>;
-	using RF = rtref <T>;
-	using RC = cltref <T>;
-	using I  = seq_iter <ST>;
-	using IF = seq_fwd_iter <ST>;
-	using IC = seq_const_iter <ST>;
+
+	using RR = r_ref <T>;
+	using RL = l_ref <T>;
+	using RC = cl_ref <T>;
+
+	using IR = r_iter <ST>;
+	using IL = l_iter <ST>;
+	using IC = cl_iter <ST>;
 
 //-----------------------------------------------------------------------------
 
-	INLINE           IF b_f()      { return der_f().begin(); }
-	INLINE           IF b() &&     { return der_f().begin(); }
-	INLINE           I  b() &      { return der().begin(); }
+	INLINE           IR b_f()      { return der_f().begin(); }
+	INLINE           IR b() &&     { return der_f().begin(); }
+	INLINE           IL b() &      { return der().begin(); }
 	INLINE constexpr IC b() const& { return der().begin(); }
 
-	INLINE           IF e_f()      { return der_f().end(); }
-	INLINE           IF e() &&     { return der_f().end(); }
-	INLINE           I  e() &      { return der().end(); }
+	INLINE           IR e_f()      { return der_f().end(); }
+	INLINE           IR e() &&     { return der_f().end(); }
+	INLINE           IL e() &      { return der().end(); }
 	INLINE constexpr IC e() const& { return der().end(); }
 
 //-----------------------------------------------------------------------------
@@ -99,19 +119,44 @@ protected:
 public:
 	INLINE constexpr bool empty() const { return der().size() == 0; }
 
-	INLINE           RF front() &&     { return *b_f(); }
-	INLINE           R  front() &      { return *b(); }
+	INLINE           RR front() &&     { return *b_f(); }
+	INLINE           RL front() &      { return *b(); }
 	INLINE constexpr RC front() const& { return *b(); }
 
-	INLINE           RF back() &&     { return e_f()[-1]; }
-	INLINE           R  back() &      { return e()[-1]; }
+	INLINE           RR back() &&     { return e_f()[-1]; }
+	INLINE           RL back() &      { return e()[-1]; }
 	INLINE constexpr RC back() const& { return e()[-1]; }
 
 //-----------------------------------------------------------------------------
 
-	INLINE           RF operator[](S n) &&     { return b_f()[n]; }
-	INLINE           R  operator[](S n) &      { return b()[n]; }
+	INLINE           RR operator[](S n) &&     { return b_f()[n]; }
+	INLINE           RL operator[](S n) &      { return b()[n]; }
 	INLINE constexpr RC operator[](S n) const& { return b()[n]; }
+
+//-----------------------------------------------------------------------------
+
+private:
+	template <typename T, typename R = raw_type <T> >
+	using opt = base_opt <T, R, _if <eq <R, D>{}, seq_data <D>, R> >;
+
+	template <typename... A>
+	using indir = subs <indirect_array, opt <A>...>;
+
+//-----------------------------------------------------------------------------
+
+public:
+	template <typename A, only_if <is_array <A>{}> = 0>
+	INLINE indir <A, D>
+	operator[](A&& a) && { return make <indir>()(fwd <A>(a), der_f()); }
+
+	template <typename A, only_if <is_array <A>{}> = 0>
+	INLINE indir <A, D&>
+	operator[](A&& a) & { return make <indir>()(fwd <A>(a), der()); }
+
+	template <typename A, only_if <is_array <A>{}> = 0>
+	INLINE constexpr indir <A, const D&>
+	operator[](A&& a) const& { return make <indir>()(fwd <A>(a), der()); }
+
 };
 
 //-----------------------------------------------------------------------------

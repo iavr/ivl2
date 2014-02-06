@@ -42,6 +42,8 @@ class foo_
 	R val;
 
 public:
+	foo_() : val() { cout << "foo()" << endl; }
+
 	foo_(R&& v) : val(mv(v)) { cout << "foo(&&" << val << ")" << endl; }
 
 	foo_(const R& v) : val(v) { cout << "foo(&" << val << ")" << endl; }

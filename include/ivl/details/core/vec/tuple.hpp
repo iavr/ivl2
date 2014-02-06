@@ -187,7 +187,7 @@ using tup_accum_off = tup_accum <F, tup_scan_>;
 //-----------------------------------------------------------------------------
 
 template <
-	typename F, typename I = F, typename E = get_fun <0>,
+	typename F, typename I = F, typename E = get <0>,
 	template <typename> class R = common_of,
 	typename XI = id_fun, typename XE = id_fun, typename U = tup_accum <F>
 >
@@ -227,7 +227,7 @@ struct add_offset
 };
 
 template <
-	typename F, typename I = F, typename E = get_fun <0>,
+	typename F, typename I = F, typename E = get <0>,
 	template <typename> class R = common_of
 >
 using tup_fold_off = tup_fold <

@@ -106,10 +106,10 @@ public:
 	INLINE I  end()         { return data() + N; }
 	INLINE CI end()   const { return data() + N; }
 
-	INLINE V <I>  rbegin()       { return V <I>(end()); }
-	INLINE V <CI> rbegin() const { return V <CI>(end()); }
-	INLINE V <I>  rend()         { return V <I>(begin()); }
-	INLINE V <CI> rend()   const { return V <CI>(begin()); }
+	INLINE V <I>  rbegin()       { return V <I> (end() - 1); }
+	INLINE V <CI> rbegin() const { return V <CI>(end() - 1); }
+	INLINE V <I>  rend()         { return V <I> (begin() - 1); }
+	INLINE V <CI> rend()   const { return V <CI>(begin() - 1); }
 
 	INLINE CI     cbegin()  const { return begin(); }
 	INLINE CI     cend()    const { return end(); }

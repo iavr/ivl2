@@ -89,6 +89,15 @@ template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
 
 //-----------------------------------------------------------------------------
 
+// extended elsewhere
+template <typename T> struct tup_data_t : pack <> { };
+template <typename T> using  tup_data = type_of <tup_data_t <T> >;
+
+template <typename S, typename... A>
+struct tup_data_t <collection <S, A...> > : pack <A...> { };
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::collection;

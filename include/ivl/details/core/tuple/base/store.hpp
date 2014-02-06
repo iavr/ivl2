@@ -76,9 +76,9 @@ struct elem_types_t <pack <U...>, sizes <N...> > : pack <elem <N, U>...> { };
 //-----------------------------------------------------------------------------
 
 template <typename D>
-struct elems : elem_store <elem_types <under <D> > >
+struct elems : elem_store <elem_types <tup_data <D> > >
 {
-	using elem_store <elem_types <under <D> > >::elem_store;
+	using elem_store <elem_types <tup_data <D> > >::elem_store;
 };
 
 //-----------------------------------------------------------------------------

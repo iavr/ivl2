@@ -51,12 +51,14 @@ using iter_iter = iterator <data::iter <>, I, R>;
 template <typename I, typename R>
 using iter_trav = traversor <data::iter <>, I, R>;
 
-template <typename I> using rev_iter  = iterator <data::rev <>, I>;
-template <typename T> using atom_iter = iterator <data::atom <>, T>;
-template <typename T> using atom_trav = traversor <data::atom <>, T>;
+template <typename I, typename R, typename U>
+using indirect_iter = iterator <data::indirect <>, I, R, U>;
 
-template <typename T, typename R> using ptr_iter = iter_iter <T*, R>;
-template <typename T, typename R> using ptr_trav = iter_trav <T*, R>;
+template <typename V, typename R, typename U>
+using indirect_trav = traversor <data::indirect <>, V, R, U>;
+
+template <typename I> using rev_iter  = iterator <data::rev <>, I>;
+template <typename T> using atom_trav = traversor <data::atom <>, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -65,11 +67,9 @@ template <typename T, typename R> using ptr_trav = iter_trav <T*, R>;
 using details::iterator;
 using details::traversor;
 
-using details::rev_iter;
 using details::iter_iter;
-using details::atom_iter;
-
 using details::iter_trav;
+
 using details::atom_trav;
 
 //-----------------------------------------------------------------------------

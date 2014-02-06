@@ -69,12 +69,12 @@ public:
 //-----------------------------------------------------------------------------
 
 protected:
-	INLINE           rtref <O>  op_f()      { return at._<0>(der_f()); }
+	INLINE           r_ref <O>  op_f()      { return at._<0>(der_f()); }
 
 public:
-	INLINE           rtref <O>  op() &&     { return at._<0>(der_f()); }
-	INLINE           ltref <O>  op() &      { return at._<0>(der()); }
-	INLINE constexpr cltref <O> op() const& { return at._<0>(der()); }
+	INLINE           r_ref <O>  op() &&     { return at._<0>(der_f()); }
+	INLINE           l_ref <O>  op() &      { return at._<0>(der()); }
+	INLINE constexpr cl_ref <O> op() const& { return at._<0>(der()); }
 
 //-----------------------------------------------------------------------------
 

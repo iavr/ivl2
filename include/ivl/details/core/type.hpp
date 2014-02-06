@@ -31,16 +31,48 @@
 #include "type/begin.hpp"
 #include "type/entity.hpp"
 #include "type/derive.hpp"
-#include "type/const.hpp"
+
+#include "type/const/const.hpp"
+#include "type/const/scalar.hpp"
+#include "type/const/class.hpp"
+
 #include "type/logic.hpp"
 #include "type/nat.hpp"
 #include "type/numeric.hpp"
 #include "type/meta.hpp"
-#include "type/pack.hpp"
-#include "type/traits.hpp"
+
+#include "type/pack/pack.hpp"
+#include "type/pack/list.hpp"
+#include "type/pack/join.hpp"
+#include "type/pack/select.hpp"
+#include "type/pack/fold.hpp"
+
+#include "type/traits/begin.hpp"
+#include "type/traits/builtin.hpp"
+#include "type/traits/array.hpp"
+#include "type/traits/fun.hpp"
+#include "type/traits/traits.hpp"
+#include "type/traits/transform.hpp"
+#include "type/traits/member.hpp"
+#include "type/traits/value.hpp"
+#include "type/traits/sfinae.hpp"
+#include "type/traits/class.hpp"
+#include "type/traits/relation.hpp"
+#include "type/traits/pod.hpp"
+#include "type/traits/life.hpp"
+#include "type/traits/result.hpp"
+#include "type/traits/members.hpp"
+#include "type/traits/report.hpp"
+
 #include "afun/begin.hpp"
 #include "afun/op.hpp"
-#include "type/const_fun.hpp"
+
+#include "type/const/array.hpp"
+#include "type/const/call.hpp"
+#include "type/const/op.hpp"
+#include "type/const/member.hpp"
+#include "type/const/sig.hpp"
+#include "type/const/gen.hpp"
 
 //-----------------------------------------------------------------------------
 

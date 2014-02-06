@@ -94,22 +94,22 @@ template <typename F> using accum     = seq_accum <F>;
 template <typename F> using accum_off = seq_accum_off <F>;
 
 template <
-	typename F, typename I = F, typename E = get_fun <0>,
+	typename F, typename I = F, typename E = get <0>,
 	template <typename> class R = common_of,
 	typename XI = id_fun, typename XE = id_fun, typename U = accum <F>
 >
 using fold = seq_fold <F, I, E, R, XI, XE, U>;
 
 template <
-	typename F, typename I = F, typename E = get_fun <0>,
+	typename F, typename I = F, typename E = get <0>,
 	template <typename> class R = common_of
 >
 using fold_off = seq_fold_off <F, I, E, R>;
 
-template <typename F, typename I = F, typename E = get_fun <0> >
+template <typename F, typename I = F, typename E = get <0> >
 using collect = fold <F, I, E, copy>;
 
-template <typename F, typename I = F, typename E = get_fun <0> >
+template <typename F, typename I = F, typename E = get <0> >
 using collect_off = fold_off <F, I, E, copy>;
 
 //-----------------------------------------------------------------------------

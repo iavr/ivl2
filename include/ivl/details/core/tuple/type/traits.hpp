@@ -92,8 +92,6 @@ template <typename P> using any_tuple_p = any_p <is_tuple, P>;
 template <typename... E> using all_tuple = all_tuple_p <pack <E...> >;
 template <typename... E> using any_tuple = any_tuple_p <pack <E...> >;
 
-//-----------------------------------------------------------------------------
-
 template <typename P> using all_empty_p = all_p <empty, P>;
 template <typename P> using any_empty_p = any_p <empty, P>;
 
@@ -153,37 +151,37 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct rtref_t  : base_opt_t <T&&, T> { };
-template <typename T> struct ltref_t  : base_opt_t <T&, T> { };
-template <typename T> struct cltref_t : base_opt_t <const T&, T> { };
+template <typename T> struct r_ref_t  : base_opt_t <T&&, T> { };
+template <typename T> struct l_ref_t  : base_opt_t <T&, T> { };
+template <typename T> struct cl_ref_t : base_opt_t <const T&, T> { };
 
-template <typename T> using rtref  = type_of <rtref_t <T> >;
-template <typename T> using ltref  = type_of <ltref_t <T> >;
-template <typename T> using cltref = type_of <cltref_t <T> >;
-
-template <typename... E>
-struct rtref_t <pack <E...> > { using type = pre_tuple <rtref <E>...>; };
+template <typename T> using r_ref  = type_of <r_ref_t <T> >;
+template <typename T> using l_ref  = type_of <l_ref_t <T> >;
+template <typename T> using cl_ref = type_of <cl_ref_t <T> >;
 
 template <typename... E>
-struct ltref_t <pack <E...> > { using type = pre_tuple <ltref <E>...>; };
+struct r_ref_t <pack <E...> > { using type = pre_tuple <r_ref <E>...>; };
 
 template <typename... E>
-struct cltref_t <pack <E...> > { using type = pre_tuple <cltref <E>...>; };
+struct l_ref_t <pack <E...> > { using type = pre_tuple <l_ref <E>...>; };
+
+template <typename... E>
+struct cl_ref_t <pack <E...> > { using type = pre_tuple <cl_ref <E>...>; };
 
 template <typename F, typename... E>
-struct rtref_t <F(pack <E...>)> : ret_t <rtref <F>(rtref <E>...)> { };
+struct r_ref_t <F(pack <E...>)> : ret_t <r_ref <F>(r_ref <E>...)> { };
 
 template <typename F, typename... E>
-struct ltref_t <F(pack <E...>)> : ret_t <ltref <F>(ltref <E>...)> { };
+struct l_ref_t <F(pack <E...>)> : ret_t <l_ref <F>(l_ref <E>...)> { };
 
 template <typename F, typename... E>
-struct cltref_t <F(pack <E...>)> : ret_t <cltref <F>(cltref <E>...)> { };
+struct cl_ref_t <F(pack <E...>)> : ret_t <cl_ref <F>(cl_ref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 
-template <size_t I, typename P> using rtel_t  = rtref_t <pick_p <I, P> >;
-template <size_t I, typename P> using ltel_t  = ltref_t <pick_p <I, P> >;
-template <size_t I, typename P> using cltel_t = cltref_t <pick_p <I, P> >;
+template <size_t I, typename P> using rtel_t  = r_ref_t <pick_p <I, P> >;
+template <size_t I, typename P> using ltel_t  = l_ref_t <pick_p <I, P> >;
+template <size_t I, typename P> using cltel_t = cl_ref_t <pick_p <I, P> >;
 
 template <size_t I, typename P> using rtel  = type_of <rtel_t <I, P> >;
 template <size_t I, typename P> using ltel  = type_of <ltel_t <I, P> >;
@@ -191,34 +189,34 @@ template <size_t I, typename P> using cltel = type_of <cltel_t <I, P> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct tref_t            : rtref_t <T> { };
-template <typename T> struct tref_t <T&>       : ltref_t <T> { };
-template <typename T> struct tref_t <const T&> : cltref_t <T> { };
-template <typename T> using  tref              = type_of <tref_t <T> >;
+template <typename T> struct t_ref_t            : r_ref_t <T> { };
+template <typename T> struct t_ref_t <T&>       : l_ref_t <T> { };
+template <typename T> struct t_ref_t <const T&> : cl_ref_t <T> { };
+template <typename T> using  t_ref              = type_of <t_ref_t <T> >;
 
 template <typename T>
-struct tref_types_t : type_map_t <tref_t, tup_types <T> > { };
+struct t_ref_types_t : type_map_t <t_ref_t, tup_types <T> > { };
 
-template <typename T> using tref_types = type_of <tref_types_t <T> >;
+template <typename T> using t_ref_types = type_of <t_ref_types_t <T> >;
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
 template <typename P, typename T, bool = is_tup_type <T>()>
-struct tup_cons_ : all2 <is_cons, P, tref_types <T> > { };
+struct tup_cons_ : all2 <is_cons, P, t_ref_types <T> > { };
 
 template <typename T, typename P, bool = is_tup_type <T>()>
-struct tup_conv_ : all2 <is_conv, tref_types <T>, P> { };
+struct tup_conv_ : all2 <is_conv, t_ref_types <T>, P> { };
 
 template <typename P, typename T, bool = is_tup_type <T>()>
-struct tup_assign_ : all2 <is_assign, tref_types <P>, tref_types <T> > { };
+struct tup_assign_ : all2 <is_assign, t_ref_types <P>, t_ref_types <T> > { };
 
 template <typename P, typename T> struct tup_cons_<P, T, false>   : _false { };
 template <typename T, typename P> struct tup_conv_<T, P, false>   : _false { };
 template <typename P, typename T> struct tup_assign_<P, T, false> : _false { };
 
-template <typename P, typename T, typename R = tref_types <P> >
+template <typename P, typename T, typename R = t_ref_types <P> >
 struct tup_atom_assign_;
 
 template <typename P, typename T, typename... E>
@@ -360,18 +358,6 @@ template <typename F, typename... E>
 struct copy_rec <F(pack <E...>)>  { using type = copy <ret <F(E...)> >; };
 
 }  // namespace details
-
-//-----------------------------------------------------------------------------
-
-// extended elsewhere
-template <typename T> struct under_t : pack <> { };
-template <typename T> using  under = type_of <under_t <T> >;
-
-template <typename S, typename... A>
-struct under_t <tuples::collection <S, A...> > : pack <A...> { };
-
-template <typename K, typename U>
-struct under_t <tuples::indirect_tup <K, U> > : pack <U> { };
 
 //-----------------------------------------------------------------------------
 

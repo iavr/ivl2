@@ -29,12 +29,28 @@
 //-----------------------------------------------------------------------------
 
 #include "array/begin.hpp"
-#include "array/type.hpp"
-#include "loop.hpp"
-#include "array/iter.hpp"
-#include "array/base.hpp"
-#include "array/store.hpp"
-#include "array/view.hpp"
+
+#include "array/type/data.hpp"
+#include "array/type/iter.hpp"
+#include "array/type/array.hpp"
+#include "array/type/traits.hpp"
+
+#include "array/iter/base.hpp"
+#include "array/iter/iter.hpp"
+#include "array/iter/atom.hpp"
+#include "array/iter/indirect.hpp"
+
+#include "array/fun/mem.hpp"
+#include "array/fun/trav.hpp"
+#include "array/fun/logic.hpp"
+#include "array/fun/loop.hpp"
+
+#include "array/base/base.hpp"
+
+#include "array/store/aggr.hpp"
+#include "array/store/fixed.hpp"
+
+#include "array/view/indirect.hpp"
 
 //-----------------------------------------------------------------------------
 

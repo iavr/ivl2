@@ -44,27 +44,27 @@ namespace traits {
 
 namespace details {
 
-template <typename T>
-struct is_array_ : _false { };
+template <typename T> struct is_array_ : _false { };
+template <typename T> struct is_iter_  : _false { };
+template <typename T> struct is_trav_  : _false { };
 
 template <typename C, typename... A>
 struct is_array_<sequence <C, A...> > : _true { };
 
-template <typename T>
-struct is_trav_ : _false { };
+template <typename C, typename... A>
+struct is_iter_<iterator <C, A...> > : _true { };
+
+template <typename C, typename... A>
+struct is_iter_<traversor <C, A...> > : _true { };
 
 template <typename C, typename... A>
 struct is_trav_<traversor <C, A...> > : _true { };
 
 }  // namespace details
 
-// no alias: fwd-declared
-template <typename T>
-struct is_array : details::is_array_<raw_type <T> > { };
-
-// no alias: fwd-declared
-template <typename T>
-struct is_trav : details::is_trav_<raw_type <T> > { };
+template <typename T> using is_array = details::is_array_<raw_type <T> >;
+template <typename T> using is_iter  = details::is_iter_<raw_type <T> >;
+template <typename T> using is_trav  = details::is_trav_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -74,7 +74,11 @@ template <typename P> using any_array_p = any_p <is_array, P>;
 template <typename... E> using all_array = all_array_p <pack <E...> >;
 template <typename... E> using any_array = any_array_p <pack <E...> >;
 
-//-----------------------------------------------------------------------------
+template <typename P> using all_iter_p = all_p <is_iter, P>;
+template <typename P> using any_iter_p = any_p <is_iter, P>;
+
+template <typename... E> using all_iter = all_iter_p <pack <E...> >;
+template <typename... E> using any_iter = any_iter_p <pack <E...> >;
 
 template <typename P> using all_trav_p = all_p <is_trav, P>;
 template <typename P> using any_trav_p = any_p <is_trav, P>;
@@ -84,32 +88,107 @@ template <typename... E> using any_trav = any_trav_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename A> using seq_val        = typename A::value_type;
-template <typename A> using seq_size       = typename A::size_type;
-template <typename A> using seq_diff       = typename A::difference_type;
-template <typename A> using seq_iter       = typename A::iterator;
-template <typename A> using seq_fwd_iter   = typename A::fwd_iterator;
-template <typename A> using seq_const_iter = typename A::const_iterator;
-template <typename A> using seq_trav       = typename A::traversor;
-template <typename A> using seq_fwd_trav   = typename A::fwd_traversor;
-template <typename A> using seq_const_trav = typename A::const_traversor;
+namespace details {
+
+template <typename T, bool = is_trav <T>{}>
+struct seq_finite_ : _false { };
+
+template <typename T>
+struct seq_finite_ <T, true> : expr <T::finite> { };
+
+}  // namespace details
+
+template <typename T>
+using seq_finite = details::seq_finite_<raw_type <T> >;
+
+template <typename... T>
+using seq_prim = first_b <seq_finite <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename I> struct it_val_t  : id_t <typename I::value_type> { };
-template <typename I> struct it_diff_t : id_t <typename I::difference_type> { };
-template <typename I> struct it_ref_t  : id_t <typename I::reference> { };
-template <typename I> struct it_ptr_t  : id_t <typename I::pointer> { };
+namespace details {
 
-template <typename T> struct it_val_t <T*>  : id_t <T> { };
-template <typename T> struct it_diff_t <T*> : id_t <ptrdiff_t> { };
-template <typename T> struct it_ref_t <T*>  : id_t <T&> { };
-template <typename T> struct it_ptr_t <T*>  : id_t <T*> { };
+template <typename T> using begin_test = decltype(begin(gen <T>()));
+template <typename T> using end_test   = decltype(end(gen <T>()));
 
-template <typename I> using it_val  = type_of <it_val_t <I> >;
-template <typename I> using it_diff = type_of <it_diff_t <I> >;
-template <typename I> using it_ref  = type_of <it_ref_t <I> >;
-template <typename I> using it_ptr  = type_of <it_ptr_t <I> >;
+template <typename T>
+using has_range = expr <sfinae <begin_test, T>() && sfinae <end_test, T>()>;
+
+}  // namespace details
+
+using details::has_range;
+
+//-----------------------------------------------------------------------------
+
+template <typename I>
+struct seq_val_t : id_t <typename raw_type <I>::value_type> { };
+
+template <typename I>
+struct seq_size_t : id_t <typename raw_type <I>::size_type> { };
+
+template <typename I>
+struct seq_diff_t : id_t <typename raw_type <I>::difference_type> { };
+
+template <typename I>
+struct seq_ref_t  : id_t <typename raw_type <I>::reference> { };
+
+template <typename I>
+struct seq_ptr_t  : id_t <typename raw_type <I>::pointer> { };
+
+template <typename T> struct seq_val_t <T*>  : id_t <T> { };
+template <typename T> struct seq_size_t <T*> : id_t <size_t> { };
+template <typename T> struct seq_diff_t <T*> : id_t <ptrdiff_t> { };
+template <typename T> struct seq_ref_t <T*>  : id_t <T&> { };
+template <typename T> struct seq_ptr_t <T*>  : id_t <T*> { };
+
+template <typename I> using seq_val  = type_of <seq_val_t <I> >;
+template <typename I> using seq_size = type_of <seq_size_t <I> >;
+template <typename I> using seq_diff = type_of <seq_diff_t <I> >;
+template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;
+template <typename I> using seq_ptr  = type_of <seq_ptr_t <I> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename A> struct r_iter_  : id_t <typename A::fwd_iterator> { };
+template <typename A> struct l_iter_  : id_t <typename A::iterator> { };
+template <typename A> struct cl_iter_ : id_t <typename A::const_iterator> { };
+
+template <typename A> struct r_trav_  : id_t <typename A::fwd_traversor> { };
+template <typename A> struct l_trav_  : id_t <typename A::traversor> { };
+template <typename A> struct cl_trav_ : id_t <typename A::const_traversor> { };
+
+template <typename T> struct r_iter_<T*>  : id_t <T*> { };
+template <typename T> struct l_iter_<T*>  : id_t <T*> { };
+template <typename T> struct cl_iter_<T*> : id_t <const T*> { };
+
+template <typename T> struct r_trav_<T*>  : id_t <T*> { };
+template <typename T> struct l_trav_<T*>  : id_t <T*> { };
+template <typename T> struct cl_trav_<T*> : id_t <const T*> { };
+
+using iter_ = choose_ref <r_iter_, l_iter_, cl_iter_>;
+using trav_ = choose_ref <r_trav_, l_trav_, cl_trav_>;
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+template <typename T> using r_iter_t  = choose_r  <details::iter_, T>;
+template <typename T> using l_iter_t  = choose_l  <details::iter_, T>;
+template <typename T> using cl_iter_t = choose_cl <details::iter_, T>;
+
+template <typename T> using r_trav_t  = choose_r  <details::trav_, T>;
+template <typename T> using l_trav_t  = choose_l  <details::trav_, T>;
+template <typename T> using cl_trav_t = choose_cl <details::trav_, T>;
+
+template <typename T> using r_iter  = type_of <r_iter_t <T> >;
+template <typename T> using l_iter  = type_of <l_iter_t <T> >;
+template <typename T> using cl_iter = type_of <cl_iter_t <T> >;
+
+template <typename T> using r_trav  = type_of <r_trav_t <T> >;
+template <typename T> using l_trav  = type_of <l_trav_t <T> >;
+template <typename T> using cl_trav = type_of <cl_trav_t <T> >;
 
 //-----------------------------------------------------------------------------
 
