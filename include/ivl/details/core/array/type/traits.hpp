@@ -44,47 +44,32 @@ namespace traits {
 
 namespace details {
 
-template <typename T> struct is_array_ : _false { };
-template <typename T> struct is_iter_  : _false { };
-template <typename T> struct is_trav_  : _false { };
+template <typename T> struct is_seq_  : _false { };
+template <typename T> struct is_cont_ : is_seq_<T> { };
+template <typename T> struct is_trav_ : _false { };
+template <typename T> struct is_iter_ : is_trav_<T> { };
+
+template <typename T, size_t N>
+struct is_cont_<T[N]> : _true { };
+
+template <typename T>
+struct is_cont_<initializer_list <T> > : _true { };
 
 template <typename C, typename... A>
-struct is_array_<sequence <C, A...> > : _true { };
+struct is_seq_<sequence <C, A...> > : _true { };
 
 template <typename C, typename... A>
 struct is_iter_<iterator <C, A...> > : _true { };
-
-template <typename C, typename... A>
-struct is_iter_<traversor <C, A...> > : _true { };
 
 template <typename C, typename... A>
 struct is_trav_<traversor <C, A...> > : _true { };
 
 }  // namespace details
 
-template <typename T> using is_array = details::is_array_<raw_type <T> >;
-template <typename T> using is_iter  = details::is_iter_<raw_type <T> >;
-template <typename T> using is_trav  = details::is_trav_<raw_type <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename P> using all_array_p = all_p <is_array, P>;
-template <typename P> using any_array_p = any_p <is_array, P>;
-
-template <typename... E> using all_array = all_array_p <pack <E...> >;
-template <typename... E> using any_array = any_array_p <pack <E...> >;
-
-template <typename P> using all_iter_p = all_p <is_iter, P>;
-template <typename P> using any_iter_p = any_p <is_iter, P>;
-
-template <typename... E> using all_iter = all_iter_p <pack <E...> >;
-template <typename... E> using any_iter = any_iter_p <pack <E...> >;
-
-template <typename P> using all_trav_p = all_p <is_trav, P>;
-template <typename P> using any_trav_p = any_p <is_trav, P>;
-
-template <typename... E> using all_trav = all_trav_p <pack <E...> >;
-template <typename... E> using any_trav = any_trav_p <pack <E...> >;
+template <typename T> using is_cont = details::is_cont_<raw_type <T> >;
+template <typename T> using is_seq  = details::is_seq_<raw_type <T> >;
+template <typename T> using is_iter = details::is_iter_<raw_type <T> >;
+template <typename T> using is_trav = details::is_trav_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -106,17 +91,53 @@ using seq_prim = first_b <seq_finite <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename P> using all_cont_p = all_p <is_cont, P>;
+template <typename P> using any_cont_p = any_p <is_cont, P>;
 
-template <typename T> using begin_test = decltype(begin(gen <T>()));
-template <typename T> using end_test   = decltype(end(gen <T>()));
+template <typename... E> using all_cont = all_cont_p <pack <E...> >;
+template <typename... E> using any_cont = any_cont_p <pack <E...> >;
+
+template <typename P> using all_seq_p = all_p <is_seq, P>;
+template <typename P> using any_seq_p = any_p <is_seq, P>;
+
+template <typename... E> using all_seq = all_seq_p <pack <E...> >;
+template <typename... E> using any_seq = any_seq_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using all_iter_p = all_p <is_iter, P>;
+template <typename P> using any_iter_p = any_p <is_iter, P>;
+
+template <typename... E> using all_iter = all_iter_p <pack <E...> >;
+template <typename... E> using any_iter = any_iter_p <pack <E...> >;
+
+template <typename P> using all_trav_p = all_p <is_trav, P>;
+template <typename P> using any_trav_p = any_p <is_trav, P>;
+
+template <typename... E> using all_trav = all_trav_p <pack <E...> >;
+template <typename... E> using any_trav = any_trav_p <pack <E...> >;
+
+template <typename P> using all_finite_p = all_p <seq_finite, P>;
+template <typename P> using any_finite_p = any_p <seq_finite, P>;
+
+template <typename... E> using all_finite = all_finite_p <pack <E...> >;
+template <typename... E> using any_finite = any_finite_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename... T>
+using can_loop = expr <all_iter <T...>() && any_finite <T...>()>;
+
+//-----------------------------------------------------------------------------
+
+template <typename T> using begin_of = decltype(begin(gen <T>()));
+template <typename T> using end_of   = decltype(end(gen <T>()));
+
+template <typename T> using has_begin = sfinae <begin_of, T>;
+template <typename T> using has_end   = sfinae <end_of, T>;
 
 template <typename T>
-using has_range = expr <sfinae <begin_test, T>() && sfinae <end_test, T>()>;
-
-}  // namespace details
-
-using details::has_range;
+using has_range = expr <has_begin <T>() && has_end <T>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -144,7 +165,7 @@ template <typename T> struct seq_ptr_t <T*>  : id_t <T*> { };
 template <typename I> using seq_val  = type_of <seq_val_t <I> >;
 template <typename I> using seq_size = type_of <seq_size_t <I> >;
 template <typename I> using seq_diff = type_of <seq_diff_t <I> >;
-template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;
+// template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;  // defined @begin
 template <typename I> using seq_ptr  = type_of <seq_ptr_t <I> >;
 
 //-----------------------------------------------------------------------------

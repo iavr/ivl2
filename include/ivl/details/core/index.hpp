@@ -23,13 +23,31 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_HPP
+#define IVL_DETAILS_CORE_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "macro/push.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#include "system/index.hpp"
+#include "type/index.hpp"
+#include "tuple/index.hpp"
+#include "atom/index.hpp"
+#include "array/index.hpp"
+#include "key/index.hpp"
+#include "afun/index.hpp"
+#include "vec/index.hpp"
+#include "atom/extend.hpp"
+#include "stream/index.hpp"
+#include "tools/index.hpp"
+
+//-----------------------------------------------------------------------------
+
+#include "macro/pop.hpp"
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_HPP

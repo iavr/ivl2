@@ -23,13 +23,21 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_SYSTEM_PLATFORM_CONFIG_HPP
+#define IVL_DETAILS_CORE_SYSTEM_PLATFORM_CONFIG_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#if defined(_MSC_VER)
+
+#define INLINE __forceinline
+
+#else // _MSC_VER
+
+#define INLINE __attribute__((always_inline))
+
+#endif  //_MSC_VER
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_SYSTEM_PLATFORM_CONFIG_HPP

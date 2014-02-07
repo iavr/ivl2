@@ -23,13 +23,40 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_ARRAY_MEM_ALLOC_HPP
+#define IVL_DETAILS_CORE_ARRAY_MEM_ALLOC_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+namespace mem {
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+INLINE T* new_(size_t l)
+{
+	void* p = ::operator new(l * sizeof(T), std::nothrow);
+	SYS_CHECK(p, e_alloc);
+	return back <T>(p);
+}
+
+template <typename T>
+INLINE void delete_(T* p) { ::operator delete(away(p)); }
+
+//-----------------------------------------------------------------------------
+
+}  // namespace mem
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_ARRAY_MEM_ALLOC_HPP

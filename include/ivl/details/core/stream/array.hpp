@@ -44,7 +44,7 @@ namespace details {
 
 template <
 	typename S, typename A,
-	only_if <is_stream <S>() && is_array <A>()>
+	only_if <is_stream <S>() && is_seq <A>()>
 = 0>
 INLINE S&&
 operator<<(S&& s, A&& a)

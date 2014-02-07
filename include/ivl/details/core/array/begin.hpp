@@ -34,10 +34,20 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+namespace types {
+namespace traits {
+
+template <typename I> struct seq_ref_t;
+template <typename I> using  seq_ref = type_of <seq_ref_t <I> >;
+
+}  // namespace traits
+}  // namespace types
+
+//-----------------------------------------------------------------------------
+
 namespace arrays {
 namespace details {
 
-using namespace mem;
 using namespace types;
 using namespace tuples;
 

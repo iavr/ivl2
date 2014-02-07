@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_ARRAY_MEM_CAST_HPP
+#define IVL_DETAILS_CORE_ARRAY_MEM_CAST_HPP
 
 #include <ivl/ivl>
 
@@ -34,76 +34,61 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace mem {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename T>
+INLINE T* vary(const T* p) { return const_cast <T*>(p); }
+
+template <typename T>
+INLINE T& vary(const T& r) { return const_cast <T&>(r); }
 
 //-----------------------------------------------------------------------------
 
-struct seq_more
-{
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
-};
+template <typename T>
+INLINE void* away(T& r) { return reinterpret_cast <void*> (r); }
+
+template <typename T>
+INLINE const void* away(const T& r)
+	{ return reinterpret_cast <const void*>(r); }
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M = seq_more>
-class seq_sep_loop : raw_tuple <S>
-{
-	using B = raw_tuple <S>;
+template <typename T>
+INLINE void* away(T* p) { return static_cast <void*> (p); }
 
-protected:
-	using B::val;
+template <typename T>
+INLINE const void* away(const T* p) { return static_cast <const void*>(p); }
 
-public:
-	using B::B;
+template <typename T>
+INLINE void* ref (T& r) { return away(&r); }
 
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
+template <typename T>
+INLINE const void* ref (const T& r) { return away(&r); }
 
 //-----------------------------------------------------------------------------
 
-template <typename M = seq_more>
-struct seq_loop
-{
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
+template <typename T>
+INLINE T* back (void* p) { return static_cast <T*>(p); }
 
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
+template <typename T>
+INLINE const T* back (const void* p) { return static_cast <const T*>(p); }
+
+template <typename T>
+INLINE T& deref(void* p) { return *back <T>(p); }
+
+template <typename T>
+INLINE const T& deref(const void* p) { return *back <T>(p); }
 
 //-----------------------------------------------------------------------------
 
-}  // namespace details
-
-using details::seq_loop;
+INLINE void*       peek(void* p) { return deref <void*>(p); }
+INLINE const void* peek(const void* p) { return deref <const void*>(p); }
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+}  // namespace mem
 
 //-----------------------------------------------------------------------------
 
@@ -111,4 +96,4 @@ using details::seq_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_ARRAY_MEM_CAST_HPP

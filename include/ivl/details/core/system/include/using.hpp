@@ -23,13 +23,25 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_SYSTEM_INCLUDE_USING_HPP
+#define IVL_DETAILS_CORE_SYSTEM_INCLUDE_USING_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+using std::initializer_list;
+using std::string;
+using std::cout;
+using std::cerr;
+using std::endl;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_SYSTEM_INCLUDE_USING_HPP

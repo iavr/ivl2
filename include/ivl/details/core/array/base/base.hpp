@@ -42,13 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class T>
-struct make
-{
-	template <typename... A>
-	INLINE constexpr subs <T, A...>
-	operator()(A&&... a) const { return subs <T, A...>(fwd <A>(a)...); }
-};
+using afun::make;
 
 //-----------------------------------------------------------------------------
 
@@ -145,15 +139,15 @@ private:
 //-----------------------------------------------------------------------------
 
 public:
-	template <typename A, only_if <is_array <A>{}> = 0>
+	template <typename A, only_if <is_seq <A>{}> = 0>
 	INLINE indir <A, D>
 	operator[](A&& a) && { return make <indir>()(fwd <A>(a), der_f()); }
 
-	template <typename A, only_if <is_array <A>{}> = 0>
+	template <typename A, only_if <is_seq <A>{}> = 0>
 	INLINE indir <A, D&>
 	operator[](A&& a) & { return make <indir>()(fwd <A>(a), der()); }
 
-	template <typename A, only_if <is_array <A>{}> = 0>
+	template <typename A, only_if <is_seq <A>{}> = 0>
 	INLINE constexpr indir <A, const D&>
 	operator[](A&& a) const& { return make <indir>()(fwd <A>(a), der()); }
 

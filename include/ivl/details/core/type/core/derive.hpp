@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_TYPE_CORE_DERIVE_HPP
+#define IVL_DETAILS_CORE_TYPE_CORE_DERIVE_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace types {
 
 //-----------------------------------------------------------------------------
 
@@ -42,68 +42,62 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct seq_more
-{
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
-};
+template <typename T, typename A>
+constexpr T&& rcast(A&& a) { return static_cast <T&&>(a); }
+
+template <typename T, typename A>
+constexpr T& lcast(A&& a) { return static_cast <T&>(a); }
+
+template <typename T, typename A>
+constexpr const T& clcast(A&& a) { return static_cast <const T&>(a); }
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M = seq_more>
-class seq_sep_loop : raw_tuple <S>
+template <typename B, typename...>
+struct based : B
 {
-	using B = raw_tuple <S>;
+	using base_type = B;
 
 protected:
-	using B::val;
-
-public:
 	using B::B;
 
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
+	INLINE           B&&       base_f()      { return rcast <B>(*this); }
+	INLINE           B&&       base() &&     { return rcast <B>(*this); }
+	INLINE           B&        base() &      { return lcast <B>(*this); }
+	INLINE constexpr const B&  base() const& { return clcast <B>(*this); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename M = seq_more>
-struct seq_loop
+template <typename D, typename...>
+struct derived
 {
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
+	using derived_type = D;
 
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
+protected:
+	INLINE           D&&       der_f()      { return rcast <D>(*this); }
+	INLINE           D&&       der() &&     { return rcast <D>(*this); }
+	INLINE           D&        der() &      { return lcast <D>(*this); }
+	INLINE constexpr const D&  der() const& { return clcast <D>(*this); }
 };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::seq_loop;
+//-----------------------------------------------------------------------------
+
+using details::based;
+using details::derived;
+
+template <typename T> using base_type_of    = typename T::base_type;
+template <typename T> using derived_type_of = typename T::derived_type;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+}  // namespace types
+
+using types::derived;
 
 //-----------------------------------------------------------------------------
 
@@ -111,4 +105,4 @@ using details::seq_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_TYPE_CORE_DERIVE_HPP

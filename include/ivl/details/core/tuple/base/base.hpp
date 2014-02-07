@@ -42,21 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class T>
-struct make
-{
-	template <typename... A>
-	INLINE constexpr subs <T, A...>
-	operator()(A&&... a) const { return subs <T, A...>(fwd <A>(a)...); }
-};
-
-template <template <typename...> class T>
-struct _do
-{
-	template <typename... A>
-	INLINE void
-	operator()(A&&... a) const { subs <T, A...>(fwd <A>(a)...).loop(); }
-};
+using afun::make;
+using afun::_do;
 
 //-----------------------------------------------------------------------------
 

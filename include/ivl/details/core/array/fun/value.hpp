@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_AFUN_VALUE_HPP
+#define IVL_DETAILS_CORE_AFUN_VALUE_HPP
 
 #include <ivl/ivl>
 
@@ -42,64 +42,41 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct seq_more
+struct cp
 {
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
+	template <typename A>
+	INLINE constexpr copy <A>
+	operator()(A&& a) const { return fwd <A>(a); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M = seq_more>
-class seq_sep_loop : raw_tuple <S>
+template <size_t I>
+struct get
 {
-	using B = raw_tuple <S>;
-
-protected:
-	using B::val;
-
-public:
-	using B::B;
-
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
+	template <typename... A>
+	INLINE constexpr pick <I, A...>&&
+	operator()(A&&... a) const { return ivl::get <I>(fwd <A>(a)...); }
 };
 
-//-----------------------------------------------------------------------------
-
-template <typename M = seq_more>
-struct seq_loop
+template <size_t I>
+struct get_cp
 {
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
+	template <typename... A>
+	INLINE constexpr copy <pick <I, A...> >
+	operator()(A&&... a) const { return ivl::get <I>(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::seq_loop;
+//-----------------------------------------------------------------------------
+
+using details::cp;
+using details::get;
+using details::get_cp;
+
 
 //-----------------------------------------------------------------------------
 
@@ -111,4 +88,4 @@ using details::seq_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_AFUN_VALUE_HPP

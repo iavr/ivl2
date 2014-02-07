@@ -23,13 +23,21 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_SYSTEM_INDEX_HPP
+#define IVL_DETAILS_CORE_SYSTEM_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "include/std.hpp"
+#include "include/using.hpp"
+
+#include "debug/debug.hpp"
+#include "debug/check.hpp"
+
+#include "platform/export.hpp"
+#include "platform/config.hpp"
+#include "platform/math.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_SYSTEM_INDEX_HPP

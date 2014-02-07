@@ -23,13 +23,17 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_KEY_INDEX_HPP
+#define IVL_DETAILS_CORE_KEY_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "begin.hpp"
+#include "traits.hpp"
+#include "op_ref.hpp"
+#include "key.hpp"
+#include "key_def.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_KEY_INDEX_HPP

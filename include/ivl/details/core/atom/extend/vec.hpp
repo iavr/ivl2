@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,13 +23,46 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_ATOM_EXTEND_VEC_HPP
+#define IVL_DETAILS_CORE_ATOM_EXTEND_VEC_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+namespace atoms {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+//-----------------------------------------------------------------------------
+
+// builtin-array atom: vec-[]
+// builtin-function atom: vec-()
+// class atom: vec- [], (), _<>()
+template <typename T, typename S>
+struct store <T, S, numbers <0, 1> > : afun::tvec <T, afun::bra_vec <T> >
+{
+	using afun::tvec <T, afun::bra_vec <T> >::tvec;
+};
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace atoms
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_ATOM_EXTEND_VEC_HPP

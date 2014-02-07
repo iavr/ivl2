@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_TYPE_CORE_LOGIC_HPP
+#define IVL_DETAILS_CORE_TYPE_CORE_LOGIC_HPP
 
 #include <ivl/ivl>
 
@@ -34,76 +34,82 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+namespace logic {
 
 //-----------------------------------------------------------------------------
 
-struct seq_more
-{
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
-};
+template <bool B> using boolean = c_boolean <B>;
+template <bool B> using expr    = boolean <B>;
+
+using _false = c_false;
+using _true = c_true ;
+
+static __attribute__ ((unused)) _false no;
+static __attribute__ ((unused)) _true  yes;
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M = seq_more>
-class seq_sep_loop : raw_tuple <S>
-{
-	using B = raw_tuple <S>;
-
-protected:
-	using B::val;
-
-public:
-	using B::B;
-
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
+template <bool B> using _not = expr <!B>;
 
 //-----------------------------------------------------------------------------
 
-template <typename M = seq_more>
-struct seq_loop
-{
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
+// TODO: alias not working for report()'s static_assert in gcc
+template <typename... T> struct always : _true { };
+template <typename... T> struct never  : _false { };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace details
+template <typename A, typename B>
+struct eq : _false { };
 
-using details::seq_loop;
+template <typename A>
+struct eq <A, A> : _true { };
+
+template <typename A, typename B> using is_eq = eq <A, B>;
+template <typename A, typename B> using neq   = expr <!eq <A, B>()>;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+template <bool C, typename T, typename E>
+struct _if_t { using type = E; };
+
+template <typename T, typename E>
+struct _if_t <true, T, E> { using type = T; };
+
+template <bool C, typename T, typename E>
+using _if = type_of <_if_t <C, T, E> >;
+
+//-----------------------------------------------------------------------------
+
+template <bool C, typename T, typename E>
+using unless_t = _if_t <!C, T, E>;
+
+template <bool C, typename T, typename E>
+using unless = type_of <unless_t <C, T, E> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename... T> struct cond_t;
+template <typename C, typename... T> using  cond = type_of <cond_t <C, T...> >;
+
+template <typename C, typename T, typename... E>
+struct cond_t <C, T, E...> : _if <C{}, id_t <T>, cond_t <E...> > { };
+
+template <typename E>  struct cond_t <E> : id_t <E> { };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace logic
+
+using namespace logic;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -111,4 +117,4 @@ using details::seq_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_TYPE_CORE_LOGIC_HPP

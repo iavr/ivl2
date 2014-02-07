@@ -23,13 +23,59 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_TYPE_INDEX_HPP
+#define IVL_DETAILS_CORE_TYPE_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "begin.hpp"
+
+#include "core/entity.hpp"
+#include "core/derive.hpp"
+
+#include "const/const.hpp"
+#include "const/scalar.hpp"
+#include "const/class.hpp"
+
+#include "core/logic.hpp"
+#include "core/nat.hpp"
+#include "core/numeric.hpp"
+#include "core/meta.hpp"
+
+#include "pack/pack.hpp"
+#include "pack/list.hpp"
+#include "pack/join.hpp"
+#include "pack/select.hpp"
+#include "pack/fold.hpp"
+
+#include "traits/begin.hpp"
+#include "traits/builtin.hpp"
+#include "traits/array.hpp"
+#include "traits/fun.hpp"
+#include "traits/traits.hpp"
+#include "traits/transform.hpp"
+#include "traits/member.hpp"
+#include "traits/value.hpp"
+#include "traits/sfinae.hpp"
+#include "traits/class.hpp"
+#include "traits/relation.hpp"
+#include "traits/pod.hpp"
+#include "traits/life.hpp"
+#include "traits/result.hpp"
+#include "traits/members.hpp"
+#include "traits/report.hpp"
+
+#include "fun/begin.hpp"
+#include "fun/op.hpp"
+#include "fun/fun.hpp"
+
+#include "const/array.hpp"
+#include "const/call.hpp"
+#include "const/op.hpp"
+#include "const/member.hpp"
+#include "const/sig.hpp"
+#include "const/gen.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_TYPE_INDEX_HPP

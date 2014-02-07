@@ -23,13 +23,51 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_ATOM_EXTEND_USCORE_HPP
+#define IVL_DETAILS_CORE_ATOM_EXTEND_USCORE_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+namespace atoms {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+//-----------------------------------------------------------------------------
+
+class uscore : public afun::uref
+{
+	template <typename A> using R = ext_atom <uref_opt <A> >;
+
+public:
+	template <typename A>
+	INLINE constexpr R <A>
+	operator[](A&& a) const { return R <A>(fwd <A>(a)); }
+};
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+using details::uscore;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace atoms
+
+//-----------------------------------------------------------------------------
+
+static __attribute__ ((unused)) atoms::uscore _;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_ATOM_EXTEND_USCORE_HPP

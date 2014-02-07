@@ -23,13 +23,15 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_AFUN_INDEX_HPP
+#define IVL_DETAILS_CORE_AFUN_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "tuple.hpp"
+#include "meta_tup.hpp"
+#include "meta_op.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_AFUN_INDEX_HPP

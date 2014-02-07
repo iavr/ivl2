@@ -23,13 +23,40 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_ARRAY_INDEX_HPP
+#define IVL_DETAILS_CORE_ARRAY_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "begin.hpp"
+
+#include "type/data.hpp"
+#include "type/iter.hpp"
+#include "type/sequence.hpp"
+#include "type/traits.hpp"
+
+#include "iter/base.hpp"
+#include "iter/iter.hpp"
+#include "iter/atom.hpp"
+#include "iter/indirect.hpp"
+
+#include "mem/cast.hpp"
+#include "mem/alloc.hpp"
+
+#include "fun/mem.hpp"
+#include "fun/math.hpp"
+#include "fun/logic.hpp"
+#include "fun/value.hpp"
+#include "fun/trav.hpp"
+#include "fun/loop.hpp"
+
+#include "base/base.hpp"
+
+#include "store/aggr.hpp"
+#include "store/fixed.hpp"
+
+#include "view/indirect.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_ARRAY_INDEX_HPP

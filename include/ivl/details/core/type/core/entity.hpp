@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_ARRAY_HPP
-#define IVL_DETAILS_CORE_VEC_ARRAY_HPP
+#ifndef IVL_DETAILS_CORE_TYPE_CORE_ENTITY_HPP
+#define IVL_DETAILS_CORE_TYPE_CORE_ENTITY_HPP
 
 #include <ivl/ivl>
 
@@ -34,70 +34,89 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace types {
+
+//-----------------------------------------------------------------------------
+
+struct none { };
+struct sep { };
+
+//-----------------------------------------------------------------------------
+
+template <typename...> struct id_t;
+template <typename T>  struct id_t <T> { using type = T; };
+template <>            struct id_t <>  { };
+
+template <typename T> using type_of = typename T::type;
+
+template <typename... T> using id = type_of <id_t <T...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using length = type_of <length_t <P> >;
+
+template <size_t L> struct seq { static constexpr size_t length = L; };
+
+template <typename T>
+struct type_seq : id_t <T>, seq <length <T>{}> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+struct _type : type_seq <_type <T> > { };
+
+template <typename... E>
+struct pack : type_seq <pack <E...> > { };
+
+template <typename... E>
+struct tmp : type_seq <tmp <E...> > { };
+
+template <size_t L, typename T>
+struct repeat : type_seq <repeat <L, T> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename T> struct remove_type_t              : id_t <T> { };
+template <typename T> struct remove_type_t <_type <T> > : id_t <T> { };
+
+template <typename T> using remove_type = type_of <remove_type_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename D>
+struct template_class { };
+
+template <template <typename...> class F, typename...> struct temp;
+
+template <template <typename...> class F, typename D>
+struct temp <F, D> : id_t <D>, template_class <D> { };
+
+template <template <typename...> class F>
+struct temp <F> : temp <F, temp <F> > { };
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-//-----------------------------------------------------------------------------
+struct subs_fun
+{
+	template <typename... A, template <typename...> class F>
+	static F <A...> _(temp <F>);
+};
 
-// TODO
-struct seq_apply : tup_apply { };
+template <typename T, template <typename...> class F, typename... A>
+using apply_subs = decltype(T::template _<A...>(temp <F>()));
 
-//-----------------------------------------------------------------------------
-
-// TODO
-template <typename F, typename B = none> struct seq_vec_apply :
-	tup_vec_apply <F, B> { using tup_vec_apply <F, B>::tup_vec_apply; };
-
-template <typename F, typename B = none> struct seq_vec_loop :
-	tup_vec_loop <F, B> { using tup_vec_loop <F, B>::tup_vec_loop; };
-
-template <typename F, typename B = none> struct seq_vec_auto :
-	tup_vec_auto <F, B> { using tup_vec_auto <F, B>::tup_vec_auto; };
-
-template <typename F, typename B = atom <F> > struct seq_vec :
-	tup_vec <F, B> { using tup_vec <F, B>::tup_vec; };
-
-template <typename F, size_t I = 0> struct seq_vec_mut :
-	tup_vec_mut <F, I> { using tup_vec_mut <F, I>::tup_vec_mut; };
-
-template <typename F, size_t I = 0> struct seq_vec_copy :
-	tup_vec_copy <F, I> { using tup_vec_copy <F, I>::tup_vec_copy; };
-
-template <typename F, typename B = none> struct seq_bra_vec_apply :
-	tup_bra_vec_apply <F, B> { using tup_bra_vec_apply <F, B>::tup_bra_vec_apply; };
-
-template <typename F, typename B = atom <F> > struct seq_bra_vec :
-	tup_bra_vec <F, B> { using tup_bra_vec <F, B>::tup_bra_vec; };
-
-//-----------------------------------------------------------------------------
-
-// TODO
-template <typename F> struct seq_accum     : tup_accum <F> { };
-template <typename F> struct seq_accum_off : tup_accum_off <F> { };
-
-template <
-	typename F, typename I = F, typename E = get <0>,
-	template <typename> class R = common_of,
-	typename XI = id_fun, typename XE = id_fun, typename U = seq_accum <F>
->
-struct seq_fold : tup_fold <F, I, E, R, XI, XE, U> { };
-
-template <
-	typename F, typename I = F, typename E = get <0>,
-	template <typename> class R = common_of
->
-struct seq_fold_off : tup_fold_off <F, I, E, R> { };
-
-//-----------------------------------------------------------------------------
+template <template <typename...> class F, typename... A>
+using subs = apply_subs <subs_fun, F, A...>;
 
 }  // namespace details
 
+using details::subs;
+
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -105,4 +124,4 @@ struct seq_fold_off : tup_fold_off <F, I, E, R> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_ARRAY_HPP
+#endif  // IVL_DETAILS_CORE_TYPE_CORE_ENTITY_HPP

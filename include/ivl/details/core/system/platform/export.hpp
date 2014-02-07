@@ -23,13 +23,33 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_SYSTEM_PLATFORM_EXPORT_HPP
+#define IVL_DETAILS_CORE_SYSTEM_PLATFORM_EXPORT_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#ifdef _MSC_VER
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#ifdef _ivl_STATIC_
+#define _ivl_export_
+#else
+#ifdef _ivl_EXPORTS_
+#define _ivl_export_ __declspec(dllexport)
+#else
+#define _ivl_export_ __declspec(dllimport)
+#endif
+#endif
+
+//-----------------------------------------------------------------------------
+
+#else  // _MSC_VER
+
+#define _ivl_export_
+
+#endif  //_MSC_VER
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_SYSTEM_PLATFORM_EXPORT_HPP

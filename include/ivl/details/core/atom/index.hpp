@@ -23,13 +23,21 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_ATOM_INDEX_HPP
+#define IVL_DETAILS_CORE_ATOM_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "begin.hpp"
+
+#include "type/data.hpp"
+#include "type/atom.hpp"
+#include "type/traits.hpp"
+
+#include "store/base.hpp"
+#include "store/atom.hpp"
+#include "store/raw.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_ATOM_INDEX_HPP

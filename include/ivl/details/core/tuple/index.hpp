@@ -23,13 +23,38 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_TUPLE_INDEX_HPP
+#define IVL_DETAILS_CORE_TUPLE_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "begin.hpp"
+
+#include "type/data.hpp"
+#include "type/collection.hpp"
+#include "type/traits.hpp"
+
+#include "fun/at.hpp"
+#include "fun/make.hpp"
+#include "fun/meta.hpp"
+
+#include "base/elem.hpp"
+#include "base/store.hpp"
+#include "base/access.hpp"
+#include "base/base.hpp"
+
+#include "store/raw.hpp"
+#include "store/pre.hpp"
+#include "store/tuple.hpp"
+
+#include "view/tail.hpp"
+#include "view/indirect.hpp"
+#include "view/apply.hpp"
+#include "view/loop.hpp"
+#include "view/scan.hpp"
+#include "view/zip.hpp"
+#include "view/join.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#endif  // IVL_DETAILS_CORE_TUPLE_INDEX_HPP

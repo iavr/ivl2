@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_DETAILS_CORE_TYPE_CORE_META_HPP
+#define IVL_DETAILS_CORE_TYPE_CORE_META_HPP
 
 #include <ivl/ivl>
 
@@ -34,76 +34,52 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+namespace meta {
 
 //-----------------------------------------------------------------------------
 
-struct seq_more
+template <template <typename...> class F, typename... V>
+struct bind
 {
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
+	template <typename... A>
+	using map = subs <F, V..., A...>;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M = seq_more>
-class seq_sep_loop : raw_tuple <S>
+template <typename T> using eq_to = bind <eq, T>;
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class F, template <typename...> class G>
+struct compose
 {
-	using B = raw_tuple <S>;
-
-protected:
-	using B::val;
-
-public:
-	using B::B;
-
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
+	template <typename... A>
+	using map = F <subs <G, A...> >;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename M = seq_more>
-struct seq_loop
+template <template <typename...> class F>
+struct neg
 {
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
+	template <typename... A>
+	using map = expr <!subs <F, A...>()>;
 };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace details
+}  // namespace meta
 
-using details::seq_loop;
+using namespace meta;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -111,4 +87,4 @@ using details::seq_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_DETAILS_CORE_TYPE_CORE_META_HPP

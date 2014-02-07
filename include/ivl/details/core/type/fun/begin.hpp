@@ -23,13 +23,29 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_TYPE_FUN_BEGIN_HPP
+#define IVL_DETAILS_CORE_TYPE_FUN_BEGIN_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+namespace afun {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_TYPE_FUN_BEGIN_HPP

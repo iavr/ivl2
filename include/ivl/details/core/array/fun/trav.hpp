@@ -42,50 +42,55 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct ptr_iter
+struct iter
 {
 	template <typename T>
-	INLINE constexpr iter_iter <T*, T&>
-	operator()(T* p) const { return iter_iter <T*, T&>(p); }
-};
-
-struct rng_trav
-{
-	template <typename A, typename I = decltype(begin(gen <A>()))>
-	INLINE constexpr iter_trav <I, seq_ref <I> >
-	operator()(A&& a) const
-		{ return iter_trav <I, seq_ref <I> >(begin(fwd <A>(a)), end(fwd <A>(a))); }
+	INLINE constexpr ptr_iter <T>
+	operator()(T* p) const { return ptr_iter <T>(p); }
 };
 
 //-----------------------------------------------------------------------------
 
-struct trav
+struct seq_trav
 {
-	template <typename A, only_if <is_array <A>{}> = 0>
+	template <typename A>
 	INLINE auto operator()(A&& a) const
 	-> decltype(fwd <A>(a).trav())
 		{ return fwd <A>(a).trav(); }
-
-	template <typename A, only_if <is_trav <A>{}> = 0>
-	INLINE A&& operator()(A&& a) const { return fwd <A>(a); }
-
-	template <typename A, only_if <!is_array <A>() && !is_trav <A>()> = 0>
-	INLINE constexpr atom_trav <A>
-	operator()(A&& a) const { return atom_trav <A>(fwd <A>(a)); }
 };
+
+struct cont_trav
+{
+	template <typename A, typename I = begin_of <A> >
+	INLINE constexpr iter_trav <I>
+	operator()(A&& a) const
+		{ return iter_trav <I>(begin(fwd <A>(a)), end(fwd <A>(a))); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename A>
+using trav_for = cond <
+	is_iter <A>, id_fun,
+	is_seq <A>, seq_trav,
+	is_cont <A>, cont_trav,
+	make <atom_trav>
+>;
+
+using trav = choose_fun <trav_for>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::ptr_iter;
-using details::rng_trav;
+using details::iter;
 using details::trav;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace afun
 
+static __attribute__ ((unused)) afun::iter  iter;
 static __attribute__ ((unused)) afun::trav  trav;
 
 //-----------------------------------------------------------------------------

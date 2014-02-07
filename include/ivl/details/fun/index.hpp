@@ -23,13 +23,30 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_FUN_HPP
+#define IVL_DETAILS_FUN_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+#include "../core/macro/push.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#include "afun/array.hpp"
+#include "afun/container.hpp"
+#include "afun/limits.hpp"
+#include "afun/extrema.hpp"
+
+#include "fun/begin.hpp"
+#include "fun/member.hpp"
+#include "fun/op.hpp"
+#include "fun/swap.hpp"
+#include "fun/extrema.hpp"
+
+//-----------------------------------------------------------------------------
+
+#include "../core/macro/pop.hpp"
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_FUN_HPP

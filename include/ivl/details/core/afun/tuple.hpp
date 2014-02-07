@@ -42,69 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// TODO: keys + operator[] ([val], [rref], [lref], [clref])
-template <
-	template <typename...> class F,
-	template <typename...> class T,
-	template <typename...> class... E
->
-struct make : make <F, T, all_cond <E...>::template map> { };
-
-template <
-	template <typename...> class F,
-	template <typename...> class T,
-	template <typename...> class E
->
-class make <F, T, E>
-{
-	template <typename... A> using R = subs <T, F <A>...>;
-
-public:
-	template <typename... A, only_if <E <A...>{}()> = 0>  // TODO: {}() -> {} (needed by GCC)
-	INLINE constexpr R <A...>
-	operator()(A&&... a) const { return R <A...>(fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <
-	template <typename...> class T = pre_tuple,
-	template <typename...> class... E
->
-using val_of = make <decay, T, E...>;
-
-template <
-	template <typename...> class T = pre_tuple,
-	template <typename...> class... E
->
-using uref_of = make <uref_opt, T, E...>;
-
-template <
-	template <typename...> class T = pre_tuple,
-	template <typename...> class... E
->
-using rref_of = make <rref_opt, T, E...>;
-
-template <
-	template <typename...> class T = pre_tuple,
-	template <typename...> class... E
->
-using lref_of = make <base_opt, T, all_lref, E...>;
-
-template <
-	template <typename...> class T = pre_tuple,
-	template <typename...> class... E
->
-using clref_of = make <base_opt, T, all_clref, E...>;
-
-using val   = val_of <>;
-using uref  = uref_of <>;
-using rref  = rref_of <>;
-using lref  = lref_of <>;
-using clref = clref_of <>;
-
-//-----------------------------------------------------------------------------
-
 using tup_join = uref_of <join_tup, all_tuple>;
 using tup      = uref_of <join_tuple>;
 
@@ -217,18 +154,6 @@ template <typename F> using head_fun_of = bind_fun <head_call, F>;
 
 //-----------------------------------------------------------------------------
 
-using details::val_of;
-using details::uref_of;
-using details::rref_of;
-using details::lref_of;
-using details::clref_of;
-
-using details::val;
-using details::uref;
-using details::rref;
-using details::lref;
-using details::clref;
-
 using details::tup;
 
 using details::arg_call;
@@ -245,13 +170,7 @@ using details::head_fun_of;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::val    val;
-static __attribute__ ((unused)) afun::uref   uref;
-static __attribute__ ((unused)) afun::rref   rref;
-static __attribute__ ((unused)) afun::lref   lref;
-static __attribute__ ((unused)) afun::clref  clref;
-
-static __attribute__ ((unused)) afun::tup    tup;
+static __attribute__ ((unused)) afun::tup  tup;
 
 //-----------------------------------------------------------------------------
 

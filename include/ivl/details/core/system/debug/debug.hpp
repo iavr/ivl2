@@ -23,13 +23,32 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE
-#define IVL_CORE
+#ifndef IVL_DETAILS_CORE_SYSTEM_DEBUG_DEBUG_HPP
+#define IVL_DETAILS_CORE_SYSTEM_DEBUG_DEBUG_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "details/core/index.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE
+#ifdef IVL_DEBUG
+
+#define DEBUG(expr) \
+	expr;
+
+#else  // IVL_DEBUG
+
+#define DEBUG(expr) ;
+
+#endif  // IVL_DEBUG
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_DETAILS_CORE_SYSTEM_DEBUG_DEBUG_HPP
