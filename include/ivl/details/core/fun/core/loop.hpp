@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN__MANIP_JOINT__HPP
-#define IVL_CORE_ARRAY_FUN__MANIP_JOINT__HPP
+#ifndef IVL_CORE_FUN_CORE_LOOP_HPP
+#define IVL_CORE_FUN_CORE_LOOP_HPP
 
 #include <ivl/ivl>
 
@@ -42,17 +42,64 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using join  = seq_join;
-using zip   = seq_zip;
-using inner = seq_inner;
+// TODO
+using apply = seq_apply;
 
-using head  = seq_head;
-using tail  = seq_tail;
-using flip  = seq_flip;
-using call  = tup_call;
+//-----------------------------------------------------------------------------
 
-template <template <typename...> class O = base_opt>
-using tail_of = seq_tail_of <O>;
+template <typename M>
+struct head_loop_on_for
+{
+	template <typename F, typename G, typename... A>
+	using map = cond <
+		may_iter <A...>,  seq_head_loop_on <M>,
+		any_tuple <A...>, tup_head_loop
+	>;
+};
+
+template <typename M = trav_more>
+using head_loop_on = choose_fun <head_loop_on_for <M>::template map>;
+
+//-----------------------------------------------------------------------------
+
+struct sep_loop_
+{
+	template <typename S, typename F, typename A>
+	INLINE void operator()(S&& s, F&& f, A&& a) const
+	{
+		head_loop_on <>()
+			(fwd <F>(f), pre_fun()(fwd <F>(f), fwd <S>(s)), fwd <A>(a));
+	}
+};
+
+using sep_loop = bind_of <sep_loop_>;
+
+//-----------------------------------------------------------------------------
+
+template <typename M>
+struct loop_on_for
+{
+	template <typename F, typename... A>
+	using map = cond <
+		may_iter <A...>,  seq_loop_on <M>,
+		any_tuple <A...>, tup_loop
+	>;
+};
+
+template <typename M = trav_more>
+struct loop_on : choose_fun <loop_on_for <M>::template map>
+{
+	// TODO: keys
+	template <typename S>
+	INLINE auto operator[](S&& s) const
+	-> decltype(sep_loop()(fwd <S>(s)))
+		{ return sep_loop()(fwd <S>(s)); }
+};
+
+//-----------------------------------------------------------------------------
+
+using loop      = loop_on <>;
+using head_loop = head_loop_on <>;
 
 //-----------------------------------------------------------------------------
 
@@ -60,14 +107,12 @@ using tail_of = seq_tail_of <O>;
 
 //-----------------------------------------------------------------------------
 
-using details::join;
-using details::zip;
-using details::inner;
-
-using details::head;
-using details::tail;
-using details::flip;
-using details::call;
+using details::apply;
+using details::loop;
+using details::loop_on;
+using details::head_loop;
+using details::head_loop_on;
+using details::sep_loop;
 
 //-----------------------------------------------------------------------------
 
@@ -75,14 +120,8 @@ using details::call;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::join  join;
-static __attribute__ ((unused)) afun::zip   zip;
-static __attribute__ ((unused)) afun::inner inner;
-
-static __attribute__ ((unused)) afun::head  head;
-static __attribute__ ((unused)) afun::tail  tail;
-static __attribute__ ((unused)) afun::flip  flip;
-static __attribute__ ((unused)) afun::call  call;
+static __attribute__ ((unused)) afun::apply  apply;
+static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------
 
@@ -90,4 +129,4 @@ static __attribute__ ((unused)) afun::call  call;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN__MANIP_JOINT__HPP
+#endif  // IVL_CORE_FUN_CORE_LOOP_HPP

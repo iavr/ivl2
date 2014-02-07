@@ -30,11 +30,14 @@
 
 #include "begin.hpp"
 
+#include "core/manip.hpp"
+#include "core/loop.hpp"
+
 #include "vec/traits.hpp"
 #include "vec/fun.hpp"
 #include "vec/tuple.hpp"
 #include "vec/array.hpp"
-#include "vec/joint.hpp"
+#include "vec/vec.hpp"
 #include "vec/tmp.hpp"
 
 #include "fold/tuple.hpp"

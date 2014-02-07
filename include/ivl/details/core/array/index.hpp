@@ -58,7 +58,6 @@
 #include "view/indirect.hpp"
 
 #include "fun/manip.hpp"
-#include "fun/manip_der.hpp"
 
 //-----------------------------------------------------------------------------
 

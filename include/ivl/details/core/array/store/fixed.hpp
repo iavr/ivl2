@@ -56,7 +56,7 @@ public:
 
 	INLINE fixed_store(initializer_list <T>&& l)
 	{
-		afun::seq_loop <>()(construct, afun::iter()(a), mv(l));
+		afun::seq_loop()(construct, afun::iter()(a), mv(l));
 	}
 };
 

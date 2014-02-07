@@ -47,23 +47,27 @@ struct seq_apply : tup_apply { };
 
 //-----------------------------------------------------------------------------
 
-struct seq_more
+struct trav_more
 {
 	template <typename... T>
 	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
+		{ return get <trav_prim <T...>{}>()(fwd <T>(t)...); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename M = seq_more>
-struct seq_loop : tup_loop
+template <typename L>
+struct cont_loop
 {
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
+	template <typename F, typename... A>
 	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
+		{ return L()(fwd <F>(f), trav()(fwd <A>(a))...); }
+};
 
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
+template <typename M>
+struct iter_loop_on
+{
+	template <typename F, typename... T>
 	INLINE F&& operator()(F&& f, T&&... t) const
 	{
 		for (; M()(t...); thru{++t...})
@@ -74,59 +78,78 @@ struct seq_loop : tup_loop
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M = seq_more>
-class seq_sep_loop : public tup_sep_loop <S>
+template <typename M, typename L = iter_loop_on <M> >
+struct seq_loop_for
 {
-	using B = tup_sep_loop <S>;
+	template <typename F, typename... A>
+	using map = cond <
+		any_cont <A...>, cont_loop <L>,
+		can_iter <A...>, L
+	>;
+};
 
-protected:
-	using B::val;
+template <typename M = trav_more>
+using seq_loop_on = choose_fun <seq_loop_for <M>::template map>;
 
-public:
-	using B::B;
+//-----------------------------------------------------------------------------
 
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
+template <typename L>
+struct cont_head_loop
+{
+	template <typename F, typename G, typename... A>
+	INLINE void operator()(F&& f, G&& g, A&&... a) const
+		{ L()(fwd <F>(f), fwd <G>(g), trav()(fwd <A>(a))...); }
+};
 
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
+template <typename M>
+struct iter_head_loop_on
+{
+	template <typename F, typename G, typename... T>
+	INLINE void operator()(F&& f, G&& g, T&&... t) const
 	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
+		if (M()(t...))
+			fwd <F>(f)(*t...),
+			seq_loop_on <M>()(fwd <G>(g), ++t...);
 	}
 };
 
 //-----------------------------------------------------------------------------
 
-// TODO
-using apply = seq_apply;
+template <typename M, typename L = iter_head_loop_on <M> >
+struct seq_head_loop_for
+{
+	template <typename F, typename... A>
+	using map = cond <
+		any_cont <A...>, cont_head_loop <L>,
+		can_iter <A...>, L
+	>;
+};
+
+template <typename M = trav_more>
+using seq_head_loop_on = choose_fun <seq_head_loop_for <M>::template map>;
 
 //-----------------------------------------------------------------------------
 
-template <typename S>
-struct sep_loop : seq_sep_loop <S>
-{
-	using tup_sep_loop <S>::operator();
-	using seq_sep_loop <S>::operator();
-	using seq_sep_loop <S>::seq_sep_loop;
-};
+// template <typename M = trav_more>
+// struct seq_head_loop_on
+// {
+// 	template <typename F, typename G, typename... A, only_if <any_cont <A...>{}> = 0>
+// 	INLINE void operator()(F&& f, G&& g, A&&... a) const
+// 		{ operator()(fwd <F>(f), fwd <G>(g), trav()(fwd <A>(a))...); }
+//
+// 	template <typename F, typename G, typename... T, only_if <can_iter <T...>{}> = 0>
+// 	INLINE void operator()(F&& f, G&& g, T&&... t) const
+// 	{
+// 		if (M()(t...))
+// 			fwd <F>(f)(*t...),
+// 			seq_loop_on <M>()(fwd <G>(g), ++t...);
+// 	}
+// };
 
 //-----------------------------------------------------------------------------
 
-struct loop : seq_loop <>
-{
-	using tup_loop::operator();
-	using seq_loop <>::operator();
-
-	// TODO: keys
-	template <typename S>
-	INLINE sep_loop <uref_opt <S> >
-	operator[](S&& s) const { return sep_loop <uref_opt <S> >(fwd <S>(s)); }
-};
+using seq_loop      = seq_loop_on <>;
+using seq_head_loop = seq_head_loop_on <>;
 
 //-----------------------------------------------------------------------------
 
@@ -136,18 +159,13 @@ struct loop : seq_loop <>
 
 using details::seq_apply;
 using details::seq_loop;
-
-using details::apply;
-using details::loop;
+using details::seq_loop_on;
+using details::seq_head_loop;
+using details::seq_head_loop_on;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::apply  apply;
-static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------
 

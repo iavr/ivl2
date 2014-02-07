@@ -76,18 +76,18 @@ template <typename T> using is_trav = details::is_trav_<raw_type <T> >;
 namespace details {
 
 template <typename T, bool = is_trav <T>{}>
-struct seq_finite_ : _false { };
+struct trav_fin_ : _false { };
 
 template <typename T>
-struct seq_finite_ <T, true> : expr <T::finite> { };
+struct trav_fin_ <T, true> : expr <T::finite> { };
 
 }  // namespace details
 
 template <typename T>
-using seq_finite = details::seq_finite_<raw_type <T> >;
+using trav_fin = details::trav_fin_<raw_type <T> >;
 
 template <typename... T>
-using seq_prim = first_b <seq_finite <T>{}...>;
+using trav_prim = first_b <trav_fin <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
@@ -117,16 +117,19 @@ template <typename P> using any_trav_p = any_p <is_trav, P>;
 template <typename... E> using all_trav = all_trav_p <pack <E...> >;
 template <typename... E> using any_trav = any_trav_p <pack <E...> >;
 
-template <typename P> using all_finite_p = all_p <seq_finite, P>;
-template <typename P> using any_finite_p = any_p <seq_finite, P>;
+template <typename P> using all_trav_fin_p = all_p <trav_fin, P>;
+template <typename P> using any_trav_fin_p = any_p <trav_fin, P>;
 
-template <typename... E> using all_finite = all_finite_p <pack <E...> >;
-template <typename... E> using any_finite = any_finite_p <pack <E...> >;
+template <typename... E> using all_trav_fin = all_trav_fin_p <pack <E...> >;
+template <typename... E> using any_trav_fin = any_trav_fin_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename... T>
-using can_loop = expr <all_iter <T...>() && any_finite <T...>()>;
+using may_iter = expr <any_cont <T...>() || any_trav_fin <T...>()>;
+
+template <typename... T>
+using can_iter = expr <all_iter <T...>() && any_trav_fin <T...>()>;
 
 //-----------------------------------------------------------------------------
 

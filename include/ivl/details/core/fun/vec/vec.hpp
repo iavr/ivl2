@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_LOOP_HPP
-#define IVL_CORE_TUPLE_FUN_LOOP_HPP
+#ifndef IVL_CORE_FUN_VEC_VEC_HPP
+#define IVL_CORE_FUN_VEC_VEC_HPP
 
 #include <ivl/ivl>
 
@@ -42,38 +42,27 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// no alias: often used
-struct tup_apply : uref_of <apply_tuple, any_tuple> { };
-struct tup_loop_ : rref_of <loop_tuple,  any_tuple> { };
-struct tup_scan_ : rref_of <scan_tuple,  any_tuple> { };
+// no alias: fwd-declared
+template <typename F, typename B = none>
+struct vec_apply : seq_vec_apply <F, B> { };
 
-template <typename L>
-struct tup_loop_of
-{
-	template <typename F, typename... A, only_if <any_tuple <A...>{}> = 0>
-	INLINE void operator()(F&& f, A&&... a) const
-		{ L()(fwd <F>(f), fwd <A>(a)...).loop(); }
-};
+template <typename F, typename B = none>
+using vec_loop = seq_vec_loop <F, B>;
 
-using tup_loop = tup_loop_of <tup_loop_>;
-using tup_scan = tup_loop_of <tup_scan_>;
+template <typename F, typename B = none>
+using vec_auto = seq_vec_auto <F, B>;
 
-//-----------------------------------------------------------------------------
+template <typename F, typename B = atom <F> >
+using vec = seq_vec <F, B>;
 
-struct tup_head_loop_fun
-{
-	template <typename F, typename G, typename... T>
-	INLINE void operator()(F&& f, G&& g, T&&... t) const
-	{
-		fwd <F>(f)(tup_head()(fwd <T>(t))...);
-		tup_loop()(fwd <G>(g), tup_tail()(fwd <T>(t))...);
-	}
-};
+template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
+template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
 
-template <typename F, typename G, typename... T>
-using tup_head_loop_for = _if <any_empty <T...>{}, nop_fun, tup_head_loop_fun>;
+template <typename F, typename B = none>
+using bra_vec_apply = seq_bra_vec_apply <F, B>;
 
-using tup_head_loop = choose_fun <tup_head_loop_for>;
+template <typename F, typename B = atom <F> >
+using bra_vec = seq_bra_vec <F, B>;
 
 //-----------------------------------------------------------------------------
 
@@ -81,9 +70,14 @@ using tup_head_loop = choose_fun <tup_head_loop_for>;
 
 //-----------------------------------------------------------------------------
 
-using details::tup_apply;
-using details::tup_loop;
-using details::tup_head_loop;
+using details::vec_apply;
+using details::vec_loop;
+using details::vec_auto;
+using details::vec;
+using details::vec_mut;
+using details::vec_copy;
+using details::bra_vec_apply;
+using details::bra_vec;
 
 //-----------------------------------------------------------------------------
 
@@ -95,4 +89,4 @@ using details::tup_head_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_LOOP_HPP
+#endif  // IVL_CORE_FUN_VEC_VEC_HPP

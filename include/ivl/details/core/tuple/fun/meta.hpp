@@ -42,6 +42,14 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+struct nop_fun
+{
+	template <typename... A>
+	INLINE void operator()(A&&... a) const { }
+};
+
+//-----------------------------------------------------------------------------
+
 struct id_fun
 {
 	template <typename A>

@@ -93,13 +93,14 @@ using unless = type_of <unless_t <C, T, E> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename... T> struct cond_t;
-template <typename C, typename... T> using  cond = type_of <cond_t <C, T...> >;
+template <typename... T> struct cond_t;
+template <typename... T> using  cond = type_of <cond_t <T...> >;
 
 template <typename C, typename T, typename... E>
 struct cond_t <C, T, E...> : _if <C{}, id_t <T>, cond_t <E...> > { };
 
-template <typename E>  struct cond_t <E> : id_t <E> { };
+template <typename E> struct cond_t <E> : id_t <E> { };
+template <> struct cond_t <> { };
 
 //-----------------------------------------------------------------------------
 

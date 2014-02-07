@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_FUN_VEC_JOINT_HPP
-#define IVL_CORE_FUN_VEC_JOINT_HPP
+#ifndef IVL_CORE_FUN_CORE_MANIP_HPP
+#define IVL_CORE_FUN_CORE_MANIP_HPP
 
 #include <ivl/ivl>
 
@@ -42,27 +42,17 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// no alias: fwd-declared
-template <typename F, typename B = none>
-struct vec_apply : seq_vec_apply <F, B> { };
+using join  = seq_join;
+using zip   = seq_zip;
+using inner = seq_inner;
 
-template <typename F, typename B = none>
-using vec_loop = seq_vec_loop <F, B>;
+using head  = seq_head;
+using tail  = seq_tail;
+using flip  = seq_flip;
+using call  = tup_call;
 
-template <typename F, typename B = none>
-using vec_auto = seq_vec_auto <F, B>;
-
-template <typename F, typename B = atom <F> >
-using vec = seq_vec <F, B>;
-
-template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
-template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
-
-template <typename F, typename B = none>
-using bra_vec_apply = seq_bra_vec_apply <F, B>;
-
-template <typename F, typename B = atom <F> >
-using bra_vec = seq_bra_vec <F, B>;
+template <template <typename...> class O = base_opt>
+using tail_of = seq_tail_of <O>;
 
 //-----------------------------------------------------------------------------
 
@@ -70,14 +60,14 @@ using bra_vec = seq_bra_vec <F, B>;
 
 //-----------------------------------------------------------------------------
 
-using details::vec_apply;
-using details::vec_loop;
-using details::vec_auto;
-using details::vec;
-using details::vec_mut;
-using details::vec_copy;
-using details::bra_vec_apply;
-using details::bra_vec;
+using details::join;
+using details::zip;
+using details::inner;
+
+using details::head;
+using details::tail;
+using details::flip;
+using details::call;
 
 //-----------------------------------------------------------------------------
 
@@ -85,8 +75,19 @@ using details::bra_vec;
 
 //-----------------------------------------------------------------------------
 
+static __attribute__ ((unused)) afun::join  join;
+static __attribute__ ((unused)) afun::zip   zip;
+static __attribute__ ((unused)) afun::inner inner;
+
+static __attribute__ ((unused)) afun::head  head;
+static __attribute__ ((unused)) afun::tail  tail;
+static __attribute__ ((unused)) afun::flip  flip;
+static __attribute__ ((unused)) afun::call  call;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ivl
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_FUN_VEC_JOINT_HPP
+#endif  // IVL_CORE_FUN_CORE_MANIP_HPP

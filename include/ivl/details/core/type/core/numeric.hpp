@@ -47,8 +47,6 @@ template <typename T, T N> using integral = c_integral <T, N>;
 template <typename T, T... N>
 struct integrals : value <T>, type_seq <integrals <T, N...> > { };
 
-template <typename T> using empty = integrals <T>;
-
 //-----------------------------------------------------------------------------
 
 template <int N = 0>    using number = integral <int, N>;
@@ -95,7 +93,7 @@ struct rng_t_ : _if <(s > 0 ? N + s <= E : N + s >= E),
 
 template <typename T, T B, T E, typename S = int, S s = 1>  // B: begin; s: step; E: end
 struct rng_t : _if <rng_empty(B, E, s),
-	empty <T>, details::rng_t_<T, S, s, E, B>
+	integrals <T>, details::rng_t_<T, S, s, E, B>
 > { };
 
 template <typename T, T B, T E, typename S = int, S s = 1>
@@ -121,7 +119,7 @@ template <typename T, size_t L>
 struct rng_of_it : rng_t <T, 0, L - 1> { };
 
 template <typename T>
-struct rng_of_it <T, 0> : empty <T> { };
+struct rng_of_it <T, 0> : integrals <T> { };
 
 template <typename T, typename P>
 using rng_of_pt = rng_of_it <T, length <P>{}>;
