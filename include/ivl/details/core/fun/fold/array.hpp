@@ -23,29 +23,54 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_FUN_FOLD_ARRAY_HPP
+#define IVL_CORE_FUN_FOLD_ARRAY_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+namespace details {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+// TODO
+template <typename F> struct seq_accum     : tup_accum <F> { };
+template <typename F> struct seq_accum_off : tup_accum_off <F> { };
+
+template <
+	typename F, typename I = F, typename E = get <0>,
+	template <typename> class R = common_of,
+	typename XI = id_fun, typename XE = id_fun, typename U = seq_accum <F>
+>
+struct seq_fold : tup_fold <F, I, E, R, XI, XE, U> { };
+
+template <
+	typename F, typename I = F, typename E = get <0>,
+	template <typename> class R = common_of
+>
+struct seq_fold_off : tup_fold_off <F, I, E, R> { };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_FUN_FOLD_ARRAY_HPP

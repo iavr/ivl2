@@ -23,29 +23,49 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_FUN_BEGIN_HPP
+#define IVL_CORE_FUN_BEGIN_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+namespace afun {
+namespace details {
+
+template <typename F, typename B> struct vec_apply;
+
+}  // namespace details
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+namespace fun {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace fun
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+namespace op {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace op
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_FUN_BEGIN_HPP

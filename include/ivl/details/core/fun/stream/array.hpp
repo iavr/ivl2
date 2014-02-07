@@ -23,29 +23,50 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_FUN_STREAM_ARRAY_HPP
+#define IVL_CORE_FUN_STREAM_ARRAY_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+namespace details {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+template <
+	typename S, typename A,
+	only_if <is_stream <S>() && is_seq <A>()>
+= 0>
+INLINE S&&
+operator<<(S&& s, A&& a)
+{
+	return
+		fwd <S>(s) << "[ ",
+		loop[" "](bind_left(fwd <S>(s)), fwd <A>(a)),
+		fwd <S>(s) << " ]";
+}
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace arrays
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_FUN_STREAM_ARRAY_HPP

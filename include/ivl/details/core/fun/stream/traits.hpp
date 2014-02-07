@@ -23,29 +23,40 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_FUN_STREAM_TRAITS_HPP
+#define IVL_CORE_FUN_STREAM_TRAITS_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+namespace traits {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+template <typename T>
+using is_stream = is_base <std::ios_base, raw_type <T> >;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace traits
+
+//-----------------------------------------------------------------------------
+
+}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_FUN_STREAM_TRAITS_HPP

@@ -23,29 +23,79 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_TUPLE_FUN__META_OP__HPP
+#define IVL_CORE_TUPLE_FUN__META_OP__HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+#define IVL_BIND_OP(NAME)                   \
+                                            \
+namespace afun {                            \
+                                            \
+using bind_##NAME = bind_of <op::NAME>;     \
+                                            \
+}                                           \
+                                            \
+static __attribute__ ((unused))             \
+	afun::bind_##NAME bind_##NAME;           \
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+IVL_BIND_OP(add)
+IVL_BIND_OP(sub)
+IVL_BIND_OP(mul)
+IVL_BIND_OP(div)
+IVL_BIND_OP(mod)
+
+IVL_BIND_OP(eq)
+IVL_BIND_OP(neq)
+IVL_BIND_OP(gt)
+IVL_BIND_OP(lt)
+IVL_BIND_OP(ge)
+IVL_BIND_OP(le)
+
+IVL_BIND_OP(_and)
+IVL_BIND_OP(_or)
+IVL_BIND_OP(bit_and)
+IVL_BIND_OP(bit_or)
+IVL_BIND_OP(bit_xor)
+
+IVL_BIND_OP(left)
+IVL_BIND_OP(right)
+IVL_BIND_OP(assign)
+
+IVL_BIND_OP(add_as)
+IVL_BIND_OP(sub_as)
+IVL_BIND_OP(mul_as)
+IVL_BIND_OP(div_as)
+IVL_BIND_OP(mod_as)
+
+IVL_BIND_OP(and_as)
+IVL_BIND_OP(or_as)
+IVL_BIND_OP(xor_as)
+IVL_BIND_OP(left_as)
+IVL_BIND_OP(right_as)
+
+IVL_BIND_OP(ref_member)
+IVL_BIND_OP(ptr_member)
+IVL_BIND_OP(ref_call)
+IVL_BIND_OP(ptr_call)
+
+IVL_BIND_OP(call)
+IVL_BIND_OP(bracket)
+IVL_BIND_OP(comma)
+IVL_BIND_OP(cond)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_TUPLE_FUN__META_OP__HPP

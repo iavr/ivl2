@@ -55,6 +55,11 @@
 #include "view/zip.hpp"
 #include "view/join.hpp"
 
+#include "fun/manip.hpp"
+#include "fun/meta_tup.hpp"
+#include "fun/meta_op.hpp"
+#include "fun/loop.hpp"
+
 //-----------------------------------------------------------------------------
 
 #endif  // IVL_CORE_TUPLE_INDEX_HPP

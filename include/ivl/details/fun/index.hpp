@@ -32,16 +32,9 @@
 
 //-----------------------------------------------------------------------------
 
-#include "afun/array.hpp"
-#include "afun/container.hpp"
-#include "afun/limits.hpp"
-#include "afun/extrema.hpp"
-
-#include "fun/begin.hpp"
-#include "fun/member.hpp"
-#include "fun/op.hpp"
-#include "fun/swap.hpp"
-#include "fun/extrema.hpp"
+#include "core/limits.hpp"
+#include "core/extrema_fun.hpp"
+#include "core/extrema.hpp"
 
 //-----------------------------------------------------------------------------
 

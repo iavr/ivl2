@@ -23,29 +23,50 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_ARRAY_FUN_MANIP_HPP
+#define IVL_CORE_ARRAY_FUN_MANIP_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+namespace details {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+// TODO
+struct seq_join  : tup_join { };
+struct seq_zip   : tup_zip { };
+struct seq_inner : tup_inner { };
+
+// TODO
+struct seq_head : tup_head { };
+struct seq_tail : tup_tail { };
+struct seq_flip : tup_flip { };
+
+template <template <typename...> class O = base_opt>
+struct seq_tail_of : tup_tail_of <O> { };
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_ARRAY_FUN_MANIP_HPP

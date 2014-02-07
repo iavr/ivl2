@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_CORE_FUN_OP_SWAP_HPP
+#define IVL_CORE_FUN_OP_SWAP_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace fun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,90 +42,13 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// TODO
-struct seq_apply : tup_apply { };
-
-//-----------------------------------------------------------------------------
-
-struct seq_more
+struct tup_swap : afun::swap
 {
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <seq_prim <T...>{}>()(fwd <T>(t)...); }
-};
+	using afun::swap::operator();
 
-//-----------------------------------------------------------------------------
-
-template <typename M = seq_more>
-struct seq_loop : tup_loop
-{
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename S, typename M = seq_more>
-class seq_sep_loop : public tup_sep_loop <S>
-{
-	using B = tup_sep_loop <S>;
-
-protected:
-	using B::val;
-
-public:
-	using B::B;
-
-	template <typename F, typename... A, only_if <any_cont <A...>{}> = 0>
-	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return operator()(fwd <F>(f), trav()(fwd <A>(a))...); }
-
-	template <typename F, typename... T, only_if <can_loop <T...>{}> = 0>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		if (!M()(t...)) return fwd <F>(f);
-		fwd <F>(f)(*t...);
-		for (thru{++t...}; M()(t...); thru{++t...})
-			fwd <F>(f)(fwd <S>(val())), fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
-
-//-----------------------------------------------------------------------------
-
-// TODO
-using apply = seq_apply;
-
-//-----------------------------------------------------------------------------
-
-template <typename S>
-struct sep_loop : seq_sep_loop <S>
-{
-	using tup_sep_loop <S>::operator();
-	using seq_sep_loop <S>::operator();
-	using seq_sep_loop <S>::seq_sep_loop;
-};
-
-//-----------------------------------------------------------------------------
-
-struct loop : seq_loop <>
-{
-	using tup_loop::operator();
-	using seq_loop <>::operator();
-
-	// TODO: keys
-	template <typename S>
-	INLINE sep_loop <uref_opt <S> >
-	operator[](S&& s) const { return sep_loop <uref_opt <S> >(fwd <S>(s)); }
+	template <typename T, typename U, only_if <all_tuple <T, U>{}> = 0>
+	INLINE void
+	operator()(T&& t, U&& u) const { loop(*this, fwd <T>(t), fwd <U>(u)); }
 };
 
 //-----------------------------------------------------------------------------
@@ -134,20 +57,35 @@ struct loop : seq_loop <>
 
 //-----------------------------------------------------------------------------
 
-using details::seq_apply;
-using details::seq_loop;
-
-using details::apply;
-using details::loop;
+using details::tup_swap;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+}  // namespace fun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::apply  apply;
-static __attribute__ ((unused)) afun::loop   loop;
+namespace tuples {
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+//-----------------------------------------------------------------------------
+// defined in same namespace as collection
+// to be selected via ADL over std::swap
+
+template <typename T, typename U, only_if <all_tuple <T, U>{}> = 0>
+INLINE void
+swap(T&& t, U&& u) { fun::tup_swap()(fwd <T>(t), fwd <U>(u)); }
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 
@@ -155,4 +93,4 @@ static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_CORE_FUN_OP_SWAP_HPP

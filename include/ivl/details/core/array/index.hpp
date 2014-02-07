@@ -57,6 +57,9 @@
 
 #include "view/indirect.hpp"
 
+#include "fun/manip.hpp"
+#include "fun/manip_der.hpp"
+
 //-----------------------------------------------------------------------------
 
 #endif  // IVL_CORE_ARRAY_INDEX_HPP

@@ -23,29 +23,33 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_CORE_FUN_INDEX_HPP
+#define IVL_CORE_FUN_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+#include "begin.hpp"
+
+#include "vec/traits.hpp"
+#include "vec/fun.hpp"
+#include "vec/tuple.hpp"
+#include "vec/array.hpp"
+#include "vec/joint.hpp"
+#include "vec/tmp.hpp"
+
+#include "fold/tuple.hpp"
+#include "fold/array.hpp"
+#include "fold/joint.hpp"
+
+#include "stream/traits.hpp"
+#include "stream/tuple.hpp"
+#include "stream/atom.hpp"
+#include "stream/array.hpp"
+
+#include "op/member.hpp"
+#include "op/op.hpp"
+#include "op/swap.hpp"
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
-
-//-----------------------------------------------------------------------------
-
-#include "macro/pop.hpp"
-
-//-----------------------------------------------------------------------------
-
-#endif  // IVL_CORE_HPP
+#endif  // IVL_CORE_FUN_INDEX_HPP

@@ -23,29 +23,67 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_HPP
-#define IVL_CORE_HPP
+#ifndef IVL_FUN_CORE_EXTREMA_HPP
+#define IVL_FUN_CORE_EXTREMA_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include "macro/push.hpp"
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#include "system/index.hpp"
-#include "type/index.hpp"
-#include "tuple/index.hpp"
-#include "atom/index.hpp"
-#include "array/index.hpp"
-#include "key/index.hpp"
-#include "fun/index.hpp"
-#include "atom/extend.hpp"
-#include "tools/index.hpp"
+namespace fun {
 
 //-----------------------------------------------------------------------------
 
-#include "macro/pop.hpp"
+namespace details {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_HPP
+// TODO: vec-min_off
+template <typename L = op::lt>
+struct min_of : afun::vec_fold <afun::min_of <L> >, afun::lim::min
+{
+	template <typename M, typename P, typename A>
+	void io(M& m, P& p, sep, A&& a)
+		{ lref(m, p) = afun::min_off_of <L>()(fwd <A>(a)); }
+};
+
+template <typename L = op::lt>
+struct max_of : afun::vec_fold <afun::max_of <L> >, afun::lim::max
+{
+	template <typename M, typename P, typename A>
+	void io(M& m, P& p, sep, A&& a)
+		{ lref(m, p) = afun::max_off_of <L>()(fwd <A>(a)); }
+};
+
+using min = min_of <>;
+using max = max_of <>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+using details::min_of;
+using details::max_of;
+using details::min;
+using details::max;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace fun
+
+//-----------------------------------------------------------------------------
+
+IVL_KEY_TMP(min, fun::min)
+IVL_KEY_TMP(max, fun::max)
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_FUN_CORE_EXTREMA_HPP
