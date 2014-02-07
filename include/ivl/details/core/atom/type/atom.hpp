@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ATOM_TYPE_ATOM_HPP
-#define IVL_DETAILS_CORE_ATOM_TYPE_ATOM_HPP
+#ifndef IVL_CORE_ATOM_TYPE_ATOM_HPP
+#define IVL_CORE_ATOM_TYPE_ATOM_HPP
 
 #include <ivl/ivl>
 
@@ -76,4 +76,4 @@ struct tup_data_t <atoms::atom <T, S> > : pack <T> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ATOM_TYPE_ATOM_HPP
+#endif  // IVL_CORE_ATOM_TYPE_ATOM_HPP

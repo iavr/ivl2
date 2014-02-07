@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CORE_ENTITY_HPP
-#define IVL_DETAILS_CORE_TYPE_CORE_ENTITY_HPP
+#ifndef IVL_CORE_TYPE_CORE_ENTITY_HPP
+#define IVL_CORE_TYPE_CORE_ENTITY_HPP
 
 #include <ivl/ivl>
 
@@ -124,4 +124,4 @@ using details::subs;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CORE_ENTITY_HPP
+#endif  // IVL_CORE_TYPE_CORE_ENTITY_HPP

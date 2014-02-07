@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_MEMBER_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_MEMBER_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_MEMBER_HPP
+#define IVL_CORE_TYPE_TRAITS_MEMBER_HPP
 
 #include <ivl/ivl>
 
@@ -235,4 +235,4 @@ struct member_ptr_t <C const volatile&&, R(A...)> :
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_MEMBER_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_MEMBER_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_SYSTEM_DEBUG_CHECK_HPP
-#define IVL_DETAILS_CORE_SYSTEM_DEBUG_CHECK_HPP
+#ifndef IVL_CORE_SYSTEM_DEBUG_CHECK_HPP
+#define IVL_CORE_SYSTEM_DEBUG_CHECK_HPP
 
 #include <ivl/ivl>
 
@@ -166,4 +166,4 @@ struct e_system : exception
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_SYSTEM_DEBUG_CHECK_HPP
+#endif  // IVL_CORE_SYSTEM_DEBUG_CHECK_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_FUN_OP_HPP
-#define IVL_DETAILS_FUN_OP_HPP
+#ifndef IVL_FUN_OP_HPP
+#define IVL_FUN_OP_HPP
 
 #include <ivl/ivl>
 
@@ -524,4 +524,4 @@ using op::_reinterpret_cast;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_OP_HPP
+#endif  // IVL_CORE_AFUN_OP_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_FUN_HPP
-#define IVL_DETAILS_CORE_VEC_FUN_HPP
+#ifndef IVL_CORE_VEC_FUN_HPP
+#define IVL_CORE_VEC_FUN_HPP
 
 #include <ivl/ivl>
 
@@ -182,4 +182,4 @@ struct tmp_vec_atom : F
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_FUN_HPP
+#endif  // IVL_CORE_VEC_FUN_HPP

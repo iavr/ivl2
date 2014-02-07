@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_CONST_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_CONST_HPP
+#ifndef IVL_CORE_TYPE_CONST_CONST_HPP
+#define IVL_CORE_TYPE_CONST_CONST_HPP
 
 #include <ivl/ivl>
 
@@ -92,4 +92,4 @@ using namespace constants;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_CONST_HPP
+#endif  // IVL_CORE_TYPE_CONST_CONST_HPP

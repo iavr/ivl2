@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_PACK_LIST_HPP
-#define IVL_DETAILS_CORE_TYPE_PACK_LIST_HPP
+#ifndef IVL_CORE_TYPE_PACK_LIST_HPP
+#define IVL_CORE_TYPE_PACK_LIST_HPP
 
 #include <ivl/ivl>
 
@@ -151,4 +151,4 @@ using conses = type_of <conses_t <E, P...> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_PACK_LIST_HPP
+#endif  // IVL_CORE_TYPE_PACK_LIST_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_KEY_BEGIN_HPP
-#define IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#ifndef IVL_CORE_KEY_BEGIN_HPP
+#define IVL_CORE_KEY_BEGIN_HPP
 
 #include <ivl/ivl>
 
@@ -78,4 +78,4 @@ template <typename K> struct io_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_KEY_BEGIN_HPP
+#endif  // IVL_CORE_KEY_BEGIN_HPP

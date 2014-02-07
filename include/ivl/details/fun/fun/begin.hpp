@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_FUN_BEGIN_HPP
-#define IVL_DETAILS_FUN_BEGIN_HPP
+#ifndef IVL_FUN_BEGIN_HPP
+#define IVL_FUN_BEGIN_HPP
 
 #include <ivl/ivl>
 
@@ -58,4 +58,4 @@ using namespace types;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_FUN_BEGIN_HPP
+#endif  // IVL_FUN_BEGIN_HPP

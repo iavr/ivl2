@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_DATA_HPP
-#define IVL_DETAILS_CORE_ARRAY_TYPE_DATA_HPP
+#ifndef IVL_CORE_ARRAY_TYPE_DATA_HPP
+#define IVL_CORE_ARRAY_TYPE_DATA_HPP
 
 #include <ivl/ivl>
 
@@ -55,4 +55,4 @@ template <typename... D> struct heap { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_DATA_HPP
+#endif  // IVL_CORE_ARRAY_TYPE_DATA_HPP

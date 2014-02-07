@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_ARRAY_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_ARRAY_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_ARRAY_HPP
+#define IVL_CORE_TYPE_TRAITS_ARRAY_HPP
 
 #include <ivl/ivl>
 
@@ -109,4 +109,4 @@ using remove_all_ext = type_of <remove_all_ext_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_ARRAY_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_ARRAY_HPP

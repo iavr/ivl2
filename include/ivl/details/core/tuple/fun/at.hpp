@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_FUN_AT_HPP
-#define IVL_DETAILS_CORE_TUPLE_FUN_AT_HPP
+#ifndef IVL_CORE_TUPLE_FUN_AT_HPP
+#define IVL_CORE_TUPLE_FUN_AT_HPP
 
 #include <ivl/ivl>
 
@@ -85,4 +85,4 @@ static __attribute__ ((unused)) afun::at _at;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_FUN_AT_HPP
+#endif  // IVL_CORE_TUPLE_FUN_AT_HPP

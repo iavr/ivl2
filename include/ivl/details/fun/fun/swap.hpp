@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_FUN_SWAP_HPP
-#define IVL_DETAILS_CORE_FUN_SWAP_HPP
+#ifndef IVL_CORE_FUN_SWAP_HPP
+#define IVL_CORE_FUN_SWAP_HPP
 
 #include <ivl/ivl>
 
@@ -96,4 +96,4 @@ swap(T&& t, U&& u) { fun::tup_swap()(fwd <T>(t), fwd <U>(u)); }
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_FUN_SWAP_HPP
+#endif  // IVL_CORE_FUN_SWAP_HPP

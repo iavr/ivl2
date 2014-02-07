@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_VEC_HPP
-#define IVL_DETAILS_CORE_VEC_VEC_HPP
+#ifndef IVL_CORE_VEC_VEC_HPP
+#define IVL_CORE_VEC_VEC_HPP
 
 #include <ivl/ivl>
 
@@ -166,4 +166,4 @@ static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_VEC_HPP
+#endif  // IVL_CORE_VEC_VEC_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_RESULT_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_RESULT_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_RESULT_HPP
+#define IVL_CORE_TYPE_TRAITS_RESULT_HPP
 
 #include <ivl/ivl>
 
@@ -170,4 +170,4 @@ using call_first = type_of <call_first_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_RESULT_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_RESULT_HPP

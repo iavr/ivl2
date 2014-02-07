@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_BASE_STORE_HPP
-#define IVL_DETAILS_CORE_TUPLE_BASE_STORE_HPP
+#ifndef IVL_CORE_TUPLE_BASE_STORE_HPP
+#define IVL_CORE_TUPLE_BASE_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -95,4 +95,4 @@ struct elems : elem_store <elem_types <tup_data <D> > >
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_BASE_STORE_HPP
+#endif  // IVL_CORE_TUPLE_BASE_STORE_HPP

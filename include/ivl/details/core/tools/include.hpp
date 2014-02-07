@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TOOLS_INCLUDE_HPP
-#define IVL_DETAILS_CORE_TOOLS_INCLUDE_HPP
+#ifndef IVL_CORE_TOOLS_INCLUDE_HPP
+#define IVL_CORE_TOOLS_INCLUDE_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -32,4 +32,4 @@
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TOOLS_INCLUDE_HPP
+#endif  // IVL_CORE_TOOLS_INCLUDE_HPP

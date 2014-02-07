@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_PACK_PACK_HPP
-#define IVL_DETAILS_CORE_TYPE_PACK_PACK_HPP
+#ifndef IVL_CORE_TYPE_PACK_PACK_HPP
+#define IVL_CORE_TYPE_PACK_PACK_HPP
 
 #include <ivl/ivl>
 
@@ -138,4 +138,4 @@ using namespace packs;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_PACK_PACK_HPP
+#endif  // IVL_CORE_TYPE_PACK_PACK_HPP

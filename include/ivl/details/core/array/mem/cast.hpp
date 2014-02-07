@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_MEM_CAST_HPP
-#define IVL_DETAILS_CORE_ARRAY_MEM_CAST_HPP
+#ifndef IVL_CORE_ARRAY_MEM_CAST_HPP
+#define IVL_CORE_ARRAY_MEM_CAST_HPP
 
 #include <ivl/ivl>
 
@@ -96,4 +96,4 @@ INLINE const void* peek(const void* p) { return deref <const void*>(p); }
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_MEM_CAST_HPP
+#endif  // IVL_CORE_ARRAY_MEM_CAST_HPP

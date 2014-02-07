@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_PACK_SELECT_HPP
-#define IVL_DETAILS_CORE_TYPE_PACK_SELECT_HPP
+#ifndef IVL_CORE_TYPE_PACK_SELECT_HPP
+#define IVL_CORE_TYPE_PACK_SELECT_HPP
 
 #include <ivl/ivl>
 
@@ -203,4 +203,4 @@ using choose = type_of <choose_t <I, E...> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_PACK_SELECT_HPP
+#endif  // IVL_CORE_TYPE_PACK_SELECT_HPP

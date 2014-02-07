@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_FUN_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_FUN_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_FUN_HPP
+#define IVL_CORE_TYPE_TRAITS_FUN_HPP
 
 #include <ivl/ivl>
 
@@ -128,4 +128,4 @@ template <typename S> using fun_arg = type_of <fun_arg_t <S> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_FUN_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_FUN_HPP

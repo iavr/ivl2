@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_AFUN_EXTREMA_HPP
-#define IVL_DETAILS_AFUN_EXTREMA_HPP
+#ifndef IVL_AFUN_EXTREMA_HPP
+#define IVL_AFUN_EXTREMA_HPP
 
 #include <ivl/ivl>
 
@@ -124,4 +124,4 @@ static __attribute__ ((unused)) afun::max_off max_off;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_AFUN_EXTREMA_HPP
+#endif  // IVL_AFUN_EXTREMA_HPP

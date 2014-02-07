@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_SCAN_HPP
-#define IVL_DETAILS_CORE_TUPLE_VIEW_SCAN_HPP
+#ifndef IVL_CORE_TUPLE_VIEW_SCAN_HPP
+#define IVL_CORE_TUPLE_VIEW_SCAN_HPP
 
 #include <ivl/ivl>
 
@@ -115,4 +115,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_SCAN_HPP
+#endif  // IVL_CORE_TUPLE_VIEW_SCAN_HPP

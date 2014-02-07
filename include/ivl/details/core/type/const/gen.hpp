@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_FUN_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_FUN_HPP
+#ifndef IVL_CORE_TYPE_CONST_FUN_HPP
+#define IVL_CORE_TYPE_CONST_FUN_HPP
 
 #include <ivl/ivl>
 
@@ -100,4 +100,4 @@ using c_j  = c_i <T>;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_FUN_HPP
+#endif  // IVL_CORE_TYPE_CONST_FUN_HPP

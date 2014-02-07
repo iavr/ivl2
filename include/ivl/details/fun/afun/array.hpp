@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_AFUN_ARRAY_HPP
-#define IVL_DETAILS_AFUN_ARRAY_HPP
+#ifndef IVL_AFUN_ARRAY_HPP
+#define IVL_AFUN_ARRAY_HPP
 
 #include <ivl/ivl>
 
@@ -69,4 +69,4 @@ struct seq_tail_of : tup_tail_of <O> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_AFUN_ARRAY_HPP
+#endif  // IVL_AFUN_ARRAY_HPP

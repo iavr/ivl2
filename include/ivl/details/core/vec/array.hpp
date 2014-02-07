@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_ARRAY_HPP
-#define IVL_DETAILS_CORE_VEC_ARRAY_HPP
+#ifndef IVL_CORE_VEC_ARRAY_HPP
+#define IVL_CORE_VEC_ARRAY_HPP
 
 #include <ivl/ivl>
 
@@ -105,4 +105,4 @@ struct seq_fold_off : tup_fold_off <F, I, E, R> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_ARRAY_HPP
+#endif  // IVL_CORE_VEC_ARRAY_HPP

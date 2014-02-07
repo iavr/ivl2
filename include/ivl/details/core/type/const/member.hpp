@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_MEMBER_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_MEMBER_HPP
+#ifndef IVL_CORE_TYPE_CONST_MEMBER_HPP
+#define IVL_CORE_TYPE_CONST_MEMBER_HPP
 
 #include <ivl/ivl>
 
@@ -103,4 +103,4 @@ using details::c_cptr_member;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_MEMBER_HPP
+#endif  // IVL_CORE_TYPE_CONST_MEMBER_HPP

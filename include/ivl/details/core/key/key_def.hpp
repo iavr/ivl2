@@ -21,8 +21,8 @@
    and a copy of the GNU Lesser General Public License along
    with ivl. If not, see <http://www.gnu.org/licenses/>. */
 
-#ifndef IVL_DETAILS_CORE_KEY__KEY_DEF__HPP
-#define IVL_DETAILS_CORE_KEY__KEY_DEF__HPP
+#ifndef IVL_CORE_KEY__KEY_DEF__HPP
+#define IVL_CORE_KEY__KEY_DEF__HPP
 
 #include <ivl/ivl>
 
@@ -140,4 +140,4 @@ IVL_KEY_MEMBER(size)
 
 //-----------------------------------------------------------------------------
 
-#endif // IVL_DETAILS_CORE_KEY__KEY_DEF__HPP
+#endif // IVL_CORE_KEY__KEY_DEF__HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_KEY_KEY_HPP
-#define IVL_DETAILS_CORE_KEY_KEY_HPP
+#ifndef IVL_CORE_KEY_KEY_HPP
+#define IVL_CORE_KEY_KEY_HPP
 
 #include <ivl/ivl>
 
@@ -125,4 +125,4 @@ using details::key_tmp;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_KEY_KEY_HPP
+#endif  // IVL_CORE_KEY_KEY_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_SIG_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_SIG_HPP
+#ifndef IVL_CORE_TYPE_CONST_SIG_HPP
+#define IVL_CORE_TYPE_CONST_SIG_HPP
 
 #include <ivl/ivl>
 
@@ -188,4 +188,4 @@ using details::c_sig;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_SIG_HPP
+#endif  // IVL_CORE_TYPE_CONST_SIG_HPP

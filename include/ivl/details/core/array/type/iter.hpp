@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_TYPE_ITER_HPP
-#define IVL_DETAILS_CORE_ARRAY_TYPE_ITER_HPP
+#ifndef IVL_CORE_ARRAY_TYPE_ITER_HPP
+#define IVL_CORE_ARRAY_TYPE_ITER_HPP
 
 #include <ivl/ivl>
 
@@ -84,4 +84,4 @@ using details::atom_trav;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_TYPE_ITER_HPP
+#endif  // IVL_CORE_ARRAY_TYPE_ITER_HPP

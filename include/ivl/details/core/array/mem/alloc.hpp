@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_MEM_ALLOC_HPP
-#define IVL_DETAILS_CORE_ARRAY_MEM_ALLOC_HPP
+#ifndef IVL_CORE_ARRAY_MEM_ALLOC_HPP
+#define IVL_CORE_ARRAY_MEM_ALLOC_HPP
 
 #include <ivl/ivl>
 
@@ -59,4 +59,4 @@ INLINE void delete_(T* p) { ::operator delete(away(p)); }
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_MEM_ALLOC_HPP
+#endif  // IVL_CORE_ARRAY_MEM_ALLOC_HPP

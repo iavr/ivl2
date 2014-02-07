@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_ITER_INDIRECT_HPP
-#define IVL_DETAILS_CORE_ARRAY_ITER_INDIRECT_HPP
+#ifndef IVL_CORE_ARRAY_ITER_INDIRECT_HPP
+#define IVL_CORE_ARRAY_ITER_INDIRECT_HPP
 
 #include <ivl/ivl>
 
@@ -146,4 +146,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_ITER_INDIRECT_HPP
+#endif  // IVL_CORE_ARRAY_ITER_INDIRECT_HPP

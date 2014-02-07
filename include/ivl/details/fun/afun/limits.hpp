@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_AFUN_LIMITS_HPP
-#define IVL_DETAILS_AFUN_LIMITS_HPP
+#ifndef IVL_AFUN_LIMITS_HPP
+#define IVL_AFUN_LIMITS_HPP
 
 #include <ivl/ivl>
 
@@ -157,4 +157,4 @@ using lim::nan;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_AFUN_LIMITS_HPP
+#endif  // IVL_AFUN_LIMITS_HPP

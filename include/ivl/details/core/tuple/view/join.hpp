@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_VIEW_JOIN_HPP
-#define IVL_DETAILS_CORE_TUPLE_VIEW_JOIN_HPP
+#ifndef IVL_CORE_TUPLE_VIEW_JOIN_HPP
+#define IVL_CORE_TUPLE_VIEW_JOIN_HPP
 
 #include <ivl/ivl>
 
@@ -92,4 +92,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_VIEW_JOIN_HPP
+#endif  // IVL_CORE_TUPLE_VIEW_JOIN_HPP

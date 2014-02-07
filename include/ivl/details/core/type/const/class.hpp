@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_CLASS_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_CLASS_HPP
+#ifndef IVL_CORE_TYPE_CONST_CLASS_HPP
+#define IVL_CORE_TYPE_CONST_CLASS_HPP
 
 #include <ivl/ivl>
 
@@ -80,4 +80,4 @@ struct c_cons_list <C(A...)> : constant <C, c_cons_list <C(A...)> >
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_CLASS_HPP
+#endif  // IVL_CORE_TYPE_CONST_CLASS_HPP

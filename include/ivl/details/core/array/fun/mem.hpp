@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_MEM_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_MEM_HPP
+#ifndef IVL_CORE_ARRAY_FUN_MEM_HPP
+#define IVL_CORE_ARRAY_FUN_MEM_HPP
 
 #include <ivl/ivl>
 
@@ -67,4 +67,4 @@ static __attribute__ ((unused)) afun::construct  construct;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_MEM_HPP
+#endif  // IVL_CORE_ARRAY_FUN_MEM_HPP

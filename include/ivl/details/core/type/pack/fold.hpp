@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_PACK_REDUCE_HPP
-#define IVL_DETAILS_CORE_TYPE_PACK_REDUCE_HPP
+#ifndef IVL_CORE_TYPE_PACK_REDUCE_HPP
+#define IVL_CORE_TYPE_PACK_REDUCE_HPP
 
 #include <ivl/ivl>
 
@@ -368,4 +368,4 @@ using tran_len = tran_len_p <pack <P...> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_PACK_REDUCE_HPP
+#endif  // IVL_CORE_TYPE_PACK_REDUCE_HPP

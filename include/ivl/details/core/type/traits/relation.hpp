@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_RELATION_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_RELATION_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_RELATION_HPP
+#define IVL_CORE_TYPE_TRAITS_RELATION_HPP
 
 #include <ivl/ivl>
 
@@ -173,4 +173,4 @@ using details::common;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_RELATION_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_RELATION_HPP

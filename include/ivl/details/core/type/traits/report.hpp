@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_REPORT_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_REPORT_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_REPORT_HPP
+#define IVL_CORE_TYPE_TRAITS_REPORT_HPP
 
 #include <ivl/ivl>
 
@@ -80,4 +80,4 @@ using types::report;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_REPORT_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_REPORT_HPP

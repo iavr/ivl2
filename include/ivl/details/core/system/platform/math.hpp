@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_SYSTEM_PLATFORM_MATH_HPP
-#define IVL_DETAILS_CORE_SYSTEM_PLATFORM_MATH_HPP
+#ifndef IVL_CORE_SYSTEM_PLATFORM_MATH_HPP
+#define IVL_CORE_SYSTEM_PLATFORM_MATH_HPP
 
 #include <ivl/ivl>
 
@@ -158,4 +158,4 @@ INLINE bool is_pow_of2(T x)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_SYSTEM_PLATFORM_MATH_HPP
+#endif  // IVL_CORE_SYSTEM_PLATFORM_MATH_HPP

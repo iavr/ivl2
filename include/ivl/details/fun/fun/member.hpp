@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_FUN_MEMBER_HPP
-#define IVL_DETAILS_CORE_FUN_MEMBER_HPP
+#ifndef IVL_CORE_FUN_MEMBER_HPP
+#define IVL_CORE_FUN_MEMBER_HPP
 
 #include <ivl/ivl>
 
@@ -147,4 +147,4 @@ using op_key_call   = afun::details::vec_op_key_call;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_FUN_MEMBER_HPP
+#endif  // IVL_CORE_FUN_MEMBER_HPP

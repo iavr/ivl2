@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_STORE_RAW_HPP
-#define IVL_DETAILS_CORE_TUPLE_STORE_RAW_HPP
+#ifndef IVL_CORE_TUPLE_STORE_RAW_HPP
+#define IVL_CORE_TUPLE_STORE_RAW_HPP
 
 #include <ivl/ivl>
 
@@ -85,4 +85,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_STORE_RAW_HPP
+#endif  // IVL_CORE_TUPLE_STORE_RAW_HPP

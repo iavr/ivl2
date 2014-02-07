@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_SYSTEM_DEBUG_DEBUG_HPP
-#define IVL_DETAILS_CORE_SYSTEM_DEBUG_DEBUG_HPP
+#ifndef IVL_CORE_SYSTEM_DEBUG_DEBUG_HPP
+#define IVL_CORE_SYSTEM_DEBUG_DEBUG_HPP
 
 #include <ivl/ivl>
 
@@ -51,4 +51,4 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_SYSTEM_DEBUG_DEBUG_HPP
+#endif  // IVL_CORE_SYSTEM_DEBUG_DEBUG_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_MACRO_POP_HPP
-#define IVL_DETAILS_CORE_MACRO_POP_HPP
+#ifndef IVL_CORE_MACRO_POP_HPP
+#define IVL_CORE_MACRO_POP_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -72,4 +72,4 @@
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_MACRO_POP_HPP
+#endif  // IVL_CORE_MACRO_POP_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_PACK_JOIN_HPP
-#define IVL_DETAILS_CORE_TYPE_PACK_JOIN_HPP
+#ifndef IVL_CORE_TYPE_PACK_JOIN_HPP
+#define IVL_CORE_TYPE_PACK_JOIN_HPP
 
 #include <ivl/ivl>
 
@@ -128,4 +128,4 @@ template <typename... E> using flip   = type_of <flip_t <E...> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_PACK_JOIN_HPP
+#endif  // IVL_CORE_TYPE_PACK_JOIN_HPP

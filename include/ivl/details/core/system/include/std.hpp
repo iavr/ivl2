@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_SYSTEM_INCLUDE_STD_HPP
-#define IVL_DETAILS_CORE_SYSTEM_INCLUDE_STD_HPP
+#ifndef IVL_CORE_SYSTEM_INCLUDE_STD_HPP
+#define IVL_CORE_SYSTEM_INCLUDE_STD_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -41,4 +41,4 @@
 
 //-----------------------------------------------------------------------------
 
-#endif // IVL_DETAILS_CORE_SYSTEM_INCLUDE_STD_HPP
+#endif // IVL_CORE_SYSTEM_INCLUDE_STD_HPP

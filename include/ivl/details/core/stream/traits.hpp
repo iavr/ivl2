@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_STREAM_TRAITS_HPP
-#define IVL_DETAILS_CORE_STREAM_TRAITS_HPP
+#ifndef IVL_CORE_STREAM_TRAITS_HPP
+#define IVL_CORE_STREAM_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -59,4 +59,4 @@ using is_stream = is_base <std::ios_base, raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_STREAM_TRAITS_HPP
+#endif  // IVL_CORE_STREAM_TRAITS_HPP

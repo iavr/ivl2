@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_SYSTEM_INCLUDE_USING_HPP
-#define IVL_DETAILS_CORE_SYSTEM_INCLUDE_USING_HPP
+#ifndef IVL_CORE_SYSTEM_INCLUDE_USING_HPP
+#define IVL_CORE_SYSTEM_INCLUDE_USING_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -44,4 +44,4 @@ using std::endl;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_SYSTEM_INCLUDE_USING_HPP
+#endif  // IVL_CORE_SYSTEM_INCLUDE_USING_HPP

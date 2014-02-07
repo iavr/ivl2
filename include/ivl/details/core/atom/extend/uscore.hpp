@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ATOM_EXTEND_USCORE_HPP
-#define IVL_DETAILS_CORE_ATOM_EXTEND_USCORE_HPP
+#ifndef IVL_CORE_ATOM_EXTEND_USCORE_HPP
+#define IVL_CORE_ATOM_EXTEND_USCORE_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -70,4 +70,4 @@ static __attribute__ ((unused)) atoms::uscore _;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ATOM_EXTEND_USCORE_HPP
+#endif  // IVL_CORE_ATOM_EXTEND_USCORE_HPP

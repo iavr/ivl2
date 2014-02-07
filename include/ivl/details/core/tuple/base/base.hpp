@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_BASE_BASE_HPP
-#define IVL_DETAILS_CORE_TUPLE_BASE_BASE_HPP
+#ifndef IVL_CORE_TUPLE_BASE_BASE_HPP
+#define IVL_CORE_TUPLE_BASE_BASE_HPP
 
 #include <ivl/ivl>
 
@@ -302,4 +302,4 @@ using details::base_tup;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_BASE_BASE_HPP
+#endif  // IVL_CORE_TUPLE_BASE_BASE_HPP

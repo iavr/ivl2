@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_KEY__OP_REF__HPP
-#define IVL_DETAILS_CORE_KEY__OP_REF__HPP
+#ifndef IVL_CORE_KEY__OP_REF__HPP
+#define IVL_CORE_KEY__OP_REF__HPP
 
 #include <ivl/ivl>
 
@@ -129,4 +129,4 @@ using details::op_ref;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_KEY__OP_REF__HPP
+#endif  // IVL_CORE_KEY__OP_REF__HPP

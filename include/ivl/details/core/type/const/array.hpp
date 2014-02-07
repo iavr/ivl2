@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_ARRAY_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_ARRAY_HPP
+#ifndef IVL_CORE_TYPE_CONST_ARRAY_HPP
+#define IVL_CORE_TYPE_CONST_ARRAY_HPP
 
 #include <ivl/ivl>
 
@@ -114,4 +114,4 @@ struct c_string : constant <const char*, c_string <F> >
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_ARRAY_HPP
+#endif  // IVL_CORE_TYPE_CONST_ARRAY_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_CALL_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_CALL_HPP
+#ifndef IVL_CORE_TYPE_CONST_CALL_HPP
+#define IVL_CORE_TYPE_CONST_CALL_HPP
 
 #include <ivl/ivl>
 
@@ -121,4 +121,4 @@ struct c_cref_call <C(A...), O> : c_call <c_cref <C, O>(A...)> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_CALL_HPP
+#endif  // IVL_CORE_TYPE_CONST_CALL_HPP

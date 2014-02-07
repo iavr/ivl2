@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_LIFE_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_LIFE_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_LIFE_HPP
+#define IVL_CORE_TYPE_TRAITS_LIFE_HPP
 
 #include <ivl/ivl>
 
@@ -145,4 +145,4 @@ using details::is_assign;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_LIFE_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_LIFE_HPP

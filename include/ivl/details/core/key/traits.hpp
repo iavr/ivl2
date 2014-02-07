@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_KEY_TRAITS_HPP
-#define IVL_DETAILS_CORE_KEY_TRAITS_HPP
+#ifndef IVL_CORE_KEY_TRAITS_HPP
+#define IVL_CORE_KEY_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -76,4 +76,4 @@ struct is_op_ref : details::is_op_ref_<raw_type <T> > { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_KEY_TRAITS_HPP
+#endif  // IVL_CORE_KEY_TRAITS_HPP

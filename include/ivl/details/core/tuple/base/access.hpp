@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_BASE_ACCESS_HPP
-#define IVL_DETAILS_CORE_TUPLE_BASE_ACCESS_HPP
+#ifndef IVL_CORE_TUPLE_BASE_ACCESS_HPP
+#define IVL_CORE_TUPLE_BASE_ACCESS_HPP
 
 #include <ivl/ivl>
 
@@ -108,4 +108,4 @@ using details::access;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_BASE_ACCESS_HPP
+#endif  // IVL_CORE_TUPLE_BASE_ACCESS_HPP

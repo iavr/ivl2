@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_FUN_MAKE_HPP
-#define IVL_DETAILS_CORE_TUPLE_FUN_MAKE_HPP
+#ifndef IVL_CORE_TUPLE_FUN_MAKE_HPP
+#define IVL_CORE_TUPLE_FUN_MAKE_HPP
 
 #include <ivl/ivl>
 
@@ -160,4 +160,4 @@ static __attribute__ ((unused)) afun::clref  clref;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_FUN_MAKE_HPP
+#endif  // IVL_CORE_TUPLE_FUN_MAKE_HPP

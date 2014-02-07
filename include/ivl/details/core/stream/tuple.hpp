@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_STREAM_TUPLE_HPP
-#define IVL_DETAILS_CORE_STREAM_TUPLE_HPP
+#ifndef IVL_CORE_STREAM_TUPLE_HPP
+#define IVL_CORE_STREAM_TUPLE_HPP
 
 #include <ivl/ivl>
 
@@ -69,4 +69,4 @@ operator<<(S&& s, T&& t)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_STREAM_TUPLE_HPP
+#endif  // IVL_CORE_STREAM_TUPLE_HPP

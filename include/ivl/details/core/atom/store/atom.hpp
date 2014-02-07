@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ATOM_STORE_ATOM_HPP
-#define IVL_DETAILS_CORE_ATOM_STORE_ATOM_HPP
+#ifndef IVL_CORE_ATOM_STORE_ATOM_HPP
+#define IVL_CORE_ATOM_STORE_ATOM_HPP
 
 #include <ivl/ivl>
 
@@ -103,4 +103,4 @@ struct atom : store <T, S>
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ATOM_STORE_ATOM_HPP
+#endif  // IVL_CORE_ATOM_STORE_ATOM_HPP

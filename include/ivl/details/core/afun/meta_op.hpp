@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN__META_OP__HPP
-#define IVL_DETAILS_CORE_AFUN__META_OP__HPP
+#ifndef IVL_CORE_AFUN__META_OP__HPP
+#define IVL_CORE_AFUN__META_OP__HPP
 
 #include <ivl/ivl>
 
@@ -98,4 +98,4 @@ IVL_BIND_OP(cond)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN__META_OP__HPP
+#endif  // IVL_CORE_AFUN__META_OP__HPP

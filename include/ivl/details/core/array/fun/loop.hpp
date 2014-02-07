@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
-#define IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#ifndef IVL_CORE_ARRAY_FUN_LOOP_HPP
+#define IVL_CORE_ARRAY_FUN_LOOP_HPP
 
 #include <ivl/ivl>
 
@@ -111,4 +111,4 @@ using details::seq_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_FUN_LOOP_HPP
+#endif  // IVL_CORE_ARRAY_FUN_LOOP_HPP

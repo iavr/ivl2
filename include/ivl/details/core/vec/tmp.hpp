@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_TMP_HPP
-#define IVL_DETAILS_CORE_VEC_TMP_HPP
+#ifndef IVL_CORE_VEC_TMP_HPP
+#define IVL_CORE_VEC_TMP_HPP
 
 #include <ivl/ivl>
 
@@ -116,4 +116,4 @@ using details::tvec;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_TMP_HPP
+#endif  // IVL_CORE_VEC_TMP_HPP

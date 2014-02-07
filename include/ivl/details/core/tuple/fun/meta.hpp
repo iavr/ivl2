@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_FUN_META_HPP
-#define IVL_DETAILS_CORE_TUPLE_FUN_META_HPP
+#ifndef IVL_CORE_TUPLE_FUN_META_HPP
+#define IVL_CORE_TUPLE_FUN_META_HPP
 
 #include <ivl/ivl>
 
@@ -107,4 +107,4 @@ using details::try_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_FUN_META_HPP
+#endif  // IVL_CORE_TUPLE_FUN_META_HPP

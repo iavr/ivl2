@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_DATA_HPP
-#define IVL_DETAILS_CORE_TUPLE_TYPE_DATA_HPP
+#ifndef IVL_CORE_TUPLE_TYPE_DATA_HPP
+#define IVL_CORE_TUPLE_TYPE_DATA_HPP
 
 #include <ivl/ivl>
 
@@ -59,4 +59,4 @@ template <typename... D> struct join { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_DATA_HPP
+#endif  // IVL_CORE_TUPLE_TYPE_DATA_HPP

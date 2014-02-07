@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_SCALAR_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_SCALAR_HPP
+#ifndef IVL_CORE_TYPE_CONST_SCALAR_HPP
+#define IVL_CORE_TYPE_CONST_SCALAR_HPP
 
 #include <ivl/ivl>
 
@@ -209,4 +209,4 @@ struct c_cptr : constant <T const*, c_cptr <T, P> >
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_SCALAR_HPP
+#endif  // IVL_CORE_TYPE_CONST_SCALAR_HPP

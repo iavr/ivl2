@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ATOM_EXTEND_HPP
-#define IVL_DETAILS_CORE_ATOM_EXTEND_HPP
+#ifndef IVL_CORE_ATOM_EXTEND_HPP
+#define IVL_CORE_ATOM_EXTEND_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -33,5 +33,5 @@
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ATOM_EXTEND_HPP
+#endif  // IVL_CORE_ATOM_EXTEND_HPP
 

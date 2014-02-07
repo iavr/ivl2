@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_TRAITS_POD_HPP
-#define IVL_DETAILS_CORE_TYPE_TRAITS_POD_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_POD_HPP
+#define IVL_CORE_TYPE_TRAITS_POD_HPP
 
 #include <ivl/ivl>
 
@@ -198,4 +198,4 @@ using is_pod = expr <is_trivial <T>() && is_std_layout <T>() >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_TRAITS_POD_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_POD_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_ARRAY_HEAP_HPP
-#define IVL_DETAILS_ARRAY_HEAP_HPP
+#ifndef IVL_ARRAY_HEAP_HPP
+#define IVL_ARRAY_HEAP_HPP
 
 #include <ivl/ivl>
 
@@ -385,4 +385,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_ARRAY_HEAP_HPP
+#endif  // IVL_ARRAY_HEAP_HPP

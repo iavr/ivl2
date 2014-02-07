@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_AFUN_CONTAINER_HPP
-#define IVL_DETAILS_AFUN_CONTAINER_HPP
+#ifndef IVL_AFUN_CONTAINER_HPP
+#define IVL_AFUN_CONTAINER_HPP
 
 #include <ivl/ivl>
 
@@ -90,4 +90,4 @@ static __attribute__ ((unused)) afun::call  call;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_AFUN_CONTAINER_HPP
+#endif  // IVL_AFUN_CONTAINER_HPP

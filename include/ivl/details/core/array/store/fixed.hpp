@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ARRAY_STORE_FIXED_HPP
-#define IVL_DETAILS_CORE_ARRAY_STORE_FIXED_HPP
+#ifndef IVL_CORE_ARRAY_STORE_FIXED_HPP
+#define IVL_CORE_ARRAY_STORE_FIXED_HPP
 
 #include <ivl/ivl>
 
@@ -144,4 +144,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ARRAY_STORE_FIXED_HPP
+#endif  // IVL_CORE_ARRAY_STORE_FIXED_HPP

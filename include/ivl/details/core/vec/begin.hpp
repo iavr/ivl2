@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_VEC_BEGIN_HPP
-#define IVL_DETAILS_CORE_VEC_BEGIN_HPP
+#ifndef IVL_CORE_VEC_BEGIN_HPP
+#define IVL_CORE_VEC_BEGIN_HPP
 
 #include <ivl/ivl>
 
@@ -48,4 +48,4 @@ template <typename F, typename B> struct vec_apply;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_VEC_BEGIN_HPP
+#endif  // IVL_CORE_VEC_BEGIN_HPP

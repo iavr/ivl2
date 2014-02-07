@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CORE_NAT_HPP
-#define IVL_DETAILS_CORE_TYPE_CORE_NAT_HPP
+#ifndef IVL_CORE_TYPE_CORE_NAT_HPP
+#define IVL_CORE_TYPE_CORE_NAT_HPP
 
 #include <ivl/ivl>
 
@@ -86,4 +86,4 @@ using types::only_if;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CORE_NAT_HPP
+#endif  // IVL_CORE_TYPE_CORE_NAT_HPP

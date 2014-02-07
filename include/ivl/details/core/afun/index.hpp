@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_INDEX_HPP
-#define IVL_DETAILS_CORE_AFUN_INDEX_HPP
+#ifndef IVL_CORE_AFUN_INDEX_HPP
+#define IVL_CORE_AFUN_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
@@ -34,4 +34,4 @@
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_INDEX_HPP
+#endif  // IVL_CORE_AFUN_INDEX_HPP

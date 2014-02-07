@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_COLLECTION_HPP
-#define IVL_DETAILS_CORE_TUPLE_TYPE_COLLECTION_HPP
+#ifndef IVL_CORE_TUPLE_TYPE_COLLECTION_HPP
+#define IVL_CORE_TUPLE_TYPE_COLLECTION_HPP
 
 #include <ivl/ivl>
 
@@ -131,4 +131,4 @@ using tuples::details::tuple;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_COLLECTION_HPP
+#endif  // IVL_CORE_TUPLE_TYPE_COLLECTION_HPP

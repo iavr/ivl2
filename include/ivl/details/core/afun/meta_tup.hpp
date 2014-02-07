@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN__META_TUP__HPP
-#define IVL_DETAILS_CORE_AFUN__META_TUP__HPP
+#ifndef IVL_CORE_AFUN__META_TUP__HPP
+#define IVL_CORE_AFUN__META_TUP__HPP
 
 #include <ivl/ivl>
 
@@ -112,4 +112,4 @@ static __attribute__ ((unused)) afun::pre_fun  pre_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN__META_TUP__HPP
+#endif  // IVL_CORE_AFUN__META_TUP__HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TUPLE_TYPE_TRAITS_HPP
-#define IVL_DETAILS_CORE_TUPLE_TYPE_TRAITS_HPP
+#ifndef IVL_CORE_TUPLE_TYPE_TRAITS_HPP
+#define IVL_CORE_TUPLE_TYPE_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -373,4 +373,4 @@ struct copy_rec <F(pack <E...>)>  { using type = copy <ret <F(E...)> >; };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TUPLE_TYPE_TRAITS_HPP
+#endif  // IVL_CORE_TUPLE_TYPE_TRAITS_HPP

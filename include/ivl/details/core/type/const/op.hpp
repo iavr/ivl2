@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_TYPE_CONST_OP_HPP
-#define IVL_DETAILS_CORE_TYPE_CONST_OP_HPP
+#ifndef IVL_CORE_TYPE_CONST_OP_HPP
+#define IVL_CORE_TYPE_CONST_OP_HPP
 
 #include <ivl/ivl>
 
@@ -181,4 +181,4 @@ using details::c_reinterpret_cast;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_TYPE_CONST_OP_HPP
+#endif  // IVL_CORE_TYPE_CONST_OP_HPP

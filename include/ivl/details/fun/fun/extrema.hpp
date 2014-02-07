@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_FUN_EXTREMA_HPP
-#define IVL_DETAILS_FUN_EXTREMA_HPP
+#ifndef IVL_FUN_EXTREMA_HPP
+#define IVL_FUN_EXTREMA_HPP
 
 #include <ivl/ivl>
 
@@ -86,4 +86,4 @@ IVL_KEY_TMP(max, fun::max)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_FUN_EXTREMA_HPP
+#endif  // IVL_FUN_EXTREMA_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_AFUN_CONSTRUCT_HPP
-#define IVL_DETAILS_CORE_AFUN_CONSTRUCT_HPP
+#ifndef IVL_CORE_AFUN_CONSTRUCT_HPP
+#define IVL_CORE_AFUN_CONSTRUCT_HPP
 
 #include <ivl/ivl>
 
@@ -137,4 +137,4 @@ static __attribute__ ((unused)) afun::destruct     destruct;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_AFUN_CONSTRUCT_HPP
+#endif  // IVL_CORE_AFUN_CONSTRUCT_HPP

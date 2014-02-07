@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_DETAILS_CORE_ATOM_TYPE_TRAITS_HPP
-#define IVL_DETAILS_CORE_ATOM_TYPE_TRAITS_HPP
+#ifndef IVL_CORE_ATOM_TYPE_TRAITS_HPP
+#define IVL_CORE_ATOM_TYPE_TRAITS_HPP
 
 #include <ivl/ivl>
 
@@ -124,4 +124,4 @@ struct copy_rec <_type <T> > { using type = atom <copy <T> >; };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_DETAILS_CORE_ATOM_TYPE_TRAITS_HPP
+#endif  // IVL_CORE_ATOM_TYPE_TRAITS_HPP
