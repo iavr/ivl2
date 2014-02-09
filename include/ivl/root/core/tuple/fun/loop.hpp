@@ -43,14 +43,14 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // no alias: often used
-struct tup_apply : uref_of <apply_tuple, any_tuple> { };
-struct tup_loop_ : rref_of <loop_tuple,  any_tuple> { };
-struct tup_scan_ : rref_of <scan_tuple,  any_tuple> { };
+struct tup_apply : uref_of <apply_tuple> { };
+struct tup_loop_ : rref_of <loop_tuple> { };
+struct tup_scan_ : rref_of <scan_tuple> { };
 
 template <typename L>
 struct tup_loop_of
 {
-	template <typename F, typename... A, only_if <any_tuple <A...>{}> = 0>
+	template <typename F, typename... A>
 	INLINE void operator()(F&& f, A&&... a) const
 		{ L()(fwd <F>(f), fwd <A>(a)...).loop(); }
 };
@@ -71,7 +71,8 @@ struct tup_head_loop_fun
 };
 
 template <typename F, typename G, typename... T>
-using tup_head_loop_for = _if <any_empty <T...>{}, nop_fun, tup_head_loop_fun>;
+using tup_head_loop_for =
+	_if <_or <fix_empty <T>...>{}, nop_fun, tup_head_loop_fun>;
 
 using tup_head_loop = choose_fun <tup_head_loop_for>;
 

@@ -234,6 +234,9 @@ template <typename T> using ptr2ref = type_of <ptr2ref_t <T> >;
 //-----------------------------------------------------------------------------
 
 template <typename T>
+using is_mlref = expr <is_lref <T>() && !is_const <remove_ref <T> >()>;
+
+template <typename T>
 using is_clref = expr <is_lref <T>() && is_const <remove_ref <T> >()>;
 
 template <typename T> using add_clref_t = add_lref_t <add_const <T> >;

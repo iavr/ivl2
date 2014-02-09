@@ -55,7 +55,8 @@ struct base_iter
 	using pointer = P;
 
 protected:
-	INLINE constexpr R ref(seq_ref <I> r) const { return static_cast <R>(r); }
+	template <typename A>
+	INLINE constexpr R ref(A&& a) const { return static_cast <R>(a); }
 };
 
 //-----------------------------------------------------------------------------
@@ -71,6 +72,7 @@ struct base_trav : base_iter <I, R, T, D, P>
 
 //-----------------------------------------------------------------------------
 
+// TODO: remove
 template <typename I>
 class iterator <data::rev <>, I> : public base_iter <I>
 {

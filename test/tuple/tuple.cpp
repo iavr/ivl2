@@ -227,7 +227,7 @@ void run()
 		cout << "atom" << endl;
 		cout << _[3].val() << endl;
 		cout << _[3] << endl;
-		cout << tup_len <decltype(_[3])>() << endl;
+		cout << fix_len <decltype(_[3])>() << endl;
 		cout << endl;
 	}
 

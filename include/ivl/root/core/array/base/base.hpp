@@ -42,15 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using afun::make;
-
-//-----------------------------------------------------------------------------
-
 template <
-	typename T, typename D = T*,
+	typename T, typename P = T*, bool G = false,
 	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
-	typename S = seq_size <D>, typename... U
+	typename S = seq_size <P>, typename... U
 >
 struct seq_types
 {
@@ -58,19 +54,29 @@ struct seq_types
 	using value_type = T;
 	using size_type = S;
 
-	using fwd_iterator   = I <r_iter <D>,  r_ref <T>,  r_ref <U>...>;
-	using iterator       = I <l_iter <D>,  l_ref <T>,  l_ref <U>...>;
-	using const_iterator = I <cl_iter <D>, cl_ref <T>, cl_ref <U>...>;
+	using fwd_iterator   = I <r_iter <P>,  r_gref <G, T>,  r_ref <U>...>;
+	using iterator       = I <l_iter <P>,  l_gref <G, T>,  l_ref <U>...>;
+	using const_iterator = I <cl_iter <P>, cl_gref <G, T>, cl_ref <U>...>;
 
-	using fwd_traversor   = V <r_trav <D>,  r_ref <T>,  r_ref <U>...>;
-	using traversor       = V <l_trav <D>,  l_ref <T>,  l_ref <U>...>;
-	using const_traversor = V <cl_trav <D>, cl_ref <T>, cl_ref <U>...>;
+	using fwd_traversor   = V <r_trav <P>,  r_gref <G, T>,  r_ref <U>...>;
+	using traversor       = V <l_trav <P>,  l_gref <G, T>,  l_ref <U>...>;
+	using const_traversor = V <cl_trav <P>, cl_gref <G, T>, cl_ref <U>...>;
+
+	using fwd_reference   = seq_ref <fwd_iterator>;
+	using reference       = seq_ref <iterator>;
+	using const_reference = seq_ref <const_iterator>;
+
+	using pointer         = seq_ptr <iterator>;
+	using const_pointer   = seq_ptr <const_iterator>;
 
 	using difference_type = seq_diff <iterator>;
+
+	static constexpr bool finite = traversor::finite;
 };
 
 //-----------------------------------------------------------------------------
 
+// extended elsewhere
 template <typename A> struct seq_data_t;
 template <typename A> using  seq_data = type_of <seq_data_t <A> >;
 

@@ -47,7 +47,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using fun_test = decltype(afun::tmp_call_ret()(gen <F>(), gen <A>()...));
+using fun_test = decltype(tmp_ret(gen <F>(), gen <A>()...));
 
 template <typename C, typename M, typename... A>
 using method_test = decltype((gen <C>().*gen <M>())(gen <A>()...));

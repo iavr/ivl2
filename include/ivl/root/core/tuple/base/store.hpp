@@ -47,7 +47,7 @@ template <typename P> struct elem_store;
 template <typename E>
 struct elem_store <pack <E> > : E
 {
-	template <typename A = int, only_if <is_cons <E>{}(), A> = 0>
+	template <typename A = int, only_if <is_cons <E>{}, A> = 0>
 	explicit INLINE constexpr elem_store() : E() { }
 
 	template <typename A>
@@ -57,7 +57,7 @@ struct elem_store <pack <E> > : E
 template <typename... E>
 struct elem_store <pack <E...> > : E...
 {
-	template <typename A = int, only_if <_and <is_cons <E>...>{}(), A> = 0>
+	template <typename A = int, only_if <all_cons <E...>{}, A> = 0>
 	explicit INLINE constexpr elem_store() : E()... { }
 
 	template <typename... A, only_if <sizeof...(A) == sizeof...(E)> = 0>

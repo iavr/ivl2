@@ -68,6 +68,7 @@
 #include "fun/begin.hpp"
 #include "fun/op.hpp"
 #include "fun/fun.hpp"
+#include "fun/call.hpp"
 
 #include "const/array.hpp"
 #include "const/call.hpp"

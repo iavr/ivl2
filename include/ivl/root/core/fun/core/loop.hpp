@@ -47,18 +47,22 @@ using apply = seq_apply;
 
 //-----------------------------------------------------------------------------
 
-template <typename M>
-struct head_loop_on_for
+template <typename S, typename T>
+struct loop_for
 {
-	template <typename F, typename G, typename... A>
+	template <typename F, typename... A>
 	using map = cond <
-		may_iter <A...>,  seq_head_loop_on <M>,
-		any_tuple <A...>, tup_head_loop
+		travers <A...>,   S,
+		any_tuple <A...>, T
 	>;
 };
 
+//-----------------------------------------------------------------------------
+
 template <typename M = trav_more>
-using head_loop_on = choose_fun <head_loop_on_for <M>::template map>;
+using head_loop_on = choose_fun <head_for <
+	loop_for <seq_head_loop_on <M>, tup_head_loop>
+>::template map>;
 
 //-----------------------------------------------------------------------------
 
@@ -76,18 +80,10 @@ using sep_loop = bind_of <sep_loop_>;
 
 //-----------------------------------------------------------------------------
 
-template <typename M>
-struct loop_on_for
-{
-	template <typename F, typename... A>
-	using map = cond <
-		may_iter <A...>,  seq_loop_on <M>,
-		any_tuple <A...>, tup_loop
-	>;
-};
-
 template <typename M = trav_more>
-struct loop_on : choose_fun <loop_on_for <M>::template map>
+struct loop_on : choose_fun <
+	loop_for <seq_loop_on <M>, tup_loop>
+::template map>
 {
 	// TODO: keys
 	template <typename S>

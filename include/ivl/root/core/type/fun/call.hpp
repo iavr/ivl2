@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_AT_HPP
-#define IVL_CORE_TUPLE_FUN_AT_HPP
+#ifndef IVL_CORE_TYPE_FUN_CALL_HPP
+#define IVL_CORE_TYPE_FUN_CALL_HPP
 
 #include <ivl/ivl>
 
@@ -38,30 +38,26 @@ namespace afun {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
-
-//-----------------------------------------------------------------------------
-
-struct at
+struct pre_tmp_call
 {
-	template <size_t... I, typename T>
-	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template at <I...>())
-		{ return fwd <T>(t).template at <I...>(); }
-
-	template <typename... K, typename T>
-	INLINE constexpr auto _(T&& t) const
-	-> decltype(fwd <T>(t).template at <K...>())
-		{ return fwd <T>(t).template at <K...>(); }
+	template <typename F, typename... P, typename... A>
+	INLINE constexpr auto operator()(F&& f, types::tmp <P...>, A&&... a) const
+	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
+		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
 };
 
-//-----------------------------------------------------------------------------
+struct tmp_call
+{
+	template <typename F, typename... A>
+	INLINE constexpr auto operator()(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(fwd <A>(a)...))
+		{ return fwd <F>(f)(fwd <A>(a)...); }
 
-}  // namespace details
-
-//-----------------------------------------------------------------------------
-
-using details::at;
+	template <typename F, typename... P, typename... A>
+	INLINE constexpr auto operator()(F&& f, types::tmp <P...>, A&&... a) const
+	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
+		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -69,22 +65,8 @@ using details::at;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::at at;
-
-//-----------------------------------------------------------------------------
-
-namespace tuples {
-namespace details {
-
-static __attribute__ ((unused)) afun::at _at;
-
-}  // namespace details
-}  // namespace tuples
-
-//-----------------------------------------------------------------------------
-
 }  // namespace ivl
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_AT_HPP
+#endif  // IVL_CORE_TYPE_FUN_CALL_HPP

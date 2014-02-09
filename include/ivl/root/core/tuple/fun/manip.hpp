@@ -85,8 +85,8 @@ struct tup_flip
 
 	template <typename T, only_if <tup_non_empty <T>{}> = 0>
 	INLINE constexpr auto operator()(T&& t) const
-	-> decltype(at()._<sz_range <tup_len <T>() - 1, 0, -1> >(fwd <T>(t)))
-		{ return at()._<sz_range <tup_len <T>() - 1, 0, -1> >(fwd <T>(t)); }
+	-> decltype(at()._<sz_range <fix_len <T>() - 1, 0, -1> >(fwd <T>(t)))
+		{ return at()._<sz_range <fix_len <T>() - 1, 0, -1> >(fwd <T>(t)); }
 };
 
 //-----------------------------------------------------------------------------

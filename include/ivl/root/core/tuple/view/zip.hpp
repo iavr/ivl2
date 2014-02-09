@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename P, typename I = sz_rng_of_p <P> >
-struct zip_store;
+struct zip_impl;
 
 template <typename... U, size_t... I>
-class zip_store <pack <U...>, sizes <I...> > :
+class zip_impl <pack <U...>, sizes <I...> > :
 	public base_tup <zip_tup <U...>, tup_tran <tup_types <U>...> >
 {
 	using P = tup_tran <tup_types <U>...>;
@@ -79,9 +79,9 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... U>
-class collection <data::zip <>, U...> : public zip_store <pack <U...> >
+class collection <data::zip <>, U...> : public zip_impl <pack <U...> >
 {
-	using B = zip_store <pack <U...> >;
+	using B = zip_impl <pack <U...> >;
 
 public:
 	using B::B;

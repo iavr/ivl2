@@ -43,9 +43,15 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-using indirect_types =
-	seq_types <seq_val <U>, K, indirect_iter, indirect_trav, seq_size <K>, U>;
+using indirect_ref = decltype(gen <U>()[*gen <K>().begin()]);
 
+template <typename K, typename U, typename T = indirect_ref <K, U> >
+using indirect_types = seq_types <
+	raw_type <T>, K, !is_ref <T>(),
+	indirect_iter, indirect_trav, seq_size <K>, U
+>;
+
+// extending definition @array/base/base
 template <typename K, typename U>
 struct seq_data_t <indirect_array <K, U> > : id_t <raw_tuple <K, U> > { };
 

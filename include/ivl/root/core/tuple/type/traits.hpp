@@ -58,31 +58,17 @@ using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using tup_len = length_of <raw_type <T> >;
+template <typename T> using fix_len   = length_of <raw_type <T> >;
+template <typename T> using fix_empty = expr <!fix_len <T>()>;
 
 template <typename T>
-using tup_empty = expr <is_tuple <T>() && !tup_len <T>()>;
+using tup_empty = expr <is_tuple <T>() && fix_empty <T>()>;
 
 template <typename T>
-using tup_non_empty = expr <is_tuple <T>() && tup_len <T>()>;
+using tup_non_empty = expr <is_tuple <T>() && !fix_empty <T>()>;
 
 template <typename T>
-using as_tup_non_empty = expr <as_tuple <T>() && tup_len <T>()>;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-// TODO: specialize for sequence
-template <typename T, bool = is_tuple <T>()>
-struct empty_ : _false { };
-
-template <typename T>
-struct empty_<T, true> : expr <!tup_len <T>()> { };
-
-}  // namespace details
-
-template <typename T> using empty = details::empty_<raw_type <T> >;
+using as_tup_non_empty = expr <as_tuple <T>() && !fix_empty <T>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -91,12 +77,6 @@ template <typename P> using any_tuple_p = any_p <is_tuple, P>;
 
 template <typename... E> using all_tuple = all_tuple_p <pack <E...> >;
 template <typename... E> using any_tuple = any_tuple_p <pack <E...> >;
-
-template <typename P> using all_empty_p = all_p <empty, P>;
-template <typename P> using any_empty_p = any_p <empty, P>;
-
-template <typename... E> using all_empty = all_empty_p <pack <E...> >;
-template <typename... E> using any_empty = any_empty_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -107,6 +87,11 @@ template <typename P> using all_clref_p = all_p <is_clref, P>;
 template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
 template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
 template <typename... E> using all_clref = all_clref_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P>    using all_cons_p = all_p <is_cons, P>;
+template <typename... E> using all_cons   = all_cons_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 

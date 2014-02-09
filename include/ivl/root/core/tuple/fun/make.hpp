@@ -156,6 +156,17 @@ static __attribute__ ((unused)) afun::clref  clref;
 
 //-----------------------------------------------------------------------------
 
+namespace tuples {
+namespace details {
+
+using afun::make;
+using afun::_do;
+
+}  // namespace details
+}  // namespace tuples
+
+//-----------------------------------------------------------------------------
+
 }  // namespace ivl
 
 //-----------------------------------------------------------------------------

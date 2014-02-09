@@ -43,30 +43,30 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename P, typename I = sz_rng_of_p <P> >
-struct tuple_store;
+struct tuple_impl;
 
 template <typename... E, size_t... I>
-class tuple_store <pack <E...>, sizes <I...> > : public pre_tuple <E...>
+class tuple_impl <pack <E...>, sizes <I...> > : public pre_tuple <E...>
 {
 	using B = pre_tuple <E...>;
 
 public:
-	explicit INLINE constexpr tuple_store(_true) : B() { }
+	explicit INLINE constexpr tuple_impl(_true) : B() { }
 
 	template <typename... A>
-	explicit INLINE constexpr tuple_store(_true, A&&... a) : B(fwd <A>(a)...) { }
+	explicit INLINE constexpr tuple_impl(_true, A&&... a) : B(fwd <A>(a)...) { }
 
 	template <typename T>
-	INLINE constexpr tuple_store(T&& t) : B(_at._<I>(fwd <T>(t))...) { }
+	INLINE constexpr tuple_impl(T&& t) : B(_at._<I>(fwd <T>(t))...) { }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::tuple <>, E...> : public tuple_store <pack <E...> >
+class collection <data::tuple <>, E...> : public tuple_impl <pack <E...> >
 {
 	using P = pack <E...>;
-	using B = tuple_store <P>;
+	using B = tuple_impl <P>;
 
 public:
 	using B::base_type::operator=;

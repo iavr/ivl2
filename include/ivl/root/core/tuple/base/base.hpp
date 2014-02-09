@@ -42,11 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using afun::make;
-using afun::_do;
-
-//-----------------------------------------------------------------------------
-
 template <typename D, typename P, typename I = sz_rng_of_p <P> >
 struct base_tup;
 

@@ -56,6 +56,25 @@ struct trav_more
 
 //-----------------------------------------------------------------------------
 
+template <typename M>
+struct head_for
+{
+	template <typename F, typename G, typename... A>
+	using map = typename M::template map <G, A...>;
+};
+
+template <template <typename> class C, typename I>
+struct iter_for
+{
+	template <typename F, typename... A>
+	using map = cond <
+		cont_travers <A...>, C <I>,
+		iter_travers <A...>, I
+	>;
+};
+
+//-----------------------------------------------------------------------------
+
 template <typename L>
 struct cont_loop
 {
@@ -63,6 +82,16 @@ struct cont_loop
 	INLINE F&& operator()(F&& f, A&&... a) const
 		{ return L()(fwd <F>(f), trav()(fwd <A>(a))...); }
 };
+
+template <typename L>
+struct cont_head_loop
+{
+	template <typename F, typename G, typename... A>
+	INLINE void operator()(F&& f, G&& g, A&&... a) const
+		{ L()(fwd <F>(f), fwd <G>(g), trav()(fwd <A>(a))...); }
+};
+
+//-----------------------------------------------------------------------------
 
 template <typename M>
 struct iter_loop_on
@@ -76,30 +105,12 @@ struct iter_loop_on
 	}
 };
 
-//-----------------------------------------------------------------------------
-
-template <typename M, typename L = iter_loop_on <M> >
-struct seq_loop_for
-{
-	template <typename F, typename... A>
-	using map = cond <
-		any_cont <A...>, cont_loop <L>,
-		can_iter <A...>, L
-	>;
-};
-
 template <typename M = trav_more>
-using seq_loop_on = choose_fun <seq_loop_for <M>::template map>;
+using seq_loop_on = choose_fun <
+	iter_for <cont_loop, iter_loop_on <M> >
+::template map>;
 
 //-----------------------------------------------------------------------------
-
-template <typename L>
-struct cont_head_loop
-{
-	template <typename F, typename G, typename... A>
-	INLINE void operator()(F&& f, G&& g, A&&... a) const
-		{ L()(fwd <F>(f), fwd <G>(g), trav()(fwd <A>(a))...); }
-};
 
 template <typename M>
 struct iter_head_loop_on
@@ -113,38 +124,10 @@ struct iter_head_loop_on
 	}
 };
 
-//-----------------------------------------------------------------------------
-
-template <typename M, typename L = iter_head_loop_on <M> >
-struct seq_head_loop_for
-{
-	template <typename F, typename... A>
-	using map = cond <
-		any_cont <A...>, cont_head_loop <L>,
-		can_iter <A...>, L
-	>;
-};
-
 template <typename M = trav_more>
-using seq_head_loop_on = choose_fun <seq_head_loop_for <M>::template map>;
-
-//-----------------------------------------------------------------------------
-
-// template <typename M = trav_more>
-// struct seq_head_loop_on
-// {
-// 	template <typename F, typename G, typename... A, only_if <any_cont <A...>{}> = 0>
-// 	INLINE void operator()(F&& f, G&& g, A&&... a) const
-// 		{ operator()(fwd <F>(f), fwd <G>(g), trav()(fwd <A>(a))...); }
-//
-// 	template <typename F, typename G, typename... T, only_if <can_iter <T...>{}> = 0>
-// 	INLINE void operator()(F&& f, G&& g, T&&... t) const
-// 	{
-// 		if (M()(t...))
-// 			fwd <F>(f)(*t...),
-// 			seq_loop_on <M>()(fwd <G>(g), ++t...);
-// 	}
-// };
+using seq_head_loop_on = choose_fun <head_for <
+	iter_for <cont_head_loop, iter_head_loop_on <M> >
+>::template map>;
 
 //-----------------------------------------------------------------------------
 

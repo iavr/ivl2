@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, size_t N>
+template <typename T, size_t N, bool C = is_cons <T>()>
 class fixed_store
 {
 	T a[N];
@@ -52,29 +52,28 @@ protected:
 	INLINE const T* data() const { return a; }
 
 public:
-	INLINE constexpr fixed_store() { }
+	template <typename A = int, only_if <C, A> = 0>
+	INLINE constexpr fixed_store() : a{} { }
 
-	INLINE fixed_store(initializer_list <T>&& l)
-	{
-		afun::seq_loop()(construct, afun::iter()(a), mv(l));
-	}
+	template <typename... E, only_if <sizeof...(E) == N> = 0>
+	INLINE constexpr fixed_store(E&&... e) : a{fwd <T>(e)...} { }
+
+	// TODO: remove
+// 	INLINE fixed_store(initializer_list <T>&& l)
+// 		{ afun::seq_loop()(construct, afun::iter()(a), mv(l)); }
 };
 
-template <typename T>
-struct fixed_store <T, 0>
+template <typename T, bool C>
+struct fixed_store <T, 0, C>
 {
 protected:
 	INLINE T*       data()       { return nullptr; }
 	INLINE const T* data() const { return nullptr; }
-
-public:
-	INLINE constexpr fixed_store() { }
-
-	INLINE constexpr fixed_store(initializer_list <T> l) { }
 };
 
 //-----------------------------------------------------------------------------
 
+// extending definition @array/base/base
 template <typename T, size_t N>
 struct seq_data_t <fixed_array <T, N> > : id_t <fixed_store <T, N> > { };
 
@@ -97,7 +96,6 @@ class sequence <data::fixed <>, T, sizes <N> > :
 	using VR = r_trav <ST>;
 	using VL = l_trav <ST>;
 	using VC = cl_trav <ST>;
-
 
 //-----------------------------------------------------------------------------
 

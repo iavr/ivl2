@@ -50,6 +50,7 @@ namespace details {
 
 using namespace types;
 using namespace tuples;
+using afun::make;
 
 }  // namespace details
 }  // namespace arrays

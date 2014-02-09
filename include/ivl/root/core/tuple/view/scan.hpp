@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename A, typename I = sz_rng_of_p <A> >
-class scan_store;
+class scan_impl;
 
 template <typename F, typename... A, size_t... I>
-class scan_store <F, pack <A...>, sizes <I...> > : public base_tup <
+class scan_impl <F, pack <A...>, sizes <I...> > : public base_tup <
 	scan_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
 >
 {
@@ -92,9 +92,9 @@ template <typename F>
 class collection <data::scan <>, F>;
 
 template <typename F, typename... A>
-class collection <data::scan <>, F, A...> : public scan_store <F, pack <A...> >
+class collection <data::scan <>, F, A...> : public scan_impl <F, pack <A...> >
 {
-	using B = scan_store <F, pack <A...> >;
+	using B = scan_impl <F, pack <A...> >;
 
 public:
 	using B::B;

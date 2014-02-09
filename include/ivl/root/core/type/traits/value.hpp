@@ -67,22 +67,16 @@ fwd(remove_ref <T>& a) { return static_cast <T&&>(a); }
 //-----------------------------------------------------------------------------
 
 template <typename T, typename A, only_if <!is_lref <A>()> = 0>
-INLINE constexpr raw_type <T>&&
-as(A&& a) { return static_cast <raw_type <T>&&>(a); }
+INLINE constexpr remove_ref <T>&&
+as(A&& a) { return static_cast <remove_ref <T>&&>(a); }
 
-template <
-	typename T, typename A,
-	only_if <is_lref <A>() && !is_const <remove_ref <A> >()> = 0
->
-INLINE constexpr raw_type <T>&
-as(A&& a) { return static_cast <raw_type <T>&>(a); }
+template <typename T, typename A, only_if <is_mlref <A>{}> = 0>
+INLINE constexpr remove_ref <T>&
+as(A&& a) { return static_cast <remove_ref <T>&>(a); }
 
-template <
-	typename T, typename A,
-	only_if <is_lref <A>() && is_const <remove_ref <A> >()> = 0
->
-INLINE constexpr const raw_type <T>&
-as(A&& a) { return static_cast <const raw_type <T>&>(a); }
+template <typename T, typename A, only_if <is_clref <A>{}> = 0>
+INLINE constexpr const remove_ref <T>&
+as(A&& a) { return static_cast <const remove_ref <T>&>(a); }
 
 //-----------------------------------------------------------------------------
 
@@ -106,6 +100,16 @@ cp(A&& a) { return fwd <A>(a); }
 
 //-----------------------------------------------------------------------------
 
+template <typename F, typename... A>
+auto tmp_ret(F&& f, A&&... a)
+-> decltype(fwd <F>(f)(fwd <A>(a)...));
+
+template <typename F, typename... P, typename... A>
+auto tmp_ret(F&& f, types::tmp <P...>, A&&... a)
+-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...));
+
+//-----------------------------------------------------------------------------
+
 }  // namespace traits
 
 //-----------------------------------------------------------------------------
@@ -118,48 +122,6 @@ using types::traits::as;
 using types::traits::get;
 using types::traits::get_cp;
 using types::traits::cp;
-
-//-----------------------------------------------------------------------------
-
-namespace afun {
-
-//-----------------------------------------------------------------------------
-
-struct pre_tmp_call
-{
-	template <typename F, typename... P, typename... A>
-	INLINE constexpr auto operator()(F&& f, types::tmp <P...>, A&&... a) const
-	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
-		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
-};
-
-struct tmp_call
-{
-	template <typename F, typename... A>
-	INLINE constexpr auto operator()(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(fwd <A>(a)...))
-		{ return fwd <F>(f)(fwd <A>(a)...); }
-
-	template <typename F, typename... P, typename... A>
-	INLINE constexpr auto operator()(F&& f, types::tmp <P...>, A&&... a) const
-	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...))
-		{ return fwd <F>(f).template _<P...>(fwd <A>(a)...); }
-};
-
-struct tmp_call_ret
-{
-	template <typename F, typename... A>
-	auto operator()(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(fwd <A>(a)...));
-
-	template <typename F, typename... P, typename... A>
-	auto operator()(F&& f, types::tmp <P...>, A&&... a) const
-	-> decltype(fwd <F>(f).template _<P...>(fwd <A>(a)...));
-};
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
 
 //-----------------------------------------------------------------------------
 

@@ -95,6 +95,8 @@ public:
 	using reverse_iterator = V <I>;
 	using const_reverse_iterator = V <CI>;
 
+	static constexpr bool finite = true;
+
 //-----------------------------------------------------------------------------
 
 	INLINE           U  trav()        { return U(begin(), end()); }
