@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_BASE_HPP
-#define IVL_CORE_ARRAY_ITER_BASE_HPP
+#ifndef IVL_CORE_ARRAY_FUN_FOLD_HPP
+#define IVL_CORE_ARRAY_FUN_FOLD_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,41 +42,82 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename I, typename R = seq_ref <I>, typename T = seq_val <I>,
-	typename D = seq_diff <I>, typename P = seq_ptr <I>
->
-struct base_iter
+struct _and
 {
-	using iterator_type = I;
-	using reference = R;
-	using value_type = T;
-	using difference_type = D;
-	using pointer = P;
+	INLINE constexpr bool operator()() const { return true; }
 
-protected:
-	template <typename A>
-	INLINE constexpr R ref(A&& a) const { return static_cast <R>(a); }
+	template <typename A, typename... An>
+	INLINE constexpr bool operator()(A&& a, An&&... an) const
+		{ return fwd <A>(a) && operator()(fwd <An>(an)...); }
+};
+
+struct _or
+{
+	INLINE constexpr bool operator()() const { return false; }
+
+	template <typename A, typename... An>
+	INLINE constexpr bool operator()(A&& a, An&&... an) const
+		{ return fwd <A>(a) || operator()(fwd <An>(an)...); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <
-	bool F, typename V, typename R = seq_ref <V>, typename T = seq_val <V>,
-	typename D = seq_diff <V>, typename P = seq_ptr <V>
->
-struct base_trav : base_iter <V, R, T, D, P>
+template <typename F>
+struct val_fold
 {
-	static constexpr bool finite = F;
+	template <typename A>
+	INLINE constexpr copy <A>
+	operator()(A&& a) const { return fwd <A>(a); }
+
+	template <typename A, typename... An>
+	INLINE constexpr copy <common <A, An...> >
+	operator()(A&& a, An&&... an) const
+		{ return F()(fwd <A>(a), operator()(fwd <An>(an)...)); }
 };
+
+//-----------------------------------------------------------------------------
+
+struct val_min_fun
+{
+	template <typename A, typename B>
+	INLINE constexpr copy <common <A, B> >
+	operator()(A&& a, B&& b) const
+		{ return a < b ? fwd <A>(a) : fwd <B>(b); }
+};
+
+struct val_max_fun
+{
+	template <typename A, typename B>
+	INLINE constexpr copy <common <A, B> >
+	operator()(A&& a, B&& b) const
+		{ return a > b ? fwd <A>(a) : fwd <B>(b); }
+};
+
+//-----------------------------------------------------------------------------
+
+using val_min = val_fold <val_min_fun>;
+using val_max = val_fold <val_max_fun>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
+using details::_and;
+using details::_or;
+
+using details::val_fold;
+using details::val_min;
+using details::val_max;
+
 //-----------------------------------------------------------------------------
 
-}  // namespace arrays
+}  // namespace afun
+
+static __attribute__ ((unused)) afun::_and _and;
+static __attribute__ ((unused)) afun::_or _or;
+
+static __attribute__ ((unused)) afun::val_min val_min;
+static __attribute__ ((unused)) afun::val_max val_max;
 
 //-----------------------------------------------------------------------------
 
@@ -84,4 +125,4 @@ struct base_trav : base_iter <V, R, T, D, P>
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_BASE_HPP
+#endif  // IVL_CORE_ARRAY_FUN_FOLD_HPP

@@ -88,7 +88,7 @@ public:
 	= 0>
 	INLINE constexpr copy <ret <XI(T)> >
 	operator()(A&&... a) const
-		{ return op <T>(_or()(fix_empty <A>{}...), fwd <A>(a)...); }
+		{ return op <T>(types::_or <fix_empty <A>...>{}, fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

@@ -111,6 +111,10 @@ template <typename S, typename D> using is_conv = is_conv_ <S, D>;
 
 //-----------------------------------------------------------------------------
 
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
 template <typename P> struct common_pt;
 template <typename P> using  common_p = type_of <common_pt <P> >;
 
@@ -150,14 +154,10 @@ using common_or = type_of <common_or_t <D, T...> >;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace details
-
 using details::is_base_eq;
 using details::is_base;
 using details::is_related;
 using details::is_conv;
-using details::common_p;
-using details::common;
 
 //-----------------------------------------------------------------------------
 

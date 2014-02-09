@@ -53,7 +53,7 @@ class loop_impl <F, pack <A...>, sizes <I...> > : public base_tup <
 	using P = rep <tran_len <tup_types <A>...>{}, nat>;
 	using B = base_tup <loop_tup <F, A...>, P>;
 
-	using fun = elem_at <0, F, A...>;
+	using fun = elem <0, F>;
 	template <size_t J> using arg = elem_at <J + 1, F, A...>;
 
 	friend base_type_of <B>;

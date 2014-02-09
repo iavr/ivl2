@@ -72,7 +72,7 @@ class apply_impl <F, pack <A...>, sizes <I...> > :
 	using P = tup_apply_types <F, A...>;
 	using B = base_tup <apply_tup <F, A...>, P>;
 
-	using fun = elem_at <0, F, A...>;
+	using fun = elem <0, F>;
 	template <size_t J> using arg = elem_at <J + 1, F, A...>;
 
 	friend base_type_of <B>;

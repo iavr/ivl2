@@ -45,20 +45,25 @@ namespace details {
 template <typename C, typename... A> class iterator;
 template <typename C, typename... A> class traversor;
 
-template <typename I, typename R = seq_ref <I> >
-using iter_iter = iterator <data::iter <>, I, R>;
+template <typename I, typename R = seq_ref <I>, typename T = seq_val <I> >
+using iter_iter = iterator <data::iter <>, I, R, T>;
 
-template <typename I, typename R = seq_ref <I> >
-using iter_trav = traversor <data::iter <>, I, R>;
+template <typename I, typename R = seq_ref <I>, typename T = seq_val <I> >
+using iter_trav = traversor <data::iter <>, I, R, T>;
 
-template <typename I, typename R, typename U>
-using indirect_iter = iterator <data::indirect <>, I, R, U>;
+template <typename I, typename R, typename T, typename U>
+using indirect_iter = iterator <data::indirect <>, I, R, T, U>;
 
-template <typename V, typename R, typename U>
-using indirect_trav = traversor <data::indirect <>, V, R, U>;
+template <typename V, typename R, typename T, typename U>
+using indirect_trav = traversor <data::indirect <>, V, R, T, U>;
+
+template <typename I, typename R, typename T, typename F>
+using apply_iter = iterator <data::apply <>, I, R, T, F>;
+
+template <typename V, typename R, typename T, typename F>
+using apply_trav = traversor <data::apply <>, V, R, T, F>;
 
 template <typename T> using ptr_iter  = iter_iter <remove_ref <T>*>;
-template <typename I> using rev_iter  = iterator <data::rev <>, I>;
 template <typename T> using atom_trav = traversor <data::atom <>, T>;
 
 //-----------------------------------------------------------------------------
@@ -70,6 +75,10 @@ using details::traversor;
 
 using details::iter_iter;
 using details::iter_trav;
+using details::indirect_iter;
+using details::indirect_trav;
+using details::apply_iter;
+using details::apply_trav;
 
 using details::ptr_iter;
 using details::atom_trav;

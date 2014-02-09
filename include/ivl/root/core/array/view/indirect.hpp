@@ -43,28 +43,26 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-using indirect_ref = decltype(gen <U>()[*gen <K>().begin()]);
+using indirect_ref = seq_ret <decltype(gen <U>()[*gen <K>().begin()])>;
 
-template <typename K, typename U, typename T = indirect_ref <K, U> >
+template <typename K, typename U>
 using indirect_types = seq_types <
-	raw_type <T>, K, !is_ref <T>(),
-	indirect_iter, indirect_trav, seq_size <K>, U
+	indirect_ref <K, U>, K, indirect_iter, indirect_trav, seq_size <K>, U
 >;
 
 // extending definition @array/base/base
 template <typename K, typename U>
-struct seq_data_t <indirect_array <K, U> > : id_t <raw_tuple <K, U> > { };
+struct seq_data_t <indirect_seq <K, U> > : id_t <raw_tuple <K, U> > { };
 
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
 class sequence <data::indirect <>, K, U> :
-	public base_seq <indirect_array <K, U>, indirect_types <K, U> >,
-	seq_data <indirect_array <K, U> >
+	public base_seq <indirect_seq <K, U>, indirect_types <K, U> >,
+	seq_data <indirect_seq <K, U> >
 {
-	friend base_seq <sequence, indirect_types <K, U> >;
-
 	using ST = indirect_types <K, U>;
+	friend base_seq <sequence, ST>;
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;

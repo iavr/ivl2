@@ -43,7 +43,7 @@ void run()
 	cout << endl;
 
 	{
-		cout << "indirect array" << endl;
+		cout << "indirect-sequence" << endl;
 		array <int, 11> x(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
 		array <int, 4>  i(5, 8, 0, 8);
 		cout << "x = " << x << endl;
@@ -55,6 +55,16 @@ void run()
 		cout << "j = " << j << endl;
 		cout << "x[j] = " << x[j] << endl;
 
+		cout << endl;
+	}
+
+	{
+		cout << "apply-sequence" << endl;
+		array <int, 11> x(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
+		array <int, 11> y(7, -8, 0, 13, 128, 0, -2, 7, 6, 14, -9);
+		cout << "x = " << x << endl;
+		cout << "y = " << y << endl;
+		cout << "x + y = " << apply(afun::op::add(), x, y) << endl;
 		cout << endl;
 	}
 

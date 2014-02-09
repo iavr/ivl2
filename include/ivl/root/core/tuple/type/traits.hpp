@@ -136,6 +136,7 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
+// extended elsewhere
 template <typename T> struct r_ref_t  : base_opt_t <T&&, T> { };
 template <typename T> struct l_ref_t  : base_opt_t <T&, T> { };
 template <typename T> struct cl_ref_t : base_opt_t <const T&, T> { };

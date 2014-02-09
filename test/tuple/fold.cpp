@@ -65,7 +65,7 @@ void run()
 		cout << (_(m, p) = max._(_())) << endl;
 		cout << (_(m, p) = min._(t)) << endl;
 		cout << (_(m, p) = max._(t)) << endl;
-		_(max._()) = max._();
+		_(max._()) = max._();  // ambiguity check
 		cout << endl;
 	}
 

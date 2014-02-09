@@ -72,8 +72,6 @@ class sequence <data::aggr <>, T, sizes <N> >
 	using U  = iter_trav <T*, R>;
 	using CU = iter_trav <const T*, CR>;
 
-	template <typename J> using V = rev_iter <J>;
-
 //-----------------------------------------------------------------------------
 
 public:
@@ -92,8 +90,6 @@ public:
 	using const_traversor = CU;
 	using iterator = I;
 	using const_iterator = CI;
-	using reverse_iterator = V <I>;
-	using const_reverse_iterator = V <CI>;
 
 	static constexpr bool finite = true;
 
@@ -108,15 +104,8 @@ public:
 	INLINE I  end()         { return data() + N; }
 	INLINE CI end()   const { return data() + N; }
 
-	INLINE V <I>  rbegin()       { return V <I> (end() - 1); }
-	INLINE V <CI> rbegin() const { return V <CI>(end() - 1); }
-	INLINE V <I>  rend()         { return V <I> (begin() - 1); }
-	INLINE V <CI> rend()   const { return V <CI>(begin() - 1); }
-
 	INLINE CI     cbegin()  const { return begin(); }
 	INLINE CI     cend()    const { return end(); }
-	INLINE V <CI> crbegin() const { return rbegin(); }
-	INLINE V <CI> crend()   const { return rend(); }
 
 	INLINE constexpr size_t size()     const { return N; }
 	INLINE constexpr size_t max_size() const { return N; }

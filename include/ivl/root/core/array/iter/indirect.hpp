@@ -42,94 +42,94 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R, typename U>
-class iterator <data::indirect <>, I, R, U> :
-	public base_iter <I, R>,
-	private raw_tuple <rref_opt <U> >
+template <typename I, typename R, typename T, typename U>
+class iterator <data::indirect <>, I, R, T, U> :
+	public base_iter <I, R, T>,
+	private raw_tuple <I, rref_opt <U> >
 {
 	using D = seq_diff <I>;
 	using P = seq_ptr <I>;
 
-	using B = base_iter <I, R>;
+	using B = base_iter <I, R, T>;
 	using B::ref;
 
 	using RU = rref_opt <U>;
-	using E  = raw_tuple <RU>;
-	using under = elem <0, RU>;
+	using E  = raw_tuple <I, RU>;
+	using iter  = elem <0, I>;
+	using under = elem <1, RU>;
 
-	I i;
+	INLINE           l_ref <I>  i()       { return iter::get(); }
+	INLINE constexpr cl_ref <I> i() const { return iter::get(); }
 
 	INLINE constexpr RU u() const { return static_cast <RU>(under::get()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	template <typename _I, typename _U>
-	INLINE constexpr explicit iterator(_I&& i, _U&& u) :
-		i(fwd <_I>(i)), E(fwd <_U>(u)) { }
+	using E::E;
 
-	INLINE constexpr R operator*()  const { return ref(u()[*i]); }
+	INLINE constexpr R operator*()  const { return ref(u()[*i()]); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE iterator& operator++() { return ++i, *this; }
-	INLINE iterator& operator--() { return --i, *this; }
+	INLINE iterator& operator++() { return ++i(), *this; }
+	INLINE iterator& operator--() { return --i(), *this; }
 
-	INLINE iterator operator++(int) { return iterator(i++, u()); }
-	INLINE iterator operator--(int) { return iterator(i--, u()); }
+	INLINE iterator operator++(int) { return iterator(i()++, u()); }
+	INLINE iterator operator--(int) { return iterator(i()--, u()); }
 
-	INLINE constexpr R operator[](D n) const { return ref(u()[i[n]]); }
+	INLINE constexpr R operator[](D n) const { return ref(u()[i()[n]]); }
 
-	INLINE iterator& operator+=(D n) { return i += n, *this; }
-	INLINE iterator& operator-=(D n) { return i -= n, *this; }
+	INLINE iterator& operator+=(D n) { return i() += n, *this; }
+	INLINE iterator& operator-=(D n) { return i() -= n, *this; }
 
-	INLINE iterator operator+(D n) { return iterator(i + n, u()); }
-	INLINE iterator operator-(D n) { return iterator(i - n, u()); }
+	INLINE iterator operator+(D n) { return iterator(i() + n, u()); }
+	INLINE iterator operator-(D n) { return iterator(i() - n, u()); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename U>
-class traversor <data::indirect <>, V, R, U> :
-	public base_trav <true, V, R, U>,
-	private raw_tuple <rref_opt <U> >
+template <typename V, typename R, typename T, typename U>
+class traversor <data::indirect <>, V, R, T, U> :
+	public base_trav <true, V, R, T>,
+	private raw_tuple <V, rref_opt <U> >
 {
 	using D = seq_diff <V>;
 	using P = seq_ptr <V>;
 
-	using B = base_trav <true, V, R, U>;
+	using B = base_trav <true, V, R, T>;
 	using B::ref;
 
 	using RU = rref_opt <U>;
-	using E  = raw_tuple <RU>;
-	using under = elem <0, RU>;
+	using E  = raw_tuple <V, RU>;
+	using trav  = elem <0, V>;
+	using under = elem <1, RU>;
 
-	V v;
+	INLINE           l_ref <V>  v()       { return trav::get(); }
+	INLINE constexpr cl_ref <V> v() const { return trav::get(); }
 
 	INLINE constexpr RU u() const { return static_cast <RU>(under::get()); }
 
 public:
-	template <typename _V, typename _U>
-	INLINE constexpr explicit traversor(_V&& v, _U&& u) :
-		v(fwd <_V>(v)), E(fwd <_U>(u)) { }
+	using E::E;
 
-	INLINE constexpr operator bool() const { return v; }
+	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE constexpr R operator*()  const { return ref(u()[*v]); }
+	INLINE constexpr R operator*()  const { return ref(u()[*v()]); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE traversor& operator++() { return ++v, *this; }
-	INLINE traversor& operator--() { return --v, *this; }
+	INLINE traversor& operator++() { return ++v(), *this; }
+	INLINE traversor& operator--() { return --v(), *this; }
 
-	INLINE traversor operator++(int) { return traversor(v++, u()); }
-	INLINE traversor operator--(int) { return traversor(v--, u()); }
+	INLINE traversor operator++(int) { return traversor(v()++, u()); }
+	INLINE traversor operator--(int) { return traversor(v()--, u()); }
 
-	INLINE constexpr R operator[](D n) const { return ref(u()[v[n]]); }
+	INLINE constexpr R operator[](D n) const { return ref(u()[v()[n]]); }
 
-	INLINE traversor& operator+=(D n) { return v += n, *this; }
-	INLINE traversor& operator-=(D n) { return v -= n, *this; }
+	INLINE traversor& operator+=(D n) { return v() += n, *this; }
+	INLINE traversor& operator-=(D n) { return v() -= n, *this; }
 
-	INLINE traversor operator+(D n) { return traversor(v + n, u()); }
-	INLINE traversor operator-(D n) { return traversor(v - n, u()); }
+	INLINE traversor operator+(D n) { return traversor(v() + n, u()); }
+	INLINE traversor operator-(D n) { return traversor(v() - n, u()); }
 };
 
 //-----------------------------------------------------------------------------

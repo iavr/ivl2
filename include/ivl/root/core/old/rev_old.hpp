@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_LOGIC_HPP
-#define IVL_CORE_ARRAY_FUN_LOGIC_HPP
+#ifndef IVL_CORE_ARRAY_ITER_REV_HPP
+#define IVL_CORE_ARRAY_ITER_REV_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,37 +42,53 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct _and
+// TODO: remove
+template <typename I>
+class iterator <data::rev <>, I> :
+	public base_iter <I>,
+	private raw_tuple <I>
 {
-	INLINE constexpr bool operator()() const { return true; }
+	using R = seq_ref <I>;
+	using D = seq_diff <I>;
+	using P = seq_ptr <I>;
 
-	template <typename A, typename... An>
-	INLINE constexpr bool operator()(A&& a, An&&... an) const
-		{ return fwd <A>(a) && operator()(fwd <An>(an)...); }
-};
+	using B = base_iter <I>;
+	using B::ref;
 
-struct _or
-{
-	INLINE constexpr bool operator()() const { return false; }
+	using E = raw_tuple <I>;
+	using iter = elem <0, I>;
 
-	template <typename A, typename... An>
-	INLINE constexpr bool operator()(A&& a, An&&... an) const
-		{ return fwd <A>(a) || operator()(fwd <An>(an)...); }
+	INLINE           l_ref <I>  i()       { return iter::get(); }
+	INLINE constexpr cl_ref <I> i() const { return iter::get(); }
+
+public:
+	using E::E;
+
+	INLINE constexpr R operator*()  const { return ref(*i()); }
+	INLINE           P operator->() const { return &(operator*()); }
+
+	INLINE iterator& operator++() { return --i(), *this; }
+	INLINE iterator& operator--() { return ++i(), *this; }
+
+	INLINE iterator operator++(int) { return iterator(i()--); }
+	INLINE iterator operator--(int) { return iterator(i()++); }
+
+	INLINE constexpr R operator[](D n) const { return ref(i()[n]); }
+
+	INLINE iterator& operator+=(D n) { return i() -= n, *this; }
+	INLINE iterator& operator-=(D n) { return i() += n, *this; }
+
+	INLINE iterator operator+(D n) { return iterator(i() - n); }
+	INLINE iterator operator-(D n) { return iterator(i() + n); }
 };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::_and;
-using details::_or;
-
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
-
-static __attribute__ ((unused)) afun::_and _and;
-static __attribute__ ((unused)) afun::_or _or;
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -80,4 +96,4 @@ static __attribute__ ((unused)) afun::_or _or;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_LOGIC_HPP
+#endif  // IVL_CORE_ARRAY_ITER_REV_HPP

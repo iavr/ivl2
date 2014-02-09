@@ -43,24 +43,24 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename T, typename P = T*, bool G = false,
+	typename T, typename B = T*,
 	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
-	typename S = seq_size <P>, typename... U
+	typename S = seq_size <B>, typename... U
 >
 struct seq_types
 {
 	using types = seq_types;
-	using value_type = T;
+	using value_type = remove_type <T>;
 	using size_type = S;
 
-	using fwd_iterator   = I <r_iter <P>,  r_gref <G, T>,  r_ref <U>...>;
-	using iterator       = I <l_iter <P>,  l_gref <G, T>,  l_ref <U>...>;
-	using const_iterator = I <cl_iter <P>, cl_gref <G, T>, cl_ref <U>...>;
+	using fwd_iterator   = I <r_iter <B>,  r_ref <T>,  T, r_ref <U>...>;
+	using iterator       = I <l_iter <B>,  l_ref <T>,  T, l_ref <U>...>;
+	using const_iterator = I <cl_iter <B>, cl_ref <T>, T, cl_ref <U>...>;
 
-	using fwd_traversor   = V <r_trav <P>,  r_gref <G, T>,  r_ref <U>...>;
-	using traversor       = V <l_trav <P>,  l_gref <G, T>,  l_ref <U>...>;
-	using const_traversor = V <cl_trav <P>, cl_gref <G, T>, cl_ref <U>...>;
+	using fwd_traversor   = V <r_trav <B>,  r_ref <T>,  T, r_ref <U>...>;
+	using traversor       = V <l_trav <B>,  l_ref <T>,  T, l_ref <U>...>;
+	using const_traversor = V <cl_trav <B>, cl_ref <T>, T, cl_ref <U>...>;
 
 	using fwd_reference   = seq_ref <fwd_iterator>;
 	using reference       = seq_ref <iterator>;
@@ -140,7 +140,7 @@ private:
 	using opt = base_opt <T, R, _if <eq <R, D>{}, seq_data <D>, R> >;
 
 	template <typename... A>
-	using indir = subs <indirect_array, opt <A>...>;
+	using indir = subs <indirect_seq, opt <A>...>;
 
 //-----------------------------------------------------------------------------
 

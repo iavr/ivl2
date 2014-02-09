@@ -56,7 +56,10 @@ template <typename T>
 using heap_array = sequence <data::heap <>, T>;
 
 template <typename K, typename U>
-using indirect_array = sequence <data::indirect <>, K, U>;
+using indirect_seq = sequence <data::indirect <>, K, U>;
+
+template <typename F, typename... A>
+using apply_seq = sequence <data::apply <>, F, A...>;
 
 //-----------------------------------------------------------------------------
 
@@ -78,7 +81,8 @@ using details::sequence;
 using details::fixed_array;
 using details::heap_array;
 
-using details::indirect_array;
+using details::indirect_seq;
+using details::apply_seq;
 
 //-----------------------------------------------------------------------------
 

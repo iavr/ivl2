@@ -42,8 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// TODO
-struct seq_apply : tup_apply { };
+// no alias: often used
+struct seq_apply : uref_of <apply_seq> { };
 
 //-----------------------------------------------------------------------------
 
