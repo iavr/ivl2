@@ -47,11 +47,11 @@ class iterator <data::iter <>, I, R, T> :
 	public base_iter <I, R, T>,
 	private raw_tuple <I>
 {
-	using D = seq_diff <I>;
-	using P = seq_ptr <I>;
-
 	using B = base_iter <I, R, T>;
 	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
 
 	using E = raw_tuple <I>;
 	using iter = elem <0, I>;
@@ -87,11 +87,11 @@ class traversor <data::iter <>, I, R, T> :
 	public base_trav <true, I, R, T>,
 	private raw_tuple <I, I>
 {
-	using D = seq_diff <I>;
-	using P = seq_ptr <I>;
-
 	using B = base_trav <true, I, R, T>;
 	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
 
 	using E = raw_tuple <I, I>;
 	using iter = elem <0, I>;

@@ -44,7 +44,7 @@ namespace details {
 
 template <
 	typename I, typename R = seq_ref <I>, typename T = seq_val <I>,
-	typename D = seq_diff <I>, typename P = seq_ptr <I>
+	typename D = seq_diff <I>, typename P = remove_ref <R>*
 >
 struct base_iter
 {
@@ -63,7 +63,7 @@ protected:
 
 template <
 	bool F, typename V, typename R = seq_ref <V>, typename T = seq_val <V>,
-	typename D = seq_diff <V>, typename P = seq_ptr <V>
+	typename D = seq_diff <V>, typename P = remove_ref <R>*
 >
 struct base_trav : base_iter <V, R, T, D, P>
 {

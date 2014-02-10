@@ -47,11 +47,11 @@ class iterator <data::indirect <>, I, R, T, U> :
 	public base_iter <I, R, T>,
 	private raw_tuple <I, rref_opt <U> >
 {
-	using D = seq_diff <I>;
-	using P = seq_ptr <I>;
-
 	using B = base_iter <I, R, T>;
 	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
 
 	using RU = rref_opt <U>;
 	using E  = raw_tuple <I, RU>;
@@ -93,11 +93,11 @@ class traversor <data::indirect <>, V, R, T, U> :
 	public base_trav <true, V, R, T>,
 	private raw_tuple <V, rref_opt <U> >
 {
-	using D = seq_diff <V>;
-	using P = seq_ptr <V>;
-
 	using B = base_trav <true, V, R, T>;
 	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
 
 	using RU = rref_opt <U>;
 	using E  = raw_tuple <V, RU>;

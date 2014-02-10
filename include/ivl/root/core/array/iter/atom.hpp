@@ -49,12 +49,13 @@ class traversor <data::atom <>, A> :
 {
 	using I = remove_ref <A>*;
 	using R = rref_opt <A>;
-	using D = seq_diff <I>;
-	using P = seq_ptr <I>;
-
-	using E = raw_tuple <R>;
 	using B = base_trav <false, I, R>;
 	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
+
+	using E = raw_tuple <R>;
 
 public:
 	INLINE constexpr explicit traversor(A&& a) : E(fwd <A>(a)) { }

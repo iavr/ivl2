@@ -45,7 +45,7 @@ namespace details {
 template <
 	typename DER, typename R, typename T, typename F, typename I,
 	typename N = sz_rng_of_p <I>,
-	typename B = base_iter <I, R, T, seq_diff <I>, T*>
+	typename B = base_iter <I, R, T>
 >
 struct apply_iter_impl;
 
@@ -58,8 +58,8 @@ class apply_iter_impl <DER, R, T, F, pack <I...>, sizes <N...>, B> :
 	private raw_tuple <rref_opt <F>, I...>
 {
 	using IP = pack <I...>;
-	using D = seq_diff <IP>;
-	using P = T*;
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
 
 	using derived <DER>::der;
 	using B::ref;
@@ -112,7 +112,7 @@ public:
 template <
 	typename DER, typename R, typename T, typename F, typename V,
 	typename N = sz_rng_of_p <V>,
-	typename B = base_trav <trav_fin <V>{}, V, R, T, seq_diff <V>, T*>
+	typename B = base_trav <trav_fin <V>{}, V, R, T>
 >
 struct apply_trav_impl;
 
@@ -125,8 +125,8 @@ class apply_trav_impl <DER, R, T, F, pack <V...>, sizes <N...>, B> :
 	private raw_tuple <rref_opt <F>, V...>
 {
 	using VP = pack <V...>;
-	using D = seq_diff <VP>;
-	using P = T*;
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
 
 	using derived <DER>::der;
 	using B::ref;
