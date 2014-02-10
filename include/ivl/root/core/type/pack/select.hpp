@@ -54,7 +54,7 @@ template <template <typename...> class F, typename P, bool = is_null <P>{}>
 struct select_ : if_fun_cons <F, car <P>, select_<F, cdr <P> > > { };
 
 template <template <typename...> class F, typename P>
-struct select_<F, P, true> { using type = P; };
+struct select_<F, P, true> : id_t <P> { };
 
 }  // namespace details
 
@@ -81,7 +81,7 @@ template <size_t I, typename P>
 struct pick_pt_ : pick_pt_<I - 1, cdr <P> > { };
 
 template <typename P>
-struct pick_pt_<0, P> { using type = car <P>; };
+struct pick_pt_<0, P> : car_t <P> { };
 
 }  // namespace details
 
@@ -89,7 +89,7 @@ template <size_t I, typename T>
 struct pick_pt : details::pick_pt_<I, T> { };
 
 template <size_t I, typename T>
-struct pick_pt <I, _type <T> > { using type = T; };
+struct pick_pt <I, _type <T> > : id_t <T> { };
 
 template <size_t I, size_t L, typename T>
 struct pick_pt <I, repeat <L, T> > : _if_t <(I < L), T, nat> { };
@@ -130,7 +130,7 @@ template <size_t N, typename T>
 struct rep_t : cons_t <T, rep <N-1, T> > { };
 
 template <typename T>
-struct rep_t <0, T> { using type = pack <>; };
+struct rep_t <0, T> : pack <> { };
 
 //-----------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ struct choose_rng_r : if_cons <
 > { };
 
 template <size_t B, size_t E, int s, typename P, size_t I>
-struct choose_rng_r <B, E, s, P, I, true> { using type = P; };
+struct choose_rng_r <B, E, s, P, I, true> : id_t <P> { };
 
 template <size_t B, size_t E, int s, typename P, bool = (s > 0)>
 struct choose_rng_d : choose_rng_r <B, E, s, P> { };
@@ -177,7 +177,7 @@ struct choose_pt <sizes <I, In...>, P> :
 	cons_t <pick_p <I, P>, choose_p <sizes <In...>, P> > { };
 
 template <typename P>
-struct choose_pt <sizes <>, P> { using type = null_of <P>; };
+struct choose_pt <sizes <>, P> : null_of_t <P> { };
 
 template <size_t B, size_t E, int s, typename P>
 struct choose_pt <sz_range <B, E, s>, P> :

@@ -65,7 +65,7 @@ struct join_t <E <L...>, F <R...>, P...> :
 	join_t <typename fuse <E, F>::template map <L..., R...>, P...> { };
 
 template <template <typename...> class E, typename... T>
-struct join_t <E <T...> > { using type = E <T...>; };
+struct join_t <E <T...> > : id_t <E <T...> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -109,7 +109,7 @@ template <template <typename...> class C, typename E, typename... En>
 struct flip_pt <C <E, En...> > : join_t <flip_p <C <En...> >, C <E> > { };
 
 template <template <typename...> class C>
-struct flip_pt <C <> > { using type = C <>; };
+struct flip_pt <C <> > : id_t <C <> > { };
 
 template <typename... E> using flip_t = flip_pt <pack <E...> >;
 template <typename... E> using flip   = type_of <flip_t <E...> >;

@@ -46,7 +46,7 @@ template <typename F>
 class tup_applier
 {
 	template <typename... A>
-	struct map_t { using type = F(pack <A...>); };
+	struct map_t : id_t <F(pack <A...>)> { };
 
 	template <typename... A>
 	struct map_t <pack <A...> > : map_t <A...> { };

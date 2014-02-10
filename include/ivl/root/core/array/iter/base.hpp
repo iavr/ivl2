@@ -62,12 +62,12 @@ protected:
 //-----------------------------------------------------------------------------
 
 template <
-	bool F, typename V, typename R = seq_ref <V>, typename T = seq_val <V>,
+	typename V, typename R = seq_ref <V>, typename T = seq_val <V>,
 	typename D = seq_diff <V>, typename P = remove_ref <R>*
 >
 struct base_trav : base_iter <V, R, T, D, P>
 {
-	static constexpr bool finite = F;
+	static constexpr bool finite = trav_fin <V>{}();  // TODO: () needed by GCC
 };
 
 //-----------------------------------------------------------------------------

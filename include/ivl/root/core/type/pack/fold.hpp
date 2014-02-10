@@ -336,7 +336,7 @@ namespace details {
 template <typename P, bool = any_null_p <P>{}>
 struct tran_ : cons_t <cars_p <P>, type_of <tran_<cdrs_p <P> > > > { };
 
-template <typename P> struct tran_<P, true> { using type = null_of <P>; };
+template <typename P> struct tran_<P, true> : null_of_t <P> { };
 
 }  // namespace details
 

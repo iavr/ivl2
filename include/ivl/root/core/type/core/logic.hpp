@@ -75,10 +75,10 @@ template <typename A, typename B> using neq   = expr <!eq <A, B>()>;
 //-----------------------------------------------------------------------------
 
 template <bool C, typename T, typename E>
-struct _if_t { using type = E; };
+struct _if_t : id_t <E> { };
 
 template <typename T, typename E>
-struct _if_t <true, T, E> { using type = T; };
+struct _if_t <true, T, E> : id_t <T> { };
 
 template <bool C, typename T, typename E>
 using _if = type_of <_if_t <C, T, E> >;

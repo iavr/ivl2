@@ -25,7 +25,7 @@ union  C final { int x; };
 struct D { virtual void f() = 0; };
 struct E { virtual void f() { } };
 struct F { using base_type = A; };
-struct G : A { using type = int; };
+struct G : A, id_t <int> { };
 enum H { a };
 struct I;
 struct J { int x; };

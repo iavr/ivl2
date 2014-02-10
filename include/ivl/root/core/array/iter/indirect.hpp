@@ -90,10 +90,10 @@ public:
 
 template <typename V, typename R, typename T, typename U>
 class traversor <data::indirect <>, V, R, T, U> :
-	public base_trav <true, V, R, T>,
+	public base_trav <V, R, T>,
 	private raw_tuple <V, rref_opt <U> >
 {
-	using B = base_trav <true, V, R, T>;
+	using B = base_trav <V, R, T>;
 	using B::ref;
 
 	using D = seq_diff <B>;

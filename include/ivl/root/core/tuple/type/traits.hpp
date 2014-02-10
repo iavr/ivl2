@@ -146,13 +146,13 @@ template <typename T> using l_ref  = type_of <l_ref_t <T> >;
 template <typename T> using cl_ref = type_of <cl_ref_t <T> >;
 
 template <typename... E>
-struct r_ref_t <pack <E...> > { using type = pre_tuple <r_ref <E>...>; };
+struct r_ref_t <pack <E...> > : id_t <pre_tuple <r_ref <E>...> > { };
 
 template <typename... E>
-struct l_ref_t <pack <E...> > { using type = pre_tuple <l_ref <E>...>; };
+struct l_ref_t <pack <E...> > : id_t <pre_tuple <l_ref <E>...> > { };
 
 template <typename... E>
-struct cl_ref_t <pack <E...> > { using type = pre_tuple <cl_ref <E>...>; };
+struct cl_ref_t <pack <E...> > : id_t <pre_tuple <cl_ref <E>...> > { };
 
 template <typename F, typename... E>
 struct r_ref_t <F(pack <E...>)> : ret_t <r_ref <F>(r_ref <E>...)> { };
@@ -288,7 +288,7 @@ template <typename... T> struct tup_args_t;
 template <typename... T> using  tup_args = type_of <tup_args_t <T...> >;
 
 template <typename... T>
-struct tup_args_t { using type = tup_tran <tup_arg <T>...>; };
+struct tup_args_t : id_t <tup_tran <tup_arg <T>...> > { };
 
 template <typename T> struct tup_args_t <T> : tup_types_t <T> { };
 
@@ -338,10 +338,10 @@ struct copy_rec <collection <S, A...> > :
 	copy_rec <type_of <collection <S, A...> > > { };
 
 template <typename... E>
-struct copy_rec <pack <E...> > { using type = tuple <copy <E>...>; };
+struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };
 
 template <typename F, typename... E>
-struct copy_rec <F(pack <E...>)>  { using type = copy <ret <F(E...)> >; };
+struct copy_rec <F(pack <E...>)>  : id_t <copy <ret <F(E...)> > > { };
 
 }  // namespace details
 

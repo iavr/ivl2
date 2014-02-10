@@ -78,10 +78,10 @@ template <typename P> struct null_of_t;
 template <typename P> using  null_of = type_of <null_of_t <P> >;
 
 template <template <typename...> class C, typename... E>
-struct null_of_t <C <E...> > { using type = C <>; };
+struct null_of_t <C <E...> > : id_t <C <> > { };
 
 template <typename T>
-struct null_of_t <_type <T> > { using type = pack <>; };
+struct null_of_t <_type <T> > : pack <> { };
 
 //-----------------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ template <
 	template <typename...> class F,
 	template <typename...> class C, typename... E
 >
-struct embed_t <F, C <E...> > { using type = F <E...>; };
+struct embed_t <F, C <E...> > : id_t <F <E...> > { };
 
 template <template <typename...> class F, typename P>
 using embed = type_of <embed_t <F, P> >;
@@ -109,12 +109,12 @@ template <template <typename...> class F, typename P> struct map_t;
 template <
 	template <typename...> class F,
 	template <typename...> class C, typename... E
-> struct type_map_t <F, C <E...> > { using type = C <type_of <F <E> >...>; };
+> struct type_map_t <F, C <E...> > : id_t <C <type_of <F <E> >...> > { };
 
 template <
 	template <typename...> class F,
 	template <typename...> class C, typename... E
-> struct map_t <F, C <E...> > { using type = C <F <E>...>; };
+> struct map_t <F, C <E...> > : id_t <C <F <E>...> > { };
 
 template <template <typename...> class F, typename P>
 using type_map = type_of <type_map_t <F, P> >;

@@ -106,7 +106,7 @@ template <typename T, typename S>
 struct copy_rec <atom <T, S> > : copy_rec <type_of <atom <T, S> > > { };
 
 template <typename T>
-struct copy_rec <_type <T> > { using type = atom <copy <T> >; };
+struct copy_rec <_type <T> > : id_t <atom <copy <T> > > { };
 
 }  // namespace details
 

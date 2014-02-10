@@ -77,12 +77,12 @@ template <typename T> using extent = type_of <extent_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T>           struct remove_ext_t        { using type = T; };
-template <typename T>           struct remove_ext_t <T[]>  { using type = T; };
-template <typename T, size_t N> struct remove_ext_t <T[N]> { using type = T; };
+template <typename T>           struct remove_ext_t        : id_t <T> { };
+template <typename T>           struct remove_ext_t <T[]>  : id_t <T> { };
+template <typename T, size_t N> struct remove_ext_t <T[N]> : id_t <T> { };
 
 template <typename T>
-struct remove_all_ext_t { using type = T; };
+struct remove_all_ext_t : id_t <T> { };
 
 template <typename T>
 struct remove_all_ext_t <T[]> : remove_all_ext_t <T> { };

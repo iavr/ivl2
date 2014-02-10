@@ -44,12 +44,13 @@ namespace details {
 
 template <typename A>
 class traversor <data::atom <>, A> :
-	public base_trav <false, remove_ref <A>*, rref_opt <A> >,
+	public base_iter <remove_ref <A>*, rref_opt <A> >,
 	private raw_tuple <rref_opt <A> >
 {
 	using I = remove_ref <A>*;
 	using R = rref_opt <A>;
-	using B = base_trav <false, I, R>;
+
+	using B = base_iter <I, R>;
 	using B::ref;
 
 	using D = seq_diff <B>;
@@ -59,6 +60,8 @@ class traversor <data::atom <>, A> :
 
 public:
 	INLINE constexpr explicit traversor(A&& a) : E(fwd <A>(a)) { }
+
+	static constexpr bool finite = false;
 
 	INLINE constexpr operator bool() const { return true; }
 

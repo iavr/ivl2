@@ -84,10 +84,10 @@ public:
 
 template <typename I, typename R, typename T>
 class traversor <data::iter <>, I, R, T> :
-	public base_trav <true, I, R, T>,
+	public base_iter <I, R, T>,
 	private raw_tuple <I, I>
 {
-	using B = base_trav <true, I, R, T>;
+	using B = base_iter <I, R, T>;
 	using B::ref;
 
 	using D = seq_diff <B>;
@@ -105,6 +105,8 @@ class traversor <data::iter <>, I, R, T> :
 
 public:
 	using E::E;
+
+	static constexpr bool finite = true;
 
 	INLINE constexpr operator bool() const { return i() != e(); }
 
