@@ -71,8 +71,8 @@ namespace types {
 namespace traits {
 
 template <typename T> struct as_tuple;
-template <typename T> struct atom_of_t;
-template <typename T> using  atom_of = type_of <atom_of_t <T> >;
+template <typename T> struct tup_atom_of_t;
+template <typename T> using  tup_atom_of = type_of <tup_atom_of_t <T> >;
 template <typename T> struct is_op_ref;
 
 namespace details {

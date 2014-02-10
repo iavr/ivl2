@@ -281,7 +281,7 @@ template <typename... P> using tup_tran   = type_of <tup_tran_t <P...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct tup_arg_t : tup_types <atom_of <T> > { };
+template <typename T> struct tup_arg_t : tup_types <tup_atom_of <T> > { };
 template <typename T> using  tup_arg = type_of <tup_arg_t <T> >;
 
 template <typename... T> struct tup_args_t;

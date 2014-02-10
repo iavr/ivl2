@@ -38,7 +38,7 @@ namespace data {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct rev { };
+template <typename... D> struct atom { };
 template <typename... D> struct iter { };
 
 template <typename... D> struct aggr { };

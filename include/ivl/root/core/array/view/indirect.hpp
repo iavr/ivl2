@@ -64,6 +64,8 @@ class sequence <data::indirect <>, K, U> :
 	using ST = indirect_types <K, U>;
 	friend base_seq <sequence, ST>;
 
+	using S = seq_size <ST>;
+
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
 	using IC = c_iter <ST>;
@@ -93,7 +95,7 @@ class sequence <data::indirect <>, K, U> :
 public:
 	using E::E;
 
-	INLINE constexpr size_t size() const { return i().size(); }
+	INLINE constexpr S size() const { return i().size(); }
 
 	INLINE           IR begin() &&     { return IR(i_f().begin(), u_f()); }
 	INLINE           IL begin() &      { return IL(i().begin(),   u()); }
@@ -106,6 +108,7 @@ public:
 	INLINE           VR trav() &&     { return VR(i_f().trav(), u_f()); }
 	INLINE           VL trav() &      { return VL(i().trav(),   u()); }
 	INLINE constexpr VC trav() const& { return VC(i().trav(),   u()); }
+
 };
 
 //-----------------------------------------------------------------------------

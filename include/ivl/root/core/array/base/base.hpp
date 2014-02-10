@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename T, typename B = T*,
+	typename T, typename B = remove_ref <T>*,
 	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
 	typename S = seq_size <B>, typename... U
@@ -162,6 +162,9 @@ public:
 //-----------------------------------------------------------------------------
 
 }  // namespace details
+
+using details::seq_types;
+using details::base_seq;
 
 //-----------------------------------------------------------------------------
 

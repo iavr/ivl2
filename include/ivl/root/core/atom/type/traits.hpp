@@ -57,6 +57,9 @@ template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
 template <typename T>
 struct as_tuple : expr <is_tuple <T>() || is_atom <T>()> { };
 
+template <typename T>
+struct as_seq : expr <is_seq <T>() || is_atom <T>()> { };
+
 //-----------------------------------------------------------------------------
 
 namespace details {
@@ -80,8 +83,13 @@ using atom_attr = type_of <atom_attr_t <T, S> >;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct atom_of_t : _if_t <as_tuple <T>{}, T, atoms::raw_atom <T> > { };
-// atom_of <> defined @tuple/begin
+struct tup_atom_of_t : _if_t <as_tuple <T>{}, T, atoms::atom <T> > { };
+
+template <typename T>
+struct seq_atom_of_t : _if_t <as_seq <T>{}, T, atoms::atom <T> > { };
+
+// tup_atom_of <> defined @tuple/begin
+// seq_atom_of <> defined @array/begin
 
 //-----------------------------------------------------------------------------
 
@@ -90,7 +98,7 @@ namespace details {
 // extending definition @tuple/type/traits
 template <template <typename...> class C, typename... E>
 struct tup_tmp_type <C <E...>, true> :
-	id_t <raw_atom <tmp <remove_type <E>...> > > { };
+	id_t <atom <tmp <remove_type <E>...> > > { };
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_type <C <E...>, false> : id_t <tmp <E...> > { };

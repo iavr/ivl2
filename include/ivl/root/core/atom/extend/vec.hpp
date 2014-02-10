@@ -46,7 +46,7 @@ namespace details {
 // builtin-function atom: vec-()
 // class atom: vec- [], (), _<>()
 template <typename T, typename S>
-struct store <T, S, numbers <0, 1> > : afun::tvec <T, afun::bra_vec <T> >
+struct atom_impl <T, S, numbers <0, 1> > : afun::tvec <T, afun::bra_vec <T> >
 {
 	using afun::tvec <T, afun::bra_vec <T> >::tvec;
 };

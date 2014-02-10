@@ -39,7 +39,8 @@ namespace details {
 
 using namespace types;
 using namespace tuples;
-using namespace tuples::details;
+using tuples::details::elem_store;
+using namespace arrays;
 
 }  // namespace details
 }  // namespace atoms

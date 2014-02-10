@@ -76,16 +76,16 @@ template <typename... U> using join_tup = collection <data::join <>, U...>;
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using apply_tuple = apply_tup <F, atom_of <A>...>;
+using apply_tuple = apply_tup <F, tup_atom_of <A>...>;
 
 template <typename F, typename... A>
-using loop_tuple = loop_tup <F, atom_of <A>...>;
+using loop_tuple = loop_tup <F, tup_atom_of <A>...>;
 
 template <typename F, typename... A>
-using scan_tuple = scan_tup <F, atom_of <A>...>;
+using scan_tuple = scan_tup <F, tup_atom_of <A>...>;
 
-template <typename... U> using zip_tuple  = zip_tup  <atom_of <U>...>;
-template <typename... U> using join_tuple = join_tup <atom_of <U>...>;
+template <typename... U> using zip_tuple  = zip_tup  <tup_atom_of <U>...>;
+template <typename... U> using join_tuple = join_tup <tup_atom_of <U>...>;
 
 //-----------------------------------------------------------------------------
 

@@ -36,7 +36,6 @@
 
 #include "store/base.hpp"
 #include "store/atom.hpp"
-#include "store/raw.hpp"
 
 //-----------------------------------------------------------------------------
 

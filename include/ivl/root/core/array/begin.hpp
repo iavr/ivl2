@@ -73,6 +73,11 @@ using namespace arrays;
 
 namespace types {
 namespace traits {
+
+template <typename T> struct as_seq;
+template <typename T> struct seq_atom_of_t;
+template <typename T> using  seq_atom_of = type_of <seq_atom_of_t <T> >;
+
 namespace details {
 
 using namespace arrays;

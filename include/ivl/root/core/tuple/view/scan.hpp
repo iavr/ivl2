@@ -62,15 +62,15 @@ class scan_impl <F, pack <A...>, sizes <I...> > : public base_tup <
 
 	template <size_t J>
 	INLINE nat
-	ref_at() && { return fun::fwd()(J, _at._<J>(arg <I>::fwd())...), nat(); }
+	call_at() && { return fun::fwd()(J, _at._<J>(arg <I>::fwd())...), nat(); }
 
 	template <size_t J>
 	INLINE nat
-	ref_at() & { return fun::get()(J, _at._<J>(arg <I>::get())...), nat(); }
+	call_at() & { return fun::get()(J, _at._<J>(arg <I>::get())...), nat(); }
 
 	template <size_t J>
 	INLINE constexpr nat
-	ref_at() const& { return fun::get()(J, _at._<J>(arg <I>::get())...), nat(); }
+	call_at() const& { return fun::get()(J, _at._<J>(arg <I>::get())...), nat(); }
 
 //-----------------------------------------------------------------------------
 

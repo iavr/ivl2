@@ -43,19 +43,19 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename S, typename A = atom_attr <T, S> >
-struct store : base_atom <atom <T, S>, _type <T> >
+struct atom_impl : base_atom <atom <T, S>, T>
 {
-	using base_atom <atom <T, S>, _type <T> >::base_atom;
+	using base_atom <atom <T, S>, T>::base_atom;
 };
 
 //-----------------------------------------------------------------------------
 
 // member_ptr atom
 template <typename T, typename S>
-class store <T, S, numbers <1, 0> > :
-	public base_atom <atom <T, S>, _type <T> >
+class atom_impl <T, S, numbers <1, 0> > :
+	public base_atom <atom <T, S>, T>
 {
-	using B = base_atom <atom <T, S>, _type <T> >;
+	using B = base_atom <atom <T, S>, T>;
 	using B::val_f;
 	using B::val;
 
@@ -84,9 +84,9 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename T, typename S>
-struct atom : store <T, S>
+struct atom : atom_impl <T, S>
 {
-	using store <T, S>::store;
+	using atom_impl <T, S>::atom_impl;
 };
 
 //-----------------------------------------------------------------------------

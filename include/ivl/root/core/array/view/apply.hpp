@@ -70,6 +70,8 @@ class apply_seq_impl <F, pack <A...>, sizes <N...> > :
 	using ST = apply_types <F, A...>;
 	friend base_seq <apply_seq <F, A...>, ST>;
 
+	using S = seq_size <ST>;
+
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
 	using IC = c_iter <ST>;
@@ -114,8 +116,7 @@ class apply_seq_impl <F, pack <A...>, sizes <N...> > :
 public:
 	using E::E;
 
-	INLINE constexpr size_t
-	size() const { return val_min(a<N>().size()...); }
+	INLINE constexpr S size() const { return val_min(a<N>().size()...); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(f(),   a<N>().begin()...); }
@@ -125,9 +126,10 @@ public:
 	INLINE           IL end() &      { return IL(f(),   a<N>().end()...); }
 	INLINE constexpr IC end() const& { return IC(f(),   a<N>().end()...); }
 
-	INLINE           VR trav() &&     { return VR(f_f(), a<N>().trav()...); }
+	INLINE           VR trav() &&     { return VR(f_f(), a_f<N>().trav()...); }
 	INLINE           VL trav() &      { return VL(f(),   a<N>().trav()...); }
 	INLINE constexpr VC trav() const& { return VC(f(),   a<N>().trav()...); }
+
 };
 
 //-----------------------------------------------------------------------------

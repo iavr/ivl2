@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class tup_applier
+class apply_type
 {
 	template <typename... A>
 	struct map_t : id_t <F(pack <A...>)> { };
@@ -57,8 +57,8 @@ public:
 };
 
 template <typename F, typename... A>
-using tup_apply_types =
-	map <tup_applier <F>::template map, tup_tran <tup_types <A>...> >;
+using apply_types =
+	map <apply_type <F>::template map, tup_tran <tup_types <A>...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -67,9 +67,9 @@ class apply_impl;
 
 template <typename F, typename... A, size_t... I>
 class apply_impl <F, pack <A...>, sizes <I...> > :
-	public base_tup <apply_tup <F, A...>, tup_apply_types <F, A...> >
+	public base_tup <apply_tup <F, A...>, apply_types <F, A...> >
 {
-	using P = tup_apply_types <F, A...>;
+	using P = apply_types <F, A...>;
 	using B = base_tup <apply_tup <F, A...>, P>;
 
 	using fun = elem <0, F>;
@@ -81,15 +81,15 @@ class apply_impl <F, pack <A...>, sizes <I...> > :
 
 	template <size_t J>
 	INLINE r_pk <J, P>
-	ref_at() && { return fun::fwd()(_at._<J>(arg <I>::fwd())...); }
+	call_at() && { return fun::fwd()(_at._<J>(arg <I>::fwd())...); }
 
 	template <size_t J>
 	INLINE l_pk <J, P>
-	ref_at() & { return fun::get()(_at._<J>(arg <I>::get())...); }
+	call_at() & { return fun::get()(_at._<J>(arg <I>::get())...); }
 
 	template <size_t J>
 	INLINE constexpr c_pk <J, P>
-	ref_at() const& { return fun::get()(_at._<J>(arg <I>::get())...); }
+	call_at() const& { return fun::get()(_at._<J>(arg <I>::get())...); }
 
 //-----------------------------------------------------------------------------
 

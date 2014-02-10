@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   T C++ template library extending syntax towards mathematical notation.
+   A C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ATOM_STORE_RAW_HPP
-#define IVL_CORE_ATOM_STORE_RAW_HPP
+#ifndef IVL_CORE_ARRAY_ITER_ATOM_HPP
+#define IVL_CORE_ARRAY_ITER_ATOM_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace atoms {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,32 +42,45 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-class atom <T, data::raw <> > : public access <raw_atom <T>, T>
+template <typename A>
+class traversor <data::atom <>, A> :
+	public base_iter <remove_ref <A>*, rref_opt <A> >,
+	private raw_tuple <rref_opt <A> >
 {
-	using P = _type <T>;
-	using B = access <raw_atom <T>, T>;
-	using U = elem_at <0, T>;
+	using I = remove_ref <A>*;
+	using R = rref_opt <A>;
 
-//-----------------------------------------------------------------------------
+	using B = base_iter <I, R>;
+	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
+
+	using E = raw_tuple <R>;
 
 public:
-	using type = P;
-	static constexpr size_t length = P::length;
+	INLINE constexpr explicit traversor(A&& a) : E(fwd <A>(a)) { }
 
-	using B::B;
+	static constexpr bool finite = false;
 
-//-----------------------------------------------------------------------------
+	INLINE constexpr operator bool() const { return true; }
 
-	template <size_t J>
-	INLINE r_ref <T> at() && { return U::fwd(); }
+	INLINE constexpr R operator*()  const { return ref(E::val()); }
+	INLINE           P operator->() const { return &(operator*()); }
 
-	template <size_t J>
-	INLINE l_ref <T> at() & { return U::get(); }
+	INLINE traversor& operator++() { return *this; }
+	INLINE traversor& operator--() { return *this; }
 
-	template <size_t J>
-	INLINE constexpr c_ref <T> at() const& { return U::get(); }
+	INLINE traversor& operator++(int) { return *this; }
+	INLINE traversor& operator--(int) { return *this; }
 
+	INLINE constexpr R operator[](D n) const { return ref(E::val()); }
+
+	INLINE traversor& operator+=(D n) { return *this; }
+	INLINE traversor& operator-=(D n) { return *this; }
+
+	INLINE traversor& operator+(D n) { return *this; }
+	INLINE traversor& operator-(D n) { return *this; }
 };
 
 //-----------------------------------------------------------------------------
@@ -76,7 +89,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace atoms
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -84,4 +97,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ATOM_STORE_RAW_HPP
+#endif  // IVL_CORE_ARRAY_ITER_ATOM_HPP

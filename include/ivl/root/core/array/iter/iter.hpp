@@ -107,7 +107,6 @@ public:
 	using E::E;
 
 	static constexpr bool finite = true;
-
 	INLINE constexpr operator bool() const { return i() != e(); }
 
 	INLINE constexpr R operator*()  const { return ref(*i()); }

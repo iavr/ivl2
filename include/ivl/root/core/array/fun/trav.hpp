@@ -67,14 +67,22 @@ struct cont_trav
 		{ return iter_trav <I>(begin(fwd <A>(a)), end(fwd <A>(a))); }
 };
 
+struct atom_trav
+{
+	template <typename A>
+	INLINE auto operator()(A&& a) const
+	-> decltype(seq_atom_of <rref_opt <A> >(fwd <A>(a)).trav())
+		{ return seq_atom_of <rref_opt <A> >(fwd <A>(a)).trav(); }
+};
+
 //-----------------------------------------------------------------------------
 
 template <typename A>
 using trav_for = cond <
 	is_iter <A>, id_fun,
-	is_seq <A>, seq_trav,
+	is_seq <A>,  seq_trav,
 	is_cont <A>, cont_trav,
-	make <atom_trav>
+	atom_trav
 >;
 
 using trav = choose_fun <trav_for>;

@@ -58,7 +58,7 @@ public:
 	template <typename... E, only_if <sizeof...(E) == N> = 0>
 	INLINE constexpr fixed_store(E&&... e) : a{fwd <T>(e)...} { }
 
-	// TODO: remove
+// 	// TODO: remove
 // 	INLINE fixed_store(initializer_list <T>&& l)
 // 		{ afun::seq_loop()(construct, afun::iter()(a), mv(l)); }
 };

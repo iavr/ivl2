@@ -34,6 +34,18 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+namespace arrays {
+namespace details {
+
+// extending definition @array/base/base
+template <typename T, typename S>
+struct seq_data_t <atoms::atom <T, S> > : id_t <T> { };
+
+}  // namespace details
+}  // namespace arrays
+
+//-----------------------------------------------------------------------------
+
 namespace atoms {
 
 //-----------------------------------------------------------------------------
@@ -42,24 +54,27 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename P>
-struct base_atom;
+template <typename T, typename P = remove_ref <T>*>
+using atom_types = seq_types <
+	r_ref <T>, P, atom_iter, atom_trav, seq_size <P>
+>;
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename E>
-class base_atom <D, _type <E> > :
-	public elem_store <pack <elem <0, E> > >, public derived <D>
+template <typename D, typename T>
+class base_atom :
+	public elem_store <elem <0, T> >, public derived <D>,
+	public atom_types <T>
 {
-	using P = _type <E>;
-	using U = elem_at <0, E>;
-	using B = elem_store <pack <U> >;
-
 //-----------------------------------------------------------------------------
+// tuple interface
+//-----------------------------------------------------------------------------
+
+	using U = elem <0, T>;
+	using B = elem_store <U>;
 
 public:
-	using base_type = base_atom;
-	using type = P;
+	using type = _type <T>;
 	static constexpr size_t length = 1;
 
 	using B::B;
@@ -67,21 +82,39 @@ public:
 //-----------------------------------------------------------------------------
 
 public:
-	INLINE           r_ref <E> val_f()      { return U::fwd(); }
-	INLINE           r_ref <E> val() &&     { return U::fwd(); }
-	INLINE           l_ref <E> val() &      { return U::get(); }
-	INLINE constexpr c_ref <E> val() const& { return U::get(); }
+	INLINE           r_ref <T> val_f()      { return U::fwd(); }
+	INLINE           r_ref <T> val() &&     { return U::fwd(); }
+	INLINE           l_ref <T> val() &      { return U::get(); }
+	INLINE constexpr c_ref <T> val() const& { return U::get(); }
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J>
-	INLINE r_ref <E> at() && { return U::fwd(); }
+	template <size_t J> INLINE r_ref <T> at() && { return U::fwd(); }
+	template <size_t J> INLINE l_ref <T> at() &  { return U::get(); }
 
 	template <size_t J>
-	INLINE l_ref <E> at() & { return U::get(); }
+	INLINE constexpr c_ref <T> at() const& { return U::get(); }
 
-	template <size_t J>
-	INLINE constexpr c_ref <E> at() const& { return U::get(); }
+//-----------------------------------------------------------------------------
+// sequence interface
+//-----------------------------------------------------------------------------
+
+private:
+	using ST = atom_types <T>;
+	using S  = seq_size <ST>;
+
+	using VR = r_trav <ST>;
+	using VL = l_trav <ST>;
+	using VC = c_trav <ST>;
+
+//-----------------------------------------------------------------------------
+
+public:
+	INLINE constexpr S size() const { return 1; }
+
+	INLINE           VR trav() &&     { return VR(U::fwd()); }
+	INLINE           VL trav() &      { return VL(U::get()); }
+	INLINE constexpr VC trav() const& { return VC(U::get()); }
 
 };
 

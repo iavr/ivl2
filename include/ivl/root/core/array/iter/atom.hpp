@@ -42,27 +42,59 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename A>
-class traversor <data::atom <>, A> :
-	public base_iter <remove_ref <A>*, rref_opt <A> >,
-	private raw_tuple <rref_opt <A> >
+template <typename I, typename R, typename T>
+class iterator <data::atom <>, I, R, T> :
+	public base_iter <I, R, T>,
+	private raw_tuple <T>
 {
-	using I = remove_ref <A>*;
-	using R = rref_opt <A>;
-
-	using B = base_iter <I, R>;
+	using B = base_iter <I, R, T>;
 	using B::ref;
 
 	using D = seq_diff <B>;
 	using P = seq_ptr <B>;
 
-	using E = raw_tuple <R>;
+	using E = raw_tuple <T>;
 
 public:
-	INLINE constexpr explicit traversor(A&& a) : E(fwd <A>(a)) { }
+	using E::E;
+
+	INLINE constexpr R operator*()  const { return ref(E::val()); }
+	INLINE           P operator->() const { return &(operator*()); }
+
+	INLINE iterator& operator++() { return *this; }
+	INLINE iterator& operator--() { return *this; }
+
+	INLINE iterator& operator++(int) { return *this; }
+	INLINE iterator& operator--(int) { return *this; }
+
+	INLINE constexpr R operator[](D n) const { return ref(E::val()); }
+
+	INLINE iterator& operator+=(D n) { return *this; }
+	INLINE iterator& operator-=(D n) { return *this; }
+
+	INLINE iterator& operator+(D n) { return *this; }
+	INLINE iterator& operator-(D n) { return *this; }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename I, typename R, typename T>
+class traversor <data::atom <>, I, R, T> :
+	public base_iter <I, R, T>,
+	private raw_tuple <T>
+{
+	using B = base_iter <I, R, T>;
+	using B::ref;
+
+	using D = seq_diff <B>;
+	using P = seq_ptr <B>;
+
+	using E = raw_tuple <T>;
+
+public:
+	using E::E;
 
 	static constexpr bool finite = false;
-
 	INLINE constexpr operator bool() const { return true; }
 
 	INLINE constexpr R operator*()  const { return ref(E::val()); }

@@ -42,26 +42,24 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct elem_store;
-
-template <typename E>
-struct elem_store <pack <E> > : E
-{
-	template <typename A = int, only_if <is_cons <E>{}, A> = 0>
-	explicit INLINE constexpr elem_store() : E() { }
-
-	template <typename A>
-	explicit INLINE constexpr elem_store(A&& a) : E(fwd <A>(a)) { }
-};
-
 template <typename... E>
-struct elem_store <pack <E...> > : E...
+struct elem_store : E...
 {
 	template <typename A = int, only_if <all_cons <E...>{}, A> = 0>
 	explicit INLINE constexpr elem_store() : E()... { }
 
 	template <typename... A, only_if <sizeof...(A) == sizeof...(E)> = 0>
 	explicit INLINE constexpr elem_store(A&&... a) : E(fwd <A>(a))... { }
+};
+
+template <typename E>
+struct elem_store <E> : E
+{
+	template <typename A = int, only_if <is_cons <E>{}, A> = 0>
+	explicit INLINE constexpr elem_store() : E() { }
+
+	template <typename A>
+	explicit INLINE constexpr elem_store(A&& a) : E(fwd <A>(a)) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -76,10 +74,10 @@ struct elem_types_t <pack <U...>, sizes <N...> > : pack <elem <N, U>...> { };
 //-----------------------------------------------------------------------------
 
 template <typename D>
-struct elems : elem_store <elem_types <tup_data <D> > >
-{
-	using elem_store <elem_types <tup_data <D> > >::elem_store;
-};
+using elem_base = embed <elem_store, elem_types <tup_data <D> > >;
+
+template <typename D>
+struct elems : elem_base <D> { using elem_base <D>::elem_base; };
 
 //-----------------------------------------------------------------------------
 
