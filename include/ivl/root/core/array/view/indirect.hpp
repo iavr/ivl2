@@ -66,11 +66,11 @@ class sequence <data::indirect <>, K, U> :
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
-	using IC = cl_iter <ST>;
+	using IC = c_iter <ST>;
 
 	using VR = r_trav <ST>;
 	using VL = l_trav <ST>;
-	using VC = cl_trav <ST>;
+	using VC = c_trav <ST>;
 
 	using E = raw_tuple <K, U>;
 	using idx   = elem <0, K>;
@@ -78,15 +78,15 @@ class sequence <data::indirect <>, K, U> :
 
 //-----------------------------------------------------------------------------
 
-	INLINE           r_ref <K>  i_f()      { return idx::fwd(); }
-	INLINE           r_ref <K>  i() &&     { return idx::fwd(); }
-	INLINE           l_ref <K>  i() &      { return idx::get(); }
-	INLINE constexpr cl_ref <K> i() const& { return idx::get(); }
+	INLINE           r_ref <K> i_f()      { return idx::fwd(); }
+	INLINE           r_ref <K> i() &&     { return idx::fwd(); }
+	INLINE           l_ref <K> i() &      { return idx::get(); }
+	INLINE constexpr c_ref <K> i() const& { return idx::get(); }
 
-	INLINE           r_ref <U>  u_f()      { return under::fwd(); }
-	INLINE           r_ref <U>  u() &&     { return under::fwd(); }
-	INLINE           l_ref <U>  u() &      { return under::get(); }
-	INLINE constexpr cl_ref <U> u() const& { return under::get(); }
+	INLINE           r_ref <U> u_f()      { return under::fwd(); }
+	INLINE           r_ref <U> u() &&     { return under::fwd(); }
+	INLINE           l_ref <U> u() &      { return under::get(); }
+	INLINE constexpr c_ref <U> u() const& { return under::get(); }
 
 //-----------------------------------------------------------------------------
 

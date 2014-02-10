@@ -218,7 +218,7 @@ template <typename C, typename T>
 using choose_l = typename C::template map <T&>;
 
 template <typename C, typename T>
-using choose_cl = typename C::template map <const T&>;
+using choose_c = typename C::template map <const T&>;
 
 //-----------------------------------------------------------------------------
 

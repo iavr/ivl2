@@ -58,8 +58,8 @@ class iterator <data::indirect <>, I, R, T, U> :
 	using iter  = elem <0, I>;
 	using under = elem <1, RU>;
 
-	INLINE           l_ref <I>  i()       { return iter::get(); }
-	INLINE constexpr cl_ref <I> i() const { return iter::get(); }
+	INLINE           l_ref <I> i()       { return iter::get(); }
+	INLINE constexpr c_ref <I> i() const { return iter::get(); }
 
 	INLINE constexpr RU u() const { return static_cast <RU>(under::get()); }
 
@@ -104,8 +104,8 @@ class traversor <data::indirect <>, V, R, T, U> :
 	using trav  = elem <0, V>;
 	using under = elem <1, RU>;
 
-	INLINE           l_ref <V>  v()       { return trav::get(); }
-	INLINE constexpr cl_ref <V> v() const { return trav::get(); }
+	INLINE           l_ref <V> v()       { return trav::get(); }
+	INLINE constexpr c_ref <V> v() const { return trav::get(); }
 
 	INLINE constexpr RU u() const { return static_cast <RU>(under::get()); }
 

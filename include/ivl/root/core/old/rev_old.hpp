@@ -58,8 +58,8 @@ class iterator <data::rev <>, I> :
 	using E = raw_tuple <I>;
 	using iter = elem <0, I>;
 
-	INLINE           l_ref <I>  i()       { return iter::get(); }
-	INLINE constexpr cl_ref <I> i() const { return iter::get(); }
+	INLINE           l_ref <I> i()       { return iter::get(); }
+	INLINE constexpr c_ref <I> i() const { return iter::get(); }
 
 public:
 	using E::E;

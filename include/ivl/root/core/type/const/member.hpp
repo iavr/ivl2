@@ -62,7 +62,7 @@ namespace details {
 
 template <typename R, typename C, C &O, R C::*M>
 using c_ref_member =
-	c_op <op::ref_member(c_ref <C, O>, c_member <R, C, M>)>;
+	c_op <op::ref_member(c_lref <C, O>, c_member <R, C, M>)>;
 
 template <typename R, typename C, C const &O, R const C::*M>
 using c_cref_member =

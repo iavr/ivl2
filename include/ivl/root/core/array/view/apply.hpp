@@ -72,11 +72,11 @@ class apply_seq_impl <F, pack <A...>, sizes <N...> > :
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
-	using IC = cl_iter <ST>;
+	using IC = c_iter <ST>;
 
 	using VR = r_trav <ST>;
 	using VL = l_trav <ST>;
-	using VC = cl_trav <ST>;
+	using VC = c_trav <ST>;
 
 	using E = raw_tuple <F, A...>;
 	using fun = elem <0, F>;
@@ -86,27 +86,27 @@ class apply_seq_impl <F, pack <A...>, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
-	INLINE           r_ref <F>  f_f()      { return fun::fwd(); }
-	INLINE           r_ref <F>  f() &&     { return fun::fwd(); }
-	INLINE           l_ref <F>  f() &      { return fun::get(); }
-	INLINE constexpr cl_ref <F> f() const& { return fun::get(); }
+	INLINE           r_ref <F> f_f()      { return fun::fwd(); }
+	INLINE           r_ref <F> f() &&     { return fun::fwd(); }
+	INLINE           l_ref <F> f() &      { return fun::get(); }
+	INLINE constexpr c_ref <F> f() const& { return fun::get(); }
 
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE rtel <K, AP>
+	INLINE r_pk <K, AP>
 	a_f() { return arg <K>::fwd(); }
 
 	template <size_t K>
-	INLINE rtel <K, AP>
+	INLINE r_pk <K, AP>
 	a() && { return arg <K>::fwd(); }
 
 	template <size_t K>
-	INLINE ltel <K, AP>
+	INLINE l_pk <K, AP>
 	a() & { return arg <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr cltel <K, AP>
+	INLINE constexpr c_pk <K, AP>
 	a() const& { return arg <K>::get(); }
 
 //-----------------------------------------------------------------------------

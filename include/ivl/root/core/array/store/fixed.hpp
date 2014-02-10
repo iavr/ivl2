@@ -91,11 +91,11 @@ class sequence <data::fixed <>, T, sizes <N> > :
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
-	using IC = cl_iter <ST>;
+	using IC = c_iter <ST>;
 
 	using VR = r_trav <ST>;
 	using VL = l_trav <ST>;
-	using VC = cl_trav <ST>;
+	using VC = c_trav <ST>;
 
 //-----------------------------------------------------------------------------
 

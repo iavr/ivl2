@@ -99,7 +99,7 @@ template <typename C, C &O, typename... A>
 struct c_ref_call : c_ref_call <C(A...), O> { };
 
 template <typename C, C &O, typename... A>
-struct c_ref_call <C(A...), O> : c_call <c_ref <C, O>(A...)> { };
+struct c_ref_call <C(A...), O> : c_call <c_lref <C, O>(A...)> { };
 
 template <typename C, C const &O, typename... A>
 struct c_cref_call : c_cref_call <C(A...), O> { };

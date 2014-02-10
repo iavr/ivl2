@@ -104,22 +104,22 @@ private:
 	using indir = indirect_tup <K, opt <T> >;
 
 	template <size_t J>
-	INLINE rtel <J, P>
+	INLINE r_pk <J, P>
 	at_f() { return der_f().template ref_at <J>(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	template <size_t J>
-	INLINE rtel <J, P>
+	INLINE r_pk <J, P>
 	at() && { return der_f().template ref_at <J>(); }
 
 	template <size_t J>
-	INLINE ltel <J, P>
+	INLINE l_pk <J, P>
 	at() & { return der().template ref_at <J>(); }
 
 	template <size_t J>
-	INLINE constexpr cltel <J, P>
+	INLINE constexpr c_pk <J, P>
 	at() const& { return der().template ref_at <J>(); }
 
 //-----------------------------------------------------------------------------
@@ -161,7 +161,7 @@ public:
 	call(F&& f, A&&... a) & { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr res <F(cl_ref <E>..., A...)>
+	INLINE constexpr res <F(c_ref <E>..., A...)>
 	call(F&& f, A&&... a) const& { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
@@ -175,7 +175,7 @@ public:
 	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr res <F(A..., cl_ref <E>...)>
+	INLINE constexpr res <F(A..., c_ref <E>...)>
 	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 //-----------------------------------------------------------------------------

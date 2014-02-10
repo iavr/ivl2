@@ -137,13 +137,13 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 //-----------------------------------------------------------------------------
 
 // extended elsewhere
-template <typename T> struct r_ref_t  : base_opt_t <T&&, T> { };
-template <typename T> struct l_ref_t  : base_opt_t <T&, T> { };
-template <typename T> struct cl_ref_t : base_opt_t <const T&, T> { };
+template <typename T> struct r_ref_t : base_opt_t <T&&, T> { };
+template <typename T> struct l_ref_t : base_opt_t <T&, T> { };
+template <typename T> struct c_ref_t : base_opt_t <const T&, T> { };
 
-template <typename T> using r_ref  = type_of <r_ref_t <T> >;
-template <typename T> using l_ref  = type_of <l_ref_t <T> >;
-template <typename T> using cl_ref = type_of <cl_ref_t <T> >;
+template <typename T> using r_ref = type_of <r_ref_t <T> >;
+template <typename T> using l_ref = type_of <l_ref_t <T> >;
+template <typename T> using c_ref = type_of <c_ref_t <T> >;
 
 template <typename... E>
 struct r_ref_t <pack <E...> > : id_t <pre_tuple <r_ref <E>...> > { };
@@ -152,7 +152,7 @@ template <typename... E>
 struct l_ref_t <pack <E...> > : id_t <pre_tuple <l_ref <E>...> > { };
 
 template <typename... E>
-struct cl_ref_t <pack <E...> > : id_t <pre_tuple <cl_ref <E>...> > { };
+struct c_ref_t <pack <E...> > : id_t <pre_tuple <c_ref <E>...> > { };
 
 template <typename F, typename... E>
 struct r_ref_t <F(pack <E...>)> : ret_t <r_ref <F>(r_ref <E>...)> { };
@@ -161,23 +161,23 @@ template <typename F, typename... E>
 struct l_ref_t <F(pack <E...>)> : ret_t <l_ref <F>(l_ref <E>...)> { };
 
 template <typename F, typename... E>
-struct cl_ref_t <F(pack <E...>)> : ret_t <cl_ref <F>(cl_ref <E>...)> { };
+struct c_ref_t <F(pack <E...>)> : ret_t <c_ref <F>(c_ref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 
-template <size_t I, typename P> using rtel_t  = r_ref_t <pick_p <I, P> >;
-template <size_t I, typename P> using ltel_t  = l_ref_t <pick_p <I, P> >;
-template <size_t I, typename P> using cltel_t = cl_ref_t <pick_p <I, P> >;
+template <size_t I, typename P> using r_pk_t = r_ref_t <pick_p <I, P> >;
+template <size_t I, typename P> using l_pk_t = l_ref_t <pick_p <I, P> >;
+template <size_t I, typename P> using c_pk_t = c_ref_t <pick_p <I, P> >;
 
-template <size_t I, typename P> using rtel  = type_of <rtel_t <I, P> >;
-template <size_t I, typename P> using ltel  = type_of <ltel_t <I, P> >;
-template <size_t I, typename P> using cltel = type_of <cltel_t <I, P> >;
+template <size_t I, typename P> using r_pk = type_of <r_pk_t <I, P> >;
+template <size_t I, typename P> using l_pk = type_of <l_pk_t <I, P> >;
+template <size_t I, typename P> using c_pk = type_of <c_pk_t <I, P> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename T> struct t_ref_t            : r_ref_t <T> { };
 template <typename T> struct t_ref_t <T&>       : l_ref_t <T> { };
-template <typename T> struct t_ref_t <const T&> : cl_ref_t <T> { };
+template <typename T> struct t_ref_t <const T&> : c_ref_t <T> { };
 template <typename T> using  t_ref              = type_of <t_ref_t <T> >;
 
 template <typename T>

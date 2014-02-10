@@ -82,7 +82,7 @@ public:
 	INLINE r_ref <F> loop() && { return B::loop_f(), fun::fwd(); }
 	INLINE l_ref <F> loop() &  { return B::loop(), fun::get()(); }
 
-	INLINE constexpr cl_ref <F> loop() const& { return B::loop(), fun::get(); }
+	INLINE constexpr c_ref <F> loop() const& { return B::loop(), fun::get(); }
 
 };
 

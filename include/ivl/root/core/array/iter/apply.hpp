@@ -73,11 +73,11 @@ class apply_iter_impl <DER, pack <I...>, R, T, F, sizes <N...>, IP> :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE ltel <K, IP>
+	INLINE l_pk <K, IP>
 	i() { return iter <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr cltel <K, IP>
+	INLINE constexpr c_pk <K, IP>
 	i() const { return iter <K>::get(); }
 
 	INLINE constexpr RF
@@ -139,11 +139,11 @@ class apply_trav_impl <DER, pack <V...>, R, T, F, sizes <N...>, VP> :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE ltel <K, VP>
+	INLINE l_pk <K, VP>
 	v() { return trav <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr cltel <K, VP>
+	INLINE constexpr c_pk <K, VP>
 	v() const { return trav <K>::get(); }
 
 	INLINE constexpr RF

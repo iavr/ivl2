@@ -58,12 +58,12 @@ public:
 	using elems <D>::elems;
 
 protected:
-	INLINE           r_ref <E>  val_f()      { return _at._<0>(der_f()); }
+	INLINE           r_ref <E> val_f()      { return _at._<0>(der_f()); }
 
 public:
-	INLINE           r_ref <E>  val() &&     { return _at._<0>(der_f()); }
-	INLINE           l_ref <E>  val() &      { return _at._<0>(der()); }
-	INLINE constexpr cl_ref <E> val() const& { return _at._<0>(der()); }
+	INLINE           r_ref <E> val() &&     { return _at._<0>(der_f()); }
+	INLINE           l_ref <E> val() &      { return _at._<0>(der()); }
+	INLINE constexpr c_ref <E> val() const& { return _at._<0>(der()); }
 };
 
 //-----------------------------------------------------------------------------
@@ -79,17 +79,17 @@ public:
 	using elems <D>::elems;
 
 protected:
-	INLINE           r_ref <E0>  fst_f()      { return _at._<0>(der_f()); }
-	INLINE           r_ref <E1>  snd_f()      { return _at._<1>(der_f()); }
+	INLINE           r_ref <E0> fst_f()      { return _at._<0>(der_f()); }
+	INLINE           r_ref <E1> snd_f()      { return _at._<1>(der_f()); }
 
 public:
-	INLINE           r_ref <E0>  fst() &&     { return _at._<0>(der_f()); }
-	INLINE           l_ref <E0>  fst() &      { return _at._<0>(der()); }
-	INLINE constexpr cl_ref <E0> fst() const& { return _at._<0>(der()); }
+	INLINE           r_ref <E0> fst() &&     { return _at._<0>(der_f()); }
+	INLINE           l_ref <E0> fst() &      { return _at._<0>(der()); }
+	INLINE constexpr c_ref <E0> fst() const& { return _at._<0>(der()); }
 
-	INLINE           r_ref <E1>  snd() &&     { return _at._<1>(der_f()); }
-	INLINE           l_ref <E1>  snd() &      { return _at._<1>(der()); }
-	INLINE constexpr cl_ref <E1> snd() const& { return _at._<1>(der()); }
+	INLINE           r_ref <E1> snd() &&     { return _at._<1>(der_f()); }
+	INLINE           l_ref <E1> snd() &      { return _at._<1>(der()); }
+	INLINE constexpr c_ref <E1> snd() const& { return _at._<1>(der()); }
 };
 
 //-----------------------------------------------------------------------------

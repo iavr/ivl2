@@ -339,9 +339,9 @@ void run()
 // 	report_pred <has_member__x, J>();
 //
 // 	report_pred <has_member__begin, A>();
-// 	report_pred <has_member__begin, array <int> >();
+// // 	report_pred <has_member__begin, array <int> >();  // TODO: ARRAY
 // 	report_pred <has_member__size, J>();
-// 	report_pred <has_member__size, array <int> >();
+// // 	report_pred <has_member__size, array <int> >();  // TODO: ARRAY
 //
 // 	report_pred <has_unique__a, A>();
 // 	report_pred <has_unique__a, M>();

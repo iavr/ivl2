@@ -26,7 +26,7 @@ B bb;
 
 int a[6] = {4, 9, -2, 0, 1, 7};
 
-struct C { array <int> operator()(size_t n) { return array <int>(n, 2); } };
+// struct C { array <int> operator()(size_t n) { return array <int>(n, 2); } };  // TODO: ARRAY
 struct D { int x; };
 struct E
 {
@@ -53,7 +53,7 @@ extern const D cdd{9};
 extern const E cee{};
 extern const F cff{};
 
-array <int> f(size_t n) { return array <int>(n, 2); };
+// array <int> f(size_t n) { return array <int>(n, 2); };  // TODO: ARRAY
 
 //-----------------------------------------------------------------------------
 
@@ -112,9 +112,8 @@ void run()
 
 		cout << "cons:" << endl;
 		cout << c_cons <G>()().x << endl;
-		cout << c_cons <array <int>(c_unsigned <12>, c_int <-4>)>() << endl;
-		// TODO: array bug: array <int>() also not working
-// 		cout << c_cons <array <int> >() << endl;
+// 		cout << c_cons <array <int>(c_unsigned <12>, c_int <-4>)>() << endl;  // TODO: ARRAY
+// 		cout << c_cons <array <int> >() << endl;  // TODO: array bug: array <int>() also not working
 		cout << endl;
 
 		cout << "cons_list:" << endl;
@@ -152,16 +151,18 @@ void run()
 		c_call <c_cons <A>()>()();
 		cout << endl;
 
-		cout << c_call <c_cons <C>(c_int <2>)>() << endl;
-		cout << endl;
+// 		// TODO: ARRAY
+// 		cout << c_call <c_cons <C>(c_int <2>)>() << endl;
+// 		cout << endl;
 
-		cout << "sig:" << endl;
-		typedef c_sig <array <int> (size_t)> S;
-		typedef S::function <f> F;
-		cout << F()(4) << endl;
-		cout << c_call <F(c_int <6>)>() << endl;
-		cout << S::call <f, c_int <8> >() << endl;
-		cout << endl;
+// 		// TODO: ARRAY
+// 		cout << "sig:" << endl;
+// 		typedef c_sig <array <int> (size_t)> S;
+// 		typedef S::function <f> F;
+// 		cout << F()(4) << endl;
+// 		cout << c_call <F(c_int <6>)>() << endl;
+// 		cout << S::call <f, c_int <8> >() << endl;
+// 		cout << endl;
 	}
 
 	{
@@ -227,11 +228,11 @@ void run()
 //-----------------------------------------------------------------------------
 
 	{
-		cout << "sizeof : " << c_sizeof <array <double> >() << endl;
+// 		cout << "sizeof : " << c_sizeof <array <double> >() << endl;  // TODO: ARRAY
 
 		cout << "static_cast : ";
 		aa(); bb();
-		c_static_cast <A, c_ref <B, bb> >()()();
+		c_static_cast <A, c_lref <B, bb> >()()();
 		cout << endl;
 		cout << endl;
 	}

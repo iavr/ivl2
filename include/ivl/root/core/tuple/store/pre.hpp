@@ -56,13 +56,13 @@ class collection <data::pre <>, E...> :
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE rtel <J, P> ref_at() && { return under <J>::fwd(); }
+	INLINE r_pk <J, P> ref_at() && { return under <J>::fwd(); }
 
 	template <size_t J>
-	INLINE ltel <J, P> ref_at() & { return under <J>::get(); }
+	INLINE l_pk <J, P> ref_at() & { return under <J>::get(); }
 
 	template <size_t J>
-	INLINE constexpr cltel <J, P> ref_at() const& { return under <J>::get(); }
+	INLINE constexpr c_pk <J, P> ref_at() const& { return under <J>::get(); }
 
 //-----------------------------------------------------------------------------
 

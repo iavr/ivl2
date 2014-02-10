@@ -56,8 +56,8 @@ class iterator <data::iter <>, I, R, T> :
 	using E = raw_tuple <I>;
 	using iter = elem <0, I>;
 
-	INLINE           l_ref <I>  i()       { return iter::get(); }
-	INLINE constexpr cl_ref <I> i() const { return iter::get(); }
+	INLINE           l_ref <I> i()       { return iter::get(); }
+	INLINE constexpr c_ref <I> i() const { return iter::get(); }
 
 public:
 	using E::E;
@@ -97,11 +97,11 @@ class traversor <data::iter <>, I, R, T> :
 	using iter = elem <0, I>;
 	using end  = elem <1, I>;
 
-	INLINE           l_ref <I>  i()       { return iter::get(); }
-	INLINE constexpr cl_ref <I> i() const { return iter::get(); }
+	INLINE           l_ref <I> i()       { return iter::get(); }
+	INLINE constexpr c_ref <I> i() const { return iter::get(); }
 
-	INLINE           l_ref <I>  e()       { return end::get(); }
-	INLINE constexpr cl_ref <I> e() const { return end::get(); }
+	INLINE           l_ref <I> e()       { return end::get(); }
+	INLINE constexpr c_ref <I> e() const { return end::get(); }
 
 public:
 	using E::E;

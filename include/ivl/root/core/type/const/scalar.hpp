@@ -170,7 +170,7 @@ using c_norm_long_double =
 //-----------------------------------------------------------------------------
 
 template <typename T, T &R>
-struct c_ref : constant <T&, c_ref <T, R> >
+struct c_lref : constant <T&, c_lref <T, R> >
 {
 	INLINE constexpr operator T&() const { return R; }
 };

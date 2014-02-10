@@ -54,13 +54,13 @@ struct seq_types
 	using value_type = remove_type <T>;
 	using size_type = S;
 
-	using fwd_iterator   = I <r_iter <B>,  r_ref <T>,  T, r_ref <U>...>;
-	using iterator       = I <l_iter <B>,  l_ref <T>,  T, l_ref <U>...>;
-	using const_iterator = I <cl_iter <B>, cl_ref <T>, T, cl_ref <U>...>;
+	using fwd_iterator   = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
+	using iterator       = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
+	using const_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
 
-	using fwd_traversor   = V <r_trav <B>,  r_ref <T>,  T, r_ref <U>...>;
-	using traversor       = V <l_trav <B>,  l_ref <T>,  T, l_ref <U>...>;
-	using const_traversor = V <cl_trav <B>, cl_ref <T>, T, cl_ref <U>...>;
+	using fwd_traversor   = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
+	using traversor       = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
+	using const_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
 
 	using fwd_reference   = seq_ref <fwd_iterator>;
 	using reference       = seq_ref <iterator>;
@@ -90,11 +90,11 @@ class base_seq : public derived <D>, public ST
 
 	using RR = r_ref <T>;
 	using RL = l_ref <T>;
-	using RC = cl_ref <T>;
+	using RC = c_ref <T>;
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
-	using IC = cl_iter <ST>;
+	using IC = c_iter <ST>;
 
 //-----------------------------------------------------------------------------
 

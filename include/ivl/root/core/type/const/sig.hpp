@@ -131,7 +131,7 @@ public:
 	using cfun_call = c_op <RC(c_cons <C>, cmethod <C, M>, V...)>;
 
 	template <typename C, C &O, R (C::*M)(A...), typename... V>
-	using ref_call = c_op <RC(c_ref <C, O>, method <C, M>, V...)>;
+	using ref_call = c_op <RC(c_lref <C, O>, method <C, M>, V...)>;
 
 	template <typename C, C const &O, R (C::*M)(A...) const, typename... V>
 	using cref_call = c_op <RC(c_cref <C, O>, cmethod <C, M>, V...)>;
@@ -153,7 +153,7 @@ public:
 	using crfun_call = c_op <RC(c_cons <C>, crmethod <C, M>, V...)>;
 
 	template <typename C, C &O, R (C::*M)(A...) &, typename... V>
-	using lref_call = c_op <RC(c_ref <C, O>, lmethod <C, M>, V...)>;
+	using lref_call = c_op <RC(c_lref <C, O>, lmethod <C, M>, V...)>;
 
 	template <typename C, C const &O, R (C::*M)(A...) const&, typename... V>
 	using clref_call = c_op <RC(c_cref <C, O>, clmethod <C, M>, V...)>;

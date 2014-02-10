@@ -67,10 +67,10 @@ public:
 //-----------------------------------------------------------------------------
 
 public:
-	INLINE           r_ref <E>  val_f()      { return U::fwd(); }
-	INLINE           r_ref <E>  val() &&     { return U::fwd(); }
-	INLINE           l_ref <E>  val() &      { return U::get(); }
-	INLINE constexpr cl_ref <E> val() const& { return U::get(); }
+	INLINE           r_ref <E> val_f()      { return U::fwd(); }
+	INLINE           r_ref <E> val() &&     { return U::fwd(); }
+	INLINE           l_ref <E> val() &      { return U::get(); }
+	INLINE constexpr c_ref <E> val() const& { return U::get(); }
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ public:
 	INLINE l_ref <E> at() & { return U::get(); }
 
 	template <size_t J>
-	INLINE constexpr cl_ref <E> at() const& { return U::get(); }
+	INLINE constexpr c_ref <E> at() const& { return U::get(); }
 
 };
 
