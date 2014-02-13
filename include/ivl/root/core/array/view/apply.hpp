@@ -45,13 +45,13 @@ namespace details {
 template <typename F, typename... A>
 using apply_ref = seq_ret <decltype(gen <F>()(*gen <A>().begin()...))>;
 
-template <typename M, typename T, typename F, typename A>
+template <typename T, typename M, typename F, typename A>
 using apply_types_impl = seq_types <
-	T, A, apply_iter, apply_trav_on <M>::template map, seq_size <A>, F
+	T, A, apply_iter, apply_trav, seq_size <A>, M, F
 >;
 
 template <typename M, typename F, typename... A>
-using apply_types = apply_types_impl <M, apply_ref <F, A...>, F, pack <A...> >;
+using apply_types = apply_types_impl <apply_ref <F, A...>, M, F, pack <A...> >;
 
 // extending definition @array/base/base
 template <typename M, typename F, typename... A>
@@ -72,7 +72,6 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
 	friend seq_base <apply_seq <M, F, A...>, ST>;
 
 	using S = seq_size <ST>;
-	using MS = typename M::size_fun;
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
@@ -118,7 +117,7 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
 public:
 	using E::E;
 
-	INLINE constexpr S size() const { return MS(a<N>().size()...); }
+	INLINE constexpr S size() const { return M().size(a<N>()...); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(f(),   a<N>().begin()...); }

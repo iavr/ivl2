@@ -42,13 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct ptr_trav
-{
-	template <typename T>
-	INLINE constexpr ptr_iter <T>
-	operator()(T* p) const { return ptr_iter <T>(p); }
-};
-
 struct seq_trav
 {
 	template <typename A>

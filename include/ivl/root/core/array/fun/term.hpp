@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_MORE_HPP
-#define IVL_CORE_ARRAY_FUN_MORE_HPP
+#ifndef IVL_CORE_ARRAY_FUN_TERM_HPP
+#define IVL_CORE_ARRAY_FUN_TERM_HPP
 
 #include <ivl/ivl>
 
@@ -42,28 +42,37 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using  all_size = val_min;
-struct all_more : _and { using size_fun = all_size; };
+template <typename S, typename M>
+struct iter_term
+{
+	template <typename... A>
+	INLINE constexpr auto
+	size(A&&... a) const
+	-> decltype(S()(fwd <A>(a).size()...))
+		{ return S()(fwd <A>(a).size()...); }
+
+	template <typename... A>
+	INLINE constexpr bool
+	more(A&&... a) const { return M()(fwd <A>(a)...); }
+};
 
 //-----------------------------------------------------------------------------
 
-struct prim_size
+using all_term = iter_term <val_min, _and>;
+
+//-----------------------------------------------------------------------------
+
+struct prim_term
 {
 	template <typename... A>
-	using size_type = typename pick <prim_seq <A...>{}, A...>::size_type;
-
-	template <typename... A>
-	INLINE constexpr size_type <A...> operator()(A&&... a) const
+	INLINE constexpr auto
+	size(A&&... a) const
+	-> decltype(get <prim_seq <A...>{}>()(fwd <A>(a)...).size())
 		{ return get <prim_seq <A...>{}>()(fwd <A>(a)...).size(); }
-};
 
-struct prim_more
-{
-	using size_fun = prim_size;
-
-	template <typename... T>
-	INLINE constexpr bool operator()(T&&... t) const
-		{ return get <prim_trav <T...>{}>()(fwd <T>(t)...); }
+	template <typename... A>
+	INLINE constexpr bool
+	more(A&&... a) const { return get <prim_trav <A...>{}>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -80,4 +89,4 @@ struct prim_more
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_MORE_HPP
+#endif  // IVL_CORE_ARRAY_FUN_TERM_HPP

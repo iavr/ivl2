@@ -38,7 +38,7 @@
 #include "fun/value.hpp"
 #include "fun/fold.hpp"
 #include "fun/trav.hpp"
-#include "fun/more.hpp"
+#include "fun/term.hpp"
 #include "fun/loop.hpp"
 
 // // TODO

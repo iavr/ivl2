@@ -159,11 +159,19 @@ template <typename I> using seq_size = type_of <seq_size_t <I> >;
 template <typename I> using seq_diff = type_of <seq_diff_t <I> >;
 template <typename I> using seq_ptr  = type_of <seq_ptr_t <I> >;
 
+//-----------------------------------------------------------------------------
+
 template <typename T> struct seq_ref_t <T*>  : id_t <T&> { };
 template <typename T> struct seq_val_t <T*>  : id_t <T> { };
 template <typename T> struct seq_size_t <T*> : id_t <size_t> { };
 template <typename T> struct seq_diff_t <T*> : id_t <ptrdiff_t> { };
 template <typename T> struct seq_ptr_t <T*>  : id_t <T*> { };
+
+template <typename T>
+struct seq_size_t <_type <T> > : id_t <size_t> { };
+
+template <typename T>
+struct seq_diff_t <_type <T> > : id_t <ptrdiff_t> { };
 
 template <typename... I>
 struct seq_size_t <pack <I...> > : common_t <seq_size <I>...> { };
@@ -253,6 +261,16 @@ template <typename T> using r_trav = type_of <r_trav_t <T> >;
 template <typename T> using l_trav = type_of <l_trav_t <T> >;
 template <typename T> using c_trav = type_of <c_trav_t <T> >;
 
+//-----------------------------------------------------------------------------
+
+template <typename T> struct r_iter_t <_type <T> > : id_t <T> { };
+template <typename T> struct l_iter_t <_type <T> > : id_t <T> { };
+template <typename T> struct c_iter_t <_type <T> > : id_t <T> { };
+
+template <typename T> struct r_trav_t <_type <T> > : id_t <T> { };
+template <typename T> struct l_trav_t <_type <T> > : id_t <T> { };
+template <typename T> struct c_trav_t <_type <T> > : id_t <T> { };
+
 template <typename... A> struct r_iter_t <pack <A...> > : pack <r_iter <A>...> { };
 template <typename... A> struct l_iter_t <pack <A...> > : pack <l_iter <A>...> { };
 template <typename... A> struct c_iter_t <pack <A...> > : pack <c_iter <A>...> { };
@@ -265,8 +283,11 @@ template <typename... A> struct c_trav_t <pack <A...> > : pack <c_trav <A>...> {
 
 namespace details {
 
-template <typename T, bool = is_ref <T>{}> struct seq_ret_ : id_t <T> { };
-template <typename T> struct seq_ret_<T, false>            : _type <T> { };
+template <typename T, bool = is_ref <T>{}>
+struct seq_ret_ : id_t <T> { };
+
+template <typename T>
+struct seq_ret_<T, false> : _type <T> { };
 
 }  // namespace details
 

@@ -42,23 +42,17 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename T>
-using apply_sw = fun_switch <
-	t_case <any_seq, S>,
-	t_case <any_tuple, T>
->;
+template <template <typename...> class C, typename S, typename T>
+using loop_switch = fun_switch <t_case <C, S>, t_case <any_tuple, T> >;
 
 template <typename S, typename T>
-using raw_loop_sw = fun_switch <
-	t_case <raw_travers, S>,
-	t_case <any_tuple, T>
->;
+using apply_sw = loop_switch <any_seq, S, T>;
 
 template <typename S, typename T>
-using loop_sw = fun_switch <
-	t_case <travers, S>,
-	t_case <any_tuple, T>
->;
+using loop_sw = loop_switch <travers, S, T>;
+
+template <typename S, typename T>
+using raw_loop_sw = loop_switch <raw_travers, S, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +60,7 @@ using apply = switch_fun_of <apply_sw <seq_apply, tup_apply> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename M = prim_more>
+template <typename M = prim_term>
 using head_loop_on = switch_fun_of <cdr_switch <
 	loop_sw <seq_head_loop_on <M>, tup_head_loop>
 > >;
@@ -87,8 +81,7 @@ using sep_loop = bind_of <sep_loop_>;
 
 //-----------------------------------------------------------------------------
 
-template <typename M = prim_more>
-struct loop_on : switch_fun_of <loop_sw <seq_loop_on <M>, tup_loop> >
+struct sep_loop_opt
 {
 	// TODO: keys
 	template <typename S>
@@ -99,7 +92,18 @@ struct loop_on : switch_fun_of <loop_sw <seq_loop_on <M>, tup_loop> >
 
 //-----------------------------------------------------------------------------
 
+template <typename M = prim_term>
+struct loop_on : sep_loop_opt,
+	switch_fun_of <loop_sw <seq_loop_on <M>, tup_loop> > { };
+
+template <typename M = prim_term>
+struct raw_loop_on : sep_loop_opt,
+	switch_fun_of <raw_loop_sw <seq_loop_on <M>, tup_loop> > { };
+
+//-----------------------------------------------------------------------------
+
 using loop      = loop_on <>;
+using raw_loop  = raw_loop_on <>;
 using head_loop = head_loop_on <>;
 
 //-----------------------------------------------------------------------------
@@ -111,6 +115,8 @@ using head_loop = head_loop_on <>;
 using details::apply;
 using details::loop;
 using details::loop_on;
+using details::raw_loop;
+using details::raw_loop_on;
 using details::head_loop;
 using details::head_loop_on;
 using details::sep_loop;

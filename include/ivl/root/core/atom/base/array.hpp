@@ -54,10 +54,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename P = remove_ref <T>*>
-using atom_types = seq_types <
-	r_ref <T>, P, atom_iter, atom_trav, seq_size <P>
->;
+template <typename T, typename R = rref_opt <T> >
+using atom_types = seq_types <R, _type <R>, atom_iter, atom_trav>;
 
 //-----------------------------------------------------------------------------
 

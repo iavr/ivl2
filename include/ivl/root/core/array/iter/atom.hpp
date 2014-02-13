@@ -44,10 +44,10 @@ namespace details {
 
 template <typename I, typename R, typename T>
 class iterator <data::atom <>, I, R, T> :
-	public base_iter <I, R, T>,
+	public base_iter <I, R, T, size_t>,
 	private raw_tuple <T>
 {
-	using B = base_iter <I, R, T>;
+	using B = base_iter <I, R, T, size_t>;
 	using B::ref;
 
 	using D = seq_diff <B>;
@@ -80,10 +80,10 @@ public:
 
 template <typename I, typename R, typename T>
 class traversor <data::atom <>, I, R, T> :
-	public base_iter <I, R, T>,
+	public base_iter <I, R, T, size_t>,
 	private raw_tuple <T>
 {
-	using B = base_iter <I, R, T>;
+	using B = base_iter <I, R, T, size_t>;
 	using B::ref;
 
 	using D = seq_diff <B>;

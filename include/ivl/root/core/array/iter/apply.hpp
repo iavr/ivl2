@@ -43,17 +43,19 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename DER, typename I, typename R, typename T, typename F,
-	typename N = sz_rng_of_p <I>, typename IP = I
+	typename I, typename R, typename T, typename M, typename F,
+	typename N = sz_rng_of_p <I>, typename IP = I,
+	typename DER = apply_iter <I, R, T, M, F>
 >
 struct apply_iter_impl;
 
 template <
-	typename DER, typename... I, typename R, typename T, typename F,
-	size_t... N, typename IP
+	typename... I, typename R, typename T, typename M, typename F,
+	size_t... N, typename IP, typename DER
 >
-class apply_iter_impl <DER, pack <I...>, R, T, F, sizes <N...>, IP> :
-	public derived <DER>, public base_iter <IP, R, T>,
+class apply_iter_impl <pack <I...>, R, T, M, F, sizes <N...>, IP, DER> :
+	public derived <DER>,
+	public base_iter <IP, R, T>,
 	private raw_tuple <rref_opt <F>, I...>
 {
 	using B = base_iter <IP, R, T>;
@@ -109,17 +111,19 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename DER, typename M, typename V, typename R, typename T, typename F,
-	typename N = sz_rng_of_p <V>, typename VP = V
+	typename V, typename R, typename T, typename M, typename F,
+	typename N = sz_rng_of_p <V>, typename VP = V,
+	typename DER = apply_trav <VP, R, T, M, F>
 >
 struct apply_trav_impl;
 
 template <
-	typename DER, typename M, typename... V, typename R, typename T, typename F,
-	size_t... N, typename VP
+	typename... V, typename R, typename T, typename M, typename F,
+	size_t... N, typename VP, typename DER
 >
-class apply_trav_impl <DER, M, pack <V...>, R, T, F, sizes <N...>, VP> :
-	public derived <DER>, public base_trav <VP, R, T>,
+class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, VP, DER> :
+	public derived <DER>,
+	public base_trav <VP, R, T>,
 	private raw_tuple <rref_opt <F>, V...>
 {
 	using B = base_trav <VP, R, T>;
@@ -135,6 +139,8 @@ class apply_trav_impl <DER, M, pack <V...>, R, T, F, sizes <N...>, VP> :
 
 	template <size_t K>
 	using trav = elem_at <K + 1, RF, V...>;
+
+	using term = raw_type <M>;
 
 //-----------------------------------------------------------------------------
 
@@ -154,7 +160,7 @@ class apply_trav_impl <DER, M, pack <V...>, R, T, F, sizes <N...>, VP> :
 public:
 	using E::E;
 
-	INLINE constexpr operator bool() const { return M()(v<N>()...); }
+	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
 
 	INLINE constexpr R operator*()  const { return ref(f()(*v<N>()...)); }
 	INLINE           P operator->() const { return &(operator*()); }
@@ -176,22 +182,20 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R, typename T, typename F>
-struct iterator <data::apply <>, I, R, T, F> :
-	apply_iter_impl <apply_iter <I, R, T, F>, I, R, T, F>
+template <typename I, typename R, typename T, typename M, typename F>
+struct iterator <data::apply <>, I, R, T, M, F> :
+	apply_iter_impl <I, R, T, M, F>
 {
-	using apply_iter_impl <apply_iter <I, R, T, F>, I, R, T, F>
-		::apply_iter_impl;
+	using apply_iter_impl <I, R, T, M, F>::apply_iter_impl;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename M, typename V, typename R, typename T, typename F>
-struct traversor <data::apply <>, M, V, R, T, F> :
-	apply_trav_impl <apply_trav <M, V, R, T, F>, M, V, R, T, F>
+template <typename V, typename R, typename T, typename M, typename F>
+struct traversor <data::apply <>, V, R, T, M, F> :
+	apply_trav_impl <V, R, T, M, F>
 {
-	using apply_trav_impl <apply_trav <M, V, R, T, F>, M, V, R, T, F>
-		::apply_trav_impl;
+	using apply_trav_impl <V, R, T, M, F>::apply_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

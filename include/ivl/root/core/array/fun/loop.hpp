@@ -43,31 +43,31 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // no alias: often used
-template <typename M = prim_more>
+template <typename M = prim_term>
 struct seq_apply_on : uref_of <apply_sequence_on <M>::template map> { };
 
 //-----------------------------------------------------------------------------
 
-template <template <typename> class C, typename I>
-using raw_iter_sw = fun_switch <
-	t_case <cont_travers, C <I> >,
-	t_case <iter_travers, I>
+template <template <typename...> class C, typename I, typename... T>
+using iter_sw = fun_switch <
+	t_case <seq_travers, C <I, T...> >,
+	t_case <trav_travers, I>
 >;
 
-template <template <typename> class C, typename I>
-using iter_sw = fun_switch <
-	t_case <seq_travers, C <I> >,
-	t_case <trav_travers, I>
+template <template <typename...> class C, typename I, typename... T>
+using raw_iter_sw = fun_switch <
+	t_case <cont_travers, C <I, T...> >,
+	t_case <iter_travers, I>
 >;
 
 //-----------------------------------------------------------------------------
 
-template <typename L>
+template <typename L, typename T>
 struct cont_loop
 {
 	template <typename F, typename... A>
 	INLINE F&& operator()(F&& f, A&&... a) const
-		{ return L()(fwd <F>(f), trav()(fwd <A>(a))...); }
+		{ return L()(fwd <F>(f), T()(fwd <A>(a))...); }
 };
 
 template <typename L>
@@ -86,14 +86,21 @@ struct iter_loop_on
 	template <typename F, typename... T>
 	INLINE F&& operator()(F&& f, T&&... t) const
 	{
-		for (; M()(t...); thru{++t...})
+		for (; M().more(t...); thru{++t...})
 			fwd <F>(f)(*t...);
 		return fwd <F>(f);
 	}
 };
 
-template <typename M = prim_more>
-using seq_loop_on = switch_fun_of <iter_sw <cont_loop, iter_loop_on <M> > >;
+template <typename M = prim_term>
+using seq_loop_on = switch_fun_of <
+	iter_sw <cont_loop, iter_loop_on <M>, trav>
+>;
+
+template <typename M = prim_term>
+using seq_raw_loop_on = switch_fun_of <
+	raw_iter_sw <cont_loop, iter_loop_on <M>, raw_trav>
+>;
 
 //-----------------------------------------------------------------------------
 
@@ -103,13 +110,13 @@ struct iter_head_loop_on
 	template <typename F, typename G, typename... T>
 	INLINE void operator()(F&& f, G&& g, T&&... t) const
 	{
-		if (M()(t...))
+		if (M().more(t...))
 			fwd <F>(f)(*t...),
 			seq_loop_on <M>()(fwd <G>(g), ++t...);
 	}
 };
 
-template <typename M = prim_more>
+template <typename M = prim_term>
 using seq_head_loop_on = switch_fun_of <cdr_switch <
 	iter_sw <cont_head_loop, iter_head_loop_on <M> >
 > >;
@@ -118,6 +125,7 @@ using seq_head_loop_on = switch_fun_of <cdr_switch <
 
 using seq_apply     = seq_apply_on <>;
 using seq_loop      = seq_loop_on <>;
+using seq_raw_loop  = seq_raw_loop_on <>;
 using seq_head_loop = seq_head_loop_on <>;
 
 //-----------------------------------------------------------------------------
@@ -130,6 +138,8 @@ using details::seq_apply;
 using details::seq_apply_on;
 using details::seq_loop;
 using details::seq_loop_on;
+using details::seq_raw_loop;
+using details::seq_raw_loop_on;
 using details::seq_head_loop;
 using details::seq_head_loop_on;
 
