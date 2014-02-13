@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename... A> class sequence;
+template <typename C, typename... A> struct sequence;
 
 //-----------------------------------------------------------------------------
 
@@ -55,11 +55,23 @@ using fixed_array = sequence <data::fixed <>, T, sizes <N...> >;
 template <typename T>
 using heap_array = sequence <data::heap <>, T>;
 
+//-----------------------------------------------------------------------------
+
 template <typename K, typename U>
 using indirect_seq = sequence <data::indirect <>, K, U>;
 
-template <typename F, typename... A>
-using apply_seq = sequence <data::apply <>, F, A...>;
+template <typename M, typename F, typename... A>
+using apply_seq = sequence <data::apply <>, M, F, A...>;
+
+//-----------------------------------------------------------------------------
+
+template <typename M, typename F, typename... A>
+using apply_sequence = apply_seq <M, F, seq_atom_of <A>...>;
+
+//-----------------------------------------------------------------------------
+
+template <typename M> using apply_seq_on      = bind <apply_seq, M>;
+template <typename M> using apply_sequence_on = bind <apply_sequence, M>;
 
 //-----------------------------------------------------------------------------
 
@@ -74,6 +86,12 @@ using array = type_of <array_t <T, N...> >;
 
 //-----------------------------------------------------------------------------
 
+// extended elsewhere
+template <typename A> struct seq_data_t;
+template <typename A> using  seq_data = type_of <seq_data_t <A> >;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::sequence;
@@ -82,7 +100,12 @@ using details::fixed_array;
 using details::heap_array;
 
 using details::indirect_seq;
+
 using details::apply_seq;
+using details::apply_seq_on;
+
+using details::apply_sequence;
+using details::apply_sequence_on;
 
 //-----------------------------------------------------------------------------
 

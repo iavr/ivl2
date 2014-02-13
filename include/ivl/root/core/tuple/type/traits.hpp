@@ -46,8 +46,8 @@ namespace details {
 
 template <typename T> struct is_tuple_ : _false { };
 
-template <typename S, typename... E>
-struct is_tuple_<collection <S, E...> > : _true { };
+template <typename C, typename... E>
+struct is_tuple_<collection <C, E...> > : _true { };
 
 }  // namespace details
 
@@ -333,9 +333,9 @@ template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
 namespace details {
 
 // extending definition @type/traits/transform
-template <typename S, typename... A>
-struct copy_rec <collection <S, A...> > :
-	copy_rec <type_of <collection <S, A...> > > { };
+template <typename C, typename... A>
+struct copy_rec <collection <C, A...> > :
+	copy_rec <type_of <collection <C, A...> > > { };
 
 template <typename... E>
 struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };

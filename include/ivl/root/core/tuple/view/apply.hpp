@@ -67,10 +67,10 @@ class apply_impl;
 
 template <typename F, typename... A, size_t... I>
 class apply_impl <F, pack <A...>, sizes <I...> > :
-	public base_tup <apply_tup <F, A...>, apply_types <F, A...> >
+	public tup_base <apply_tup <F, A...>, apply_types <F, A...> >
 {
 	using P = apply_types <F, A...>;
-	using B = base_tup <apply_tup <F, A...>, P>;
+	using B = tup_base <apply_tup <F, A...>, P>;
 
 	using fun = elem <0, F>;
 	template <size_t J> using arg = elem_at <J + 1, F, A...>;

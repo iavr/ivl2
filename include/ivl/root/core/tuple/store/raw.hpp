@@ -43,7 +43,8 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::raw <>, E...> : public access <raw_tuple <E...>, E...>
+class collection <data::raw <>, E...> :
+	public access <raw_tuple <E...>, E...>
 {
 	using P = pack <E...>;
 	using B = access <raw_tuple <E...>, E...>;

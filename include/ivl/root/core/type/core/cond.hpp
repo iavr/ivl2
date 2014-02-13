@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_META_HPP
-#define IVL_CORE_TUPLE_FUN_META_HPP
+#ifndef IVL_CORE_TYPE_CORE_COND_HPP
+#define IVL_CORE_TYPE_CORE_COND_HPP
 
 #include <ivl/ivl>
 
@@ -34,97 +34,93 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace types {
 
 //-----------------------------------------------------------------------------
+
+namespace logic {
+
+//-----------------------------------------------------------------------------
+
+template <typename... T> struct cond_t;
+template <typename... T> using  cond = type_of <cond_t <T...> >;
+
+template <typename C, typename T, typename... E>
+struct cond_t <C, T, E...> : _if <C{}, id_t <T>, cond_t <E...> > { };
+
+template <typename E>
+struct cond_t <E> : id_t <E> { };
+
+//-----------------------------------------------------------------------------
+
+template <bool C, typename T>
+struct _case { };
+
+template <typename T>
+using _else = _case <true, T>;
+
+template <typename... C> struct _switch_t;
+template <typename... C> using  _switch = type_of <_switch_t <C...> >;
+
+template <bool C, typename T, typename... E>
+struct _switch_t <_case <C, T>, E...> :
+	_if <C, id_t <T>, _switch_t <E...> > { };
+
+template <bool C, typename T>
+struct _switch_t <_case <C, T> > : _if <C, id_t <T>, nat> { };
+
+template <typename E>
+struct _switch_t <E> : id_t <E> { };
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class C, typename T>
+struct t_case { };
+
+template <typename T>
+using t_else = t_case <always, T>;
 
 namespace details {
 
-//-----------------------------------------------------------------------------
-
-struct nop_fun
+template <typename... A>
+struct arg_switch
 {
-	template <typename... A>
-	INLINE void operator()(A&&... a) const { }
+	template <typename... C> struct map_t;
+	template <typename... C> using map = type_of <map_t <C...> >;
+
+	template <template <typename...> class... C, typename... T>
+	struct map_t <t_case <C, T>...> :
+		_switch_t <_case <subs <C, A...>{}, T>...> { };
 };
-
-//-----------------------------------------------------------------------------
-
-struct id_fun
-{
-	template <typename A>
-	INLINE constexpr A&&
-	operator()(A&& a) const { return fwd <A>(a); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... E>
-struct bind_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(F()(E()..., fwd <A>(a)...))
-		{ return F()(E()..., fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <template <typename...> class C>
-struct switch_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <C, A...>()(fwd <A>(a)...))
-		{ return subs <C, A...>()(fwd <A>(a)...); }
-};
-
-template <typename C>
-using switch_fun_of = switch_fun <C::template map>;
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-struct try_fun_p
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
-		{ return call_first <F(A...)>()(fwd <A>(a)...); }
-};
-
-template <typename... F>
-using try_fun = try_fun_p <pack <F...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, size_t I = 0>
-struct mut_fun
-{
-	template <
-		typename... A,
-		only_if <!is_const <remove_ref <pick <I, A...> > >()>
-	= 0>
-	INLINE constexpr ret <F(A...)>
-	operator()(A&&... a) const { return F()(fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
 
 }  // namespace details
 
-//-----------------------------------------------------------------------------
-
-using details::id_fun;
-using details::bind_fun;
-using details::switch_fun;
-using details::switch_fun_of;
-using details::try_fun;
-
+template <typename... C>
+struct map_switch
+{
+	template <typename... A>
+	using map = typename details::arg_switch <A...>::template map <C...>;
+};
 
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
+template <typename M>
+struct cdr_switch
+{
+	template <typename A, typename... D>
+	using map = subs <M::template map, D...>;
+};
+
+template <typename... C>
+using fun_switch = cdr_switch <map_switch <C...> >;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace logic
+
+//-----------------------------------------------------------------------------
+
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
@@ -132,4 +128,4 @@ using details::try_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_META_HPP
+#endif  // IVL_CORE_TYPE_CORE_COND_HPP

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_META_HPP
-#define IVL_CORE_TUPLE_FUN_META_HPP
+#ifndef IVL_CORE_ATOM_BASE_ARRAY_HPP
+#define IVL_CORE_ATOM_BASE_ARRAY_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,19 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
+namespace details {
+
+// extending definition @array/base/base
+template <typename T, typename C>
+struct seq_data_t <atoms::atom <T, C> > : id_t <T> { };
+
+}  // namespace details
+}  // namespace arrays
+
+//-----------------------------------------------------------------------------
+
+namespace atoms {
 
 //-----------------------------------------------------------------------------
 
@@ -42,71 +54,50 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct nop_fun
-{
-	template <typename... A>
-	INLINE void operator()(A&&... a) const { }
-};
+template <typename T, typename P = remove_ref <T>*>
+using atom_types = seq_types <
+	r_ref <T>, P, atom_iter, atom_trav, seq_size <P>
+>;
 
 //-----------------------------------------------------------------------------
 
-struct id_fun
+template <typename D, typename T>
+class atom_base <D, T, data::seq <> > :
+	public derived <D, data::seq <> >,
+	public atom_types <T>
 {
-	template <typename A>
-	INLINE constexpr A&&
-	operator()(A&& a) const { return fwd <A>(a); }
-};
+	using DER = derived <D, data::seq <> >;
+	using DER::der_f;
+	using DER::der;
+
+	using ST = atom_types <T>;
+	using S  = seq_size <ST>;
+
+	using IR = r_iter <ST>;
+	using IL = l_iter <ST>;
+	using IC = c_iter <ST>;
+
+	using VR = r_trav <ST>;
+	using VL = l_trav <ST>;
+	using VC = c_trav <ST>;
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... E>
-struct bind_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(F()(E()..., fwd <A>(a)...))
-		{ return F()(E()..., fwd <A>(a)...); }
-};
+public:
+	INLINE constexpr S size() const { return 1; }
 
-//-----------------------------------------------------------------------------
+	INLINE           IR begin() &&     { return IR(der_f().val()); }
+	INLINE           IL begin() &      { return IL(der().val()); }
+	INLINE constexpr IC begin() const& { return IC(der().val()); }
 
-template <template <typename...> class C>
-struct switch_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <C, A...>()(fwd <A>(a)...))
-		{ return subs <C, A...>()(fwd <A>(a)...); }
-};
+	INLINE           IR end() &&     { return IR(der_f().val()); }
+	INLINE           IL end() &      { return IL(der().val()); }
+	INLINE constexpr IC end() const& { return IC(der().val()); }
 
-template <typename C>
-using switch_fun_of = switch_fun <C::template map>;
+	INLINE           VR trav() &&     { return VR(der_f().val()); }
+	INLINE           VL trav() &      { return VL(der().val()); }
+	INLINE constexpr VC trav() const& { return VC(der().val()); }
 
-//-----------------------------------------------------------------------------
-
-template <typename F>
-struct try_fun_p
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
-		{ return call_first <F(A...)>()(fwd <A>(a)...); }
-};
-
-template <typename... F>
-using try_fun = try_fun_p <pack <F...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, size_t I = 0>
-struct mut_fun
-{
-	template <
-		typename... A,
-		only_if <!is_const <remove_ref <pick <I, A...> > >()>
-	= 0>
-	INLINE constexpr ret <F(A...)>
-	operator()(A&&... a) const { return F()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -115,16 +106,7 @@ struct mut_fun
 
 //-----------------------------------------------------------------------------
 
-using details::id_fun;
-using details::bind_fun;
-using details::switch_fun;
-using details::switch_fun_of;
-using details::try_fun;
-
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 
@@ -132,4 +114,4 @@ using details::try_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_META_HPP
+#endif  // IVL_CORE_ATOM_BASE_ARRAY_HPP

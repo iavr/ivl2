@@ -49,20 +49,23 @@ template <typename T> struct is_cont_ : is_seq_<T> { };
 template <typename T> struct is_trav_ : _false { };
 template <typename T> struct is_iter_ : is_trav_<T> { };
 
+template <typename C, typename... A>
+struct is_seq_<sequence <C, A...> > : _true { };
+
+template <typename C, typename... A>
+struct is_trav_<traversor <C, A...> > : _true { };
+
+template <typename C, typename... A>
+struct is_iter_<iterator <C, A...> > : _true { };
+
+template <typename T>
+struct is_iter_<T*> : _true { };
+
 template <typename T, size_t N>
 struct is_cont_<T[N]> : _true { };
 
 template <typename T>
 struct is_cont_<initializer_list <T> > : _true { };
-
-template <typename C, typename... A>
-struct is_seq_<sequence <C, A...> > : _true { };
-
-template <typename C, typename... A>
-struct is_iter_<iterator <C, A...> > : _true { };
-
-template <typename C, typename... A>
-struct is_trav_<traversor <C, A...> > : _true { };
 
 }  // namespace details
 
@@ -83,44 +86,44 @@ template <typename... E> using any_seq = any_seq_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename T> struct fin_trav;
+
 namespace details {
 
-template <typename T, bool = is_seq <T>{}>
-struct cont_fin_ : is_cont <T> { };
+template <typename T, bool = is_seq <T>{}>  struct fin_seq_  : _false { };
+template <typename T, bool = is_trav <T>{}> struct fin_trav_ : _false { };
 
-template <typename T, bool = is_trav <T>{}>
-struct trav_fin_ : _false { };
+template <typename T> struct fin_seq_<T, true>  : expr <T::finite> { };
+template <typename T> struct fin_trav_<T, true> : expr <T::finite> { };
 
-template <typename T>
-struct cont_fin_ <T, true> : expr <T::finite> { };
-
-template <typename T>
-struct trav_fin_ <T, true> : expr <T::finite> { };
+template <typename... V>
+struct fin_trav_<pack <V...>, false> : _or <fin_trav <V>...> { };
 
 }  // namespace details
 
-template <typename T>
-using cont_fin = details::cont_fin_<raw_type <T> >;
+template <typename T> using  fin_seq  = details::fin_seq_<raw_type <T> >;
+template <typename T> struct fin_trav : details::fin_trav_<raw_type <T> > { };
+template <typename T> using  fin_cont = expr <is_cont <T>() || fin_seq <T>()>;
 
-template <typename T>
-struct trav_fin : details::trav_fin_<raw_type <T> > { };
-
-template <typename... V>
-struct trav_fin <pack <V...> > : _and <trav_fin <V>...> { };
-
-template <typename... T>
-using trav_prim = first_b <trav_fin <T>{}...>;
+template <typename... T> using prim_seq  = first_b <fin_seq <T>{}...>;
+template <typename... T> using prim_trav = first_b <fin_trav <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename... T>
-using cont_travers = _or <cont_fin <T>...>;
+template <typename... T> using cont_travers = _or <fin_cont <T>...>;
+template <typename... T> using seq_travers  = _or <fin_seq <T>...>;
 
 template <typename... T>
-using iter_travers = expr <_and <is_iter <T>...>() && _or <trav_fin <T>...>()>;
+using iter_travers = expr <_and <is_iter <T>...>() && _or <fin_trav <T>...>()>;
 
 template <typename... T>
-using travers = expr <cont_travers <T...>() || iter_travers <T...>()>;
+using trav_travers = expr <_and <is_trav <T>...>() && _or <fin_trav <T>...>()>;
+
+template <typename... T>
+using raw_travers = expr <cont_travers <T...>() || iter_travers <T...>()>;
+
+template <typename... T>
+using travers = expr <seq_travers <T...>() || trav_travers <T...>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -186,19 +189,19 @@ template <typename T> struct c_seq_ref_<T*> : id_t <const T&> { };
 template <typename T> struct l_seq_ptr_<T*> : id_t <T*> { };
 template <typename T> struct c_seq_ptr_<T*> : id_t <const T*> { };
 
-using seq_ref_ = choose_ref <r_seq_ref_, l_seq_ref_, c_seq_ref_>;
-using seq_ptr_ = choose_ref <l_seq_ptr_, l_seq_ptr_, c_seq_ptr_>;
+using seq_ref_ = switch_ref <r_seq_ref_, l_seq_ref_, c_seq_ref_>;
+using seq_ptr_ = switch_ref <l_seq_ptr_, l_seq_ptr_, c_seq_ptr_>;
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using r_seq_ref_t = choose_r <details::seq_ref_, T>;
-template <typename T> using l_seq_ref_t = choose_l <details::seq_ref_, T>;
-template <typename T> using c_seq_ref_t = choose_c <details::seq_ref_, T>;
+template <typename T> using r_seq_ref_t = switch_r <details::seq_ref_, T>;
+template <typename T> using l_seq_ref_t = switch_l <details::seq_ref_, T>;
+template <typename T> using c_seq_ref_t = switch_c <details::seq_ref_, T>;
 
-template <typename T> using l_seq_ptr_t = choose_l <details::seq_ptr_, T>;
-template <typename T> using c_seq_ptr_t = choose_c <details::seq_ptr_, T>;
+template <typename T> using l_seq_ptr_t = switch_l <details::seq_ptr_, T>;
+template <typename T> using c_seq_ptr_t = switch_c <details::seq_ptr_, T>;
 
 template <typename T> using r_seq_ref = type_of <r_seq_ref_t <T> >;
 template <typename T> using l_seq_ref = type_of <l_seq_ref_t <T> >;
@@ -227,20 +230,20 @@ template <typename T> struct r_trav_<T*> : id_t <T*> { };
 template <typename T> struct l_trav_<T*> : id_t <T*> { };
 template <typename T> struct c_trav_<T*> : id_t <const T*> { };
 
-using iter_ = choose_ref <r_iter_, l_iter_, c_iter_>;
-using trav_ = choose_ref <r_trav_, l_trav_, c_trav_>;
+using iter_ = switch_ref <r_iter_, l_iter_, c_iter_>;
+using trav_ = switch_ref <r_trav_, l_trav_, c_trav_>;
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct r_iter_t : choose_r <details::iter_, T> { };
-template <typename T> struct l_iter_t : choose_l <details::iter_, T> { };
-template <typename T> struct c_iter_t : choose_c <details::iter_, T> { };
+template <typename T> struct r_iter_t : switch_r <details::iter_, T> { };
+template <typename T> struct l_iter_t : switch_l <details::iter_, T> { };
+template <typename T> struct c_iter_t : switch_c <details::iter_, T> { };
 
-template <typename T> struct r_trav_t : choose_r <details::trav_, T> { };
-template <typename T> struct l_trav_t : choose_l <details::trav_, T> { };
-template <typename T> struct c_trav_t : choose_c <details::trav_, T> { };
+template <typename T> struct r_trav_t : switch_r <details::trav_, T> { };
+template <typename T> struct l_trav_t : switch_l <details::trav_, T> { };
+template <typename T> struct c_trav_t : switch_c <details::trav_, T> { };
 
 template <typename T> using r_iter = type_of <r_iter_t <T> >;
 template <typename T> using l_iter = type_of <l_iter_t <T> >;

@@ -37,20 +37,21 @@
 
 #include "fun/value.hpp"
 #include "fun/fold.hpp"
+#include "fun/trav.hpp"
+#include "fun/more.hpp"
+#include "fun/loop.hpp"
+
+// // TODO
+// #include "mem/cast.hpp"
+// #include "mem/alloc.hpp"
+// #include "fun/mem.hpp"
+// #include "fun/math.hpp"
 
 #include "iter/base.hpp"
 #include "iter/iter.hpp"
 #include "iter/atom.hpp"
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
-
-#include "mem/cast.hpp"
-#include "mem/alloc.hpp"
-
-#include "fun/mem.hpp"
-#include "fun/math.hpp"
-#include "fun/trav.hpp"
-#include "fun/loop.hpp"
 
 #include "base/base.hpp"
 

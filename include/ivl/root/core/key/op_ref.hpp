@@ -59,7 +59,7 @@ class op_ref_store <O, pack <A...>, sizes <I...> > :
 	template <typename T> using tail = tail_tup <base_opt <T> >;
 
 	template <typename, typename, typename>
-	friend struct tuples::base_tup;
+	friend struct tuples::tup_base;
 
 //-----------------------------------------------------------------------------
 

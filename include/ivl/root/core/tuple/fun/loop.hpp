@@ -71,10 +71,10 @@ struct tup_head_loop_fun
 };
 
 template <typename F, typename G, typename... T>
-using tup_head_loop_for =
+using tup_head_loop_sw =
 	_if <_or <fix_empty <T>...>{}, nop_fun, tup_head_loop_fun>;
 
-using tup_head_loop = choose_fun <tup_head_loop_for>;
+using tup_head_loop = switch_fun <tup_head_loop_sw>;
 
 //-----------------------------------------------------------------------------
 

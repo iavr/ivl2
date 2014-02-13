@@ -78,15 +78,15 @@ struct res_member <F, M(C), false> :
 //-----------------------------------------------------------------------------
 
 template <typename F, typename S, bool = is_member_ptr <F>()>
-struct res_choose : res_fun <S> { };
+struct res_switch : res_fun <S> { };
 
 template <typename F, typename S>
-struct res_choose <F, S, true> : res_member <F, S> { };
+struct res_switch <F, S, true> : res_member <F, S> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename F, typename S, bool = is_complete <F>()>
-struct res_complete : res_choose <F, S> { };
+struct res_complete : res_switch <F, S> { };
 
 template <typename F, typename S>
 struct res_complete <F, S, false> : nat { };

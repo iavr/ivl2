@@ -44,21 +44,40 @@ namespace traits {
 
 namespace details {
 
-template <typename T>
-struct is_atom_ : _false { };
+template <typename T> struct is_atom_      : _false { };
+template <typename T> struct is_ext_atom_  : _false { };
+template <typename T> struct is_atom_atom_ : is_ext_atom_<T> { };
+template <typename T> struct is_tup_atom_  : is_atom_atom_<T> { };
+template <typename T> struct is_seq_atom_  : is_atom_atom_<T> { };
 
-template <typename T, typename S>
-struct is_atom_<atom <T, S> > : _true { };
+template <typename T, typename C> struct is_atom_<atom <T, C> > : _true { };
+template <typename T> struct is_ext_atom_<ext_atom <T> > : _true { };
+template <typename T> struct is_atom_atom_<atom <T> >    : _true { };
+template <typename T> struct is_tup_atom_<tup_atom <T> > : _true { };
+template <typename T> struct is_seq_atom_<seq_atom <T> > : _true { };
 
 }  // namespace details
 
-template <typename T> using is_atom = details::is_atom_<raw_type <T> >;
+template <typename T> using is_atom     = details::is_atom_<raw_type <T> >;
+template <typename T> using is_tup_atom = details::is_tup_atom_<raw_type <T> >;
+template <typename T> using is_seq_atom = details::is_seq_atom_<raw_type <T> >;
 
 template <typename T>
-struct as_tuple : expr <is_tuple <T>() || is_atom <T>()> { };
+struct as_tuple : expr <is_tuple <T>() || is_tup_atom <T>()> { };
 
 template <typename T>
-struct as_seq : expr <is_seq <T>() || is_atom <T>()> { };
+struct as_seq : expr <is_seq <T>() || is_seq_atom <T>()> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+struct tup_atom_of_t : _if_t <as_tuple <T>{}, T, atoms::tup_atom <T> > { };
+
+template <typename T>
+struct seq_atom_of_t : _if_t <as_seq <T>{}, T, atoms::seq_atom <T> > { };
+
+// tup_atom_of <> defined @tuple/begin
+// seq_atom_of <> defined @array/begin
 
 //-----------------------------------------------------------------------------
 
@@ -71,25 +90,14 @@ using atom_attr_ = numbers <
 
 }  // namespace details
 
-template <typename T, typename S>
+template <typename T, typename C>
 struct atom_attr_t : numbers <0, 0, 0, 0> { };
 
 template <typename T>
 struct atom_attr_t <T, data::ext <> > : details::atom_attr_<raw_type <T> > { };
 
-template <typename T, typename S>
-using atom_attr = type_of <atom_attr_t <T, S> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T>
-struct tup_atom_of_t : _if_t <as_tuple <T>{}, T, atoms::atom <T> > { };
-
-template <typename T>
-struct seq_atom_of_t : _if_t <as_seq <T>{}, T, atoms::atom <T> > { };
-
-// tup_atom_of <> defined @tuple/begin
-// seq_atom_of <> defined @array/begin
+template <typename T, typename C>
+using atom_attr = type_of <atom_attr_t <T, C> >;
 
 //-----------------------------------------------------------------------------
 
@@ -98,7 +106,7 @@ namespace details {
 // extending definition @tuple/type/traits
 template <template <typename...> class C, typename... E>
 struct tup_tmp_type <C <E...>, true> :
-	id_t <atom <tmp <remove_type <E>...> > > { };
+	id_t <tup_atom <tmp <remove_type <E>...> > > { };
 
 template <template <typename...> class C, typename... E>
 struct tup_tmp_type <C <E...>, false> : id_t <tmp <E...> > { };
@@ -110,8 +118,8 @@ struct tup_tmp_type <C <E...>, false> : id_t <tmp <E...> > { };
 namespace details {
 
 // extending definition @type/traits/transform
-template <typename T, typename S>
-struct copy_rec <atom <T, S> > : copy_rec <type_of <atom <T, S> > > { };
+template <typename T, typename C>
+struct copy_rec <atom <T, C> > : copy_rec <type_of <atom <T, C> > > { };
 
 template <typename T>
 struct copy_rec <_type <T> > : id_t <atom <copy <T> > > { };

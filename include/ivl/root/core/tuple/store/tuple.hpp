@@ -46,7 +46,8 @@ template <typename P, typename I = sz_rng_of_p <P> >
 struct tuple_impl;
 
 template <typename... E, size_t... I>
-class tuple_impl <pack <E...>, sizes <I...> > : public pre_tuple <E...>
+class tuple_impl <pack <E...>, sizes <I...> > :
+	public pre_tuple <E...>
 {
 	using B = pre_tuple <E...>;
 

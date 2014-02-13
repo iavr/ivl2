@@ -76,14 +76,8 @@ struct seq_types
 
 //-----------------------------------------------------------------------------
 
-// extended elsewhere
-template <typename A> struct seq_data_t;
-template <typename A> using  seq_data = type_of <seq_data_t <A> >;
-
-//-----------------------------------------------------------------------------
-
 template <typename D, typename ST>
-class base_seq : public derived <D>, public ST
+class seq_base : public derived <D>, public ST
 {
 	using T  = seq_val <ST>;
 	using S  = seq_size <ST>;
@@ -164,7 +158,7 @@ public:
 }  // namespace details
 
 using details::seq_types;
-using details::base_seq;
+using details::seq_base;
 
 //-----------------------------------------------------------------------------
 

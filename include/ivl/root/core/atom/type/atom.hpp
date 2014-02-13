@@ -39,32 +39,42 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename S = data::atom <> >
+template <typename D, typename T, typename C = data::atom <> >
+struct atom_base;
+
+template <typename D, typename T>
+using raw_atom_base = atom_base <D, T, data::raw <> >;
+
+template <typename D, typename T>
+using tup_atom_base = atom_base <D, T, data::tup <> >;
+
+template <typename D, typename T>
+using seq_atom_base = atom_base <D, T, data::seq <> >;
+
+template <typename D, typename T>
+using ext_atom_base = atom_base <D, T, data::ext <> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename C = data::atom <> >
 struct atom;
 
-template <typename T>
-using ext_atom = atom <T, data::ext <> >;
+template <typename T> using raw_atom = atom <T, data::raw <> >;
+template <typename T> using tup_atom = atom <T, data::tup <> >;
+template <typename T> using seq_atom = atom <T, data::seq <> >;
+template <typename T> using ext_atom = atom <T, data::ext <> >;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
 using details::atom;
+using details::raw_atom;
+using details::tup_atom;
+using details::seq_atom;
 using details::ext_atom;
 
 }  // namespace atoms
-
-//-----------------------------------------------------------------------------
-
-namespace tuples {
-namespace details {
-
-// extending definition @tuple/type/collection
-template <typename T, typename S>
-struct tup_data_t <atoms::atom <T, S> > : pack <T> { };
-
-}  // namespace tuples
-}  // namespace details
 
 //-----------------------------------------------------------------------------
 

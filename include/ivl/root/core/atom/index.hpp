@@ -34,8 +34,13 @@
 #include "type/atom.hpp"
 #include "type/traits.hpp"
 
-#include "store/base.hpp"
+#include "base/tuple.hpp"
+#include "base/array.hpp"
+#include "base/base.hpp"
+#include "base/store.hpp"
+
 #include "store/atom.hpp"
+#include "store/member.hpp"
 
 //-----------------------------------------------------------------------------
 

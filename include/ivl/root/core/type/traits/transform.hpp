@@ -202,7 +202,7 @@ template <
 	template <typename> class L,
 	template <typename> class C
 >
-struct choose_ref
+struct switch_ref
 {
 	template <typename T> struct map_t;
 	template <typename T> using  map = type_of <map_t <T> >;
@@ -212,13 +212,13 @@ struct choose_ref
 };
 
 template <typename C, typename T>
-using choose_r = typename C::template map <T&&>;
+using switch_r = typename C::template map <T&&>;
 
 template <typename C, typename T>
-using choose_l = typename C::template map <T&>;
+using switch_l = typename C::template map <T&>;
 
 template <typename C, typename T>
-using choose_c = typename C::template map <const T&>;
+using switch_c = typename C::template map <const T&>;
 
 //-----------------------------------------------------------------------------
 

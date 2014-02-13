@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_ATOM_HPP
-#define IVL_CORE_ARRAY_ITER_ATOM_HPP
+#ifndef IVL_CORE_ARRAY_FUN_MORE_HPP
+#define IVL_CORE_ARRAY_FUN_MORE_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,45 +42,28 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename A>
-class traversor <data::atom <>, A> :
-	public base_iter <remove_ref <A>*, rref_opt <A> >,
-	private raw_tuple <rref_opt <A> >
+using  all_size = val_min;
+struct all_more : _and { using size_fun = all_size; };
+
+//-----------------------------------------------------------------------------
+
+struct prim_size
 {
-	using I = remove_ref <A>*;
-	using R = rref_opt <A>;
+	template <typename... A>
+	using size_type = typename pick <prim_seq <A...>{}, A...>::size_type;
 
-	using B = base_iter <I, R>;
-	using B::ref;
+	template <typename... A>
+	INLINE constexpr size_type <A...> operator()(A&&... a) const
+		{ return get <prim_seq <A...>{}>()(fwd <A>(a)...).size(); }
+};
 
-	using D = seq_diff <B>;
-	using P = seq_ptr <B>;
+struct prim_more
+{
+	using size_fun = prim_size;
 
-	using E = raw_tuple <R>;
-
-public:
-	INLINE constexpr explicit traversor(A&& a) : E(fwd <A>(a)) { }
-
-	static constexpr bool finite = false;
-
-	INLINE constexpr operator bool() const { return true; }
-
-	INLINE constexpr R operator*()  const { return ref(E::val()); }
-	INLINE           P operator->() const { return &(operator*()); }
-
-	INLINE traversor& operator++() { return *this; }
-	INLINE traversor& operator--() { return *this; }
-
-	INLINE traversor& operator++(int) { return *this; }
-	INLINE traversor& operator--(int) { return *this; }
-
-	INLINE constexpr R operator[](D n) const { return ref(E::val()); }
-
-	INLINE traversor& operator+=(D n) { return *this; }
-	INLINE traversor& operator-=(D n) { return *this; }
-
-	INLINE traversor& operator+(D n) { return *this; }
-	INLINE traversor& operator-(D n) { return *this; }
+	template <typename... T>
+	INLINE constexpr bool operator()(T&&... t) const
+		{ return get <prim_trav <T...>{}>()(fwd <T>(t)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -89,7 +72,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace arrays
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
@@ -97,4 +80,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_ATOM_HPP
+#endif  // IVL_CORE_ARRAY_FUN_MORE_HPP

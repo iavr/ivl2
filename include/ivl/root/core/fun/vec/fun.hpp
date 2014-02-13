@@ -101,6 +101,17 @@ struct tmp_vec_fun : F
 
 //-----------------------------------------------------------------------------
 
+template <typename F, typename M>
+using bra_vec_fun_of = bra_vec_fun <F, M::template map>;
+
+template <typename F, typename M>
+using vec_fun_of = vec_fun <F, M::template map>;
+
+template <typename F, typename M>
+using tmp_vec_fun_of = tmp_vec_fun <F, M::template map>;
+
+//-----------------------------------------------------------------------------
+
 template <typename F, template <typename...> class M>
 struct bra_vec_atom : F
 {
@@ -167,6 +178,17 @@ struct tmp_vec_atom : F
 	-> decltype(subs <M, pack <P...>, A...>()(*this, T(), fwd <A>(a)...))
 		{ return subs <M, pack <P...>, A...>()(*this, T(), fwd <A>(a)...); }
 };
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename M>
+using bra_vec_atom_of = bra_vec_atom <F, M::template map>;
+
+template <typename F, typename M>
+using vec_atom_of = vec_atom <F, M::template map>;
+
+template <typename F, typename M>
+using tmp_vec_atom_of = tmp_vec_atom <F, M::template map>;
 
 //-----------------------------------------------------------------------------
 

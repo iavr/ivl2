@@ -42,52 +42,16 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename S, typename A = atom_attr <T, S> >
-struct atom_impl : base_atom <atom <T, S>, T>
+template <typename T, typename C, typename A = atom_attr <T, C> >
+struct atom_impl : atom_store <T>, atom_base <atom <T, C>, T, C>
 {
-	using base_atom <atom <T, S>, T>::base_atom;
+	using atom_store <T>::atom_store;
 };
 
 //-----------------------------------------------------------------------------
 
-// member_ptr atom
-template <typename T, typename S>
-class atom_impl <T, S, numbers <1, 0> > :
-	public base_atom <atom <T, S>, T>
-{
-	using B = base_atom <atom <T, S>, T>;
-	using B::val_f;
-	using B::val;
-
-	template <typename O, typename... A>
-	using op = keys::op_ref <O, uref_opt <A>...>;
-
-public:
-	using B::B;
-
-//-----------------------------------------------------------------------------
-
-	template <typename... A>
-	INLINE op <T, A...>
-	_(A&&... a) && { return op <T, A...>(val_f(), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE op <T&, A...>
-	_(A&&... a) & { return op <T&, A...>(val(), fwd <A>(a)...); }
-
-	template <typename... A>
-	INLINE constexpr op <const T&, A...>
-	_(A&&... a) const& { return op <const T&, A...>(val(), fwd <A>(a)...); }
-
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename T, typename S>
-struct atom : atom_impl <T, S>
-{
-	using atom_impl <T, S>::atom_impl;
-};
+template <typename T, typename C>
+struct atom : atom_impl <T, C> { using atom_impl <T, C>::atom_impl; };
 
 //-----------------------------------------------------------------------------
 

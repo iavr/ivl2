@@ -46,12 +46,12 @@ template <typename F, typename A, typename I = sz_rng_of_p <A> >
 class loop_impl;
 
 template <typename F, typename... A, size_t... I>
-class loop_impl <F, pack <A...>, sizes <I...> > : public base_tup <
+class loop_impl <F, pack <A...>, sizes <I...> > : public tup_base <
 	loop_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
 >
 {
 	using P = rep <tran_len <tup_types <A>...>{}, nat>;
-	using B = base_tup <loop_tup <F, A...>, P>;
+	using B = tup_base <loop_tup <F, A...>, P>;
 
 	using fun = elem <0, F>;
 	template <size_t J> using arg = elem_at <J + 1, F, A...>;
@@ -92,7 +92,8 @@ template <typename F>
 class collection <data::loop <>, F>;
 
 template <typename F, typename... A>
-class collection <data::loop <>, F, A...> : public loop_impl <F, pack <A...> >
+class collection <data::loop <>, F, A...> :
+	public loop_impl <F, pack <A...> >
 {
 	using B = loop_impl <F, pack <A...> >;
 

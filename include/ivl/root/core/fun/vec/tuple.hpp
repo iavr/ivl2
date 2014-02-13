@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using tup_auto_for = _if <vec_void <F(A...)>{}, tup_loop, tup_apply>;
+using tup_auto_sw = _if <vec_void <F(A...)>{}, tup_loop, tup_apply>;
 
-using tup_auto = afun::choose_fun <tup_auto_for>;
+using tup_auto = afun::switch_fun <tup_auto_sw>;
 
 //-----------------------------------------------------------------------------
 
@@ -57,17 +57,10 @@ template <typename F> struct atom_gen : F { using F::F; };
 //-----------------------------------------------------------------------------
 
 template <typename R, typename T = op::call>
-struct tup_vec_for
-{
-	template <typename... A>
-	using map = _if <any_tuple <A...>{}, R, atom_call <T> >;
-};
+using tup_vec_sw = map_if <any_tuple, R, atom_call <T> >;
 
 template <typename F, typename R, typename B = none>
-using tup_vec_f = vec_fun <
-	val_gen <F, B>,
-	tup_vec_for <R>::template map
->;
+using tup_vec_f = vec_fun_of <val_gen <F, B>, tup_vec_sw <R> >;
 
 template <typename F, typename B = none>
 using tup_vec_apply = tup_vec_f <F, tup_apply, B>;
@@ -79,10 +72,7 @@ template <typename F, typename B = none>
 using tup_vec_auto = tup_vec_f <F, tup_auto, B>;
 
 template <typename F, typename B = atom <F> >
-using tup_vec = vec_atom <
-	atom_gen <B>,
-	tup_vec_for <tup_auto>::template map
->;
+using tup_vec = vec_atom_of <atom_gen <B>, tup_vec_sw <tup_auto> >;
 
 template <typename F, size_t I = 0>
 using tup_vec_mut = tup_vec_f <F, mut_call <tup_loop, I> >;
@@ -93,29 +83,12 @@ using tup_vec_copy = tup_vec_f <F, copy_call <tup_apply, I> >;
 //-----------------------------------------------------------------------------
 
 template <typename F, typename B = none, typename T = op::bracket>
-using tup_bra_vec_apply = bra_vec_fun <
-	val_gen <F, B>,
-	tup_vec_for <tup_vec_apply <T>, T>::template map
->;
+using tup_bra_vec_apply =
+	bra_vec_fun_of <val_gen <F, B>, tup_vec_sw <tup_vec_apply <T>, T> >;
 
 template <typename F, typename B = atom <F>, typename T = op::bracket>
-using tup_bra_vec = bra_vec_atom <
-	atom_gen <B>,
-	tup_vec_for <tup_vec_apply <T>, T>::template map
->;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, size_t I = 0>
-struct mut_fun
-{
-	template <
-		typename... A,
-		only_if <!is_const <remove_ref <pick <I, A...> > >()>
-	= 0>
-	INLINE constexpr ret <F(A...)>
-	operator()(A&&... a) const { return F()(fwd <A>(a)...); }
-};
+using tup_bra_vec =
+	bra_vec_atom_of <atom_gen <B>, tup_vec_sw <tup_vec_apply <T>, T> >;
 
 //-----------------------------------------------------------------------------
 

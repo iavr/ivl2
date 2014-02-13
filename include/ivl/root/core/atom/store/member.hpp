@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_BEGIN_HPP
-#define IVL_CORE_ARRAY_BEGIN_HPP
+#ifndef IVL_CORE_ATOM_STORE_MEMBER_HPP
+#define IVL_CORE_ATOM_STORE_MEMBER_HPP
 
 #include <ivl/ivl>
 
@@ -34,59 +34,52 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-namespace traits {
-
-template <typename I> struct seq_ref_t;
-template <typename I> struct seq_val_t;
-
-template <typename I> using seq_ref = type_of <seq_ref_t <I> >;
-template <typename I> using seq_val = type_of <seq_val_t <I> >;
-
-}  // namespace traits
-}  // namespace types
+namespace atoms {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
 namespace details {
-
-using namespace types;
-using namespace tuples;
-using afun::make;
-using types::_and;
-using types::_or;
-using types::bind;
-
-}  // namespace details
-}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-namespace details {
+// member_ptr atom
+template <typename T, typename C>
+class atom_impl <T, C, numbers <1, 0> > :
+	public atom_store <T>, public atom_base <atom <T, C>, T, C>
+{
+	using S = atom_store <T>;
+	using S::val_f;
+	using S::val;
 
-using namespace arrays;
+	template <typename O, typename... A>
+	using op = keys::op_ref <O, uref_opt <A>...>;
 
-}  // namespace details
-}  // namespace afun
+public:
+	using S::S;
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-namespace traits {
+	template <typename... A>
+	INLINE op <T, A...>
+	_(A&&... a) && { return op <T, A...>(val_f(), fwd <A>(a)...); }
 
-template <typename T> struct as_seq;
-template <typename T> struct seq_atom_of_t;
-template <typename T> using  seq_atom_of = type_of <seq_atom_of_t <T> >;
+	template <typename... A>
+	INLINE op <T&, A...>
+	_(A&&... a) & { return op <T&, A...>(val(), fwd <A>(a)...); }
 
-namespace details {
+	template <typename... A>
+	INLINE constexpr op <const T&, A...>
+	_(A&&... a) const& { return op <const T&, A...>(val(), fwd <A>(a)...); }
 
-using namespace arrays;
+};
+
+//-----------------------------------------------------------------------------
 
 }  // namespace details
-}  // namespace traits
-}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 
@@ -94,4 +87,4 @@ using namespace arrays;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_BEGIN_HPP
+#endif  // IVL_CORE_ATOM_STORE_MEMBER_HPP

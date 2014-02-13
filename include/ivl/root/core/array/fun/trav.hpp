@@ -42,14 +42,12 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct iter
+struct ptr_trav
 {
 	template <typename T>
 	INLINE constexpr ptr_iter <T>
 	operator()(T* p) const { return ptr_iter <T>(p); }
 };
-
-//-----------------------------------------------------------------------------
 
 struct seq_trav
 {
@@ -71,35 +69,43 @@ struct atom_trav
 {
 	template <typename A>
 	INLINE auto operator()(A&& a) const
-	-> decltype(seq_atom_of <rref_opt <A> >(fwd <A>(a)).trav())
-		{ return seq_atom_of <rref_opt <A> >(fwd <A>(a)).trav(); }
+	-> decltype(raw_atom_trav <A>(fwd <A>(a)))
+		{ return raw_atom_trav <A>(fwd <A>(a)); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename A>
-using trav_for = cond <
-	is_iter <A>, id_fun,
-	is_seq <A>,  seq_trav,
-	is_cont <A>, cont_trav,
+using trav_sw = _switch <
+	_case <is_trav <A>{}, id_fun>,
+	_case <as_seq <A>{},  seq_trav>,
 	atom_trav
 >;
 
-using trav = choose_fun <trav_for>;
+template <typename A>
+using raw_trav_sw = _switch <
+	_case <is_iter <A>{}, id_fun>,
+	_case <as_seq <A>{},  seq_trav>,
+	_case <is_cont <A>{}, cont_trav>,
+	atom_trav
+>;
+
+using trav     = switch_fun <trav_sw>;
+using raw_trav = switch_fun <raw_trav_sw>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::iter;
 using details::trav;
+using details::raw_trav;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace afun
 
-static __attribute__ ((unused)) afun::iter  iter;
-static __attribute__ ((unused)) afun::trav  trav;
+static __attribute__ ((unused)) afun::trav      trav;
+static __attribute__ ((unused)) afun::raw_trav  raw_trav;
 
 //-----------------------------------------------------------------------------
 

@@ -5,6 +5,7 @@
 namespace test {
 
 using namespace ivl;
+using namespace types;
 
 //-----------------------------------------------------------------------------
 
@@ -65,6 +66,8 @@ void run()
 		cout << "x = " << x << endl;
 		cout << "y = " << y << endl;
 		cout << "x + y = " << apply(afun::op::add(), x, y) << endl;
+		cout << "x + 3 = " << apply(afun::op::add(), x, 3) << endl;
+// 		cout << travers <decltype(x), int>() << endl;
 		cout << endl;
 	}
 

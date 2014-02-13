@@ -45,32 +45,34 @@ namespace details {
 template <typename F, typename... A>
 using apply_ref = seq_ret <decltype(gen <F>()(*gen <A>().begin()...))>;
 
-template <typename T, typename F, typename A>
-using apply_types_impl =
-	seq_types <T, A, apply_iter, apply_trav, seq_size <A>, F>;
+template <typename M, typename T, typename F, typename A>
+using apply_types_impl = seq_types <
+	T, A, apply_iter, apply_trav_on <M>::template map, seq_size <A>, F
+>;
 
-template <typename F, typename... A>
-using apply_types = apply_types_impl <apply_ref <F, A...>, F, pack <A...> >;
+template <typename M, typename F, typename... A>
+using apply_types = apply_types_impl <M, apply_ref <F, A...>, F, pack <A...> >;
 
 // extending definition @array/base/base
-template <typename F, typename... A>
-struct seq_data_t <apply_seq <F, A...> > : id_t <raw_tuple <F, A...> > { };
+template <typename M, typename F, typename... A>
+struct seq_data_t <apply_seq <M, F, A...> > : id_t <raw_tuple <F, A...> > { };
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename A, typename N = sz_rng_of_p <A> >
+template <typename M, typename F, typename A, typename N = sz_rng_of_p <A> >
 struct apply_seq_impl;
 
-template <typename F, typename... A, size_t... N>
-class apply_seq_impl <F, pack <A...>, sizes <N...> > :
-	public base_seq <apply_seq <F, A...>, apply_types <F, A...> >,
-	seq_data <apply_seq <F, A...> >
+template <typename M, typename F, typename... A, size_t... N>
+class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
+	public seq_base <apply_seq <M, F, A...>, apply_types <M, F, A...> >,
+	seq_data <apply_seq <M, F, A...> >
 {
 	using AP = pack <A...>;
-	using ST = apply_types <F, A...>;
-	friend base_seq <apply_seq <F, A...>, ST>;
+	using ST = apply_types <M, F, A...>;
+	friend seq_base <apply_seq <M, F, A...>, ST>;
 
 	using S = seq_size <ST>;
+	using MS = typename M::size_fun;
 
 	using IR = r_iter <ST>;
 	using IL = l_iter <ST>;
@@ -116,7 +118,7 @@ class apply_seq_impl <F, pack <A...>, sizes <N...> > :
 public:
 	using E::E;
 
-	INLINE constexpr S size() const { return val_min(a<N>().size()...); }
+	INLINE constexpr S size() const { return MS(a<N>().size()...); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(f(),   a<N>().begin()...); }
@@ -134,10 +136,11 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-struct sequence <data::apply <>, F, A...> : apply_seq_impl <F, pack <A...> >
+template <typename M, typename F, typename... A>
+struct sequence <data::apply <>, M, F, A...> :
+	apply_seq_impl <M, F, pack <A...> >
 {
-	using apply_seq_impl <F, pack <A...> >::apply_seq_impl;
+	using apply_seq_impl <M, F, pack <A...> >::apply_seq_impl;
 };
 
 //-----------------------------------------------------------------------------

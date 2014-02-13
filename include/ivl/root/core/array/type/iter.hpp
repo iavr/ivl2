@@ -57,6 +57,8 @@ using atom_iter = iterator <data::atom <>, I, R, T>;
 template <typename I, typename R, typename T>
 using atom_trav = traversor <data::atom <>, I, R, T>;
 
+//-----------------------------------------------------------------------------
+
 template <typename I, typename R, typename T, typename U>
 using indirect_iter = iterator <data::indirect <>, I, R, T, U>;
 
@@ -66,10 +68,19 @@ using indirect_trav = traversor <data::indirect <>, V, R, T, U>;
 template <typename I, typename R, typename T, typename F>
 using apply_iter = iterator <data::apply <>, I, R, T, F>;
 
-template <typename V, typename R, typename T, typename F>
-using apply_trav = traversor <data::apply <>, V, R, T, F>;
+template <typename M, typename V, typename R, typename T, typename F>
+using apply_trav = traversor <data::apply <>, M, V, R, T, F>;
+
+//-----------------------------------------------------------------------------
+
+template <typename M> using apply_trav_on = bind <apply_trav, M>;
+
+//-----------------------------------------------------------------------------
 
 template <typename T> using ptr_iter  = iter_iter <remove_ref <T>*>;
+
+template <typename T>
+using raw_atom_trav = atom_trav <remove_ref <T>*, r_ref <T>, r_ref <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -82,12 +93,15 @@ using details::iter_iter;
 using details::iter_trav;
 using details::atom_iter;
 using details::atom_trav;
+
 using details::indirect_iter;
 using details::indirect_trav;
 using details::apply_iter;
 using details::apply_trav;
+using details::apply_trav_on;
 
 using details::ptr_iter;
+using details::raw_atom_trav;
 
 //-----------------------------------------------------------------------------
 

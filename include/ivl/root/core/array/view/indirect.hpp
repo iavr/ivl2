@@ -58,11 +58,11 @@ struct seq_data_t <indirect_seq <K, U> > : id_t <raw_tuple <K, U> > { };
 
 template <typename K, typename U>
 class sequence <data::indirect <>, K, U> :
-	public base_seq <indirect_seq <K, U>, indirect_types <K, U> >,
+	public seq_base <indirect_seq <K, U>, indirect_types <K, U> >,
 	seq_data <indirect_seq <K, U> >
 {
 	using ST = indirect_types <K, U>;
-	friend base_seq <sequence, ST>;
+	friend seq_base <sequence, ST>;
 
 	using S = seq_size <ST>;
 

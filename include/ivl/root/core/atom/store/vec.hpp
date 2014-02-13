@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   A C++ template library extending syntax towards mathematical notation.
+   T C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_BEGIN_HPP
-#define IVL_CORE_ARRAY_BEGIN_HPP
+#ifndef IVL_CORE_ATOM_STORE_VEC_HPP
+#define IVL_CORE_ATOM_STORE_VEC_HPP
 
 #include <ivl/ivl>
 
@@ -34,59 +34,31 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-namespace traits {
-
-template <typename I> struct seq_ref_t;
-template <typename I> struct seq_val_t;
-
-template <typename I> using seq_ref = type_of <seq_ref_t <I> >;
-template <typename I> using seq_val = type_of <seq_val_t <I> >;
-
-}  // namespace traits
-}  // namespace types
+namespace atoms {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
 namespace details {
-
-using namespace types;
-using namespace tuples;
-using afun::make;
-using types::_and;
-using types::_or;
-using types::bind;
-
-}  // namespace details
-}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-namespace details {
-
-using namespace arrays;
-
-}  // namespace details
-}  // namespace afun
+// builtin-array atom: vec-[]
+// builtin-function atom: vec-()
+// class atom: vec- [], (), _<>()
+template <typename T, typename C>  // TODO: use atom <T, C> as derived
+struct atom_impl <T, C, numbers <0, 1> > :
+	afun::tvec <T, afun::bra_vec <T> >
+{
+	using afun::tvec <T, afun::bra_vec <T> >::tvec;
+};
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-namespace traits {
-
-template <typename T> struct as_seq;
-template <typename T> struct seq_atom_of_t;
-template <typename T> using  seq_atom_of = type_of <seq_atom_of_t <T> >;
-
-namespace details {
-
-using namespace arrays;
-
 }  // namespace details
-}  // namespace traits
-}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 
@@ -94,4 +66,4 @@ using namespace arrays;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_BEGIN_HPP
+#endif  // IVL_CORE_ATOM_STORE_VEC_HPP

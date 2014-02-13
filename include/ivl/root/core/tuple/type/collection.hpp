@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename... A> struct collection;
+template <typename C, typename... A> struct collection;
 
 //-----------------------------------------------------------------------------
 
@@ -54,6 +54,8 @@ using pre_tuple = collection <data::pre <>, E...>;
 
 template <typename... E>
 using tuple = collection <data::tuple <>, E...>;
+
+//-----------------------------------------------------------------------------
 
 template <typename U>
 using tail_tup = collection <data::tail <>, U>;
@@ -93,8 +95,8 @@ template <typename... U> using join_tuple = join_tup <tup_atom_of <U>...>;
 template <typename T> struct tup_data_t : pack <> { };
 template <typename T> using  tup_data = type_of <tup_data_t <T> >;
 
-template <typename S, typename... A>
-struct tup_data_t <collection <S, A...> > : pack <A...> { };
+template <typename C, typename... A>
+struct tup_data_t <collection <C, A...> > : pack <A...> { };
 
 //-----------------------------------------------------------------------------
 

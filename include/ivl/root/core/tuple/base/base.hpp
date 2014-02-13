@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename P, typename I = sz_rng_of_p <P> >
-struct base_tup;
+struct tup_base;
 
 //-----------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ template <
 	typename D,
 	template <typename...> class C, typename... E, size_t... I
 >
-class base_tup <D, C <E...>, sizes <I...> > : public access <D, E...>
+class tup_base <D, C <E...>, sizes <I...> > : public access <D, E...>
 {
 	using P = C <E...>;
 	using Q = pack <E...>;
@@ -71,7 +71,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	using base_type = base_tup;
+	using base_type = tup_base;
 	using type = P;
 	static constexpr size_t length = P::length;
 
@@ -215,9 +215,9 @@ private:
 	using auto_ret = _if <tup_void <F(A...)>{}, void, app <F, A...> >;
 
 	template <typename F, typename... A>
-	using auto_for = _if <tup_void <F(A...)>{}, _do <loo>, make <app> >;
+	using auto_sw = _if <tup_void <F(A...)>{}, _do <loo>, make <app> >;
 
-	using _auto = afun::choose_fun <auto_for>;
+	using _auto = afun::switch_fun <auto_sw>;
 	using bra   = afun::op::bracket;
 	using par   = afun::op::call;
 	using tmp   = afun::pre_tmp_call;
@@ -285,7 +285,7 @@ public:
 
 }  // namespace details
 
-using details::base_tup;
+using details::tup_base;
 
 //-----------------------------------------------------------------------------
 

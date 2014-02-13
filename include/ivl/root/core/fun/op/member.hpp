@@ -78,44 +78,42 @@ using op_member = try_fun <op::ref_member, op::ptr_member>;
 using op_call   = try_fun <op::ref_call,   op::ptr_call>;
 
 // c ->* k VS c ->* &C::m OR pow(b, e)
-template <typename C, typename M, bool = is_key <M>()>
-struct op_key_member_for_t : call_first_t <pack <pow, op_member>(C, M)> { };
-
 template <typename C, typename M>
-struct op_key_member_for_t <C, M, true> : id_t <key_member_call> { };
-
-template <typename C, typename M>
-using op_key_member_for = type_of <op_key_member_for_t <C, M> >;
+using op_key_member_sw = type_of <_if <
+	is_key <M>{},
+	id_t <key_member_call>,
+	call_first_t <pack <pow, op_member>(C, M)>
+> >;
 
 // c ->* k._(a...) OR (c ->* k)(a...) VS c ->* _[&C::m]._(a...) OR (c ->* &C::m)(a...)
 template <typename C, typename M, typename... A>
-using op_key_call_for = _if <is_key <M>{}, key_call_call, op_call>;
+using op_key_call_sw = _if <is_key <M>{}, key_call_call, op_call>;
 
-using op_key_member = choose_fun <op_key_member_for>;
-using op_key_call   = choose_fun <op_key_call_for>;
+using op_key_member = switch_fun <op_key_member_sw>;
+using op_key_call   = switch_fun <op_key_call_sw>;
 
 using vec_op_key_member = vec_apply <op_key_member>;  // cannot be void (pow assumed so)
 using vec_op_key_call   = vec_auto  <op_key_call>;    // can be void
 
 // c ->* m._(a...) VS c ->* m OR (c ->* m)(a...)
 template <typename C, typename M>
-using op_ref_member_for = _if <
+using op_ref_member_sw = _if <
 	is_op_ref <M>{},
 	op_ref_call <vec_op_key_call>,
 	try_fun <vec_op_key_member, bind_of <vec_op_key_call> >
 >;
 
-using op_ref_member = choose_fun <op_ref_member_for>;
+using op_ref_member = switch_fun <op_ref_member_sw>;
 
 // _[b] ->* e VS c ->* m
 template <typename A, typename B>
-using member_for = _if <
+using member_sw = _if <
 	is_atom <A>() && !is_class <raw_type <B> >(),
 	atom_call <op_ref_member>,
 	op_ref_member
 >;
 
-using member = choose_fun <member_for>;
+using member = switch_fun <member_sw>;
 
 //-----------------------------------------------------------------------------
 

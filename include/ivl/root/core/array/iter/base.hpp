@@ -67,7 +67,7 @@ template <
 >
 struct base_trav : base_iter <V, R, T, D, P>
 {
-	static constexpr bool finite = trav_fin <V>{}();  // TODO: () needed by GCC
+	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
 };
 
 //-----------------------------------------------------------------------------

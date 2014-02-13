@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   T C++ template library extending syntax towards mathematical notation.
+   A C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR T PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ATOM_EXTEND_VEC_HPP
-#define IVL_CORE_ATOM_EXTEND_VEC_HPP
+#ifndef IVL_CORE_ATOM_BASE_BASE_HPP
+#define IVL_CORE_ATOM_BASE_BASE_HPP
 
 #include <ivl/ivl>
 
@@ -42,14 +42,17 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// builtin-array atom: vec-[]
-// builtin-function atom: vec-()
-// class atom: vec- [], (), _<>()
-template <typename T, typename S>
-struct atom_impl <T, S, numbers <0, 1> > : afun::tvec <T, afun::bra_vec <T> >
-{
-	using afun::tvec <T, afun::bra_vec <T> >::tvec;
-};
+template <typename D, typename T>
+struct atom_base <D, T, data::atom <> > :
+	tup_atom_base <D, T>,
+	seq_atom_base <D, T>
+	{ };
+
+template <typename D, typename T>
+struct atom_base <D, T, data::raw <> > { };
+
+template <typename D, typename T>
+struct atom_base <D, T, data::ext <> > : atom_base <D, T> { };
 
 //-----------------------------------------------------------------------------
 
@@ -65,4 +68,4 @@ struct atom_impl <T, S, numbers <0, 1> > : afun::tvec <T, afun::bra_vec <T> >
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ATOM_EXTEND_VEC_HPP
+#endif  // IVL_CORE_ATOM_BASE_BASE_HPP

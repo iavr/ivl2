@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ATOM_STORE_BASE_HPP
-#define IVL_CORE_ATOM_STORE_BASE_HPP
+#ifndef IVL_CORE_ATOM_BASE_TUPLE_HPP
+#define IVL_CORE_ATOM_BASE_TUPLE_HPP
 
 #include <ivl/ivl>
 
@@ -34,15 +34,15 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace tuples {
 namespace details {
 
-// extending definition @array/base/base
-template <typename T, typename S>
-struct seq_data_t <atoms::atom <T, S> > : id_t <T> { };
+// extending definition @tuple/type/collection
+template <typename T, typename C>
+struct tup_data_t <atoms::atom <T, C> > : pack <T> { };
 
+}  // namespace tuples
 }  // namespace details
-}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -54,75 +54,31 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename P = remove_ref <T>*>
-using atom_types = seq_types <
-	r_ref <T>, P, atom_iter, atom_trav, seq_size <P>
->;
-
-//-----------------------------------------------------------------------------
-
 template <typename D, typename T>
-class base_atom :
-	public elem_store <elem <0, T> >, public derived <D>,
-	public atom_types <T>
+class atom_base <D, T, data::tup <> > :
+	public derived <D, data::tup <> >
 {
-//-----------------------------------------------------------------------------
-// tuple interface
-//-----------------------------------------------------------------------------
-
-	using U = elem <0, T>;
-	using B = elem_store <U>;
+	using DER = derived <D, data::tup <> >;
+	using DER::der_f;
+	using DER::der;
 
 public:
 	using type = _type <T>;
 	static constexpr size_t length = 1;
 
-	using B::B;
-
 //-----------------------------------------------------------------------------
 
-public:
-	INLINE           r_ref <T> val_f()      { return U::fwd(); }
-	INLINE           r_ref <T> val() &&     { return U::fwd(); }
-	INLINE           l_ref <T> val() &      { return U::get(); }
-	INLINE constexpr c_ref <T> val() const& { return U::get(); }
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J> INLINE r_ref <T> at() && { return U::fwd(); }
-	template <size_t J> INLINE l_ref <T> at() &  { return U::get(); }
+	template <size_t J> INLINE r_ref <T> at() && { return der_f().val(); }
+	template <size_t J> INLINE l_ref <T> at() &  { return der().val(); }
 
 	template <size_t J>
-	INLINE constexpr c_ref <T> at() const& { return U::get(); }
-
-//-----------------------------------------------------------------------------
-// sequence interface
-//-----------------------------------------------------------------------------
-
-private:
-	using ST = atom_types <T>;
-	using S  = seq_size <ST>;
-
-	using VR = r_trav <ST>;
-	using VL = l_trav <ST>;
-	using VC = c_trav <ST>;
-
-//-----------------------------------------------------------------------------
-
-public:
-	INLINE constexpr S size() const { return 1; }
-
-	INLINE           VR trav() &&     { return VR(U::fwd()); }
-	INLINE           VL trav() &      { return VL(U::get()); }
-	INLINE constexpr VC trav() const& { return VC(U::get()); }
+	INLINE constexpr c_ref <T> at() const& { return der().val(); }
 
 };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
-
-using details::base_atom;
 
 //-----------------------------------------------------------------------------
 
@@ -134,4 +90,4 @@ using details::base_atom;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ATOM_STORE_BASE_HPP
+#endif  // IVL_CORE_ATOM_BASE_TUPLE_HPP

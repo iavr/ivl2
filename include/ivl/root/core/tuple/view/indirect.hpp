@@ -49,10 +49,10 @@ struct tup_data_t <indirect_tup <K, U> > : pack <U> { };
 
 template <typename K, typename U>
 class collection <data::indirect <>, K, U> : public
-	base_tup <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
+	tup_base <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
 {
 	using P = choose_p <K, tup_types <U> >;
-	using B = base_tup <indirect_tup <K, U>, P>;
+	using B = tup_base <indirect_tup <K, U>, P>;
 	using E = elem <0, U>;
 
 	template <size_t J> using off = pick_i <J, K>;

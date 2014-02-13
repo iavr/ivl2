@@ -81,10 +81,10 @@ struct seq_data_t <fixed_array <T, N> > : id_t <fixed_store <T, N> > { };
 
 template <typename T, size_t N>
 class sequence <data::fixed <>, T, sizes <N> > :
-	public base_seq <fixed_array <T, N>, seq_types <T> >,
+	public seq_base <fixed_array <T, N>, seq_types <T> >,
 	seq_data <fixed_array <T, N> >
 {
-	friend base_seq <sequence, seq_types <T> >;
+	friend seq_base <sequence, seq_types <T> >;
 
 	using D  = seq_data <sequence>;
 	using ST = seq_types <T>;

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_BEGIN_HPP
-#define IVL_CORE_ARRAY_BEGIN_HPP
+#ifndef IVL_CORE_ATOM_BASE_STORE_HPP
+#define IVL_CORE_ATOM_BASE_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -34,59 +34,38 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-namespace traits {
-
-template <typename I> struct seq_ref_t;
-template <typename I> struct seq_val_t;
-
-template <typename I> using seq_ref = type_of <seq_ref_t <I> >;
-template <typename I> using seq_val = type_of <seq_val_t <I> >;
-
-}  // namespace traits
-}  // namespace types
+namespace atoms {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
 namespace details {
-
-using namespace types;
-using namespace tuples;
-using afun::make;
-using types::_and;
-using types::_or;
-using types::bind;
-
-}  // namespace details
-}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
-namespace details {
+template <typename T>
+class atom_store : public elem <0, T>
+{
+	using B = elem <0, T>;
 
-using namespace arrays;
+public:
+	using B::B;
 
-}  // namespace details
-}  // namespace afun
+protected:
+	INLINE           r_ref <T> val_f()      { return B::fwd(); }
+
+public:
+	INLINE           r_ref <T> val() &&     { return B::fwd(); }
+	INLINE           l_ref <T> val() &      { return B::get(); }
+	INLINE constexpr c_ref <T> val() const& { return B::get(); }
+};
 
 //-----------------------------------------------------------------------------
 
-namespace types {
-namespace traits {
-
-template <typename T> struct as_seq;
-template <typename T> struct seq_atom_of_t;
-template <typename T> using  seq_atom_of = type_of <seq_atom_of_t <T> >;
-
-namespace details {
-
-using namespace arrays;
-
 }  // namespace details
-}  // namespace traits
-}  // namespace types
+
+//-----------------------------------------------------------------------------
+
+}  // namespace atoms
 
 //-----------------------------------------------------------------------------
 
@@ -94,4 +73,4 @@ using namespace arrays;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_BEGIN_HPP
+#endif  // IVL_CORE_ATOM_BASE_STORE_HPP

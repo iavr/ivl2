@@ -39,6 +39,7 @@
 
 #include "core/logic.hpp"
 #include "core/nat.hpp"
+#include "core/cond.hpp"
 #include "core/numeric.hpp"
 #include "core/meta.hpp"
 

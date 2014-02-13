@@ -44,10 +44,10 @@ namespace details {
 
 template <typename... E>
 class collection <data::pre <>, E...> :
-	public base_tup <pre_tuple <E...>, pack <E...> >
+	public tup_base <pre_tuple <E...>, pack <E...> >
 {
 	using P = pack <E...>;
-	using B = base_tup <pre_tuple <E...>, P>;
+	using B = tup_base <pre_tuple <E...>, P>;
 
 	template <size_t J> using under = elem_at <J, E...>;
 

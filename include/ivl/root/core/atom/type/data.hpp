@@ -38,6 +38,8 @@ namespace data {
 
 //-----------------------------------------------------------------------------
 
+template <typename... D> struct tup  { };
+template <typename... D> struct seq  { };
 template <typename... D> struct ext  { };
 
 //-----------------------------------------------------------------------------

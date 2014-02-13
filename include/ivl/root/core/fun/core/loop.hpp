@@ -43,27 +43,33 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename S, typename T>
-struct loop_for
-{
-	template <typename F, typename... A>
-	using map = cond <
-		travers <A...>,   S,
-		any_tuple <A...>, T
-	>;
-};
+using apply_sw = fun_switch <
+	t_case <any_seq, S>,
+	t_case <any_tuple, T>
+>;
+
+template <typename S, typename T>
+using raw_loop_sw = fun_switch <
+	t_case <raw_travers, S>,
+	t_case <any_tuple, T>
+>;
+
+template <typename S, typename T>
+using loop_sw = fun_switch <
+	t_case <travers, S>,
+	t_case <any_tuple, T>
+>;
 
 //-----------------------------------------------------------------------------
 
-using apply = choose_fun <
-	loop_for <seq_apply, tup_apply>
-::template map>;
+using apply = switch_fun_of <apply_sw <seq_apply, tup_apply> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename M = trav_more>
-using head_loop_on = choose_fun <head_for <
-	loop_for <seq_head_loop_on <M>, tup_head_loop>
->::template map>;
+template <typename M = prim_more>
+using head_loop_on = switch_fun_of <cdr_switch <
+	loop_sw <seq_head_loop_on <M>, tup_head_loop>
+> >;
 
 //-----------------------------------------------------------------------------
 
@@ -81,10 +87,8 @@ using sep_loop = bind_of <sep_loop_>;
 
 //-----------------------------------------------------------------------------
 
-template <typename M = trav_more>
-struct loop_on : choose_fun <
-	loop_for <seq_loop_on <M>, tup_loop>
-::template map>
+template <typename M = prim_more>
+struct loop_on : switch_fun_of <loop_sw <seq_loop_on <M>, tup_loop> >
 {
 	// TODO: keys
 	template <typename S>

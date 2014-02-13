@@ -42,11 +42,11 @@ namespace meta {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class F, typename... V>
+template <template <typename...> class F, typename... P>
 struct bind
 {
 	template <typename... A>
-	using map = subs <F, V..., A...>;
+	using map = subs <F, P..., A...>;
 };
 
 //-----------------------------------------------------------------------------
