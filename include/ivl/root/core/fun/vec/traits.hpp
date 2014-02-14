@@ -42,52 +42,90 @@ namespace traits {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... T> struct vec_ret_t;
+template <typename F, typename... T> struct tup_vec_ret_t;
 template <typename F, typename... T>
-using vec_ret = type_of <vec_ret_t <F, T...> >;
+using tup_vec_ret = type_of <tup_vec_ret_t <F, T...> >;
 
 namespace details {
 
-template <typename S>       struct vec_ret_pt;
-template <typename S, bool> struct vec_ret_st;
+template <typename S>       struct tup_vec_ret_pt;
+template <typename S, bool> struct tup_vec_ret_st;
 
 template <typename F, typename... T>
-struct vec_ret_pt <F(pack <T...>)> : pack <vec_ret <F(T)>...> { };
+struct tup_vec_ret_pt <F(pack <T...>)> : pack <tup_vec_ret <F(T)>...> { };
 
 template <typename F, typename... T>
-struct vec_ret_st <F(T...), true> : vec_ret_pt <F(tup_args <T...>)> { };
+struct tup_vec_ret_st <F(T...), true> : tup_vec_ret_pt <F(tup_args <T...>)> { };
 
 template <typename F, typename... T>
-struct vec_ret_st <F(T...), false> : ret_t <F(T...)> { };
+struct tup_vec_ret_st <F(T...), false> : ret_t <F(T...)> { };
 
 }  // namespace details
 
 template <typename F, typename... T>
-struct vec_ret_t : vec_ret_t <F(T...)> { };
+struct tup_vec_ret_t : tup_vec_ret_t <F(T...)> { };
 
 template <typename F, typename... T>
-struct vec_ret_t <F(T...)> :
-	details::vec_ret_st <F(T...), any_tuple <T...>{}> { };
+struct tup_vec_ret_t <F(T...)> :
+	details::tup_vec_ret_st <F(T...), any_tuple <T...>{}> { };
 
 template <typename F, typename... T>
-struct vec_ret_t <F(pack <T...>)> : vec_ret_t <F(T...)> { };
+struct tup_vec_ret_t <F(pack <T...>)> : tup_vec_ret_t <F(T...)> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... T> struct seq_vec_ret_t;
+template <typename F, typename... T>
+using seq_vec_ret = type_of <seq_vec_ret_t <F, T...> >;
+
+namespace details {
+
+template <typename S>       struct seq_vec_ret_pt;
+template <typename S, bool> struct seq_vec_ret_st;
+
+template <typename F, typename... T>
+struct seq_vec_ret_pt <F(pack <T...>)> : seq_vec_ret_t <F(T...)> { };
+
+template <typename F, typename... T>
+struct seq_vec_ret_st <F(T...), true> : seq_vec_ret_pt <F(seq_args <T...>)> { };
+
+template <typename F, typename... T>
+struct seq_vec_ret_st <F(T...), false> : ret_t <F(T...)> { };
+
+}  // namespace details
+
+template <typename F, typename... T>
+struct seq_vec_ret_t : seq_vec_ret_t <F(T...)> { };
+
+template <typename F, typename... T>
+struct seq_vec_ret_t <F(T...)> :
+	details::seq_vec_ret_st <F(T...), any_seq <T...>{}> { };
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-template <typename T> struct vec_void_ : is_void <T> { };
+template <typename T> struct tup_vec_void_ : is_void <T> { };
 
 template <typename... T>
-struct vec_void_<pack <T...> > : any <vec_void_, T...> { };
+struct tup_vec_void_<pack <T...> > : any <tup_vec_void_, T...> { };
 
 }  // namespace details
 
 template <typename F, typename... T>
-struct vec_void : vec_void <F(T...)> { };
+struct tup_vec_void : tup_vec_void <F(T...)> { };
 
 template <typename F, typename... T>
-struct vec_void <F(T...)> : details::vec_void_<vec_ret <F(T...)> > { };
+struct tup_vec_void <F(T...)> :
+	details::tup_vec_void_<tup_vec_ret <F(T...)> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename F, typename... T>
+struct seq_vec_void : seq_vec_void <F(T...)> { };
+
+template <typename F, typename... T>
+struct seq_vec_void <F(T...)> : is_void <seq_vec_ret <F(T...)> > { };
 
 //-----------------------------------------------------------------------------
 

@@ -42,23 +42,34 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// TODO
-template <typename F, typename B = none>
-struct seq_vec_apply : tup_vec_apply <F, B>
-	{ using tup_vec_apply <F, B>::tup_vec_apply; };
+template <typename F, typename... A>
+using seq_auto_sw = _if <seq_vec_void <F(A...)>{}, seq_loop, seq_apply>;
+
+using seq_auto = switch_fun <seq_auto_sw>;
+
+//-----------------------------------------------------------------------------
+
+template <typename R, typename C = op::call>
+using seq_vec_sw = map_if <any_seq, R, atom_call <C> >;
+
+template <typename F, typename R, typename B = none>
+using seq_vec_f = vec_fun_of <val_gen <F, B>, seq_vec_sw <R> >;
 
 template <typename F, typename B = none>
-struct seq_vec_loop : tup_vec_loop <F, B>
-	{ using tup_vec_loop <F, B>::tup_vec_loop; };
+using seq_vec_apply = seq_vec_f <F, seq_apply, B>;
 
 template <typename F, typename B = none>
-struct seq_vec_auto : tup_vec_auto <F, B>
-	{ using tup_vec_auto <F, B>::tup_vec_auto; };
+using seq_vec_loop = seq_vec_f <F, seq_loop, B>;
+
+template <typename F, typename B = none>
+using seq_vec_auto = seq_vec_f <F, seq_auto, B>;
 
 template <typename F, typename B = atom <F> >
-struct seq_vec : tup_vec <F, B>
-	{ using tup_vec <F, B>::tup_vec; };
+using seq_vec = vec_atom_of <atom_gen <B>, seq_vec_sw <seq_auto> >;
 
+//-----------------------------------------------------------------------------
+
+// TODO
 template <typename F, size_t I = 0>
 struct seq_vec_mut : tup_vec_mut <F, I>
 	{ using tup_vec_mut <F, I>::tup_vec_mut; };

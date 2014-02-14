@@ -67,7 +67,15 @@ void run()
 		cout << "y = " << y << endl;
 		cout << "x + y = " << apply(afun::op::add(), x, y) << endl;
 		cout << "x + 3 = " << apply(afun::op::add(), x, 3) << endl;
-// 		cout << travers <decltype(x), int>() << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "array loop" << endl;
+		array <int, 6> x{14, 7, 3, -8, 9, 0};
+
+		cout << "x = " << x << endl;
+		cout << "x = ", loop(op::left, cout, mv(x)), cout << endl;
 		cout << endl;
 	}
 

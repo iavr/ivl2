@@ -42,13 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-using tup_auto_sw = _if <vec_void <F(A...)>{}, tup_loop, tup_apply>;
-
-using tup_auto = afun::switch_fun <tup_auto_sw>;
-
-//-----------------------------------------------------------------------------
-
 template <typename F, typename B = none>
 struct val_gen : B { F val() const { return F(); } };
 
@@ -56,8 +49,15 @@ template <typename F> struct atom_gen : F { using F::F; };
 
 //-----------------------------------------------------------------------------
 
-template <typename R, typename T = op::call>
-using tup_vec_sw = map_if <any_tuple, R, atom_call <T> >;
+template <typename F, typename... A>
+using tup_auto_sw = _if <tup_vec_void <F(A...)>{}, tup_loop, tup_apply>;
+
+using tup_auto = switch_fun <tup_auto_sw>;
+
+//-----------------------------------------------------------------------------
+
+template <typename R, typename C = op::call>
+using tup_vec_sw = map_if <any_tuple, R, atom_call <C> >;
 
 template <typename F, typename R, typename B = none>
 using tup_vec_f = vec_fun_of <val_gen <F, B>, tup_vec_sw <R> >;
@@ -82,13 +82,13 @@ using tup_vec_copy = tup_vec_f <F, copy_call <tup_apply, I> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename B = none, typename T = op::bracket>
+template <typename F, typename B = none, typename C = op::bracket>
 using tup_bra_vec_apply =
-	bra_vec_fun_of <val_gen <F, B>, tup_vec_sw <tup_vec_apply <T>, T> >;
+	bra_vec_fun_of <val_gen <F, B>, tup_vec_sw <tup_vec_apply <C>, C> >;
 
-template <typename F, typename B = atom <F>, typename T = op::bracket>
+template <typename F, typename B = atom <F>, typename C = op::bracket>
 using tup_bra_vec =
-	bra_vec_atom_of <atom_gen <B>, tup_vec_sw <tup_vec_apply <T>, T> >;
+	bra_vec_atom_of <atom_gen <B>, tup_vec_sw <tup_vec_apply <C>, C> >;
 
 //-----------------------------------------------------------------------------
 

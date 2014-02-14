@@ -81,21 +81,21 @@ struct seq_data_t <fixed_array <T, N> > : id_t <fixed_store <T, N> > { };
 
 template <typename T, size_t N>
 class sequence <data::fixed <>, T, sizes <N> > :
-	public seq_base <fixed_array <T, N>, seq_types <T> >,
+	public seq_base <fixed_array <T, N>, seq_traits <T> >,
 	seq_data <fixed_array <T, N> >
 {
-	friend seq_base <sequence, seq_types <T> >;
+	friend seq_base <sequence, seq_traits <T> >;
 
 	using D  = seq_data <sequence>;
-	using ST = seq_types <T>;
+	using TR = seq_traits <T>;
 
-	using IR = r_iter <ST>;
-	using IL = l_iter <ST>;
-	using IC = c_iter <ST>;
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
 
-	using VR = r_trav <ST>;
-	using VL = l_trav <ST>;
-	using VC = c_trav <ST>;
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
 
 //-----------------------------------------------------------------------------
 

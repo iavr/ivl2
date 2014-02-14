@@ -48,9 +48,9 @@ template <
 	template <typename...> class V = iter_trav,
 	typename S = seq_size <B>, typename... U
 >
-struct seq_types
+struct seq_traits
 {
-	using types = seq_types;
+	using traits = seq_traits;
 	using value_type = remove_type <T>;
 	using size_type = S;
 
@@ -76,19 +76,19 @@ struct seq_types
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename ST>
-class seq_base : public derived <D>, public ST
+template <typename D, typename TR>
+class seq_base : public derived <D>, public TR
 {
-	using T  = seq_val <ST>;
-	using S  = seq_size <ST>;
+	using T  = seq_type <TR>;
+	using S  = seq_size <TR>;
 
 	using RR = r_ref <T>;
 	using RL = l_ref <T>;
 	using RC = c_ref <T>;
 
-	using IR = r_iter <ST>;
-	using IL = l_iter <ST>;
-	using IC = c_iter <ST>;
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
 
 //-----------------------------------------------------------------------------
 
@@ -157,7 +157,7 @@ public:
 
 }  // namespace details
 
-using details::seq_types;
+using details::seq_traits;
 using details::seq_base;
 
 //-----------------------------------------------------------------------------

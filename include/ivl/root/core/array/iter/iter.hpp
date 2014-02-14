@@ -44,14 +44,15 @@ namespace details {
 
 template <typename I, typename R, typename T>
 class iterator <data::iter <>, I, R, T> :
-	public base_iter <I, R, T>,
+	public iter_base <iter_iter <I, R, T>, iter_traits <I, R, T> >,
 	private raw_tuple <I>
 {
-	using B = base_iter <I, R, T>;
+	using TR = iter_traits <I, R, T>;
+	using B = iter_base <iter_iter <I, R, T>, TR>;
 	using B::ref;
 
-	using D = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using D = seq_diff <TR>;
+	using P = seq_ptr <TR>;
 
 	using E = raw_tuple <I>;
 	using iter = elem <0, I>;
@@ -84,14 +85,15 @@ public:
 
 template <typename I, typename R, typename T>
 class traversor <data::iter <>, I, R, T> :
-	public base_iter <I, R, T>,
+	public iter_base <iter_trav <I, R, T>, iter_traits <I, R, T> >,
 	private raw_tuple <I, I>
 {
-	using B = base_iter <I, R, T>;
+	using TR = iter_traits <I, R, T>;
+	using B = iter_base <iter_trav <I, R, T>, TR>;
 	using B::ref;
 
-	using D = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using D = seq_diff <TR>;
+	using P = seq_ptr <TR>;
 
 	using E = raw_tuple <I, I>;
 	using iter = elem <0, I>;

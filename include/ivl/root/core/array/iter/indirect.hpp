@@ -44,14 +44,15 @@ namespace details {
 
 template <typename I, typename R, typename T, typename U>
 class iterator <data::indirect <>, I, R, T, U> :
-	public base_iter <I, R, T>,
+	public iter_base <indirect_iter <I, R, T, U>, iter_traits <I, R, T> >,
 	private raw_tuple <I, rref_opt <U> >
 {
-	using B = base_iter <I, R, T>;
+	using TR = iter_traits <I, R, T>;
+	using B = iter_base <indirect_iter <I, R, T, U>, TR>;
 	using B::ref;
 
-	using D = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using D = seq_diff <TR>;
+	using P = seq_ptr <TR>;
 
 	using RU = rref_opt <U>;
 	using E  = raw_tuple <I, RU>;
@@ -90,14 +91,15 @@ public:
 
 template <typename V, typename R, typename T, typename U>
 class traversor <data::indirect <>, V, R, T, U> :
-	public base_trav <V, R, T>,
+	public trav_base <indirect_trav <V, R, T, U>, trav_traits <V, R, T> >,
 	private raw_tuple <V, rref_opt <U> >
 {
-	using B = base_trav <V, R, T>;
+	using TR = trav_traits <V, R, T>;
+	using B = trav_base <indirect_trav <V, R, T, U>, TR>;
 	using B::ref;
 
-	using D = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using D = seq_diff <TR>;
+	using P = seq_ptr <TR>;
 
 	using RU = rref_opt <U>;
 	using E  = raw_tuple <V, RU>;

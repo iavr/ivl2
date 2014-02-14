@@ -62,7 +62,7 @@ namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
-	only_if <is_tuple <A>{}>                    \
+	only_if <is_group <A>{}>                    \
 = 0>                                           \
 INLINE constexpr auto                          \
 operator OP(A&& a)                             \
@@ -85,7 +85,7 @@ namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
-	only_if <is_tuple <A>{}>                    \
+	only_if <is_group <A>{}>                    \
 = 0>                                           \
 INLINE auto                                    \
 operator OP(A&& a)                             \
@@ -108,7 +108,7 @@ namespace details {                            \
                                                \
 template <                                     \
 	typename A,                                 \
-	only_if <is_tuple <A>{}>                    \
+	only_if <is_group <A>{}>                    \
 = 0>                                           \
 INLINE auto                                    \
 operator OP(A&& a, int)                        \
@@ -131,7 +131,7 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	only_if <any_tuple <A, B>{}>                            \
+	only_if <any_group <A, B>{}>                            \
 = 0>                                                       \
 INLINE constexpr auto                                      \
 operator OP(A&& a, B&& b)                                  \
@@ -154,7 +154,7 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	only_if <any_tuple <A, B>{}>                            \
+	only_if <any_group <A, B>{}>                            \
 = 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \
@@ -177,7 +177,7 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	only_if <any_tuple <A, B>() && !is_stream <A>()>        \
+	only_if <any_group <A, B>() && !is_stream <A>()>        \
 = 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \

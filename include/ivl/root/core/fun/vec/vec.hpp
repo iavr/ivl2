@@ -42,18 +42,30 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+using _auto = switch_fun_of <apply_sw <seq_auto, tup_auto> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename R, typename C = op::call>
+using vec_sw = map_if <any_group, R, atom_call <C> >;
+
+template <typename F, typename R, typename B = none>
+using vec_f = vec_fun_of <val_gen <F, B>, vec_sw <R> >;
+
 // no alias: fwd-declared
 template <typename F, typename B = none>
-struct vec_apply : seq_vec_apply <F, B> { };
+struct vec_apply : vec_f <F, apply, B> { };
 
 template <typename F, typename B = none>
-using vec_loop = seq_vec_loop <F, B>;
+using vec_loop = vec_f <F, loop, B>;
 
 template <typename F, typename B = none>
-using vec_auto = seq_vec_auto <F, B>;
+using vec_auto = vec_f <F, _auto, B>;
 
 template <typename F, typename B = atom <F> >
-using vec = seq_vec <F, B>;
+using vec = vec_atom_of <atom_gen <B>, vec_sw <_auto> >;
+
+//-----------------------------------------------------------------------------
 
 template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
 template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;

@@ -45,10 +45,10 @@ namespace details {
 template <typename C, typename... A> class iterator;
 template <typename C, typename... A> class traversor;
 
-template <typename I, typename R = seq_ref <I>, typename T = seq_val <I> >
+template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
 using iter_iter = iterator <data::iter <>, I, R, T>;
 
-template <typename I, typename R = seq_ref <I>, typename T = seq_val <I> >
+template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
 using iter_trav = traversor <data::iter <>, I, R, T>;
 
 template <typename I, typename R, typename T = I>

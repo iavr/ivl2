@@ -55,29 +55,29 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename R = rref_opt <T> >
-using atom_types = seq_types <R, _type <R>, atom_iter, atom_trav>;
+using atom_traits = seq_traits <R, _type <R>, atom_iter, atom_trav>;
 
 //-----------------------------------------------------------------------------
 
 template <typename D, typename T>
 class atom_base <D, T, data::seq <> > :
 	public derived <D, data::seq <> >,
-	public atom_types <T>
+	public atom_traits <T>
 {
 	using DER = derived <D, data::seq <> >;
 	using DER::der_f;
 	using DER::der;
 
-	using ST = atom_types <T>;
-	using S  = seq_size <ST>;
+	using TR = atom_traits <T>;
+	using S  = seq_size <TR>;
 
-	using IR = r_iter <ST>;
-	using IL = l_iter <ST>;
-	using IC = c_iter <ST>;
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
 
-	using VR = r_trav <ST>;
-	using VL = l_trav <ST>;
-	using VC = c_trav <ST>;
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
 
 //-----------------------------------------------------------------------------
 

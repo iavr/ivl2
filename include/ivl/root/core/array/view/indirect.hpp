@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-using indirect_ref = seq_ret <decltype(gen <U>()[*gen <K>().begin()])>;
+using indirect_ref = seq_result <decltype(gen <U>()[*gen <K>().begin()])>;
 
 template <typename K, typename U>
-using indirect_types = seq_types <
+using indirect_traits = seq_traits <
 	indirect_ref <K, U>, K, indirect_iter, indirect_trav, seq_size <K>, U
 >;
 
@@ -58,21 +58,21 @@ struct seq_data_t <indirect_seq <K, U> > : id_t <raw_tuple <K, U> > { };
 
 template <typename K, typename U>
 class sequence <data::indirect <>, K, U> :
-	public seq_base <indirect_seq <K, U>, indirect_types <K, U> >,
+	public seq_base <indirect_seq <K, U>, indirect_traits <K, U> >,
 	seq_data <indirect_seq <K, U> >
 {
-	using ST = indirect_types <K, U>;
-	friend seq_base <sequence, ST>;
+	using TR = indirect_traits <K, U>;
+	friend seq_base <sequence, TR>;
 
-	using S = seq_size <ST>;
+	using S = seq_size <TR>;
 
-	using IR = r_iter <ST>;
-	using IL = l_iter <ST>;
-	using IC = c_iter <ST>;
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
 
-	using VR = r_trav <ST>;
-	using VL = l_trav <ST>;
-	using VC = c_trav <ST>;
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
 
 	using E = raw_tuple <K, U>;
 	using idx   = elem <0, K>;

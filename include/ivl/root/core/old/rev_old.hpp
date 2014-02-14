@@ -45,14 +45,14 @@ namespace details {
 // TODO: remove
 template <typename I>
 class iterator <data::rev <>, I> :
-	public base_iter <I>,
+	public iter_base <I>,
 	private raw_tuple <I>
 {
 	using R = seq_ref <I>;
 	using D = seq_diff <I>;
 	using P = seq_ptr <I>;
 
-	using B = base_iter <I>;
+	using B = iter_base <I>;
 	using B::ref;
 
 	using E = raw_tuple <I>;

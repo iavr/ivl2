@@ -54,13 +54,14 @@ template <
 	size_t... N, typename IP, typename DER
 >
 class apply_iter_impl <pack <I...>, R, T, M, F, sizes <N...>, IP, DER> :
-	public derived <DER>,
-	public base_iter <IP, R, T>,
+	public iter_base <DER, iter_traits <IP, R, T> >,
 	private raw_tuple <rref_opt <F>, I...>
 {
-	using B = base_iter <IP, R, T>;
-	using D = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using TR = iter_traits <IP, R, T>;
+	using B = iter_base <DER, TR>;
+
+	using D = seq_diff <TR>;
+	using P = seq_ptr <TR>;
 
 	using derived <DER>::der;
 	using B::ref;
@@ -122,11 +123,11 @@ template <
 	size_t... N, typename VP, typename DER
 >
 class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, VP, DER> :
-	public derived <DER>,
-	public base_trav <VP, R, T>,
+	public trav_base <DER, trav_traits <VP, R, T> >,
 	private raw_tuple <rref_opt <F>, V...>
 {
-	using B = base_trav <VP, R, T>;
+	using TR = trav_traits <VP, R, T>;
+	using B = trav_base <DER, TR>;
 	using D = seq_diff <B>;
 	using P = seq_ptr <B>;
 

@@ -43,16 +43,38 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R = seq_ref <I>, typename T = seq_val <I>,
+	typename I, typename R = seq_ref <I>, typename T = seq_type <I>,
 	typename D = seq_diff <I>, typename P = remove_ref <R>*
 >
-struct base_iter
+struct iter_traits
 {
 	using iterator_type = I;
 	using reference = R;
 	using value_type = T;
 	using difference_type = D;
 	using pointer = P;
+};
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename V, typename R = seq_ref <V>, typename T = seq_type <V>,
+	typename D = seq_diff <V>, typename P = remove_ref <R>*
+>
+struct trav_traits : iter_traits <V, R, T, D, P>
+{
+	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename DER, typename TR>
+class iter_common : public derived <DER>, public TR
+{
+	using R = seq_ref <TR>;
+	using T = seq_type <TR>;
+	using D = seq_diff <TR>;
+	using P = seq_ptr <TR>;
 
 protected:
 	template <typename A>
@@ -61,14 +83,11 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename V, typename R = seq_ref <V>, typename T = seq_val <V>,
-	typename D = seq_diff <V>, typename P = remove_ref <R>*
->
-struct base_trav : base_iter <V, R, T, D, P>
-{
-	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
-};
+template <typename D, typename TR>
+class iter_base : public iter_common <D, TR> { };
+
+template <typename D, typename TR>
+class trav_base : public iter_common <D, TR> { };
 
 //-----------------------------------------------------------------------------
 

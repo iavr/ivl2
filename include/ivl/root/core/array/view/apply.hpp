@@ -43,15 +43,15 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using apply_ref = seq_ret <decltype(gen <F>()(*gen <A>().begin()...))>;
+using apply_ref = seq_result <decltype(gen <F>()(*gen <A>().begin()...))>;
 
 template <typename T, typename M, typename F, typename A>
-using apply_types_impl = seq_types <
+using apply_traits_impl = seq_traits <
 	T, A, apply_iter, apply_trav, seq_size <A>, M, F
 >;
 
 template <typename M, typename F, typename... A>
-using apply_types = apply_types_impl <apply_ref <F, A...>, M, F, pack <A...> >;
+using apply_traits = apply_traits_impl <apply_ref <F, A...>, M, F, pack <A...> >;
 
 // extending definition @array/base/base
 template <typename M, typename F, typename... A>
@@ -64,22 +64,22 @@ struct apply_seq_impl;
 
 template <typename M, typename F, typename... A, size_t... N>
 class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
-	public seq_base <apply_seq <M, F, A...>, apply_types <M, F, A...> >,
+	public seq_base <apply_seq <M, F, A...>, apply_traits <M, F, A...> >,
 	seq_data <apply_seq <M, F, A...> >
 {
 	using AP = pack <A...>;
-	using ST = apply_types <M, F, A...>;
-	friend seq_base <apply_seq <M, F, A...>, ST>;
+	using TR = apply_traits <M, F, A...>;
+	friend seq_base <apply_seq <M, F, A...>, TR>;
 
-	using S = seq_size <ST>;
+	using S = seq_size <TR>;
 
-	using IR = r_iter <ST>;
-	using IL = l_iter <ST>;
-	using IC = c_iter <ST>;
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
 
-	using VR = r_trav <ST>;
-	using VL = l_trav <ST>;
-	using VC = c_trav <ST>;
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
 
 	using E = raw_tuple <F, A...>;
 	using fun = elem <0, F>;

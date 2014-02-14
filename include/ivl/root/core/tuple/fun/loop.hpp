@@ -47,7 +47,7 @@ struct tup_apply : uref_of <apply_tuple> { };
 
 //-----------------------------------------------------------------------------
 
-struct off_fix_call
+struct off_skip_call
 {
 	template <size_t I, typename F, typename... A>
 	INLINE constexpr auto _(F&& f, A&&... a) const
@@ -60,8 +60,8 @@ struct off_map_call
 {
 	template <size_t I, typename F, typename... A>
 	INLINE constexpr auto _(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(M <I>{}, fwd <A>(a)...))
-		{ return fwd <F>(f)(M <I>{}, fwd <A>(a)...); }
+	-> decltype(fwd <F>(f)(M <I>(), fwd <A>(a)...))
+		{ return fwd <F>(f)(M <I>(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ public:
 	}
 };
 
-using tup_loop = tup_loop_of <off_fix_call>;
+using tup_loop = tup_loop_of <off_skip_call>;
 
 template <template <size_t...> class M = size>
 using tup_scan_of = tup_loop_of <off_map_call <M> >;
