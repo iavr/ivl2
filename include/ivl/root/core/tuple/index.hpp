@@ -37,6 +37,9 @@
 #include "fun/at.hpp"
 #include "fun/make.hpp"
 #include "fun/meta.hpp"
+#include "fun/manip.hpp"
+#include "fun/call.hpp"
+#include "fun/loop.hpp"
 
 #include "base/elem.hpp"
 #include "base/store.hpp"
@@ -50,15 +53,11 @@
 #include "view/tail.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
-#include "view/loop.hpp"
-#include "view/scan.hpp"
 #include "view/zip.hpp"
 #include "view/join.hpp"
 
-#include "fun/manip.hpp"
 #include "fun/meta_tup.hpp"
 #include "fun/meta_op.hpp"
-#include "fun/loop.hpp"
 
 //-----------------------------------------------------------------------------
 

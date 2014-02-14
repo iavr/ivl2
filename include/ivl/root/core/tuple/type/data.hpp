@@ -45,8 +45,6 @@ template <typename... D> struct tuple { };
 template <typename... D> struct tail { };
 template <typename... D> struct indirect { };
 template <typename... D> struct apply { };
-template <typename... D> struct loop { };
-template <typename... D> struct scan { };
 template <typename... D> struct zip { };
 template <typename... D> struct join { };
 

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_VIEW_LOOP_HPP
-#define IVL_CORE_TUPLE_VIEW_LOOP_HPP
+#ifndef IVL_CORE_TUPLE_FUN_CALL_HPP
+#define IVL_CORE_TUPLE_FUN_CALL_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
@@ -42,65 +42,62 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename A, typename I = sz_rng_of_p <A> >
-class loop_impl;
-
-template <typename F, typename... A, size_t... I>
-class loop_impl <F, pack <A...>, sizes <I...> > : public tup_base <
-	loop_tup <F, A...>, rep <tran_len <tup_types <A>...>{}, nat>
->
+struct arg_call
 {
-	using P = rep <tran_len <tup_types <A>...>{}, nat>;
-	using B = tup_base <loop_tup <F, A...>, P>;
-
-	using fun = elem <0, F>;
-	template <size_t J> using arg = elem_at <J + 1, F, A...>;
-
-	friend base_type_of <B>;
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J>
-	INLINE nat
-	call_at() && { return fun::fwd()(_at._<J>(arg <I>::fwd())...), nat(); }
-
-	template <size_t J>
-	INLINE nat
-	call_at() & { return fun::get()(_at._<J>(arg <I>::get())...), nat(); }
-
-	template <size_t J>
-	INLINE constexpr nat
-	call_at() const& { return fun::get()(_at._<J>(arg <I>::get())...), nat(); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-
-//-----------------------------------------------------------------------------
-
-	INLINE r_ref <F> loop() && { return B::loop_f(), fun::fwd(); }
-	INLINE l_ref <F> loop() &  { return B::loop(), fun::get()(); }
-
-	INLINE constexpr c_ref <F> loop() const& { return B::loop(), fun::get(); }
-
+	template <typename F, typename... A>
+	INLINE constexpr auto operator()(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(uref()(fwd <A>(a)...)))
+		{ return fwd <F>(f)(uref()(fwd <A>(a)...)); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename F>
-class collection <data::loop <>, F>;
-
-template <typename F, typename... A>
-class collection <data::loop <>, F, A...> :
-	public loop_impl <F, pack <A...> >
+struct tup_call
 {
-	using B = loop_impl <F, pack <A...> >;
+	template <
+		typename F, typename T, typename... A,
+		only_if <is_tuple <T>{}>
+	= 0>
+	INLINE constexpr auto operator()(F&& f, T&& t, A&&... a) const
+	-> decltype(fwd <T>(t).call(fwd <F>(f), fwd <A>(a)...))
+		{ return fwd <T>(t).call(fwd <F>(f), fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+class head_call
+{
+	using H = tup_head;
+	using L = tup_tail;
 
 public:
-	using B::B;
-	using B::base_type::operator=;
+	template <
+		typename F, typename T, typename... A,
+		only_if <is_tuple <T>{}>
+	= 0>
+	INLINE constexpr auto operator()(F&& f, T&& t, A&&... a) const
+	-> decltype(fwd <F>(f)(H()(fwd <T>(t)), L()(fwd <T>(t)), fwd <A>(a)...))
+		{ return fwd <F>(f)(H()(fwd <T>(t)), L()(fwd <T>(t)), fwd <A>(a)...); }
 };
+
+//-----------------------------------------------------------------------------
+
+struct pre_call
+{
+	template <
+		typename F, typename T, typename... A,
+		only_if <is_tuple <T>{}>
+	= 0>
+	INLINE constexpr ret <F(A...)>
+	operator()(F&& f, T&& t, A&&... a) const
+		{ return fwd <T>(t).call(fwd <F>(f)), fwd <F>(f)(fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename F> using arg_fun_of = bind_fun <arg_call, F>;
+template <typename F> using tup_fun_of = bind_fun <tup_call, F>;
+template <typename F> using head_fun_of = bind_fun <head_call, F>;
 
 //-----------------------------------------------------------------------------
 
@@ -108,7 +105,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
-}  // namespace tuples
+using details::arg_call;
+using details::tup_call;
+using details::head_call;
+
+using details::arg_fun_of;
+using details::tup_fun_of;
+using details::head_fun_of;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
@@ -116,4 +123,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_VIEW_LOOP_HPP
+#endif  // IVL_CORE_TUPLE_FUN_CALL_HPP

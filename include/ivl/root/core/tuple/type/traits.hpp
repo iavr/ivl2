@@ -281,6 +281,14 @@ template <typename... P> using tup_tran   = type_of <tup_tran_t <P...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename... A>
+using tup_tran_len = tran_len <tup_types <tup_atom_of <A> >...>;
+
+template <typename... A>
+using tup_tran_rng = sz_rng_of_i <tup_tran_len <A...>{}>;
+
+//-----------------------------------------------------------------------------
+
 template <typename T> struct tup_arg_t : tup_types <tup_atom_of <T> > { };
 template <typename T> using  tup_arg = type_of <tup_arg_t <T> >;
 

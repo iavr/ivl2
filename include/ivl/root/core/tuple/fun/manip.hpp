@@ -91,78 +91,11 @@ struct tup_flip
 
 //-----------------------------------------------------------------------------
 
-struct arg_call
-{
-	template <typename F, typename... A>
-	INLINE constexpr auto operator()(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(uref()(fwd <A>(a)...)))
-		{ return fwd <F>(f)(uref()(fwd <A>(a)...)); }
-};
-
-//-----------------------------------------------------------------------------
-
-struct tup_call
-{
-	template <
-		typename F, typename T, typename... A,
-		only_if <is_tuple <T>{}>
-	= 0>
-	INLINE constexpr auto operator()(F&& f, T&& t, A&&... a) const
-	-> decltype(fwd <T>(t).call(fwd <F>(f), fwd <A>(a)...))
-		{ return fwd <T>(t).call(fwd <F>(f), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-class head_call
-{
-	using H = tup_head;
-	using L = tup_tail;
-
-public:
-	template <
-		typename F, typename T, typename... A,
-		only_if <is_tuple <T>{}>
-	= 0>
-	INLINE constexpr auto operator()(F&& f, T&& t, A&&... a) const
-	-> decltype(fwd <F>(f)(H()(fwd <T>(t)), L()(fwd <T>(t)), fwd <A>(a)...))
-		{ return fwd <F>(f)(H()(fwd <T>(t)), L()(fwd <T>(t)), fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-struct pre_call
-{
-	template <
-		typename F, typename T, typename... A,
-		only_if <is_tuple <T>{}>
-	= 0>
-	INLINE constexpr ret <F(A...)>
-	operator()(F&& f, T&& t, A&&... a) const
-		{ return fwd <T>(t).call(fwd <F>(f)), fwd <F>(f)(fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename F> using arg_fun_of = bind_fun <arg_call, F>;
-template <typename F> using tup_fun_of = bind_fun <tup_call, F>;
-template <typename F> using head_fun_of = bind_fun <head_call, F>;
-
-//-----------------------------------------------------------------------------
-
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
 using details::tup;
-
-using details::arg_call;
-using details::tup_call;
-using details::head_call;
-
-using details::arg_fun_of;
-using details::tup_fun_of;
-using details::head_fun_of;
 
 //-----------------------------------------------------------------------------
 

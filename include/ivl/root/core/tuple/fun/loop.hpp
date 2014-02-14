@@ -44,19 +44,55 @@ namespace details {
 
 // no alias: often used
 struct tup_apply : uref_of <apply_tuple> { };
-struct tup_loop_ : rref_of <loop_tuple> { };
-struct tup_scan_ : rref_of <scan_tuple> { };
 
-template <typename L>
-struct tup_loop_of
+//-----------------------------------------------------------------------------
+
+struct off_fix_call
 {
-	template <typename F, typename... A>
-	INLINE void operator()(F&& f, A&&... a) const
-		{ L()(fwd <F>(f), fwd <A>(a)...).loop(); }
+	template <size_t I, typename F, typename... A>
+	INLINE constexpr auto _(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(fwd <A>(a)...))
+		{ return fwd <F>(f)(fwd <A>(a)...); }
 };
 
-using tup_loop = tup_loop_of <tup_loop_>;
-using tup_scan = tup_loop_of <tup_scan_>;
+template <template <size_t...> class M>
+struct off_map_call
+{
+	template <size_t I, typename F, typename... A>
+	INLINE constexpr auto _(F&& f, A&&... a) const
+	-> decltype(fwd <F>(f)(M <I>{}, fwd <A>(a)...))
+		{ return fwd <F>(f)(M <I>{}, fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename C>
+class tup_loop_of
+{
+	template <size_t I, typename F, typename... A>
+	INLINE void each(F&& f, A&&... a) const
+		{ C().template _<I>(fwd <F>(f), at()._<I>(fwd <A>(a))...); }
+
+	template <size_t... I, typename F, typename... A>
+	INLINE void loop(sizes <I...>, F&& f, A&&... a) const
+		{ thru{(each <I>(fwd <F>(f), fwd <A>(a)...), 0)...}; }
+
+public:
+	template <typename F, typename... A, typename R = tup_tran_rng <A...> >
+	INLINE F&& operator()(F&& f, A&&... a) const
+	{
+		return loop(R(), fwd <F>(f), tup_atom_of <A>(fwd <A>(a))...),
+			fwd <F>(f);
+	}
+};
+
+using tup_loop = tup_loop_of <off_fix_call>;
+
+template <template <size_t...> class M = size>
+using tup_scan_of = tup_loop_of <off_map_call <M> >;
+
+using tup_scan      = tup_scan_of <>;
+using tup_tail_scan = tup_scan_of <sz_inc>;
 
 //-----------------------------------------------------------------------------
 

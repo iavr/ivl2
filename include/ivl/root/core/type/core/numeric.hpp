@@ -57,6 +57,17 @@ template <size_t... N> using sizes   = integrals <size_t, N...>;
 
 //-----------------------------------------------------------------------------
 
+template <typename T, T N> using int_inc = integral <T, N + 1>;
+template <typename T, T N> using int_dec = integral <T, N - 1>;
+
+template <int N> using num_inc = int_inc <int, N>;
+template <int N> using num_dec = int_dec <int, N>;
+
+template <size_t N> using sz_inc = int_inc <size_t, N>;
+template <size_t N> using sz_dec = int_dec <size_t, N>;
+
+//-----------------------------------------------------------------------------
+
 template <typename T, T B, T E, typename S = int, S s = 1>
 struct range { };
 

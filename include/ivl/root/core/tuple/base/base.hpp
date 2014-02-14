@@ -208,14 +208,13 @@ private:
 	using tmp_if = only_if <sizeof...(P), tup_tmp <P...> >;
 
 	template <typename... T> using app = subs <apply_tuple, uopt <T>...>;
-	template <typename... T> using loo = subs <loop_tuple, opt <T&&>...>;
 	template <typename... T> using op  = subs <keys::op_ref, uopt <T>...>;
 
 	template <typename F, typename... A>
-	using auto_ret = _if <tup_void <F(A...)>{}, void, app <F, A...> >;
+	using auto_ret = _if <tup_void <F(A...)>{}, F&&, app <F, A...> >;
 
 	template <typename F, typename... A>
-	using auto_sw = _if <tup_void <F(A...)>{}, _do <loo>, make <app> >;
+	using auto_sw = _if <tup_void <F(A...)>{}, afun::tup_loop, make <app> >;
 
 	using _auto = afun::switch_fun <auto_sw>;
 	using bra   = afun::op::bracket;

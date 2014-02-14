@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename L = tup_loop_>
+template <typename F, typename L = tup_loop>
 class tup_accum
 {
 	template <typename T> using acc = bind_args <mut_fun <F>, T>;
@@ -54,11 +54,11 @@ public:
 	= 0>
 	INLINE constexpr T
 	operator()(I&& i, A&&... a) const
-		{ return L()(acc <T>(fwd <I>(i)), fwd <A>(a)...).loop().val(); }
+		{ return L()(acc <T>(fwd <I>(i)), fwd <A>(a)...).val(); }
 };
 
 template <typename F>
-using tup_accum_off = tup_accum <F, tup_scan_>;
+using tup_accum_off = tup_accum <F, tup_scan>;
 
 //-----------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ class tup_fold
 	op(_false, A&&... a) const
 	{
 		return U()(XE()(E()(static_cast <R <A> >(tup_head()(fwd <A>(a)))...)),
-			tup_tail_of <rref_opt>()(fwd <A>(a))...);  // TODO: tail shifts real offset by -1 !!
+			tup_tail_of <rref_opt>()(fwd <A>(a))...);
 	}
 
 public:
@@ -107,7 +107,8 @@ template <
 	template <typename> class R = common_of
 >
 using tup_fold_off = tup_fold <
-	F, I, E, R, add_offset <size_t(-1)>, add_offset <0>, tup_accum_off <F>
+	F, I, E, R, add_offset <size_t(-1)>, add_offset <0>,
+	tup_accum <F, tup_tail_scan>
 >;
 
 //-----------------------------------------------------------------------------

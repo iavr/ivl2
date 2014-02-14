@@ -50,14 +50,6 @@ struct make
 	operator()(A&&... a) const { return subs <T, A...>(fwd <A>(a)...); }
 };
 
-template <template <typename...> class T>
-struct _do
-{
-	template <typename... A>
-	INLINE void
-	operator()(A&&... a) const { subs <T, A...>(fwd <A>(a)...).loop(); }
-};
-
 //-----------------------------------------------------------------------------
 
 // TODO: keys + operator[] ([val], [rref], [lref], [clref])
@@ -128,7 +120,6 @@ using clref = clref_of <>;
 //-----------------------------------------------------------------------------
 
 using details::make;
-using details::_do;
 
 using details::val_of;
 using details::uref_of;
@@ -160,7 +151,6 @@ namespace tuples {
 namespace details {
 
 using afun::make;
-using afun::_do;
 
 }  // namespace details
 }  // namespace tuples
