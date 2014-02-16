@@ -124,14 +124,14 @@ template <typename T> using is_abstract =
 #if IVL_HAS_FEATURE(is_polymorphic)
 
 template <typename T>
-struct is_polymorphic : expr <__is_polymorphic(T)> { };
+struct is_poly : expr <__is_polymorphic(T)> { };
 
 #else
 
-template <typename T> using is_polymorphic_test =
+template <typename T> using is_poly_test =
 	decltype((T*) dynamic_cast <const volatile void*>(gen <T*>()));
 
-template <typename T> using is_polymorphic = sfinae <is_polymorphic_test, T>;
+template <typename T> using is_poly = sfinae <is_poly_test, T>;
 
 #endif  // IVL_HAS_FEATURE(is_polymorphic)
 
@@ -144,7 +144,7 @@ using details::is_derive;
 using details::is_empty;
 using details::is_complete;
 using details::is_abstract;
-using details::is_polymorphic;
+using details::is_poly;
 
 //-----------------------------------------------------------------------------
 
