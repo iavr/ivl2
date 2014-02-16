@@ -104,9 +104,6 @@ public:
 	INLINE I  end()         { return data() + N; }
 	INLINE CI end()   const { return data() + N; }
 
-	INLINE CI     cbegin()  const { return begin(); }
-	INLINE CI     cend()    const { return end(); }
-
 	INLINE constexpr size_t size()     const { return N; }
 	INLINE constexpr size_t max_size() const { return N; }
 	INLINE constexpr bool   empty()    const { return N == 0; }

@@ -62,6 +62,9 @@ struct elem_store <E> : E
 	explicit INLINE constexpr elem_store(A&& a) : E(fwd <A>(a)) { }
 };
 
+template <>
+struct elem_store <> { };
+
 //-----------------------------------------------------------------------------
 
 template <typename U, typename N = sz_rng_of_p <U> > struct elem_types_t;

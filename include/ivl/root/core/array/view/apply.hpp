@@ -43,33 +43,29 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename... A>
-using apply_ref = seq_result <decltype(gen <F>()(*gen <A>().begin()...))>;
+using apply_type = seq_result <decltype(gen <F>()(*gen <A>().begin()...))>;
 
-template <typename T, typename M, typename F, typename A>
-using apply_traits_impl = seq_traits <
-	T, A, apply_iter, apply_trav, seq_size <A>, M, F
->;
-
-template <typename M, typename F, typename... A>
-using apply_traits = apply_traits_impl <apply_ref <F, A...>, M, F, pack <A...> >;
-
-// extending definition @array/base/base
-template <typename M, typename F, typename... A>
-struct seq_data_t <apply_seq <M, F, A...> > : id_t <raw_tuple <F, A...> > { };
+template <
+	typename M, typename F, typename A,
+	typename T = embed <apply_type, cons <F, A> >
+>
+using apply_traits =
+	seq_traits <T, A, apply_iter, apply_trav, seq_size <A>, M, F>;
 
 //-----------------------------------------------------------------------------
 
-template <typename M, typename F, typename A, typename N = sz_rng_of_p <A> >
+template <
+	typename M, typename F, typename A, typename N = sz_rng_of_p <A>,
+	typename TR = apply_traits <M, F, A>
+>
 struct apply_seq_impl;
 
-template <typename M, typename F, typename... A, size_t... N>
-class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
-	public seq_base <apply_seq <M, F, A...>, apply_traits <M, F, A...> >,
-	seq_data <apply_seq <M, F, A...> >
+template <typename M, typename F, typename... A, size_t... N, typename TR>
+class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
+	public seq_base <apply_seq <M, F, A...>, TR, F, A...>
 {
-	using AP = pack <A...>;
-	using TR = apply_traits <M, F, A...>;
-	friend seq_base <apply_seq <M, F, A...>, TR>;
+	using B = seq_base <apply_seq <M, F, A...>, TR, F, A...>;
+	friend B;
 
 	using S = seq_size <TR>;
 
@@ -81,7 +77,6 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
 	using VL = l_trav <TR>;
 	using VC = c_trav <TR>;
 
-	using E = raw_tuple <F, A...>;
 	using fun = elem <0, F>;
 
 	template <size_t K>
@@ -97,25 +92,25 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...> > :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE r_pk <K, AP>
+	INLINE r_pick <K, A...>
 	a_f() { return arg <K>::fwd(); }
 
 	template <size_t K>
-	INLINE r_pk <K, AP>
+	INLINE r_pick <K, A...>
 	a() && { return arg <K>::fwd(); }
 
 	template <size_t K>
-	INLINE l_pk <K, AP>
+	INLINE l_pick <K, A...>
 	a() & { return arg <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr c_pk <K, AP>
+	INLINE constexpr c_pick <K, A...>
 	a() const& { return arg <K>::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
 	INLINE constexpr S size() const { return M().size(a<N>()...); }
 

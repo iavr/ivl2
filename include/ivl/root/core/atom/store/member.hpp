@@ -43,19 +43,19 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 // member_ptr atom
-template <typename T, typename C>
-class atom_impl <T, C, numbers <1, 0> > :
-	public atom_store <T>, public atom_base <atom <T, C>, T, C>
+template <typename T, typename C, typename b>
+class atom_impl <T, C, b, numbers <1, 0> > :
+	public atom_base <T, C, b>
 {
-	using S = atom_store <T>;
-	using S::val_f;
-	using S::val;
+	using B = atom_base <T, C, b>;
 
 	template <typename O, typename... A>
 	using op = keys::op_ref <O, uref_opt <A>...>;
 
 public:
-	using S::S;
+	using B::B;
+	using B::val_f;
+	using B::val;
 
 //-----------------------------------------------------------------------------
 

@@ -42,52 +42,68 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename... E>
+struct iter_tuple : raw_tuple <iter_opt <E>...>
+	{ using raw_tuple <iter_opt <E>...>::raw_tuple; };
+
+template <>
+struct iter_tuple <> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename TR, typename... E> struct iter_store;
+
 template <
 	typename I, typename R = seq_ref <I>, typename T = seq_type <I>,
 	typename D = seq_diff <I>, typename P = remove_ref <R>*
 >
-struct iter_traits
+struct iter_traits : iter_store <iter_traits <I, R, T, D, P> > { };
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename I, typename R, typename T, typename D, typename P,
+	typename... E
+>
+struct iter_store <iter_traits <I, R, T, D, P>, E...> :
+	protected iter_tuple <E...>
 {
 	using iterator_type = I;
 	using reference = R;
 	using value_type = T;
 	using difference_type = D;
 	using pointer = P;
+
+	static constexpr bool finite = fin_trav <I>{}();  // TODO: () needed by GCC
+
+	using iter_tuple <E...>::iter_tuple;
 };
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename V, typename R = seq_ref <V>, typename T = seq_type <V>,
-	typename D = seq_diff <V>, typename P = remove_ref <R>*
->
-struct trav_traits : iter_traits <V, R, T, D, P>
-{
-	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename DER, typename TR>
-class iter_common : public derived <DER>, public TR
+template <typename D, typename TR, typename... E>
+class iter_common : public derived <D>, public iter_store <TR, E...>
 {
 	using R = seq_ref <TR>;
 	using T = seq_type <TR>;
-	using D = seq_diff <TR>;
+	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
 protected:
 	template <typename A>
 	INLINE constexpr R ref(A&& a) const { return static_cast <R>(a); }
+
+public:
+	using iter_store <TR, E...>::iter_store;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename TR>
-class iter_base : public iter_common <D, TR> { };
+template <typename D, typename TR, typename... E>
+using iter_base = iter_common <D, TR, E...>;
 
-template <typename D, typename TR>
-class trav_base : public iter_common <D, TR> { };
+template <typename D, typename TR, typename... E>
+using trav_base = iter_common <D, TR, E...>;
 
 //-----------------------------------------------------------------------------
 

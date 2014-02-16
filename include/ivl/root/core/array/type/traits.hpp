@@ -44,10 +44,14 @@ namespace traits {
 
 namespace details {
 
-template <typename T> struct is_seq_  : _false { };
-template <typename T> struct is_cont_ : is_seq_<T> { };
-template <typename T> struct is_trav_ : _false { };
-template <typename T> struct is_iter_ : is_trav_<T> { };
+template <typename T> struct is_seq_   : _false { };
+template <typename T> struct is_cont_  : is_seq_<T> { };
+template <typename T> struct is_trav_  : _false { };
+template <typename T> struct is_iter_  : is_trav_<T> { };
+
+// extending definition @tuple/type/traits
+template <typename C, typename... A>
+struct is_group_<sequence <C, A...> > : _true { };
 
 template <typename C, typename... A>
 struct is_seq_<sequence <C, A...> > : _true { };
@@ -71,14 +75,10 @@ struct is_cont_<initializer_list <T> > : _true { };
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using is_cont = details::is_cont_<raw_type <T> >;
-template <typename T> using is_seq  = details::is_seq_<raw_type <T> >;
-template <typename T> using is_iter = details::is_iter_<raw_type <T> >;
-template <typename T> using is_trav = details::is_trav_<raw_type <T> >;
-
-// template _or instead of operator|| avoids recursion in
-// vectorized operator definitions @fun/op/op
-template <typename T> using is_group = _or <is_seq <T>, is_tuple <T> >;
+template <typename T> using is_cont  = details::is_cont_<raw_type <T> >;
+template <typename T> using is_seq   = details::is_seq_<raw_type <T> >;
+template <typename T> using is_iter  = details::is_iter_<raw_type <T> >;
+template <typename T> using is_trav  = details::is_trav_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -87,12 +87,6 @@ template <typename P> using any_seq_p = any_p <is_seq, P>;
 
 template <typename... E> using all_seq = all_seq_p <pack <E...> >;
 template <typename... E> using any_seq = any_seq_p <pack <E...> >;
-
-template <typename P> using all_group_p = all_p <is_group, P>;
-template <typename P> using any_group_p = any_p <is_group, P>;
-
-template <typename... E> using all_group = all_group_p <pack <E...> >;
-template <typename... E> using any_group = any_group_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -288,6 +282,42 @@ template <typename... A> struct c_iter_t <pack <A...> > : pack <c_iter <A>...> {
 template <typename... A> struct r_trav_t <pack <A...> > : pack <r_trav <A>...> { };
 template <typename... A> struct l_trav_t <pack <A...> > : pack <l_trav <A>...> { };
 template <typename... A> struct c_trav_t <pack <A...> > : pack <c_trav <A>...> { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T, bool = is_iter <T>()>
+struct iter_opt_ : rref_opt_t <T> { };
+
+template <typename T>
+struct iter_opt_<T, true> : base_opt_t <T> { };
+
+}  // namespace details
+
+template <typename T> using iter_opt_t = details::iter_opt_<T>;
+template <typename T> using iter_opt = type_of <iter_opt_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <size_t N, typename T>
+using iter_elem = tuples::elem <N, iter_opt <T> >;
+
+template <size_t N, typename... E>
+using iter_elem_at = iter_elem <N, pick <N, E...> >;
+
+template <typename T> using r_iter_ref = r_ref <iter_opt <T> >;
+template <typename T> using l_iter_ref = l_ref <iter_opt <T> >;
+template <typename T> using c_iter_ref = c_ref <iter_opt <T> >;
+
+template <size_t N, typename... E>
+using r_iter_pick = r_iter_ref <pick <N, E...> >;
+
+template <size_t N, typename... E>
+using l_iter_pick = l_iter_ref <pick <N, E...> >;
+
+template <size_t N, typename... E>
+using c_iter_pick = c_iter_ref <pick <N, E...> >;
 
 //-----------------------------------------------------------------------------
 

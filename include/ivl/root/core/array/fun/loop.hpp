@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// no alias: often used
+// no alias: entry point
 template <typename M = prim_term>
 struct seq_apply_on : uref_of <apply_sequence_on <M>::template map> { };
 

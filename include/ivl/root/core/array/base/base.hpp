@@ -42,45 +42,12 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename T, typename B = remove_ref <T>*,
-	template <typename...> class I = iter_iter,
-	template <typename...> class V = iter_trav,
-	typename S = seq_size <B>, typename... U
->
-struct seq_traits
+template <typename D, typename TR, typename... E>
+class seq_base : public derived <D>, public seq_store <TR, E...>
 {
-	using traits = seq_traits;
-	using value_type = remove_type <T>;
-	using size_type = S;
-
-	using fwd_iterator   = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
-	using iterator       = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
-	using const_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
-
-	using fwd_traversor   = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
-	using traversor       = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
-	using const_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
-
-	using fwd_reference   = seq_ref <fwd_iterator>;
-	using reference       = seq_ref <iterator>;
-	using const_reference = seq_ref <const_iterator>;
-
-	using pointer         = seq_ptr <iterator>;
-	using const_pointer   = seq_ptr <const_iterator>;
-
-	using difference_type = seq_diff <iterator>;
-
-	static constexpr bool finite = traversor::finite;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename D, typename TR>
-class seq_base : public derived <D>, public TR
-{
-	using T  = seq_type <TR>;
-	using S  = seq_size <TR>;
+	using B = seq_store <TR, E...>;
+	using T = seq_type <TR>;
+	using S = seq_size <TR>;
 
 	using RR = r_ref <T>;
 	using RL = l_ref <T>;
@@ -111,6 +78,8 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
+	using B::B;
+
 	INLINE constexpr bool empty() const { return der().size() == 0; }
 
 	INLINE           RR front() &&     { return *b_f(); }
@@ -130,8 +99,11 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
+// 	using data = embed <seq_tuple, join <seq_data <D>, pack <E...> > >;
+	using data = seq_data_tuple <D, E...>;
+
 	template <typename T, typename R = raw_type <T> >
-	using opt = base_opt <T, R, _if <eq <R, D>{}, seq_data <D>, R> >;
+	using opt = base_opt <T, R, _if <eq <R, D>{}, data, R> >;
 
 	template <typename... A>
 	using indir = subs <indirect_seq, opt <A>...>;

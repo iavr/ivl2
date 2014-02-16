@@ -56,15 +56,15 @@ class collection <data::pre <>, E...> :
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE r_pk <J, P>
+	INLINE r_pick_p <J, P>
 	call_at() && { return under <J>::fwd(); }
 
 	template <size_t J>
-	INLINE l_pk <J, P>
+	INLINE l_pick_p <J, P>
 	call_at() & { return under <J>::get(); }
 
 	template <size_t J>
-	INLINE constexpr c_pk <J, P>
+	INLINE constexpr c_pick_p <J, P>
 	call_at() const& { return under <J>::get(); }
 
 //-----------------------------------------------------------------------------

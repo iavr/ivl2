@@ -80,15 +80,15 @@ class apply_impl <F, pack <A...>, sizes <I...> > :
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE r_pk <J, P>
+	INLINE r_pick_p <J, P>
 	call_at() && { return fun::fwd()(_at._<J>(arg <I>::fwd())...); }
 
 	template <size_t J>
-	INLINE l_pk <J, P>
+	INLINE l_pick_p <J, P>
 	call_at() & { return fun::get()(_at._<J>(arg <I>::get())...); }
 
 	template <size_t J>
-	INLINE constexpr c_pk <J, P>
+	INLINE constexpr c_pick_p <J, P>
 	call_at() const& { return fun::get()(_at._<J>(arg <I>::get())...); }
 
 //-----------------------------------------------------------------------------

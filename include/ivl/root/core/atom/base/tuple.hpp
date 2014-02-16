@@ -54,25 +54,23 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename T>
-class atom_base <D, T, data::tup <> > :
-	public derived <D, data::tup <> >
+template <typename T, typename B>
+struct atom_base <T, data::tup <>, B> : public B
 {
-	using DER = derived <D, data::tup <> >;
-	using DER::der_f;
-	using DER::der;
+	using B::B;
+	using B::val_f;
+	using B::val;
 
-public:
 	using type = _type <T>;
 	static constexpr size_t length = 1;
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J> INLINE r_ref <T> at() && { return der_f().val(); }
-	template <size_t J> INLINE l_ref <T> at() &  { return der().val(); }
+	template <size_t J> INLINE r_ref <T> at() && { return val_f(); }
+	template <size_t J> INLINE l_ref <T> at() &  { return val(); }
 
 	template <size_t J>
-	INLINE constexpr c_ref <T> at() const& { return der().val(); }
+	INLINE constexpr c_ref <T> at() const& { return val(); }
 
 };
 

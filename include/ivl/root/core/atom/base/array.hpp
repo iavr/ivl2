@@ -39,7 +39,7 @@ namespace details {
 
 // extending definition @array/base/base
 template <typename T, typename C>
-struct seq_data_t <atoms::atom <T, C> > : id_t <T> { };
+struct seq_data_t <atoms::atom <T, C> > : pack <T> { };
 
 }  // namespace details
 }  // namespace arrays
@@ -59,16 +59,12 @@ using atom_traits = seq_traits <R, _type <R>, atom_iter, atom_trav>;
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename T>
-class atom_base <D, T, data::seq <> > :
-	public derived <D, data::seq <> >,
-	public atom_traits <T>
+template <typename T, typename b>
+class atom_base <T, data::seq <>, b> :
+	public seq_store <atom_traits <T>, pack <b> >
 {
-	using DER = derived <D, data::seq <> >;
-	using DER::der_f;
-	using DER::der;
-
 	using TR = atom_traits <T>;
+	using B  = seq_store <TR, pack <b> >;
 	using S  = seq_size <TR>;
 
 	using IR = r_iter <TR>;
@@ -82,19 +78,23 @@ class atom_base <D, T, data::seq <> > :
 //-----------------------------------------------------------------------------
 
 public:
+	using B::B;
+	using B::val_f;
+	using B::val;
+
 	INLINE constexpr S size() const { return 1; }
 
-	INLINE           IR begin() &&     { return IR(der_f().val()); }
-	INLINE           IL begin() &      { return IL(der().val()); }
-	INLINE constexpr IC begin() const& { return IC(der().val()); }
+	INLINE           IR begin() &&     { return IR(val_f()); }
+	INLINE           IL begin() &      { return IL(val()); }
+	INLINE constexpr IC begin() const& { return IC(val()); }
 
-	INLINE           IR end() &&     { return IR(der_f().val()); }
-	INLINE           IL end() &      { return IL(der().val()); }
-	INLINE constexpr IC end() const& { return IC(der().val()); }
+	INLINE           IR end() &&     { return IR(val_f()); }
+	INLINE           IL end() &      { return IL(val()); }
+	INLINE constexpr IC end() const& { return IC(val()); }
 
-	INLINE           VR trav() &&     { return VR(der_f().val()); }
-	INLINE           VL trav() &      { return VL(der().val()); }
-	INLINE constexpr VC trav() const& { return VC(der().val()); }
+	INLINE           VR trav() &&     { return VR(val_f()); }
+	INLINE           VL trav() &      { return VL(val()); }
+	INLINE constexpr VC trav() const& { return VC(val()); }
 
 };
 

@@ -67,14 +67,18 @@ using vec = vec_atom_of <atom_gen <B>, vec_sw <_auto> >;
 
 //-----------------------------------------------------------------------------
 
+// TODO
 template <typename F, size_t I = 0> using vec_mut  = seq_vec_mut <F, I>;
 template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
 
-template <typename F, typename B = none>
-using bra_vec_apply = seq_bra_vec_apply <F, B>;
+//-----------------------------------------------------------------------------
 
-template <typename F, typename B = atom <F> >
-using bra_vec = seq_bra_vec <F, B>;
+template <typename F, typename B = none, typename C = op::bracket>
+using bra_vec_apply =
+	bra_vec_fun_of <val_gen <F, B>, vec_sw <vec_apply <C>, C> >;
+
+template <typename F, typename B = atom <F>, typename C = op::bracket>
+using bra_vec = bra_vec_atom_of <atom_gen <B>, vec_sw <vec_apply <C>, C> >;
 
 //-----------------------------------------------------------------------------
 

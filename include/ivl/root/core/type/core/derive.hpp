@@ -43,13 +43,13 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename A>
-constexpr T&& rcast(A&& a) { return static_cast <T&&>(a); }
+constexpr T&& r_cast(A&& a) { return static_cast <T&&>(a); }
 
 template <typename T, typename A>
-constexpr T& lcast(A&& a) { return static_cast <T&>(a); }
+constexpr T& l_cast(A&& a) { return static_cast <T&>(a); }
 
 template <typename T, typename A>
-constexpr const T& clcast(A&& a) { return static_cast <const T&>(a); }
+constexpr const T& c_cast(A&& a) { return static_cast <const T&>(a); }
 
 //-----------------------------------------------------------------------------
 
@@ -61,10 +61,10 @@ struct based : B
 protected:
 	using B::B;
 
-	INLINE           B&&       base_f()      { return rcast <B>(*this); }
-	INLINE           B&&       base() &&     { return rcast <B>(*this); }
-	INLINE           B&        base() &      { return lcast <B>(*this); }
-	INLINE constexpr const B&  base() const& { return clcast <B>(*this); }
+	INLINE           B&&       base_f()      { return r_cast <B>(*this); }
+	INLINE           B&&       base() &&     { return r_cast <B>(*this); }
+	INLINE           B&        base() &      { return l_cast <B>(*this); }
+	INLINE constexpr const B&  base() const& { return c_cast <B>(*this); }
 };
 
 //-----------------------------------------------------------------------------
@@ -75,10 +75,10 @@ struct derived
 	using derived_type = D;
 
 protected:
-	INLINE           D&&       der_f()      { return rcast <D>(*this); }
-	INLINE           D&&       der() &&     { return rcast <D>(*this); }
-	INLINE           D&        der() &      { return lcast <D>(*this); }
-	INLINE constexpr const D&  der() const& { return clcast <D>(*this); }
+	INLINE           D&&       der_f()      { return r_cast <D>(*this); }
+	INLINE           D&&       der() &&     { return r_cast <D>(*this); }
+	INLINE           D&        der() &      { return l_cast <D>(*this); }
+	INLINE constexpr const D&  der() const& { return c_cast <D>(*this); }
 };
 
 //-----------------------------------------------------------------------------
@@ -95,7 +95,23 @@ template <typename T> using derived_type_of = typename T::derived_type;
 
 //-----------------------------------------------------------------------------
 
+template <typename... B> struct der_cons;
+
+template <typename B, typename... Bn>
+struct der_cons <B, Bn...> : B, der_cons <Bn...>
+{
+	using B::B;
+	using der_cons <Bn...>::der_cons;
+};
+
+template <>
+struct der_cons <> { };
+
+//-----------------------------------------------------------------------------
+
 }  // namespace types
+
+//-----------------------------------------------------------------------------
 
 using types::derived;
 

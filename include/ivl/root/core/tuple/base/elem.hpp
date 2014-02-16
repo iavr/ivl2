@@ -105,18 +105,14 @@ struct elem <I, E, true, true>
 
 //-----------------------------------------------------------------------------
 
-template <size_t J, typename P>
-using elem_at_p = elem <J, pick_p <J, P> >;
-
 template <size_t J, typename... E>
-using elem_at = elem_at_p <J, pack <E...> >;
+using elem_at = elem <J, pick <J, E...> >;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
 using details::elem;
-using details::elem_at_p;
 using details::elem_at;
 
 //-----------------------------------------------------------------------------

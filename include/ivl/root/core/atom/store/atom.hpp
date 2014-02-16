@@ -42,10 +42,13 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C, typename A = atom_attr <T, C> >
-struct atom_impl : atom_store <T>, atom_base <atom <T, C>, T, C>
+template <
+	typename T, typename C, typename B = atom_store <T>,
+	typename A = atom_attr <T, C>
+>
+struct atom_impl : atom_base <T, C, B>
 {
-	using atom_store <T>::atom_store;
+	using atom_base <T, C, B>::atom_base;
 };
 
 //-----------------------------------------------------------------------------

@@ -65,11 +65,18 @@ using is_class = expr <null_sfinae <is_class_test, T>() && !is_union <T>()>;
 template <typename T>
 using is_derive = expr <is_class <T>() && !is_final <T>()>;
 
-template <typename T, typename B, bool = is_derive <T>{}>
-struct derive : T, B { };
+namespace details {
 
-template <typename T, typename B>
-struct derive <T, B, false>;
+template <bool D, typename... T>
+struct derive_ : T... { };
+
+template <typename... T>
+struct derive_<false, T...>;
+
+}  // namespace details
+
+template <typename... T>
+using derive = details::derive_<_and <is_derive <T>...>{}, T...>;
 
 //-----------------------------------------------------------------------------
 
@@ -79,8 +86,8 @@ template <typename T> struct is_empty : expr <__is_empty(T)> { };
 
 #else
 
-template <typename T>
-using is_empty_test = only_if <sizeof(derive <T, sized <1> >) == 1>;
+template <typename T, typename N = size <sizeof(T)> >
+using is_empty_test = only_if <sizeof(derive <T, sized <N{}> >) == N{}>;
 
 template <typename T> using is_empty = sfinae <is_empty_test, T>;
 

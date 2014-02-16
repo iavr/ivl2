@@ -59,16 +59,16 @@ class zip_impl <pack <U...>, sizes <I...> > :
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE r_pk <J, P>
-	call_at() && { return r_pk <J, P>(_at._<J>(under <I>::fwd())...); }
+	INLINE r_pick_p <J, P>
+	call_at() && { return r_pick_p <J, P>(_at._<J>(under <I>::fwd())...); }
 
 	template <size_t J>
-	INLINE l_pk <J, P>
-	call_at() & { return r_pk <J, P>(_at._<J>(under <I>::get())...); }
+	INLINE l_pick_p <J, P>
+	call_at() & { return r_pick_p <J, P>(_at._<J>(under <I>::get())...); }
 
 	template <size_t J>
-	INLINE constexpr c_pk <J, P>
-	call_at() const& { return r_pk <J, P>(_at._<J>(under <I>::get())...); }
+	INLINE constexpr c_pick_p <J, P>
+	call_at() const& { return r_pick_p <J, P>(_at._<J>(under <I>::get())...); }
 
 //-----------------------------------------------------------------------------
 

@@ -44,13 +44,19 @@ namespace traits {
 
 namespace details {
 
+// extended elsewhere
+template <typename T> struct is_group_ : _false { };
 template <typename T> struct is_tuple_ : _false { };
 
-template <typename C, typename... E>
-struct is_tuple_<collection <C, E...> > : _true { };
+template <typename C, typename... A>
+struct is_group_<collection <C, A...> > : _true { };
+
+template <typename C, typename... A>
+struct is_tuple_<collection <C, A...> > : _true { };
 
 }  // namespace details
 
+template <typename T> using is_group = details::is_group_<raw_type <T> >;
 template <typename T> using is_tuple = details::is_tuple_<raw_type <T> >;
 
 template <typename T>
@@ -77,6 +83,12 @@ template <typename P> using any_tuple_p = any_p <is_tuple, P>;
 
 template <typename... E> using all_tuple = all_tuple_p <pack <E...> >;
 template <typename... E> using any_tuple = any_tuple_p <pack <E...> >;
+
+template <typename P> using all_group_p = all_p <is_group, P>;
+template <typename P> using any_group_p = any_p <is_group, P>;
+
+template <typename... E> using all_group = all_group_p <pack <E...> >;
+template <typename... E> using any_group = any_group_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -165,13 +177,13 @@ struct c_ref_t <F(pack <E...>)> : ret_t <c_ref <F>(c_ref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 
-template <size_t I, typename P> using r_pk_t = r_ref_t <pick_p <I, P> >;
-template <size_t I, typename P> using l_pk_t = l_ref_t <pick_p <I, P> >;
-template <size_t I, typename P> using c_pk_t = c_ref_t <pick_p <I, P> >;
+template <size_t I, typename P> using r_pick_p = r_ref <pick_p <I, P> >;
+template <size_t I, typename P> using l_pick_p = l_ref <pick_p <I, P> >;
+template <size_t I, typename P> using c_pick_p = c_ref <pick_p <I, P> >;
 
-template <size_t I, typename P> using r_pk = type_of <r_pk_t <I, P> >;
-template <size_t I, typename P> using l_pk = type_of <l_pk_t <I, P> >;
-template <size_t I, typename P> using c_pk = type_of <c_pk_t <I, P> >;
+template <size_t I, typename... E> using r_pick = r_ref <pick <I, E...> >;
+template <size_t I, typename... E> using l_pick = l_ref <pick <I, E...> >;
+template <size_t I, typename... E> using c_pick = c_ref <pick <I, E...> >;
 
 //-----------------------------------------------------------------------------
 

@@ -43,26 +43,20 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-using indirect_ref = seq_result <decltype(gen <U>()[*gen <K>().begin()])>;
+using indirect_type = seq_result <decltype(gen <U>()[*gen <K>().begin()])>;
 
-template <typename K, typename U>
-using indirect_traits = seq_traits <
-	indirect_ref <K, U>, K, indirect_iter, indirect_trav, seq_size <K>, U
->;
-
-// extending definition @array/base/base
-template <typename K, typename U>
-struct seq_data_t <indirect_seq <K, U> > : id_t <raw_tuple <K, U> > { };
+template <typename K, typename U, typename T = indirect_type <K, U> >
+using indirect_traits =
+	seq_traits <T, K, indirect_iter, indirect_trav, seq_size <K>, U>;
 
 //-----------------------------------------------------------------------------
 
-template <typename K, typename U>
-class sequence <data::indirect <>, K, U> :
-	public seq_base <indirect_seq <K, U>, indirect_traits <K, U> >,
-	seq_data <indirect_seq <K, U> >
+template <typename K, typename U, typename TR = indirect_traits <K, U> >
+class indirect_seq_impl :
+	public seq_base <indirect_seq <K, U>, TR, K, U>
 {
-	using TR = indirect_traits <K, U>;
-	friend seq_base <sequence, TR>;
+	using B = seq_base <indirect_seq <K, U>, TR, K, U>;
+	friend B;
 
 	using S = seq_size <TR>;
 
@@ -74,7 +68,6 @@ class sequence <data::indirect <>, K, U> :
 	using VL = l_trav <TR>;
 	using VC = c_trav <TR>;
 
-	using E = raw_tuple <K, U>;
 	using idx   = elem <0, K>;
 	using under = elem <1, U>;
 
@@ -93,7 +86,7 @@ class sequence <data::indirect <>, K, U> :
 //-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
 	INLINE constexpr S size() const { return i().size(); }
 
@@ -109,6 +102,14 @@ public:
 	INLINE           VL trav() &      { return VL(i().trav(),   u()); }
 	INLINE constexpr VC trav() const& { return VC(i().trav(),   u()); }
 
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename K, typename U>
+struct sequence <data::indirect <>, K, U> : indirect_seq_impl <K, U>
+{
+	using indirect_seq_impl <K, U>::indirect_seq_impl;
 };
 
 //-----------------------------------------------------------------------------

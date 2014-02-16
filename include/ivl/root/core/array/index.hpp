@@ -53,6 +53,7 @@
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
 
+#include "base/store.hpp"
 #include "base/base.hpp"
 
 #include "store/aggr.hpp"

@@ -104,22 +104,22 @@ private:
 	using indir = indirect_tup <K, opt <T> >;
 
 	template <size_t J>
-	INLINE r_pk <J, P>
+	INLINE r_pick_p <J, P>
 	at_f() { return der_f().template call_at <J>(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	template <size_t J>
-	INLINE r_pk <J, P>
+	INLINE r_pick_p <J, P>
 	at() && { return der_f().template call_at <J>(); }
 
 	template <size_t J>
-	INLINE l_pk <J, P>
+	INLINE l_pick_p <J, P>
 	at() & { return der().template call_at <J>(); }
 
 	template <size_t J>
-	INLINE constexpr c_pk <J, P>
+	INLINE constexpr c_pick_p <J, P>
 	at() const& { return der().template call_at <J>(); }
 
 //-----------------------------------------------------------------------------

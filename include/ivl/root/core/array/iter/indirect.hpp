@@ -42,96 +42,122 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R, typename T, typename U>
-class iterator <data::indirect <>, I, R, T, U> :
-	public iter_base <indirect_iter <I, R, T, U>, iter_traits <I, R, T> >,
-	private raw_tuple <I, rref_opt <U> >
+template <
+	typename I, typename R, typename T, typename U,
+	typename D = indirect_iter <I, R, T, U>,
+	typename TR = iter_traits <I, R, T>
+>
+class indirect_iter_impl : public iter_base <D, TR, I, U>
 {
-	using TR = iter_traits <I, R, T>;
-	using B = iter_base <indirect_iter <I, R, T, U>, TR>;
-	using B::ref;
-
-	using D = seq_diff <TR>;
+	using B = iter_base <D, TR, I, U>;
+	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
-	using RU = rref_opt <U>;
-	using E  = raw_tuple <I, RU>;
-	using iter  = elem <0, I>;
-	using under = elem <1, RU>;
+	using iter  = iter_elem <0, I>;
+	using under = iter_elem <1, U>;
 
-	INLINE           l_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_ref <I> i() const { return iter::get(); }
+	using derived <D>::der;
+	using B::ref;
 
-	INLINE constexpr RU u() const { return static_cast <RU>(under::get()); }
+//-----------------------------------------------------------------------------
+
+	INLINE           l_iter_ref <I> i()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
+
+	INLINE           l_iter_ref <U> u()       { return under::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return under::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
 	INLINE constexpr R operator*()  const { return ref(u()[*i()]); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE iterator& operator++() { return ++i(), *this; }
-	INLINE iterator& operator--() { return --i(), *this; }
+	INLINE D& operator++() { return ++i(), der(); }
+	INLINE D& operator--() { return --i(), der(); }
 
-	INLINE iterator operator++(int) { return iterator(i()++, u()); }
-	INLINE iterator operator--(int) { return iterator(i()--, u()); }
+	INLINE D operator++(int) { return D(i()++, u()); }
+	INLINE D operator--(int) { return D(i()--, u()); }
 
-	INLINE constexpr R operator[](D n) const { return ref(u()[i()[n]]); }
+	INLINE constexpr R operator[](d n) const { return ref(u()[i()[n]]); }
 
-	INLINE iterator& operator+=(D n) { return i() += n, *this; }
-	INLINE iterator& operator-=(D n) { return i() -= n, *this; }
+	INLINE D& operator+=(d n) { return i() += n, der(); }
+	INLINE D& operator-=(d n) { return i() -= n, der(); }
 
-	INLINE iterator operator+(D n) { return iterator(i() + n, u()); }
-	INLINE iterator operator-(D n) { return iterator(i() - n, u()); }
+	INLINE D operator+(d n) { return D(i() + n, u()); }
+	INLINE D operator-(d n) { return D(i() - n, u()); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T, typename U>
-class traversor <data::indirect <>, V, R, T, U> :
-	public trav_base <indirect_trav <V, R, T, U>, trav_traits <V, R, T> >,
-	private raw_tuple <V, rref_opt <U> >
+template <
+	typename V, typename R, typename T, typename U,
+	typename D = indirect_trav <V, R, T, U>,
+	typename TR = iter_traits <V, R, T>
+>
+class indirect_trav_impl : public trav_base <D, TR, V, U>
 {
-	using TR = trav_traits <V, R, T>;
-	using B = trav_base <indirect_trav <V, R, T, U>, TR>;
-	using B::ref;
-
-	using D = seq_diff <TR>;
+	using B = trav_base <D, TR, V, U>;
+	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
-	using RU = rref_opt <U>;
-	using E  = raw_tuple <V, RU>;
-	using trav  = elem <0, V>;
-	using under = elem <1, RU>;
+	using trav  = iter_elem <0, V>;
+	using under = iter_elem <1, U>;
 
-	INLINE           l_ref <V> v()       { return trav::get(); }
-	INLINE constexpr c_ref <V> v() const { return trav::get(); }
+	using derived <D>::der;
+	using B::ref;
 
-	INLINE constexpr RU u() const { return static_cast <RU>(under::get()); }
+//-----------------------------------------------------------------------------
+
+	INLINE           l_iter_ref <V> v()       { return trav::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
+
+	INLINE           l_iter_ref <U> u()       { return under::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return under::get(); }
+
+//-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
 	INLINE constexpr operator bool() const { return v(); }
 
 	INLINE constexpr R operator*()  const { return ref(u()[*v()]); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE traversor& operator++() { return ++v(), *this; }
-	INLINE traversor& operator--() { return --v(), *this; }
+	INLINE D& operator++() { return ++v(), der(); }
+	INLINE D& operator--() { return --v(), der(); }
 
-	INLINE traversor operator++(int) { return traversor(v()++, u()); }
-	INLINE traversor operator--(int) { return traversor(v()--, u()); }
+	INLINE D operator++(int) { return D(v()++, u()); }
+	INLINE D operator--(int) { return D(v()--, u()); }
 
-	INLINE constexpr R operator[](D n) const { return ref(u()[v()[n]]); }
+	INLINE constexpr R operator[](d n) const { return ref(u()[v()[n]]); }
 
-	INLINE traversor& operator+=(D n) { return v() += n, *this; }
-	INLINE traversor& operator-=(D n) { return v() -= n, *this; }
+	INLINE D& operator+=(d n) { return v() += n, der(); }
+	INLINE D& operator-=(d n) { return v() -= n, der(); }
 
-	INLINE traversor operator+(D n) { return traversor(v() + n, u()); }
-	INLINE traversor operator-(D n) { return traversor(v() - n, u()); }
+	INLINE D operator+(d n) { return D(v() + n, u()); }
+	INLINE D operator-(d n) { return D(v() - n, u()); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename I, typename R, typename T, typename U>
+struct iterator <data::indirect <>, I, R, T, U> :
+	indirect_iter_impl <I, R, T, U>
+{
+	using indirect_iter_impl <I, R, T, U>::indirect_iter_impl;
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename V, typename R, typename T, typename U>
+struct traversor <data::indirect <>, V, R, T, U> :
+	indirect_trav_impl <V, R, T, U>
+{
+	using indirect_trav_impl <V, R, T, U>::indirect_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

@@ -39,20 +39,14 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename T, typename C = data::atom <> >
+template <typename T, typename C, typename B>
 struct atom_base;
 
-template <typename D, typename T>
-using raw_atom_base = atom_base <D, T, data::raw <> >;
+template <typename T, typename B>
+using tup_atom_base = atom_base <T, data::tup <>, B>;
 
-template <typename D, typename T>
-using tup_atom_base = atom_base <D, T, data::tup <> >;
-
-template <typename D, typename T>
-using seq_atom_base = atom_base <D, T, data::seq <> >;
-
-template <typename D, typename T>
-using ext_atom_base = atom_base <D, T, data::ext <> >;
+template <typename T, typename B>
+using seq_atom_base = atom_base <T, data::seq <>, B>;
 
 //-----------------------------------------------------------------------------
 

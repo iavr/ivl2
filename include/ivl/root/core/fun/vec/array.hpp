@@ -78,13 +78,15 @@ template <typename F, size_t I = 0>
 struct seq_vec_copy : tup_vec_copy <F, I>
 	{ using tup_vec_copy <F, I>::tup_vec_copy; };
 
-template <typename F, typename B = none>
-struct seq_bra_vec_apply : tup_bra_vec_apply <F, B>
-	{ using tup_bra_vec_apply <F, B>::tup_bra_vec_apply; };
+//-----------------------------------------------------------------------------
 
-template <typename F, typename B = atom <F> >
-struct seq_bra_vec : tup_bra_vec <F, B>
-	{ using tup_bra_vec <F, B>::tup_bra_vec; };
+template <typename F, typename B = none, typename C = op::bracket>
+using seq_bra_vec_apply =
+	bra_vec_fun_of <val_gen <F, B>, seq_vec_sw <seq_vec_apply <C>, C> >;
+
+template <typename F, typename B = atom <F>, typename C = op::bracket>
+using seq_bra_vec =
+	bra_vec_atom_of <atom_gen <B>, seq_vec_sw <seq_vec_apply <C>, C> >;
 
 //-----------------------------------------------------------------------------
 

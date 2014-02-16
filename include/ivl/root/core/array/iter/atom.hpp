@@ -14,7 +14,7 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR A PArTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
@@ -42,79 +42,97 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R, typename T>
-class iterator <data::atom <>, I, R, T> :
-	public iter_base <atom_iter <I, R, T>, iter_traits <I, R, T, size_t> >,
-	private raw_tuple <T>
+template <
+	typename I, typename R, typename T, typename D = atom_iter <I, R, T>,
+	typename TR = iter_traits <I, R, T, size_t>
+>
+class atom_iter_impl : public iter_base <D, TR, T>
 {
-	using TR = iter_traits <I, R, T, size_t>;
-	using B = iter_base <atom_iter <I, R, T>, TR>;
-	using B::ref;
-
-	using D = seq_diff <TR>;
+	using B = iter_base <D, TR, T>;
+	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
-	using E = raw_tuple <T>;
+	using derived <D>::der;
+	using B::ref;
+
+//-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
-	INLINE constexpr R operator*()  const { return ref(E::val()); }
+	INLINE constexpr R operator*()  const { return ref(B::val()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE iterator& operator++() { return *this; }
-	INLINE iterator& operator--() { return *this; }
+	INLINE D& operator++() { return der(); }
+	INLINE D& operator--() { return der(); }
 
-	INLINE iterator& operator++(int) { return *this; }
-	INLINE iterator& operator--(int) { return *this; }
+	INLINE D& operator++(int) { return der(); }
+	INLINE D& operator--(int) { return der(); }
 
-	INLINE constexpr R operator[](D n) const { return ref(E::val()); }
+	INLINE constexpr R operator[](d n) const { return ref(B::val()); }
 
-	INLINE iterator& operator+=(D n) { return *this; }
-	INLINE iterator& operator-=(D n) { return *this; }
+	INLINE D& operator+=(d n) { return der(); }
+	INLINE D& operator-=(d n) { return der(); }
 
-	INLINE iterator& operator+(D n) { return *this; }
-	INLINE iterator& operator-(D n) { return *this; }
+	INLINE D& operator+(d n) { return der(); }
+	INLINE D& operator-(d n) { return der(); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename I, typename R, typename T, typename D = atom_trav <I, R, T>,
+	typename TR = iter_traits <I, R, T, size_t>
+>
+class atom_trav_impl : public trav_base <D, TR, T>
+{
+	using B = iter_base <D, TR, T>;
+	using d = seq_diff <TR>;
+	using P = seq_ptr <TR>;
+
+	using derived <D>::der;
+	using B::ref;
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+	static constexpr bool finite = false;
+	INLINE constexpr operator bool() const { return true; }
+
+	INLINE constexpr R operator*()  const { return ref(B::val()); }
+	INLINE           P operator->() const { return &(operator*()); }
+
+	INLINE D& operator++() { return der(); }
+	INLINE D& operator--() { return der(); }
+
+	INLINE D& operator++(int) { return der(); }
+	INLINE D& operator--(int) { return der(); }
+
+	INLINE constexpr R operator[](d n) const { return ref(B::val()); }
+
+	INLINE D& operator+=(d n) { return der(); }
+	INLINE D& operator-=(d n) { return der(); }
+
+	INLINE D& operator+(d n) { return der(); }
+	INLINE D& operator-(d n) { return der(); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T>
-class traversor <data::atom <>, I, R, T> :
-	public iter_base <atom_trav <I, R, T>, iter_traits <I, R, T, size_t> >,
-	private raw_tuple <T>
+struct iterator <data::atom <>, I, R, T> : atom_iter_impl <I, R, T>
 {
-	using TR = iter_traits <I, R, T, size_t>;
-	using B = iter_base <atom_trav <I, R, T>, TR>;
-	using B::ref;
+	using atom_iter_impl <I, R, T>::atom_iter_impl;
+};
 
-	using D = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+//-----------------------------------------------------------------------------
 
-	using E = raw_tuple <T>;
-
-public:
-	using E::E;
-
-	static constexpr bool finite = false;
-	INLINE constexpr operator bool() const { return true; }
-
-	INLINE constexpr R operator*()  const { return ref(E::val()); }
-	INLINE           P operator->() const { return &(operator*()); }
-
-	INLINE traversor& operator++() { return *this; }
-	INLINE traversor& operator--() { return *this; }
-
-	INLINE traversor& operator++(int) { return *this; }
-	INLINE traversor& operator--(int) { return *this; }
-
-	INLINE constexpr R operator[](D n) const { return ref(E::val()); }
-
-	INLINE traversor& operator+=(D n) { return *this; }
-	INLINE traversor& operator-=(D n) { return *this; }
-
-	INLINE traversor& operator+(D n) { return *this; }
-	INLINE traversor& operator-(D n) { return *this; }
+template <typename V, typename R, typename T>
+struct traversor <data::atom <>, V, R, T> : atom_trav_impl <V, R, T>
+{
+	using atom_trav_impl <V, R, T>::atom_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

@@ -74,6 +74,8 @@ using tup_vec_auto = tup_vec_f <F, tup_auto, B>;
 template <typename F, typename B = atom <F> >
 using tup_vec = vec_atom_of <atom_gen <B>, tup_vec_sw <tup_auto> >;
 
+//-----------------------------------------------------------------------------
+
 template <typename F, size_t I = 0>
 using tup_vec_mut = tup_vec_f <F, mut_call <tup_loop, I> >;
 

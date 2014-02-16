@@ -73,20 +73,20 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-// extending definition @array/base/base
+// extending definition @array/type/sequence
 template <typename T, size_t N>
-struct seq_data_t <fixed_array <T, N> > : id_t <fixed_store <T, N> > { };
+struct seq_data_t <fixed_array <T, N> > : pack <fixed_store <T, N> > { };
 
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
 class sequence <data::fixed <>, T, sizes <N> > :
 	public seq_base <fixed_array <T, N>, seq_traits <T> >,
-	seq_data <fixed_array <T, N> >
+	fixed_store <T, N>
 {
-	friend seq_base <sequence, seq_traits <T> >;
+	friend seq_base <fixed_array <T, N>, seq_traits <T> >;
 
-	using D  = seq_data <sequence>;
+	using S  = fixed_store <T, N>;
 	using TR = seq_traits <T>;
 
 	using IR = r_iter <TR>;
@@ -99,15 +99,15 @@ class sequence <data::fixed <>, T, sizes <N> > :
 
 //-----------------------------------------------------------------------------
 
-	INLINE T*       b()       { return D::data(); }
-	INLINE const T* b() const { return D::data(); }
-	INLINE T*       e()       { return D::data() + N; }
-	INLINE const T* e() const { return D::data() + N; }
+	INLINE T*       b()       { return S::data(); }
+	INLINE const T* b() const { return S::data(); }
+	INLINE T*       e()       { return S::data() + N; }
+	INLINE const T* e() const { return S::data() + N; }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using D::D;
+	using S::S;
 
 	INLINE constexpr size_t size()     const { return N; }
 

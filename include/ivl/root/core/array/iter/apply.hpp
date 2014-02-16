@@ -44,141 +44,134 @@ namespace details {
 
 template <
 	typename I, typename R, typename T, typename M, typename F,
-	typename N = sz_rng_of_p <I>, typename IP = I,
-	typename DER = apply_iter <I, R, T, M, F>
+	typename N = sz_rng_of_p <I>, typename D = apply_iter <I, R, T, M, F>,
+	typename TR = iter_traits <I, R, T>
 >
 struct apply_iter_impl;
 
+//-----------------------------------------------------------------------------
+
 template <
 	typename... I, typename R, typename T, typename M, typename F,
-	size_t... N, typename IP, typename DER
+	size_t... N, typename D, typename TR
 >
-class apply_iter_impl <pack <I...>, R, T, M, F, sizes <N...>, IP, DER> :
-	public iter_base <DER, iter_traits <IP, R, T> >,
-	private raw_tuple <rref_opt <F>, I...>
+class apply_iter_impl <pack <I...>, R, T, M, F, sizes <N...>, D, TR> :
+	public iter_base <D, TR, F, I...>
 {
-	using TR = iter_traits <IP, R, T>;
-	using B = iter_base <DER, TR>;
-
-	using D = seq_diff <TR>;
+	using B = iter_base <D, TR, F, I...>;
+	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
-	using derived <DER>::der;
-	using B::ref;
-
-	using RF = rref_opt <F>;
-	using E  = raw_tuple <RF, I...>;
-	using fun = elem <0, RF>;
+	using fun = iter_elem <0, F>;
 
 	template <size_t K>
-	using iter = elem_at <K + 1, RF, I...>;
+	using iter = iter_elem_at <K + 1, F, I...>;
+
+	using derived <D>::der;
+	using B::ref;
 
 //-----------------------------------------------------------------------------
 
+	INLINE           l_iter_ref <F> f()       { return fun::get(); }
+	INLINE constexpr c_iter_ref <F> f() const { return fun::get(); }
+
 	template <size_t K>
-	INLINE l_pk <K, IP>
+	INLINE l_iter_pick <K, I...>
 	i() { return iter <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr c_pk <K, IP>
+	INLINE constexpr c_iter_pick <K, I...>
 	i() const { return iter <K>::get(); }
-
-	INLINE constexpr RF
-	f() const { return static_cast <RF>(fun::get()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
 	INLINE constexpr R operator*()  const { return ref(f()(*i<N>()...)); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE DER& operator++() { return thru{++i<N>()...}, der(); }
-	INLINE DER& operator--() { return thru{--i<N>()...}, der(); }
+	INLINE D& operator++() { return thru{++i<N>()...}, der(); }
+	INLINE D& operator--() { return thru{--i<N>()...}, der(); }
 
-	INLINE DER operator++(int) { return DER(f(), i<N>()++...); }
-	INLINE DER operator--(int) { return DER(f(), i<N>()--...); }
+	INLINE D operator++(int) { return D(f(), i<N>()++...); }
+	INLINE D operator--(int) { return D(f(), i<N>()--...); }
 
-	INLINE constexpr R operator[](D n) const { return ref(f()(i<N>()[n]...)); }
+	INLINE constexpr R operator[](d n) const { return ref(f()(i<N>()[n]...)); }
 
-	INLINE DER& operator+=(D n) { return thru{i<N>() += n...}, der(); }
-	INLINE DER& operator-=(D n) { return thru{i<N>() -= n...}, der(); }
+	INLINE D& operator+=(d n) { return thru{i<N>() += n...}, der(); }
+	INLINE D& operator-=(d n) { return thru{i<N>() -= n...}, der(); }
 
-	INLINE DER operator+(D n) { return DER(f(), i<N>() + n...); }
-	INLINE DER operator-(D n) { return DER(f(), i<N>() - n...); }
+	INLINE D operator+(d n) { return D(f(), i<N>() + n...); }
+	INLINE D operator-(d n) { return D(f(), i<N>() - n...); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
 	typename V, typename R, typename T, typename M, typename F,
-	typename N = sz_rng_of_p <V>, typename VP = V,
-	typename DER = apply_trav <VP, R, T, M, F>
+	typename N = sz_rng_of_p <V>, typename D = apply_trav <V, R, T, M, F>,
+	typename TR = iter_traits <V, R, T>
 >
 struct apply_trav_impl;
 
 template <
 	typename... V, typename R, typename T, typename M, typename F,
-	size_t... N, typename VP, typename DER
+	size_t... N, typename D, typename TR
 >
-class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, VP, DER> :
-	public trav_base <DER, trav_traits <VP, R, T> >,
-	private raw_tuple <rref_opt <F>, V...>
+class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, D, TR> :
+	public trav_base <D, TR, F, V...>
 {
-	using TR = trav_traits <VP, R, T>;
-	using B = trav_base <DER, TR>;
-	using D = seq_diff <B>;
+	using B = trav_base <D, TR, F, V...>;
+	using d = seq_diff <B>;
 	using P = seq_ptr <B>;
 
-	using derived <DER>::der;
-	using B::ref;
-
-	using RF = rref_opt <F>;
-	using E  = raw_tuple <RF, V...>;
-	using fun = elem <0, RF>;
+	using fun = iter_elem <0, F>;
 
 	template <size_t K>
-	using trav = elem_at <K + 1, RF, V...>;
+	using trav = iter_elem_at <K + 1, F, V...>;
 
 	using term = raw_type <M>;
 
+	using derived <D>::der;
+	using B::ref;
+
 //-----------------------------------------------------------------------------
 
+	INLINE           l_iter_ref <F> f()       { return fun::get(); }
+	INLINE constexpr c_iter_ref <F> f() const { return fun::get(); }
+
 	template <size_t K>
-	INLINE l_pk <K, VP>
+	INLINE l_iter_pick <K, V...>
 	v() { return trav <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr c_pk <K, VP>
+	INLINE constexpr c_iter_pick <K, V...>
 	v() const { return trav <K>::get(); }
-
-	INLINE constexpr RF
-	f() const { return static_cast <RF>(fun::get()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	using E::E;
+	using B::B;
 
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
 
 	INLINE constexpr R operator*()  const { return ref(f()(*v<N>()...)); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE DER& operator++() { return thru{++v<N>()...}, der(); }
-	INLINE DER& operator--() { return thru{--v<N>()...}, der(); }
+	INLINE D& operator++() { return thru{++v<N>()...}, der(); }
+	INLINE D& operator--() { return thru{--v<N>()...}, der(); }
 
-	INLINE DER operator++(int) { return DER(f(), v<N>()++...); }
-	INLINE DER operator--(int) { return DER(f(), v<N>()--...); }
+	INLINE D operator++(int) { return D(f(), v<N>()++...); }
+	INLINE D operator--(int) { return D(f(), v<N>()--...); }
 
-	INLINE constexpr R operator[](D n) const { return ref(f()(v<N>()[n]...)); }
+	INLINE constexpr R operator[](d n) const { return ref(f()(v<N>()[n]...)); }
 
-	INLINE DER& operator+=(D n) { return thru{v<N>() += n...}, der(); }
-	INLINE DER& operator-=(D n) { return thru{v<N>() -= n...}, der(); }
+	INLINE D& operator+=(d n) { return thru{v<N>() += n...}, der(); }
+	INLINE D& operator-=(d n) { return thru{v<N>() -= n...}, der(); }
 
-	INLINE DER operator+(D n) { return DER(f(), v<N>() + n...); }
-	INLINE DER operator-(D n) { return DER(f(), v<N>() - n...); }
+	INLINE D operator+(d n) { return D(f(), v<N>() + n...); }
+	INLINE D operator-(d n) { return D(f(), v<N>() - n...); }
 };
 
 //-----------------------------------------------------------------------------

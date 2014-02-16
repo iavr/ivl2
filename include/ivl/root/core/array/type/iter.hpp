@@ -51,10 +51,10 @@ using iter_iter = iterator <data::iter <>, I, R, T>;
 template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
 using iter_trav = traversor <data::iter <>, I, R, T>;
 
-template <typename I, typename R, typename T = I>
+template <typename I, typename R = rref_opt <I>, typename T = I>
 using atom_iter = iterator <data::atom <>, I, R, T>;
 
-template <typename I, typename R, typename T = I>
+template <typename I, typename R = rref_opt <I>, typename T = I>
 using atom_trav = traversor <data::atom <>, I, R, T>;
 
 //-----------------------------------------------------------------------------
@@ -73,13 +73,6 @@ using apply_trav = traversor <data::apply <>, V, R, T, M, F>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using ptr_iter = iter_iter <remove_ref <T>*>;
-
-template <typename T, typename R = rref_opt <T> >
-using raw_atom_trav = atom_trav <R, R>;
-
-//-----------------------------------------------------------------------------
-
 }  // namespace details
 
 using details::iterator;
@@ -94,9 +87,6 @@ using details::indirect_iter;
 using details::indirect_trav;
 using details::apply_iter;
 using details::apply_trav;
-
-using details::ptr_iter;
-using details::raw_atom_trav;
 
 //-----------------------------------------------------------------------------
 

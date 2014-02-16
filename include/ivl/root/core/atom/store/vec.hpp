@@ -45,8 +45,8 @@ namespace details {
 // builtin-array atom: vec-[]
 // builtin-function atom: vec-()
 // class atom: vec- [], (), _<>()
-template <typename T, typename C>  // TODO: use atom <T, C> as derived
-struct atom_impl <T, C, numbers <0, 1> > :
+template <typename T, typename C, typename b>  // TODO: use b as base
+struct atom_impl <T, C, b, numbers <0, 1> > :
 	afun::tvec <T, afun::bra_vec <T> >
 {
 	using afun::tvec <T, afun::bra_vec <T> >::tvec;

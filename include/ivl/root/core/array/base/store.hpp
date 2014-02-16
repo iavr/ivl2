@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_TYPE_ARRAY_HPP
-#define IVL_CORE_ARRAY_TYPE_ARRAY_HPP
+#ifndef IVL_CORE_ARRAY_BASE_STORE_HPP
+#define IVL_CORE_ARRAY_BASE_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -42,77 +42,84 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename... A> struct sequence;
+template <typename... E>
+struct seq_tuple : raw_tuple <E...> { using raw_tuple <E...>::raw_tuple; };
+
+template <typename... B>
+struct seq_tuple <pack <B...> > : der_cons <B...>
+	{ using der_cons <B...>::der_cons; };
+
+template <>
+struct seq_tuple <> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename T, size_t... N>
-using aggr_array = sequence <data::aggr <>, T, sizes <N...> >;
+template <typename A, typename E, typename D = seq_data <A> >
+struct seq_data_tuple_;
 
-template <typename T, size_t... N>
-using fixed_array = sequence <data::fixed <>, T, sizes <N...> >;
+template <typename A, typename... E, typename... D>
+struct seq_data_tuple_<A, pack <E...>, pack <D...> > :
+	id_t <seq_tuple <D..., E...> > { };
 
-template <typename T>
-using heap_array = sequence <data::heap <>, T>;
-
-//-----------------------------------------------------------------------------
-
-template <typename K, typename U>
-using indirect_seq = sequence <data::indirect <>, K, U>;
-
-template <typename M, typename F, typename... A>
-using apply_seq = sequence <data::apply <>, M, F, A...>;
+template <typename A, typename... E>
+using seq_data_tuple = type_of <seq_data_tuple_<A, pack <E...> > >;
 
 //-----------------------------------------------------------------------------
 
-template <typename M, typename F, typename... A>
-using apply_sequence = apply_seq <M, F, seq_atom_of <A>...>;
+template <typename TR, typename... E> struct seq_store;
+
+template <
+	typename T, typename B = remove_ref <T>*,
+	template <typename...> class I = iter_iter,
+	template <typename...> class V = iter_trav,
+	typename S = seq_size <B>, typename... U
+>
+struct seq_traits : seq_store <seq_traits <T, B, I, V, S, U...> > { };
 
 //-----------------------------------------------------------------------------
 
-template <typename M> using apply_seq_on      = bind <apply_seq, M>;
-template <typename M> using apply_sequence_on = bind <apply_sequence, M>;
+template <
+	typename T, typename B, template <typename...> class I,
+	template <typename...> class V, typename S, typename... U, typename... E
+>
+struct seq_store <seq_traits <T, B, I, V, S, U...>, E...> :
+	public seq_tuple <E...>
+{
+	using traits = seq_store;
+	using value_type = remove_type <T>;
+	using size_type = S;
 
-//-----------------------------------------------------------------------------
+	using fwd_iterator   = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
+	using iterator       = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
+	using const_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
 
-template <typename T, size_t... N>
-struct array_t : id_t <fixed_array <T, N...> > { };
+	using fwd_traversor   = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
+	using traversor       = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
+	using const_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
 
-template <typename T>
-struct array_t <T> : id_t <heap_array <T> > { };
+	using fwd_reference   = seq_ref <fwd_iterator>;
+	using reference       = seq_ref <iterator>;
+	using const_reference = seq_ref <const_iterator>;
 
-template <typename T, size_t... N>
-using array = type_of <array_t <T, N...> >;
+	using pointer         = seq_ptr <iterator>;
+	using const_pointer   = seq_ptr <const_iterator>;
 
-//-----------------------------------------------------------------------------
+	using difference_type = seq_diff <iterator>;
 
-// extended elsewhere
-template <typename A> struct seq_data_t : pack <> { };
-template <typename A> using  seq_data = type_of <seq_data_t <A> >;
+	static constexpr bool finite = traversor::finite;
+
+	using seq_tuple <E...>::seq_tuple;
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::sequence;
-
-using details::fixed_array;
-using details::heap_array;
-
-using details::indirect_seq;
-
-using details::apply_seq;
-using details::apply_seq_on;
-
-using details::apply_sequence;
-using details::apply_sequence_on;
+using details::seq_traits;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace arrays
-
-using arrays::details::array;
-using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
@@ -120,4 +127,4 @@ using arrays::details::aggr_array;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_TYPE_ARRAY_HPP
+#endif  // IVL_CORE_ARRAY_BASE_STORE_HPP

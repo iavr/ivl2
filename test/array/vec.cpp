@@ -62,6 +62,7 @@ void run()
 		cout << endl;
 	}
 
+// // TODO
 // 	{
 // 		cout << "inner" << endl;
 // 		auto t = _('a', 3.14, 2);
@@ -137,26 +138,29 @@ void run()
 		cout << endl;
 		print(B{1, 2, 3, 4, 5, 6, 7, 8});
 		cout << endl;
+		cout << endl;
 	}
 
-// 	{
-// 		cout << "vec functor instance" << endl;
-// 		auto t = _('a', 3.14, 2);
-// 		cout << _[shift](t, 'X', _(1, 2, 3, 4)) << endl;
-// 		cout << _[shift](_('a', 3.14, 2), 'X', _(1, 2, 3, 4)) << endl;
-// 		cout << shift(_('a', 3.14, 2), 'X', _(1, 2, 3, 4)) << endl;
-// 		cout << endl;
-// 	}
-//
-// 	{
-// 		cout << "vec function instance" << endl;
-// 		cout << _[dist <double>](_(1, 2, 4, 8), 6, _(5, 6, 7, 8)) << endl;
-// 		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
-// 			(_(1, 2, 4, 8), 6, _(5, 6, 7, 8)) << endl;
-// 		_[fprint](_(1, 2, 3, 4));
-// 		cout << endl;
-// 		cout << endl;
-// 	}
+	{
+		cout << "vec functor instance" << endl;
+		using A = array <int, 3>;
+		A a = {-1, 3.14, 2};
+		cout << _[shift](a, 18, A{1, 2, 3}) << endl;
+		cout << _[shift](A{-1, 3.14, 2}, 18, A{1, 2, 3}) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "vec function instance" << endl;
+		using A = array <int, 4>;
+		using B = array <double, 4>;
+		cout << _[dist <double>](A{1, 2, 4, 8}, 6, B{5, 6, 7, 8}) << endl;
+		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
+			(A{1, 2, 4, 8}, 6, B{5, 6, 7, 8}) << endl;
+		_[fprint](A{1, 2, 3, 4});
+		cout << endl;
+		cout << endl;
+	}
 
 }
 

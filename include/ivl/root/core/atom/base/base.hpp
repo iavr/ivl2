@@ -42,17 +42,25 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename T>
-struct atom_base <D, T, data::atom <> > :
-	tup_atom_base <D, T>,
-	seq_atom_base <D, T>
-	{ };
+template <typename T, typename B>
+struct atom_base <T, data::raw <>, B> : B
+{
+	using B::B;
+};
 
-template <typename D, typename T>
-struct atom_base <D, T, data::raw <> > { };
+template <typename T, typename B>
+struct atom_base <T, data::atom <>, B> :
+	tup_atom_base <T, seq_atom_base <T, B> >
+{
+	using tup_atom_base <T, seq_atom_base <T, B> >::tup_atom_base;
+};
 
-template <typename D, typename T>
-struct atom_base <D, T, data::ext <> > : atom_base <D, T> { };
+template <typename T, typename B>
+struct atom_base <T, data::ext <>, B> :
+	tup_atom_base <T, seq_atom_base <T, B> >
+{
+	using tup_atom_base <T, seq_atom_base <T, B> >::tup_atom_base;
+};
 
 //-----------------------------------------------------------------------------
 

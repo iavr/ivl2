@@ -62,15 +62,20 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <size_t J>
-	INLINE r_pk <J, P> at() && { return under <J>::fwd(); }
+	INLINE r_pick_p <J, P> at() && { return under <J>::fwd(); }
 
 	template <size_t J>
-	INLINE l_pk <J, P> at() & { return under <J>::get(); }
+	INLINE l_pick_p <J, P> at() & { return under <J>::get(); }
 
 	template <size_t J>
-	INLINE constexpr c_pk <J, P> at() const& { return under <J>::get(); }
+	INLINE constexpr c_pick_p <J, P> at() const& { return under <J>::get(); }
 
 };
+
+//-----------------------------------------------------------------------------
+
+template <>
+struct collection <data::raw <> > : pack <> { };
 
 //-----------------------------------------------------------------------------
 
