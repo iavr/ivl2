@@ -72,13 +72,8 @@ using seq_vec = vec_atom_of <atom_gen <B>, seq_vec_sw <seq_auto> >;
 template <typename F, size_t I = 0>
 using seq_vec_mut = seq_vec_f <F, mut_call <seq_loop, I> >;
 
-// template <typename F, size_t I = 0>
-// using seq_vec_copy = seq_vec_f <F, copy_call <seq_apply, I> >;
-
-// TODO
 template <typename F, size_t I = 0>
-struct seq_vec_copy : tup_vec_copy <F, I>
-	{ using tup_vec_copy <F, I>::tup_vec_copy; };
+using seq_vec_copy = seq_vec_f <F, copy_call <seq_apply, I> >;
 
 //-----------------------------------------------------------------------------
 

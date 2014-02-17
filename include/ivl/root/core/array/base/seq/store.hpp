@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_BASE_STORE_HPP
-#define IVL_CORE_ARRAY_BASE_STORE_HPP
+#ifndef IVL_CORE_ARRAY_BASE_SEQ_STORE_HPP
+#define IVL_CORE_ARRAY_BASE_SEQ_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -85,17 +85,19 @@ template <
 struct seq_store <seq_traits <T, B, I, V, S, U...>, E...> :
 	public seq_tuple <E...>
 {
+	using VT = remove_type <T>;
+
 	using traits = seq_store;
-	using value_type = remove_type <T>;
+	using value_type = VT;
 	using size_type = S;
 
-	using fwd_iterator   = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
-	using iterator       = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
-	using const_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
+	using fwd_iterator   = I <r_iter <B>, r_ref <T>, VT, r_ref <U>...>;
+	using iterator       = I <l_iter <B>, l_ref <T>, VT, l_ref <U>...>;
+	using const_iterator = I <c_iter <B>, c_ref <T>, VT, c_ref <U>...>;
 
-	using fwd_traversor   = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
-	using traversor       = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
-	using const_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
+	using fwd_traversor   = V <r_trav <B>, r_ref <T>, VT, r_ref <U>...>;
+	using traversor       = V <l_trav <B>, l_ref <T>, VT, l_ref <U>...>;
+	using const_traversor = V <c_trav <B>, c_ref <T>, VT, c_ref <U>...>;
 
 	using fwd_reference   = seq_ref <fwd_iterator>;
 	using reference       = seq_ref <iterator>;
@@ -127,4 +129,4 @@ using details::seq_traits;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_BASE_STORE_HPP
+#endif  // IVL_CORE_ARRAY_BASE_SEQ_STORE_HPP

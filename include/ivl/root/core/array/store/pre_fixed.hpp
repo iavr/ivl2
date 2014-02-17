@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_STORE_AGGR_HPP
-#define IVL_CORE_ARRAY_STORE_AGGR_HPP
+#ifndef IVL_CORE_ARRAY_STORE__PRE_FIXED__HPP
+#define IVL_CORE_ARRAY_STORE__PRE_FIXED__HPP
 
 #include <ivl/ivl>
 
@@ -42,88 +42,77 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, size_t N>
-struct aggr_store_t : id_t <T[N]> { };
-
-template <typename T>
-struct aggr_store_t <T, 0> { struct type { }; };
-
-template <typename T, size_t N>
-using aggr_store = type_of <aggr_store_t <T, N> >;
-
-template <typename T, size_t N>
-INLINE T* aggr_ptr(T (&a)[N]) { return a; }
-
-template <typename T, size_t N>
-INLINE const T* aggr_ptr(const T (&a)[N]) { return a; }
-
-template <typename T, typename A>
-INLINE T* aggr_ptr(A&&) { return nullptr; }
-
-//-----------------------------------------------------------------------------
-
-template <typename T, size_t N>
-class sequence <data::aggr <>, T, sizes <N> >
+template <typename T, size_t N, bool C = is_cons <T>()>
+class fixed_store
 {
-	using RR = T&&;
-	using RL = T&;
-	using RC = const T&;
+	T a[N];
 
-	using PL = T*;
-	using PC = const T*;
+protected:
+	INLINE T*       data()       { return a; }
+	INLINE const T* data() const { return a; }
 
-	using IR = iter_iter <PL, RR, T>;
-	using IL = iter_iter <PL, RL, T>;
-	using IC = iter_iter <PC, RC, T>;
+public:
+	template <typename A = int, only_if <C, A> = 0>
+	INLINE constexpr fixed_store() : a{} { }
 
-	using VR = iter_trav <PL, RR, T>;
-	using VL = iter_trav <PL, RL, T>;
-	using VC = iter_trav <PC, RC, T>;
+	template <typename... E, only_if <sizeof...(E) == N> = 0>
+	INLINE constexpr fixed_store(E&&... e) : a{fwd <T>(e)...} { }
+
+// 	// TODO: remove
+// 	INLINE fixed_store(initializer_list <T>&& l)
+// 		{ afun::seq_loop()(construct, afun::iter()(a), mv(l)); }
+};
+
+template <typename T, bool C>
+struct fixed_store <T, 0, C>
+{
+protected:
+	INLINE T*       data()       { return nullptr; }
+	INLINE const T* data() const { return nullptr; }
+};
 
 //-----------------------------------------------------------------------------
 
-	INLINE RR f(RL r) { return fwd <RR>(r); }
+// extending definition @array/type/sequence
+template <typename T, size_t N>
+struct seq_data_t <pre_fixed_array <T, N> > : pack <fixed_store <T, N> > { };
 
 //-----------------------------------------------------------------------------
 
-	INLINE PL b()       { return data(); }
-	INLINE PC b() const { return data(); }
-	INLINE PL e()       { return data() + N; }
-	INLINE PC e() const { return data() + N; }
+template <typename T, size_t N>
+class sequence <data::pre_fixed <>, T, sizes <N> > :
+	public seq_base <pre_fixed_array <T, N>, seq_traits <T> >,
+	fixed_store <T, N>
+{
+	friend seq_base <pre_fixed_array <T, N>, seq_traits <T> >;
+
+	using S  = fixed_store <T, N>;
+	using TR = seq_traits <T>;
+
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
+
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
+
+//-----------------------------------------------------------------------------
+
+	INLINE T*       b()       { return S::data(); }
+	INLINE const T* b() const { return S::data(); }
+	INLINE T*       e()       { return S::data() + N; }
+	INLINE const T* e() const { return S::data() + N; }
 
 //-----------------------------------------------------------------------------
 
 public:
-	aggr_store <T, N> a;
+	using S::S;
 
-	using value_type = T;
-	using size_type = size_t;
-	using difference_type = ptrdiff_t;
-
-	using fwd_reference   = RR;
-	using reference       = RL;
-	using const_reference = RC;
-
-	using pointer       = PL;
-	using const_pointer = PC;
-
-	using fwd_iterator   = IR;
-	using iterator       = IL;
-	using const_iterator = IC;
-
-	using fwd_traversor   = VR;
-	using traversor       = VL;
-	using const_traversor = VC;
-
-	static constexpr bool   finite = true;
 	static constexpr bool   fixed  = true;
 	static constexpr size_t length = N;
 
-//-----------------------------------------------------------------------------
-
-	INLINE constexpr size_t size()     const { return N; }
-	INLINE constexpr size_t max_size() const { return N; }
-	INLINE constexpr bool   empty()    const { return N == 0; }
+	INLINE constexpr size_t size() const { return N; }
 
 	INLINE           IR begin() &&     { return IR(b()); }
 	INLINE           IL begin() &      { return IL(b()); }
@@ -137,20 +126,9 @@ public:
 	INLINE           VL trav() &      { return VL(b(), e()); }
 	INLINE constexpr VC trav() const& { return VC(b(), e()); }
 
-	INLINE           RR operator[](size_t n) &&     { return f(b()[n]); }
-	INLINE           RL operator[](size_t n) &      { return b()[n]; }
-	INLINE constexpr RC operator[](size_t n) const& { return b()[n]; }
-
-	INLINE           RR front() &&     { return f(*b()); }
-	INLINE           RL front() &      { return *b(); }
-	INLINE constexpr RC front() const& { return *b(); }
-
-	INLINE           RR back() &&     { return f(*(e() - 1)); }
-	INLINE           RL back() &      { return *(e() - 1); }
-	INLINE constexpr RC back() const& { return *(e() - 1); }
-
-	INLINE PL data()       { return aggr_ptr <T>(a); }
-	INLINE PC data() const { return aggr_ptr <T>(a); }
+	INLINE           IR data() &&     { return IR(b()); }
+	INLINE           IL data() &      { return IL(b()); }
+	INLINE constexpr IC data() const& { return IC(b()); }
 };
 
 //-----------------------------------------------------------------------------
@@ -167,4 +145,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_STORE_AGGR_HPP
+#endif  // IVL_CORE_ARRAY_STORE__PRE_FIXED__HPP

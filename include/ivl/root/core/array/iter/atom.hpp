@@ -99,6 +99,7 @@ public:
 	using B::B;
 
 	static constexpr bool finite = false;
+
 	INLINE constexpr operator bool() const { return true; }
 
 	INLINE constexpr R operator*()  const { return ref(B::val()); }

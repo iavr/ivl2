@@ -47,16 +47,19 @@
 // #include "fun/mem.hpp"
 // #include "fun/math.hpp"
 
-#include "iter/base.hpp"
+#include "base/iter/store.hpp"
+#include "base/iter/base.hpp"
+
 #include "iter/iter.hpp"
 #include "iter/atom.hpp"
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
 
-#include "base/store.hpp"
-#include "base/base.hpp"
+#include "base/seq/store.hpp"
+#include "base/seq/base.hpp"
 
 #include "store/aggr.hpp"
+#include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
 
 #include "view/indirect.hpp"

@@ -45,6 +45,8 @@ template <typename... D> struct aggr { };
 template <typename... D> struct fixed { };
 template <typename... D> struct heap { };
 
+template <typename... D> using pre_fixed = pre <fixed <D...> >;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace data

@@ -65,15 +65,8 @@ using is_class = expr <null_sfinae <is_class_test, T>() && !is_union <T>()>;
 template <typename T>
 using is_derive = expr <is_class <T>() && !is_final <T>()>;
 
-namespace details {
-
-template <bool D, typename... T>
-struct derive_ : T... { };
-
-template <typename... T>
-struct derive_<false, T...>;
-
-}  // namespace details
+template <bool D, typename... T> struct derive_ : T... { };
+template <        typename... T> struct derive_<false, T...>;
 
 template <typename... T>
 using derive = details::derive_<_and <is_derive <T>...>{}, T...>;

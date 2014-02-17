@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_BASE_BASE_HPP
-#define IVL_CORE_ARRAY_BASE_BASE_HPP
+#ifndef IVL_CORE_ARRAY_BASE_SEQ_BASE_HPP
+#define IVL_CORE_ARRAY_BASE_SEQ_BASE_HPP
 
 #include <ivl/ivl>
 
@@ -49,9 +49,9 @@ class seq_base : public derived <D>, public seq_store <TR, E...>
 	using T = seq_type <TR>;
 	using S = seq_size <TR>;
 
-	using RR = r_ref <T>;
-	using RL = l_ref <T>;
-	using RC = c_ref <T>;
+	using RR = r_seq_ref <TR>;
+	using RL = l_seq_ref <TR>;
+	using RC = c_seq_ref <TR>;
 
 	using IR = r_iter <TR>;
 	using IL = l_iter <TR>;
@@ -99,7 +99,6 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
-// 	using data = embed <seq_tuple, join <seq_data <D>, pack <E...> > >;
 	using data = seq_data_tuple <D, E...>;
 
 	template <typename T, typename R = raw_type <T> >
@@ -142,4 +141,4 @@ using details::seq_base;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_BASE_BASE_HPP
+#endif  // IVL_CORE_ARRAY_BASE_SEQ_BASE_HPP

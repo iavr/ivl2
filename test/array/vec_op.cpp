@@ -12,15 +12,16 @@ using namespace ivl::types;
 void run()
 {
 
-// 	{
-// 		cout << "op ++" << endl;
-// 		auto t = _('a', 3.14, _(2, 5));
-// 		cout << t++ << endl;
-// 		cout << t << endl;
-// 		cout << ++t << endl;
-// 		cout << t << endl;
-// 		cout << endl;
-// 	}
+	{
+		cout << "op ++" << endl;
+		using A = array <int, 4>;
+		A a = {-1, 3.14, 2, 12};
+		cout << a++ << endl;
+		cout << a << endl;
+		cout << ++a << endl;
+		cout << a << endl;
+		cout << endl;
+	}
 
 	{
 		cout << "op <" << endl;
@@ -45,15 +46,16 @@ void run()
 		cout << endl;
 	}
 
-// 	{
-// 		cout << "op <<" << endl;
-// 		auto t = _(0, 1, 2, 3);
-// 		cout << (1 << 2) << endl;
-// 		cout << (1 << t) << endl;
-// 		cout << (t << 2) << endl;
-// 		cout << (t << t) << endl;
-// 		cout << endl;
-// 	}
+	{
+		cout << "op <<" << endl;
+		using A = array <int, 4>;
+		A a = {0, 1, 2, 3};
+		cout << (1 << 2) << endl;
+		cout << (1 << a) << endl;
+		cout << (a << 2) << endl;
+		cout << (a << a) << endl;
+		cout << endl;
+	}
 
 	{
 		cout << "op *" << endl;

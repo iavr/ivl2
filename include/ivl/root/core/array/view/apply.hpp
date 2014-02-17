@@ -112,6 +112,9 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 public:
 	using B::B;
 
+	static constexpr bool   fixed  = _and <fix_seq <A>...>();
+	static constexpr size_t length = sz_min <id, seq_len <A>...>();
+
 	INLINE constexpr S size() const { return M().size(a<N>()...); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }

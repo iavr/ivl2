@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_BASE_HPP
-#define IVL_CORE_ARRAY_ITER_BASE_HPP
+#ifndef IVL_CORE_ARRAY_BASE_ITER_BASE_HPP
+#define IVL_CORE_ARRAY_BASE_ITER_BASE_HPP
 
 #include <ivl/ivl>
 
@@ -39,45 +39,6 @@ namespace arrays {
 //-----------------------------------------------------------------------------
 
 namespace details {
-
-//-----------------------------------------------------------------------------
-
-template <typename... E>
-struct iter_tuple : raw_tuple <iter_opt <E>...>
-	{ using raw_tuple <iter_opt <E>...>::raw_tuple; };
-
-template <>
-struct iter_tuple <> { };
-
-//-----------------------------------------------------------------------------
-
-template <typename TR, typename... E> struct iter_store;
-
-template <
-	typename I, typename R = seq_ref <I>, typename T = seq_type <I>,
-	typename D = seq_diff <I>, typename P = remove_ref <R>*
->
-struct iter_traits : iter_store <iter_traits <I, R, T, D, P> > { };
-
-//-----------------------------------------------------------------------------
-
-template <
-	typename I, typename R, typename T, typename D, typename P,
-	typename... E
->
-struct iter_store <iter_traits <I, R, T, D, P>, E...> :
-	protected iter_tuple <E...>
-{
-	using iterator_type = I;
-	using reference = R;
-	using value_type = T;
-	using difference_type = D;
-	using pointer = P;
-
-	static constexpr bool finite = fin_trav <I>{}();  // TODO: () needed by GCC
-
-	using iter_tuple <E...>::iter_tuple;
-};
 
 //-----------------------------------------------------------------------------
 
@@ -119,4 +80,4 @@ using trav_base = iter_common <D, TR, E...>;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_BASE_HPP
+#endif  // IVL_CORE_ARRAY_BASE_ITER_BASE_HPP

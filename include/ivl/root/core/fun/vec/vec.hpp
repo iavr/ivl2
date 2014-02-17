@@ -70,11 +70,8 @@ using vec = vec_atom_of <atom_gen <B>, vec_sw <_auto> >;
 template <typename F, size_t I = 0>
 using vec_mut = vec_f <F, mut_call <loop, I> >;
 
-// template <typename F, size_t I = 0>
-// using vec_copy = vec_f <F, copy_call <apply, I> >;
-
-// TODO
-template <typename F, size_t I = 0> using vec_copy = seq_vec_copy <F, I>;
+template <typename F, size_t I = 0>
+using vec_copy = vec_f <F, copy_call <apply, I> >;
 
 //-----------------------------------------------------------------------------
 

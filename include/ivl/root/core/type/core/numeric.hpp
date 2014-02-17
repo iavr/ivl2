@@ -55,6 +55,8 @@ template <size_t N = 0> using size   = integral <size_t, N>;
 template <int... N>    using numbers = integrals <int, N...>;
 template <size_t... N> using sizes   = integrals <size_t, N...>;
 
+using no_sz = c_no_sz;
+
 //-----------------------------------------------------------------------------
 
 template <typename T, T N> using int_inc = integral <T, N + 1>;

@@ -154,6 +154,8 @@ class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, D, TR> :
 public:
 	using B::B;
 
+	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
+
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
 
 	INLINE constexpr R operator*()  const { return ref(f()(*v<N>()...)); }

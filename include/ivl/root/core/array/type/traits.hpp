@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+struct A;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -94,16 +95,22 @@ template <typename T> struct fin_trav;
 
 namespace details {
 
+template <typename T, bool = is_seq <T>{}>  struct fix_seq_  : _false { };
+template <typename T, bool = fix_seq_<T>{}> struct seq_len_  : no_sz { };
+
 template <typename T, bool = is_seq <T>{}>  struct fin_seq_  : _false { };
 template <typename T, bool = is_trav <T>{}> struct fin_trav_ : _false { };
+
+template <typename T> struct fix_seq_<T, true>  : expr <T::fixed> { };
+template <typename T> struct seq_len_<T, true>  : size <T::length> { };
 
 template <typename T> struct fin_seq_<T, true>  : expr <T::finite> { };
 template <typename T> struct fin_trav_<T, true> : expr <T::finite> { };
 
-template <typename... V>
-struct fin_trav_<pack <V...>, false> : _or <fin_trav <V>...> { };
-
 }  // namespace details
+
+template <typename T> using  fix_seq  = details::fix_seq_<raw_type <T> >;
+template <typename T> using  seq_len  = details::seq_len_<raw_type <T> >;
 
 template <typename T> using  fin_seq  = details::fin_seq_<raw_type <T> >;
 template <typename T> struct fin_trav : details::fin_trav_<raw_type <T> > { };
@@ -166,8 +173,8 @@ template <typename I> struct seq_size_t : details::seq_size_<raw_type <I> > { };
 template <typename I> struct seq_diff_t : details::seq_diff_<raw_type <I> > { };
 template <typename I> struct seq_ptr_t  : details::seq_ptr_<raw_type <I> > { };
 
-// template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;  // defined @begin
-// template <typename I> using seq_type  = type_of <seq_type_t <I> >;  // defined @begin
+// template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;   // defined @begin
+// template <typename I> using seq_type = type_of <seq_type_t <I> >;  // defined @begin
 template <typename I> using seq_size = type_of <seq_size_t <I> >;
 template <typename I> using seq_diff = type_of <seq_diff_t <I> >;
 template <typename I> using seq_ptr  = type_of <seq_ptr_t <I> >;
@@ -285,39 +292,11 @@ template <typename... A> struct c_trav_t <pack <A...> > : pack <c_trav <A>...> {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename A, typename T, typename S = seq_type <A> >
+using seq_conv = expr <is_conv <S, T>() && !is_conv <A, T>()>;
 
-template <typename T, bool = is_iter <T>()>
-struct iter_opt_ : rref_opt_t <T> { };
-
-template <typename T>
-struct iter_opt_<T, true> : base_opt_t <T> { };
-
-}  // namespace details
-
-template <typename T> using iter_opt_t = details::iter_opt_<T>;
-template <typename T> using iter_opt = type_of <iter_opt_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <size_t N, typename T>
-using iter_elem = tuples::elem <N, iter_opt <T> >;
-
-template <size_t N, typename... E>
-using iter_elem_at = iter_elem <N, pick <N, E...> >;
-
-template <typename T> using r_iter_ref = r_ref <iter_opt <T> >;
-template <typename T> using l_iter_ref = l_ref <iter_opt <T> >;
-template <typename T> using c_iter_ref = c_ref <iter_opt <T> >;
-
-template <size_t N, typename... E>
-using r_iter_pick = r_iter_ref <pick <N, E...> >;
-
-template <size_t N, typename... E>
-using l_iter_pick = l_iter_ref <pick <N, E...> >;
-
-template <size_t N, typename... E>
-using c_iter_pick = c_iter_ref <pick <N, E...> >;
+template <typename T, typename A, typename S = seq_type <A> >
+using seq_explicit = expr <is_explicit <T, S>() && !is_explicit <T, A>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -367,20 +346,20 @@ struct seq_void : is_void <seq_ret <F, A...> > { };
 
 //-----------------------------------------------------------------------------
 
-// namespace details {
-//
-// // extending definition @type/traits/transform
-// template <typename C, typename... A>
-// struct copy_rec <sequence <C, A...> > :
-// 	copy_rec <type_of <collection <C, A...> > > { };
-//
-// template <typename... E>
-// struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };
-//
-// template <typename F, typename... E>
-// struct copy_rec <F(pack <E...>)>  : id_t <copy <ret <F(E...)> > > { };
-//
-// }  // namespace details
+namespace details {
+
+template <typename A, typename T = seq_type <A>, bool F = fix_seq <A>()>
+struct seq_copy_ : id_t <heap_array <copy <T> > > { };
+
+template <typename A, typename T>
+struct seq_copy_<A, T, true> :
+	id_t <fixed_array <copy <T>, seq_len <A>{}> > { };
+
+// extending definition @type/traits/transform
+template <typename C, typename... A>
+struct copy_rec <sequence <C, A...> > : seq_copy_<sequence <C, A...> > { };
+
+}  // namespace details
 
 //-----------------------------------------------------------------------------
 

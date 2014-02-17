@@ -122,6 +122,8 @@ class indirect_trav_impl : public trav_base <D, TR, V, U>
 public:
 	using B::B;
 
+	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
+
 	INLINE constexpr operator bool() const { return v(); }
 
 	INLINE constexpr R operator*()  const { return ref(u()[*v()]); }

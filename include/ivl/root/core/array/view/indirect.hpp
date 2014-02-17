@@ -88,6 +88,9 @@ class indirect_seq_impl :
 public:
 	using B::B;
 
+	static constexpr bool   fixed  = fix_seq <K>();
+	static constexpr size_t length = seq_len <K>();
+
 	INLINE constexpr S size() const { return i().size(); }
 
 	INLINE           IR begin() &&     { return IR(i_f().begin(), u_f()); }

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_STORE_FIXED_HPP
-#define IVL_CORE_ARRAY_STORE_FIXED_HPP
+#ifndef IVL_CORE_ARRAY_BASE_ITER_STORE_HPP
+#define IVL_CORE_ARRAY_BASE_ITER_STORE_HPP
 
 #include <ivl/ivl>
 
@@ -42,56 +42,71 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// extending definition @array/type/sequence
-template <typename T, size_t N>
-struct seq_data_t <fixed_array <T, N> > : pack <fixed_store <T, N> > { };
+template <typename T, bool = is_iter <T>()>
+struct iter_opt_ : rref_opt_t <T> { };
+
+template <typename T>
+struct iter_opt_<T, true> : base_opt_t <T> { };
+
+template <typename T> using iter_opt_t = iter_opt_<T>;
+template <typename T> using iter_opt = type_of <iter_opt_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T, size_t N, typename I = sz_rng_of_i <N> >
-struct fixed_impl;
+template <size_t N, typename T>
+using iter_elem = elem <N, iter_opt <T> >;
 
-template <typename T, size_t N, size_t... I>
-class fixed_impl <T, N, sizes <I...> > :
-	public pre_fixed_array <T, N>
+template <size_t N, typename... E>
+using iter_elem_at = iter_elem <N, pick <N, E...> >;
+
+template <typename T> using r_iter_ref = r_ref <iter_opt <T> >;
+template <typename T> using l_iter_ref = l_ref <iter_opt <T> >;
+template <typename T> using c_iter_ref = c_ref <iter_opt <T> >;
+
+template <size_t N, typename... E>
+using r_iter_pick = r_iter_ref <pick <N, E...> >;
+
+template <size_t N, typename... E>
+using l_iter_pick = l_iter_ref <pick <N, E...> >;
+
+template <size_t N, typename... E>
+using c_iter_pick = c_iter_ref <pick <N, E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename... E>
+struct iter_tuple : raw_tuple <iter_opt <E>...>
+	{ using raw_tuple <iter_opt <E>...>::raw_tuple; };
+
+template <>
+struct iter_tuple <> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename TR, typename... E> struct iter_store;
+
+template <
+	typename I, typename R = seq_ref <I>, typename T = seq_type <I>,
+	typename D = seq_diff <I>, typename P = remove_ref <R>*
+>
+struct iter_traits : iter_store <iter_traits <I, R, T, D, P> > { };
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename I, typename R, typename T, typename D, typename P,
+	typename... E
+>
+struct iter_store <iter_traits <I, R, T, D, P>, E...> :
+	protected iter_tuple <E...>
 {
-	using B = pre_fixed_array <T, N>;
+	using iterator_type = I;
+	using reference = R;
+	using value_type = T;
+	using difference_type = D;
+	using pointer = P;
 
-public:
-	explicit INLINE constexpr fixed_impl(_true) : B() { }
-
-	template <typename... A>
-	explicit INLINE constexpr fixed_impl(_true, A&&... a) : B(fwd <A>(a)...) { }
-
-	template <typename A>
-	INLINE constexpr fixed_impl(A&& a) : B(fwd <A>(a)[I]...) { }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename T, size_t N>
-class sequence <data::fixed <>, T, sizes <N> > :
-	public fixed_impl <T, N>
-{
-	using B = fixed_impl <T, N>;
-
-//-----------------------------------------------------------------------------
-
-public:
-	template <typename A = int, only_if <is_cons <T>{}, A> = 0>
-	explicit INLINE constexpr sequence() : B(yes) { }
-
-	template <typename... A, only_if <is_conv <common <A...>, T>{}> = 0>
-	INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename... A, only_if <is_explicit <T, common <A...> >{}> = 0>
-	explicit INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
-
-	template <typename A, only_if <seq_conv <A, T>{}> = 0>
-	INLINE constexpr sequence(A&& a) : B(fwd <A>(a)) { }
-
-	template <typename A, only_if <seq_explicit <T, A>{}> = 0>
-	explicit INLINE constexpr sequence(A&& a) : B(fwd <A>(a)) { }
+	using iter_tuple <E...>::iter_tuple;
 };
 
 //-----------------------------------------------------------------------------
@@ -108,4 +123,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_STORE_FIXED_HPP
+#endif  // IVL_CORE_ARRAY_BASE_ITER_STORE_HPP

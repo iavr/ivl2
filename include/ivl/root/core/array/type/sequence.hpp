@@ -50,6 +50,9 @@ template <typename T, size_t... N>
 using aggr_array = sequence <data::aggr <>, T, sizes <N...> >;
 
 template <typename T, size_t... N>
+using pre_fixed_array = sequence <data::pre_fixed <>, T, sizes <N...> >;
+
+template <typename T, size_t... N>
 using fixed_array = sequence <data::fixed <>, T, sizes <N...> >;
 
 template <typename T>
@@ -96,6 +99,7 @@ template <typename A> using  seq_data = type_of <seq_data_t <A> >;
 
 using details::sequence;
 
+using details::pre_fixed_array;
 using details::fixed_array;
 using details::heap_array;
 
