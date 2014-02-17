@@ -342,14 +342,6 @@ struct tup_void : any_p <is_void, tup_ret <F, T...> > { };
 
 //-----------------------------------------------------------------------------
 
-// TODO: redesign; only used for array construction now along with reuse <>
-template <typename T>
-using tuple_of_t = _if <is_tuple <T>{}, raw_type_t <T>, id_t <tuple <T> > >;
-
-template <typename T> using tuple_of = type_of <tuple_of_t <T> >;
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
 // extending definition @type/traits/transform

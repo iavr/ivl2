@@ -5,6 +5,7 @@ doc/licenses/lgpl-3.0.txt
 .ignore
 test/array/array
 test/array/vec
+test/array/vec_op
 test/core/bind
 test/core/const
 test/core/op

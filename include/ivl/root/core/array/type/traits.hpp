@@ -367,6 +367,23 @@ struct seq_void : is_void <seq_ret <F, A...> > { };
 
 //-----------------------------------------------------------------------------
 
+// namespace details {
+//
+// // extending definition @type/traits/transform
+// template <typename C, typename... A>
+// struct copy_rec <sequence <C, A...> > :
+// 	copy_rec <type_of <collection <C, A...> > > { };
+//
+// template <typename... E>
+// struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };
+//
+// template <typename F, typename... E>
+// struct copy_rec <F(pack <E...>)>  : id_t <copy <ret <F(E...)> > > { };
+//
+// }  // namespace details
+
+//-----------------------------------------------------------------------------
+
 }  // namespace traits
 
 //-----------------------------------------------------------------------------
