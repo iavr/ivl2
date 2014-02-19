@@ -64,17 +64,18 @@ using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using fix_len   = length_of <raw_type <T> >;
-template <typename T> using fix_empty = expr <!fix_len <T>()>;
+template <typename T> using tup_len      = length_of <raw_type <T> >;
+template <typename T> using tup_null     = expr <!tup_len <T>()>;
+template <typename T> using tup_non_null = expr <tup_len <T>{}>;
 
 template <typename T>
-using tup_empty = expr <is_tuple <T>() && fix_empty <T>()>;
+using tup_empty = expr <is_tuple <T>() && tup_null <T>()>;
 
 template <typename T>
-using tup_non_empty = expr <is_tuple <T>() && !fix_empty <T>()>;
+using tup_non_empty = expr <is_tuple <T>() && !tup_null <T>()>;
 
 template <typename T>
-using as_tup_non_empty = expr <as_tuple <T>() && !fix_empty <T>()>;
+using as_tup_non_empty = expr <as_tuple <T>() && !tup_null <T>()>;
 
 //-----------------------------------------------------------------------------
 

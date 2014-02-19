@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_LOOP_HPP
-#define IVL_CORE_TUPLE_FUN_LOOP_HPP
+#ifndef IVL_CORE_ARRAY_VIEW_FLIP_HPP
+#define IVL_CORE_ARRAY_VIEW_FLIP_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,75 +42,66 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// no alias: entry point
-struct tup_apply : uref_of <apply_tuple> { };
+template <typename U, typename T = seq_type <U> >
+using flip_traits = seq_traits <
+	T, seq_length <U>, U, flip_iter, flip_trav
+>;
 
 //-----------------------------------------------------------------------------
 
-struct off_skip_call
+template <typename U, typename TR = flip_traits <U> >
+class flip_seq_impl :
+	public seq_base <flip_seq <U>, TR, U>
 {
-	template <size_t I, typename F, typename... A>
-	INLINE constexpr auto _(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(fwd <A>(a)...))
-		{ return fwd <F>(f)(fwd <A>(a)...); }
-};
+	using B = seq_base <flip_seq <U>, TR, U>;
+	friend B;
 
-template <template <size_t...> class M>
-struct off_map_call
-{
-	template <size_t I, typename F, typename... A>
-	INLINE constexpr auto _(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(M <I>(), fwd <A>(a)...))
-		{ return fwd <F>(f)(M <I>(), fwd <A>(a)...); }
-};
+	using S = seq_size <TR>;
+
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
+
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
+
+	using under = elem <0, U>;
 
 //-----------------------------------------------------------------------------
 
-template <typename C>
-class tup_loop_of
-{
-	template <size_t I, typename F, typename... A>
-	INLINE void each(F&& f, A&&... a) const
-		{ C().template _<I>(fwd <F>(f), at()._<I>(fwd <A>(a))...); }
+	INLINE           r_ref <U> u_f()      { return under::fwd(); }
+	INLINE           r_ref <U> u() &&     { return under::fwd(); }
+	INLINE           l_ref <U> u() &      { return under::get(); }
+	INLINE constexpr c_ref <U> u() const& { return under::get(); }
 
-	template <size_t... I, typename F, typename... A>
-	INLINE void loop(sizes <I...>, F&& f, A&&... a) const
-		{ thru{(each <I>(fwd <F>(f), fwd <A>(a)...), 0)...}; }
+//-----------------------------------------------------------------------------
 
 public:
-	template <typename F, typename... A, typename R = tup_tran_rng <A...> >
-	INLINE F&& operator()(F&& f, A&&... a) const
-	{
-		return loop(R(), fwd <F>(f), tup_atom_of <A>(fwd <A>(a))...),
-			fwd <F>(f);
-	}
+	using B::B;
+
+	INLINE constexpr S size() const { return u().size(); }
+
+	INLINE           IR begin() &&     { return IR(--u_f().end()); }
+	INLINE           IL begin() &      { return IL(--u().end()); }
+	INLINE constexpr IC begin() const& { return IC(--u().end()); }
+
+	INLINE           IR end() &&     { return IR(--u_f().begin()); }
+	INLINE           IL end() &      { return IL(--u().begin()); }
+	INLINE constexpr IC end() const& { return IC(--u().begin()); }
+
+	INLINE           VR trav() &&     { return VR(mv(-u_f().trav())); }
+	INLINE           VL trav() &      { return VL((-u().trav())); }
+	INLINE           VC trav() const& { return VC((-u().trav())); }
 };
-
-using tup_loop = tup_loop_of <off_skip_call>;
-
-template <template <size_t...> class M = size>
-using tup_scan_of = tup_loop_of <off_map_call <M> >;
-
-using tup_scan      = tup_scan_of <>;
-using tup_tail_scan = tup_scan_of <sz_inc>;
 
 //-----------------------------------------------------------------------------
 
-struct tup_head_loop_fun
+template <typename U>
+struct sequence <data::flip <>, U> : flip_seq_impl <U>
 {
-	template <typename F, typename G, typename... T>
-	INLINE void operator()(F&& f, G&& g, T&&... t) const
-	{
-		fwd <F>(f)(tup_head()(fwd <T>(t))...);
-		tup_loop()(fwd <G>(g), tup_tail()(fwd <T>(t))...);
-	}
+	using flip_seq_impl <U>::flip_seq_impl;
 };
-
-template <typename F, typename G, typename... T>
-using tup_head_loop_sw =
-	_if <_or <tup_null <T>...>{}, nop_fun, tup_head_loop_fun>;
-
-using tup_head_loop = switch_fun <tup_head_loop_sw>;
 
 //-----------------------------------------------------------------------------
 
@@ -118,13 +109,7 @@ using tup_head_loop = switch_fun <tup_head_loop_sw>;
 
 //-----------------------------------------------------------------------------
 
-using details::tup_apply;
-using details::tup_loop;
-using details::tup_head_loop;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -132,4 +117,4 @@ using details::tup_head_loop;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_LOOP_HPP
+#endif  // IVL_CORE_ARRAY_VIEW_FLIP_HPP

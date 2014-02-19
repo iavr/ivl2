@@ -47,7 +47,8 @@ template <typename...> struct id_t;
 template <typename T>  struct id_t <T> { using type = T; };
 template <>            struct id_t <>  { };
 
-template <typename T> using type_of = typename T::type;
+template <typename T> using type_of   = typename T::type;
+template <typename T> using traits_of = typename T::traits;
 
 template <typename... T> using id = type_of <id_t <T...> >;
 

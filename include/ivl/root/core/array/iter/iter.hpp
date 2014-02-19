@@ -43,7 +43,8 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename D = iter_iter <I, R, T>,
+	typename I, typename R, typename T,
+	typename D = iter_iter <I, R, T>,
 	typename TR = iter_traits <I, R, T>
 >
 class iter_iter_impl : public iter_base <D, TR, I>
@@ -54,6 +55,7 @@ class iter_iter_impl : public iter_base <D, TR, I>
 
 	using iter = iter_elem <0, I>;
 
+	using derived <D>::der_f;
 	using derived <D>::der;
 	using B::ref;
 
@@ -70,25 +72,32 @@ public:
 	INLINE constexpr R operator*()  const { return ref(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D& operator++() { return ++i(), der(); }
-	INLINE D& operator--() { return --i(), der(); }
+	INLINE D&& operator++() && { return ++i(), der_f(); }
+	INLINE D&  operator++() &  { return ++i(), der(); }
+	INLINE D&& operator--() && { return --i(), der_f(); }
+	INLINE D&  operator--() &  { return --i(), der(); }
 
 	INLINE D operator++(int) { return D(i()++); }
 	INLINE D operator--(int) { return D(i()--); }
 
 	INLINE constexpr R operator[](d n) const { return ref(i()[n]); }
 
-	INLINE D& operator+=(d n) { return i() += n, der(); }
-	INLINE D& operator-=(d n) { return i() -= n, der(); }
+	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
+	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
+	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
+	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
 
-	INLINE D operator+(d n) { return D(i() + n); }
-	INLINE D operator-(d n) { return D(i() - n); }
+	INLINE D operator+(d n) const { return D(i() + n); }
+	INLINE D operator-(d n) const { return D(i() - n); }
+
+	INLINE bool operator!=(D o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename D = iter_trav <I, R, T>,
+	typename I, typename R, typename T,
+	typename D = iter_trav <I, R, T>,
 	typename TR = iter_traits <I, R, T>
 >
 class iter_trav_impl : public trav_base <D, TR, I, I>
@@ -100,6 +109,7 @@ class iter_trav_impl : public trav_base <D, TR, I, I>
 	using iter = iter_elem <0, I>;
 	using end  = iter_elem <1, I>;
 
+	using derived <D>::der_f;
 	using derived <D>::der;
 	using B::ref;
 
@@ -123,19 +133,31 @@ public:
 	INLINE constexpr R operator*()  const { return ref(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D& operator++() { return ++i(), der(); }
-	INLINE D& operator--() { return --i(), der(); }
+	INLINE D&& operator++() && { return ++i(), der_f(); }
+	INLINE D&  operator++() &  { return ++i(), der(); }
+	INLINE D&& operator--() && { return --i(), der_f(); }
+	INLINE D&  operator--() &  { return --i(), der(); }
 
-	INLINE D operator++(int) { return D(i()++, e); }
-	INLINE D operator--(int) { return D(i()--, e); }
+	INLINE D operator++(int) { return D(i()++, e()); }
+	INLINE D operator--(int) { return D(i()--, e()); }
+
+	INLINE D&& operator+() && { return std::swap(++e(), ++i()), der_f(); }
+	INLINE D&  operator+() &  { return std::swap(++e(), ++i()), der(); }
+	INLINE D&& operator-() && { return std::swap(--e(), --i()), der_f(); }
+	INLINE D&  operator-() &  { return std::swap(--e(), --i()), der(); }
 
 	INLINE constexpr R operator[](d n) const { return ref(i()[n]); }
 
-	INLINE D& operator+=(d n) { return i() += n, der(); }
-	INLINE D& operator-=(d n) { return i() -= n, der(); }
+	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
+	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
+	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
+	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
 
-	INLINE D operator+(d n) { return D(i() + n, e); }
-	INLINE D operator-(d n) { return D(i() - n, e); }
+	INLINE D operator+(d n) const { return D(i() + n, e()); }
+	INLINE D operator-(d n) const { return D(i() - n, e()); }
+
+	// TODO
+	INLINE bool operator!=(D o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------

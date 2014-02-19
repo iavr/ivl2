@@ -67,6 +67,9 @@ class apply_iter_impl <pack <I...>, R, T, M, F, sizes <N...>, D, TR> :
 	template <size_t K>
 	using iter = iter_elem_at <K + 1, F, I...>;
 
+	using term = raw_type <M>;
+
+	using derived <D>::der_f;
 	using derived <D>::der;
 	using B::ref;
 
@@ -91,19 +94,26 @@ public:
 	INLINE constexpr R operator*()  const { return ref(f()(*i<N>()...)); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D& operator++() { return thru{++i<N>()...}, der(); }
-	INLINE D& operator--() { return thru{--i<N>()...}, der(); }
+	INLINE D&& operator++() && { return thru{++i<N>()...}, der_f(); }
+	INLINE D&  operator++() &  { return thru{++i<N>()...}, der(); }
+	INLINE D&& operator--() && { return thru{--i<N>()...}, der_f(); }
+	INLINE D&  operator--() &  { return thru{--i<N>()...}, der(); }
 
 	INLINE D operator++(int) { return D(f(), i<N>()++...); }
 	INLINE D operator--(int) { return D(f(), i<N>()--...); }
 
 	INLINE constexpr R operator[](d n) const { return ref(f()(i<N>()[n]...)); }
 
-	INLINE D& operator+=(d n) { return thru{i<N>() += n...}, der(); }
-	INLINE D& operator-=(d n) { return thru{i<N>() -= n...}, der(); }
+	INLINE D&& operator+=(d n) && { return thru{i<N>() += n...}, der_f(); }
+	INLINE D&  operator+=(d n) &  { return thru{i<N>() += n...}, der(); }
+	INLINE D&& operator-=(d n) && { return thru{i<N>() -= n...}, der_f(); }
+	INLINE D&  operator-=(d n) &  { return thru{i<N>() -= n...}, der(); }
 
-	INLINE D operator+(d n) { return D(f(), i<N>() + n...); }
-	INLINE D operator-(d n) { return D(f(), i<N>() - n...); }
+	INLINE D operator+(d n) const { return D(f(), i<N>() + n...); }
+	INLINE D operator-(d n) const { return D(f(), i<N>() - n...); }
+
+	// TODO
+	INLINE bool operator!=(D o) { return term().more(i<N>() != o.i<N>()...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -133,6 +143,7 @@ class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, D, TR> :
 
 	using term = raw_type <M>;
 
+	using derived <D>::der_f;
 	using derived <D>::der;
 	using B::ref;
 
@@ -161,19 +172,28 @@ public:
 	INLINE constexpr R operator*()  const { return ref(f()(*v<N>()...)); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D& operator++() { return thru{++v<N>()...}, der(); }
-	INLINE D& operator--() { return thru{--v<N>()...}, der(); }
+	INLINE D&& operator++() && { return thru{++v<N>()...}, der_f(); }
+	INLINE D&  operator++() &  { return thru{++v<N>()...}, der(); }
+	INLINE D&& operator--() && { return thru{--v<N>()...}, der_f(); }
+	INLINE D&  operator--() &  { return thru{--v<N>()...}, der(); }
 
 	INLINE D operator++(int) { return D(f(), v<N>()++...); }
 	INLINE D operator--(int) { return D(f(), v<N>()--...); }
 
+	INLINE D&& operator+() && { return thru{+v<N>()...}, der_f(); }
+	INLINE D&  operator+() &  { return thru{+v<N>()...}, der(); }
+	INLINE D&& operator-() && { return thru{-v<N>()...}, der_f(); }
+	INLINE D&  operator-() &  { return thru{-v<N>()...}, der(); }
+
 	INLINE constexpr R operator[](d n) const { return ref(f()(v<N>()[n]...)); }
 
-	INLINE D& operator+=(d n) { return thru{v<N>() += n...}, der(); }
-	INLINE D& operator-=(d n) { return thru{v<N>() -= n...}, der(); }
+	INLINE D&& operator+=(d n) && { return thru{v<N>() += n...}, der_f(); }
+	INLINE D&  operator+=(d n) &  { return thru{v<N>() += n...}, der(); }
+	INLINE D&& operator-=(d n) && { return thru{v<N>() -= n...}, der_f(); }
+	INLINE D&  operator-=(d n) &  { return thru{v<N>() -= n...}, der(); }
 
-	INLINE D operator+(d n) { return D(f(), v<N>() + n...); }
-	INLINE D operator-(d n) { return D(f(), v<N>() - n...); }
+	INLINE D operator+(d n) const { return D(f(), v<N>() + n...); }
+	INLINE D operator-(d n) const { return D(f(), v<N>() - n...); }
 };
 
 //-----------------------------------------------------------------------------

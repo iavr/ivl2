@@ -46,8 +46,9 @@ template <typename K, typename U>
 using indirect_type = seq_result <decltype(gen <U>()[*gen <K>().begin()])>;
 
 template <typename K, typename U, typename T = indirect_type <K, U> >
-using indirect_traits =
-	seq_traits <T, K, indirect_iter, indirect_trav, seq_size <K>, U>;
+using indirect_traits = seq_traits <
+	T, seq_length <K>, K, indirect_iter, indirect_trav, seq_size <K>, U
+>;
 
 //-----------------------------------------------------------------------------
 
@@ -88,9 +89,6 @@ class indirect_seq_impl :
 public:
 	using B::B;
 
-	static constexpr bool   fixed  = fix_seq <K>();
-	static constexpr size_t length = seq_len <K>();
-
 	INLINE constexpr S size() const { return i().size(); }
 
 	INLINE           IR begin() &&     { return IR(i_f().begin(), u_f()); }
@@ -104,7 +102,6 @@ public:
 	INLINE           VR trav() &&     { return VR(i_f().trav(), u_f()); }
 	INLINE           VL trav() &      { return VL(i().trav(),   u()); }
 	INLINE constexpr VC trav() const& { return VC(i().trav(),   u()); }
-
 };
 
 //-----------------------------------------------------------------------------

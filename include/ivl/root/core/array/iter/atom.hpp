@@ -43,7 +43,8 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename D = atom_iter <I, R, T>,
+	typename I, typename R, typename T,
+	typename D = atom_iter <I, R, T>,
 	typename TR = iter_traits <I, R, T, size_t>
 >
 class atom_iter_impl : public iter_base <D, TR, T>
@@ -52,6 +53,7 @@ class atom_iter_impl : public iter_base <D, TR, T>
 	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
+	using derived <D>::der_f;
 	using derived <D>::der;
 	using B::ref;
 
@@ -63,25 +65,33 @@ public:
 	INLINE constexpr R operator*()  const { return ref(B::val()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D& operator++() { return der(); }
-	INLINE D& operator--() { return der(); }
+	INLINE D&& operator++() && { return der_f(); }
+	INLINE D&  operator++() &  { return der(); }
+	INLINE D&& operator--() && { return der_f(); }
+	INLINE D&  operator--() &  { return der(); }
 
-	INLINE D& operator++(int) { return der(); }
-	INLINE D& operator--(int) { return der(); }
+	INLINE D operator++(int) { return der(); }
+	INLINE D operator--(int) { return der(); }
 
 	INLINE constexpr R operator[](d n) const { return ref(B::val()); }
 
-	INLINE D& operator+=(d n) { return der(); }
-	INLINE D& operator-=(d n) { return der(); }
+	INLINE D&& operator+=(d n) && { return der_f(); }
+	INLINE D&  operator+=(d n) &  { return der(); }
+	INLINE D&& operator-=(d n) && { return der_f(); }
+	INLINE D&  operator-=(d n) &  { return der(); }
 
-	INLINE D& operator+(d n) { return der(); }
-	INLINE D& operator-(d n) { return der(); }
+	INLINE D operator+(d n) const { return der(); }
+	INLINE D operator-(d n) const { return der(); }
+
+	// TODO
+	INLINE bool operator!=(D o) { return true; }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename D = atom_trav <I, R, T>,
+	typename I, typename R, typename T,
+	typename D = atom_trav <I, R, T>,
 	typename TR = iter_traits <I, R, T, size_t>
 >
 class atom_trav_impl : public trav_base <D, TR, T>
@@ -90,6 +100,7 @@ class atom_trav_impl : public trav_base <D, TR, T>
 	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
+	using derived <D>::der_f;
 	using derived <D>::der;
 	using B::ref;
 
@@ -105,19 +116,28 @@ public:
 	INLINE constexpr R operator*()  const { return ref(B::val()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D& operator++() { return der(); }
-	INLINE D& operator--() { return der(); }
+	INLINE D&& operator++() && { return der_f(); }
+	INLINE D&  operator++() &  { return der(); }
+	INLINE D&& operator--() && { return der_f(); }
+	INLINE D&  operator--() &  { return der(); }
 
-	INLINE D& operator++(int) { return der(); }
-	INLINE D& operator--(int) { return der(); }
+	INLINE D operator++(int) { return der(); }
+	INLINE D operator--(int) { return der(); }
+
+	INLINE D&& operator+() && { return der_f(); }
+	INLINE D&  operator+() &  { return der(); }
+	INLINE D&& operator-() && { return der_f(); }
+	INLINE D&  operator-() &  { return der(); }
 
 	INLINE constexpr R operator[](d n) const { return ref(B::val()); }
 
-	INLINE D& operator+=(d n) { return der(); }
-	INLINE D& operator-=(d n) { return der(); }
+	INLINE D&& operator+=(d n) && { return der_f(); }
+	INLINE D&  operator+=(d n) &  { return der(); }
+	INLINE D&& operator-=(d n) && { return der_f(); }
+	INLINE D&  operator-=(d n) &  { return der(); }
 
-	INLINE D& operator+(d n) { return der(); }
-	INLINE D& operator-(d n) { return der(); }
+	INLINE D& operator+(d n) const { return der(); }
+	INLINE D& operator-(d n) const { return der(); }
 };
 
 //-----------------------------------------------------------------------------

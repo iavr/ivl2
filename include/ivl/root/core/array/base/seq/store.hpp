@@ -69,26 +69,30 @@ using seq_data_tuple = type_of <seq_data_tuple_<A, pack <E...> > >;
 template <typename TR, typename... E> struct seq_store;
 
 template <
-	typename T, typename B = remove_ref <T>*,
+	typename T, typename L = no_size, typename B = remove_ref <T>*,
 	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
 	typename S = seq_size <B>, typename... U
 >
-struct seq_traits : seq_store <seq_traits <T, B, I, V, S, U...> > { };
+struct seq_traits : seq_store <seq_traits <T, L, B, I, V, S, U...> >
+{
+	using traits = seq_traits;
+};
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename T, typename B, template <typename...> class I,
-	template <typename...> class V, typename S, typename... U, typename... E
+	typename T, typename L, typename B, template <typename...> class I,
+	template <typename...> class V, typename S, typename... U,
+	typename... E
 >
-struct seq_store <seq_traits <T, B, I, V, S, U...>, E...> :
+struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
 	public seq_tuple <E...>
 {
 	using VT = remove_type <T>;
 
-	using traits = seq_store;
 	using value_type = VT;
+	using length_type = L;
 	using size_type = S;
 
 	using fwd_iterator   = I <r_iter <B>, r_ref <T>, VT, r_ref <U>...>;
@@ -108,7 +112,9 @@ struct seq_store <seq_traits <T, B, I, V, S, U...>, E...> :
 
 	using difference_type = seq_diff <iterator>;
 
-	static constexpr bool finite = traversor::finite;
+	static constexpr bool   finite = traversor::finite;
+	static constexpr bool   fixed  = is_size <L>();
+	static constexpr size_t length = to_size <L>();
 
 	using seq_tuple <E...>::seq_tuple;
 };

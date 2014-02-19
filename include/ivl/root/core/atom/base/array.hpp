@@ -55,7 +55,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename R = rref_opt <T> >
-using atom_traits = seq_traits <R, _type <R>, atom_iter, atom_trav>;
+using atom_traits = seq_traits <R, no_size, _type <R>, atom_iter, atom_trav>;
 
 //-----------------------------------------------------------------------------
 
@@ -95,7 +95,6 @@ public:
 	INLINE           VR trav() &&     { return VR(val_f()); }
 	INLINE           VL trav() &      { return VL(val()); }
 	INLINE constexpr VC trav() const& { return VC(val()); }
-
 };
 
 //-----------------------------------------------------------------------------

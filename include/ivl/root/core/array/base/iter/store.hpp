@@ -89,7 +89,10 @@ template <
 	typename I, typename R = seq_ref <I>, typename T = seq_type <I>,
 	typename D = seq_diff <I>, typename P = remove_ref <R>*
 >
-struct iter_traits : iter_store <iter_traits <I, R, T, D, P> > { };
+struct iter_traits : iter_store <iter_traits <I, R, T, D, P> >
+{
+	using traits = iter_traits;
+};
 
 //-----------------------------------------------------------------------------
 

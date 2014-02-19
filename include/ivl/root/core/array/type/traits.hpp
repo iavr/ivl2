@@ -95,22 +95,27 @@ template <typename T> struct fin_trav;
 
 namespace details {
 
-template <typename T, bool = is_seq <T>{}>  struct fix_seq_  : _false { };
-template <typename T, bool = fix_seq_<T>{}> struct seq_len_  : no_sz { };
+template <typename T, bool = is_seq <T>{}>  struct fix_seq_    : _false { };
+template <typename T, bool = fix_seq_<T>{}> struct seq_len_    : size <> { };
+template <typename T, bool = fix_seq_<T>{}> struct seq_length_ : no_size { };
 
 template <typename T, bool = is_seq <T>{}>  struct fin_seq_  : _false { };
 template <typename T, bool = is_trav <T>{}> struct fin_trav_ : _false { };
 
-template <typename T> struct fix_seq_<T, true>  : expr <T::fixed> { };
-template <typename T> struct seq_len_<T, true>  : size <T::length> { };
+template <typename T> struct fix_seq_<T, true>    : expr <T::fixed> { };
+template <typename T> struct seq_len_<T, true>    : size <T::length> { };
+template <typename T> struct seq_length_<T, true> : T::length_type { };
 
 template <typename T> struct fin_seq_<T, true>  : expr <T::finite> { };
 template <typename T> struct fin_trav_<T, true> : expr <T::finite> { };
 
 }  // namespace details
 
-template <typename T> using  fix_seq  = details::fix_seq_<raw_type <T> >;
-template <typename T> using  seq_len  = details::seq_len_<raw_type <T> >;
+template <typename T> using fix_seq = details::fix_seq_<raw_type <T> >;
+template <typename T> using seq_len = details::seq_len_<raw_type <T> >;
+
+template <typename T> using seq_length_t = details::seq_length_<raw_type <T> >;
+template <typename T> using seq_length   = type_of <seq_length_t <T> >;
 
 template <typename T> using  fin_seq  = details::fin_seq_<raw_type <T> >;
 template <typename T> struct fin_trav : details::fin_trav_<raw_type <T> > { };

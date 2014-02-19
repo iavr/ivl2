@@ -6,6 +6,7 @@ namespace test {
 
 using namespace ivl;
 using namespace types;
+using ivl::flip;
 
 //-----------------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ void run()
 	}
 
 	{
-		cout << "array by element assignment" << endl;
+		cout << "element assignment" << endl;
 		constexpr size_t N = 11;
 		array <int, N> x;
 		for (size_t n = 0; n < N; n++)
@@ -33,7 +34,7 @@ void run()
 	}
 
 	{
-		cout << "array by element constructor" << endl;
+		cout << "element construction" << endl;
 		foo f4(4), f5(5), f6(6);
 		cout << endl << "begin" << endl;
 		array <foo, 3> x = {f4, f5, f6};
@@ -54,7 +55,7 @@ void run()
 	}
 
 	{
-		cout << "indirect-sequence" << endl;
+		cout << "indirect" << endl;
 		array <int, 11> x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
 		array <int, 4>  i{5, 8, 0, 8};
 		cout << "x = " << x << endl;
@@ -70,9 +71,10 @@ void run()
 	}
 
 	{
-		cout << "apply-sequence" << endl;
-		array <int, 11> x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
-		array <int, 11> y{7, -8, 0, 13, 128, 0, -2, 7, 6, 14, -9};
+		cout << "apply" << endl;
+		using A = array <int, 11>;
+		A x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
+		A y{7, -8, 0, 13, 128, 0, -2, 7, 6, 14, -9};
 		cout << "x = " << x << endl;
 		cout << "y = " << y << endl;
 		cout << "x + y = " << apply(afun::op::add(), x, y) << endl;
@@ -81,11 +83,25 @@ void run()
 	}
 
 	{
-		cout << "array loop" << endl;
+		cout << "loop" << endl;
 		array <int, 6> x{14, 7, 3, -8, 9, 0};
 
 		cout << "x = " << x << endl;
 		cout << "x = ", loop(op::left, cout, mv(x)), cout << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "flip" << endl;
+		using A = array <int, 11>;
+		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
+		cout << a << endl;
+		cout << flip(a) << endl;
+		cout << flip(flip(a)) << endl;
+		cout << flip(A{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0}) << endl;
+		for (auto i : flip(a))
+			cout << i << ":";
+		cout << endl;
 		cout << endl;
 	}
 

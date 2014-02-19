@@ -59,6 +59,12 @@ using atom_trav = traversor <data::atom <>, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
+template <typename I, typename R, typename T>
+using flip_iter = iterator <data::flip <>, I, R, T>;
+
+template <typename V, typename R, typename T>
+using flip_trav = traversor <data::flip <>, V, R, T>;
+
 template <typename I, typename R, typename T, typename U>
 using indirect_iter = iterator <data::indirect <>, I, R, T, U>;
 
@@ -83,6 +89,8 @@ using details::iter_trav;
 using details::atom_iter;
 using details::atom_trav;
 
+using details::flip_iter;
+using details::flip_trav;
 using details::indirect_iter;
 using details::indirect_trav;
 using details::apply_iter;

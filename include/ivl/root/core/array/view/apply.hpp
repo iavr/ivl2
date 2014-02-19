@@ -45,18 +45,24 @@ namespace details {
 template <typename F, typename... A>
 using apply_type = seq_result <decltype(gen <F>()(*gen <A>().begin()...))>;
 
-template <
-	typename M, typename F, typename A,
-	typename T = embed <apply_type, cons <F, A> >
->
-using apply_traits =
-	seq_traits <T, A, apply_iter, apply_trav, seq_size <A>, M, F>;
+template <typename... A>
+using apply_length =
+	if_size <_and <fix_seq <A>...>{}, sz_min <id, seq_len <A>...> >;
+
+template <typename M, typename F, typename A, typename AP = A>
+struct apply_traits;
+
+template <typename M, typename F, typename... A, typename AP>
+struct apply_traits <M, F, pack <A...>, AP> : seq_traits <
+	apply_type <F, A...>, apply_length <A...>, AP,
+	apply_iter, apply_trav, seq_size <AP>, M, F
+> { };
 
 //-----------------------------------------------------------------------------
 
 template <
 	typename M, typename F, typename A, typename N = sz_rng_of_p <A>,
-	typename TR = apply_traits <M, F, A>
+	typename TR = traits_of <apply_traits <M, F, A> >
 >
 struct apply_seq_impl;
 
@@ -112,9 +118,6 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 public:
 	using B::B;
 
-	static constexpr bool   fixed  = _and <fix_seq <A>...>();
-	static constexpr size_t length = sz_min <id, seq_len <A>...>();
-
 	INLINE constexpr S size() const { return M().size(a<N>()...); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
@@ -128,7 +131,6 @@ public:
 	INLINE           VR trav() &&     { return VR(f_f(), a_f<N>().trav()...); }
 	INLINE           VL trav() &      { return VL(f(),   a<N>().trav()...); }
 	INLINE constexpr VC trav() const& { return VC(f(),   a<N>().trav()...); }
-
 };
 
 //-----------------------------------------------------------------------------

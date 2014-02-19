@@ -42,6 +42,21 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+// // TODO
+// struct seq_join  : tup_join { };
+// struct seq_zip   : tup_zip { };
+// struct seq_inner : tup_inner { };
+//
+// // TODO
+// struct seq_head : tup_head { };
+// struct seq_tail : tup_tail { };
+// struct seq_flip : tup_flip { };
+//
+// template <template <typename...> class O = base_opt>
+// struct seq_tail_of : tup_tail_of <O> { };
+
+//-----------------------------------------------------------------------------
+
 // TODO
 struct seq_join  : tup_join { };
 struct seq_zip   : tup_zip { };
@@ -50,10 +65,21 @@ struct seq_inner : tup_inner { };
 // TODO
 struct seq_head : tup_head { };
 struct seq_tail : tup_tail { };
-struct seq_flip : tup_flip { };
 
 template <template <typename...> class O = base_opt>
 struct seq_tail_of : tup_tail_of <O> { };
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class O = base_opt>
+struct seq_flip_of
+{
+	template <typename A>
+	INLINE constexpr flip_seq <subs <O, A> >
+	operator()(A&& a) const { return flip_seq <subs <O, A> >(fwd <A>(a)); }
+};
+
+using seq_flip = seq_flip_of <>;
 
 //-----------------------------------------------------------------------------
 

@@ -55,7 +55,20 @@ template <size_t N = 0> using size   = integral <size_t, N>;
 template <int... N>    using numbers = integrals <int, N...>;
 template <size_t... N> using sizes   = integrals <size_t, N...>;
 
-using no_sz = c_no_sz;
+//-----------------------------------------------------------------------------
+
+template <typename T> struct is_size             : _false { };
+template <size_t N>   struct is_size <size <N> > : _true { };
+
+template <typename T> struct to_size_t : id_t <size <> > { };
+template <typename T> using  to_size = type_of <to_size_t <T> >;
+template <size_t N>   struct to_size_t <size <N> > : id_t <size <N> > { };
+
+struct no_size : id_t <no_size> { };
+
+template <bool F, typename L> struct if_size_t : no_size { };
+template <bool F, typename L> using  if_size = type_of <if_size_t <F, L> >;
+template <size_t N> struct if_size_t <true, size <N> > : size <N> { };
 
 //-----------------------------------------------------------------------------
 

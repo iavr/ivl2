@@ -52,6 +52,7 @@
 
 #include "iter/iter.hpp"
 #include "iter/atom.hpp"
+#include "iter/flip.hpp"
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
 
@@ -62,6 +63,7 @@
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
 
+#include "view/flip.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
 

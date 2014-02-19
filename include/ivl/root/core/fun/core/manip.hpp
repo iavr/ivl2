@@ -42,17 +42,38 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+// using join  = seq_join;
+// using zip   = seq_zip;
+// using inner = seq_inner;
+//
+// using head  = seq_head;
+// using tail  = seq_tail;
+// using flip  = seq_flip;
+// using call  = tup_call;
+//
+// template <template <typename...> class O = base_opt>
+// using tail_of = seq_tail_of <O>;
+
+//-----------------------------------------------------------------------------
+
+template <typename S, typename T>
+using manip_sw = map_switch <t_case <is_seq, S>, t_case <is_tuple, T> >;
+
 using join  = seq_join;
 using zip   = seq_zip;
 using inner = seq_inner;
 
 using head  = seq_head;
-using tail  = seq_tail;
-using flip  = seq_flip;
-using call  = tup_call;
 
 template <template <typename...> class O = base_opt>
 using tail_of = seq_tail_of <O>;
+
+template <template <typename...> class O = base_opt>
+using flip_of = switch_fun_of <manip_sw <seq_flip_of <O>, tup_flip> >;
+
+using tail = tail_of <>;
+using flip = flip_of <>;
+using call = tup_call;
 
 //-----------------------------------------------------------------------------
 

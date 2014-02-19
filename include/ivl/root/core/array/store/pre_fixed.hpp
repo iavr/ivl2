@@ -81,13 +81,13 @@ struct seq_data_t <pre_fixed_array <T, N> > : pack <fixed_store <T, N> > { };
 
 template <typename T, size_t N>
 class sequence <data::pre_fixed <>, T, sizes <N> > :
-	public seq_base <pre_fixed_array <T, N>, seq_traits <T> >,
+	public seq_base <pre_fixed_array <T, N>, seq_traits <T, size <N> > >,
 	fixed_store <T, N>
 {
-	friend seq_base <pre_fixed_array <T, N>, seq_traits <T> >;
-
-	using S  = fixed_store <T, N>;
-	using TR = seq_traits <T>;
+	using TR = seq_traits <T, types::size <N> >;
+	using B = seq_base <pre_fixed_array <T, N>, TR>;
+	using S = fixed_store <T, N>;
+	friend B;
 
 	using IR = r_iter <TR>;
 	using IL = l_iter <TR>;
@@ -108,9 +108,6 @@ class sequence <data::pre_fixed <>, T, sizes <N> > :
 
 public:
 	using S::S;
-
-	static constexpr bool   fixed  = true;
-	static constexpr size_t length = N;
 
 	INLINE constexpr size_t size() const { return N; }
 
