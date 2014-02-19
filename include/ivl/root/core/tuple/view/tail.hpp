@@ -44,9 +44,9 @@ namespace details {
 
 template <typename U>
 class collection <data::tail <>, U> : public
-	tup_base <tail_tup <U>, cdr <pack_of <tup_types <U> > > >
+	tup_base <tail_tup <U>, cdr <tup_types <U> > >
 {
-	using P = cdr <pack_of <tup_types <U> > >;
+	using P = cdr <tup_types <U> >;
 	using B = tup_base <tail_tup <U>, P>;
 	using E = elem <0, U>;
 

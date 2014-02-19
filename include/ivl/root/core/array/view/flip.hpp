@@ -90,9 +90,9 @@ public:
 	INLINE           IL end() &      { return IL(--u().begin()); }
 	INLINE constexpr IC end() const& { return IC(--u().begin()); }
 
-	INLINE           VR trav() &&     { return VR(mv(-u_f().trav())); }
-	INLINE           VL trav() &      { return VL((-u().trav())); }
-	INLINE           VC trav() const& { return VC((-u().trav())); }
+	INLINE           VR trav() &&     { return VR(-u_f().trav()); }
+	INLINE           VL trav() &      { return VL(-u().trav()); }
+	INLINE           VC trav() const& { return VC(-u().trav()); }
 };
 
 //-----------------------------------------------------------------------------

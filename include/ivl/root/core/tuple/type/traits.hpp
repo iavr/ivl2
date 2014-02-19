@@ -65,8 +65,8 @@ using is_tup_type = expr <is_pack <T>() || is_tuple <T>()>;
 //-----------------------------------------------------------------------------
 
 template <typename T> using tup_len      = length_of <raw_type <T> >;
-template <typename T> using tup_null     = expr <!tup_len <T>()>;
-template <typename T> using tup_non_null = expr <tup_len <T>{}>;
+template <typename T> using tup_null     = expr <tup_len <T>() == 0>;
+template <typename T> using tup_non_null = expr <tup_len <T>() != 0>;
 
 template <typename T>
 using tup_empty = expr <is_tuple <T>() && tup_null <T>()>;

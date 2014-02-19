@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_FUN_FOLD_JOINT_HPP
-#define IVL_CORE_FUN_FOLD_JOINT_HPP
+#ifndef IVL_CORE_FUN_FOLD_FOLD_HPP
+#define IVL_CORE_FUN_FOLD_FOLD_HPP
 
 #include <ivl/ivl>
 
@@ -101,4 +101,4 @@ using details::vec_fold;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_FUN_FOLD_JOINT_HPP
+#endif  // IVL_CORE_FUN_FOLD_FOLD_HPP

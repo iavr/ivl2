@@ -55,6 +55,28 @@ void run()
 	}
 
 	{
+		cout << "head/tail" << endl;
+		using A = array <int, 11>;
+		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
+		cout << a << endl;
+		cout << head(a) << endl;
+		cout << tail(a) << endl;
+		cout << tail(tail(a)) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "flip" << endl;
+		using A = array <int, 11>;
+		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
+		cout << a << endl;
+		cout << flip(a) << endl;
+		cout << flip(flip(a)) << endl;
+		cout << flip(A{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0}) << endl;
+		cout << endl;
+	}
+
+	{
 		cout << "indirect" << endl;
 		array <int, 11> x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
 		array <int, 4>  i{5, 8, 0, 8};
@@ -88,20 +110,6 @@ void run()
 
 		cout << "x = " << x << endl;
 		cout << "x = ", loop(op::left, cout, mv(x)), cout << endl;
-		cout << endl;
-	}
-
-	{
-		cout << "flip" << endl;
-		using A = array <int, 11>;
-		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
-		cout << a << endl;
-		cout << flip(a) << endl;
-		cout << flip(flip(a)) << endl;
-		cout << flip(A{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0}) << endl;
-		for (auto i : flip(a))
-			cout << i << ":";
-		cout << endl;
 		cout << endl;
 	}
 

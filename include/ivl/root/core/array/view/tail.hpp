@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_MANIP_HPP
-#define IVL_CORE_TUPLE_FUN_MANIP_HPP
+#ifndef IVL_CORE_ARRAY_VIEW_TAIL_HPP
+#define IVL_CORE_ARRAY_VIEW_TAIL_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,30 +42,70 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using tup_join = uref_of <join_tup, all_tuple>;
-using tup      = uref_of <join_tuple>;
+template <typename U>
+using tail_length =
+	if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
 
-using tup_zip   = uref_of <zip_tup,   all_tuple>;
-using tup_inner = uref_of <zip_tuple, any_tuple>;
+template <typename U, typename T = seq_type <U> >
+using tail_traits = seq_traits <
+	T, tail_length <U>, U, iter_iter, trav_trav
+>;
 
 //-----------------------------------------------------------------------------
 
-struct tup_head
+template <typename U, typename TR = tail_traits <U> >
+class tail_seq_impl :
+	public seq_base <tail_seq <U>, TR, U>
 {
-	template <typename T>
-	INLINE constexpr auto operator()(T&& t) const
-	-> decltype(at()._<0>(fwd <T>(t)))
-		{ return at()._<0>(fwd <T>(t)); }
+	using B = seq_base <tail_seq <U>, TR, U>;
+	friend B;
+
+	using S = seq_size <TR>;
+
+	using IR = r_iter <TR>;
+	using IL = l_iter <TR>;
+	using IC = c_iter <TR>;
+
+	using VR = r_trav <TR>;
+	using VL = l_trav <TR>;
+	using VC = c_trav <TR>;
+
+	using under = elem <0, U>;
+
+//-----------------------------------------------------------------------------
+
+	INLINE           r_ref <U> u_f()      { return under::fwd(); }
+	INLINE           r_ref <U> u() &&     { return under::fwd(); }
+	INLINE           l_ref <U> u() &      { return under::get(); }
+	INLINE constexpr c_ref <U> u() const& { return under::get(); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+	INLINE constexpr S size() const { return u().size() - 1; }
+
+	INLINE           IR begin() &&     { return IR(++u_f().begin()); }
+	INLINE           IL begin() &      { return IL(++u().begin()); }
+	INLINE constexpr IC begin() const& { return IC(++u().begin()); }
+
+	INLINE           IR end() &&     { return IR(u_f().end()); }
+	INLINE           IL end() &      { return IL(u().end()); }
+	INLINE constexpr IC end() const& { return IC(u().end()); }
+
+	INLINE           VR trav() &&     { return VR(++u_f().trav()); }
+	INLINE           VL trav() &      { return VL(++u().trav()); }
+	INLINE           VC trav() const& { return VC(++u().trav()); }
 };
 
-template <template <typename...> class F = base_opt>
-using tup_tail_as = make_as <F, tail_tup>;
+//-----------------------------------------------------------------------------
 
-template <template <typename...> class F = base_opt>
-using tup_flip_as = make_as <F, flip_tup>;
-
-using tup_tail = tup_tail_as <>;
-using tup_flip = tup_flip_as <>;
+template <typename U>
+struct sequence <data::tail <>, U> : tail_seq_impl <U>
+{
+	using tail_seq_impl <U>::tail_seq_impl;
+};
 
 //-----------------------------------------------------------------------------
 
@@ -73,15 +113,7 @@ using tup_flip = tup_flip_as <>;
 
 //-----------------------------------------------------------------------------
 
-using details::tup;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::tup  tup;
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -89,4 +121,4 @@ static __attribute__ ((unused)) afun::tup  tup;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_MANIP_HPP
+#endif  // IVL_CORE_ARRAY_VIEW_TAIL_HPP

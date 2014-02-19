@@ -51,6 +51,9 @@ using iter_iter = iterator <data::iter <>, I, R, T>;
 template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
 using iter_trav = traversor <data::iter <>, I, R, T>;
 
+template <typename V, typename R = seq_ref <V>, typename T = seq_type <V> >
+using trav_trav = traversor <data::trav <>, V, R, T>;
+
 template <typename I, typename R = rref_opt <I>, typename T = I>
 using atom_iter = iterator <data::atom <>, I, R, T>;
 
@@ -86,6 +89,7 @@ using details::traversor;
 
 using details::iter_iter;
 using details::iter_trav;
+using details::trav_trav;
 using details::atom_iter;
 using details::atom_trav;
 

@@ -67,20 +67,15 @@ struct elem_store <> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename U, typename N = sz_rng_of_p <U> > struct elem_types_t;
-template <typename U, typename N = sz_rng_of_p <U> >
-using elem_types = type_of <elem_types_t <U, N> >;
+template <typename D, typename U = tup_data <D>, typename N = sz_rng_of_p <U> >
+struct elems;
 
-template <typename... U, size_t... N>
-struct elem_types_t <pack <U...>, sizes <N...> > : pack <elem <N, U>...> { };
-
-//-----------------------------------------------------------------------------
-
-template <typename D>
-using elem_base = embed <elem_store, elem_types <tup_data <D> > >;
-
-template <typename D>
-struct elems : elem_base <D> { using elem_base <D>::elem_base; };
+template <typename D, typename... U, size_t... N>
+struct elems <D, pack <U...>, sizes <N...> > :
+	elem_store <elem <N, U>...>
+{
+	using elem_store <elem <N, U>...>::elem_store;
+};
 
 //-----------------------------------------------------------------------------
 

@@ -42,7 +42,7 @@
 
 #include "fold/tuple.hpp"
 #include "fold/array.hpp"
-#include "fold/joint.hpp"
+#include "fold/fold.hpp"
 
 #include "stream/traits.hpp"
 #include "stream/tuple.hpp"

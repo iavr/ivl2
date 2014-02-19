@@ -51,6 +51,7 @@
 #include "store/tuple.hpp"
 
 #include "view/tail.hpp"
+#include "view/flip.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
 #include "view/zip.hpp"

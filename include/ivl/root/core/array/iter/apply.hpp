@@ -113,7 +113,7 @@ public:
 	INLINE D operator-(d n) const { return D(f(), i<N>() - n...); }
 
 	// TODO
-	INLINE bool operator!=(D o) { return term().more(i<N>() != o.i<N>()...); }
+	INLINE bool operator!=(D o) { return term().more(i<N>() != o.template i<N>()...); }
 };
 
 //-----------------------------------------------------------------------------

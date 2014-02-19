@@ -61,6 +61,9 @@ using heap_array = sequence <data::heap <>, T>;
 //-----------------------------------------------------------------------------
 
 template <typename U>
+using tail_seq = sequence <data::tail <>, U>;
+
+template <typename U>
 using flip_seq = sequence <data::flip <>, U>;
 
 template <typename K, typename U>
@@ -106,8 +109,10 @@ using details::pre_fixed_array;
 using details::fixed_array;
 using details::heap_array;
 
+using details::tail_seq;
 using details::flip_seq;
 using details::indirect_seq;
+
 using details::apply_seq;
 using details::apply_seq_on;
 

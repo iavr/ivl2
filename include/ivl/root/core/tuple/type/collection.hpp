@@ -60,6 +60,9 @@ using tuple = collection <data::tuple <>, E...>;
 template <typename U>
 using tail_tup = collection <data::tail <>, U>;
 
+template <typename U>
+using flip_tup = collection <data::flip <>, U>;
+
 template <typename K, typename U>
 using indirect_tup = collection <data::indirect <>, K, U>;
 
@@ -93,6 +96,7 @@ struct tup_data_t <collection <C, A...> > : pack <A...> { };
 using details::collection;
 
 using details::tail_tup;
+using details::flip_tup;
 using details::indirect_tup;
 
 using details::apply_tup;

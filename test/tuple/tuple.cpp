@@ -175,6 +175,15 @@ void run()
 	}
 
 	{
+		cout << "flip" << endl;
+		tuple <int, double> x = flip(_(3.14, 5));
+		cout << x << endl;
+		cout << _(5, -9, "hello", 'c', 19) << endl;
+		cout << flip(_(5, -9, "hello", 'c', 19)) << endl;
+		cout << endl;
+	}
+
+	{
 		cout << "indirect tuple:" << endl;
 		double a = 2;
 // 		array <int> a(2);  // TODO: ARRAY
@@ -191,15 +200,6 @@ void run()
 		cout << t.at <0, 3, 3, 2, 0, 4, 0, 5>() << endl;
 		t.at <sz_range <0, 4, 2> >() = _(-7, 3.14, 'd');
 		cout << t << endl;
-		cout << endl;
-	}
-
-	{
-		cout << "flip" << endl;
-		tuple <int, double> x = flip(_(3.14, 5));
-		cout << x << endl;
-		cout << _(5, -9, "hello", 'c', 19) << endl;
-		cout << flip(_(5, -9, "hello", 'c', 19)) << endl;
 		cout << endl;
 	}
 

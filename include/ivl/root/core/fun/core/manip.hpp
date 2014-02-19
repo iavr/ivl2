@@ -42,37 +42,30 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// using join  = seq_join;
-// using zip   = seq_zip;
-// using inner = seq_inner;
-//
-// using head  = seq_head;
-// using tail  = seq_tail;
-// using flip  = seq_flip;
-// using call  = tup_call;
-//
-// template <template <typename...> class O = base_opt>
-// using tail_of = seq_tail_of <O>;
-
-//-----------------------------------------------------------------------------
-
 template <typename S, typename T>
 using manip_sw = map_switch <t_case <is_seq, S>, t_case <is_tuple, T> >;
 
+//-----------------------------------------------------------------------------
+
+// TODO
 using join  = seq_join;
 using zip   = seq_zip;
 using inner = seq_inner;
 
-using head  = seq_head;
+//-----------------------------------------------------------------------------
 
-template <template <typename...> class O = base_opt>
-using tail_of = seq_tail_of <O>;
+using head = switch_fun_of <manip_sw <seq_head, tup_head> >;
 
-template <template <typename...> class O = base_opt>
-using flip_of = switch_fun_of <manip_sw <seq_flip_of <O>, tup_flip> >;
+template <template <typename...> class F = base_opt>
+using tail_as = switch_fun_of <manip_sw <seq_tail_as <F>, tup_tail_as <F> > >;
 
-using tail = tail_of <>;
-using flip = flip_of <>;
+template <template <typename...> class F = base_opt>
+using flip_as = switch_fun_of <manip_sw <seq_flip_as <F>, tup_flip_as <F> > >;
+
+using tail = tail_as <>;
+using flip = flip_as <>;
+
+// TODO
 using call = tup_call;
 
 //-----------------------------------------------------------------------------

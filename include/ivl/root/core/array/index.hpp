@@ -63,6 +63,7 @@
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
 
+#include "view/tail.hpp"
 #include "view/flip.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"

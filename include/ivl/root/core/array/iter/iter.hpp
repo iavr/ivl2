@@ -90,6 +90,7 @@ public:
 	INLINE D operator+(d n) const { return D(i() + n); }
 	INLINE D operator-(d n) const { return D(i() - n); }
 
+	// TODO
 	INLINE bool operator!=(D o) { return i() != o.i(); }
 };
 
@@ -155,9 +156,66 @@ public:
 
 	INLINE D operator+(d n) const { return D(i() + n, e()); }
 	INLINE D operator-(d n) const { return D(i() - n, e()); }
+};
 
-	// TODO
-	INLINE bool operator!=(D o) { return i() != o.i(); }
+//-----------------------------------------------------------------------------
+
+template <
+	typename V, typename R, typename T,
+	typename D = trav_trav <V, R, T>,
+	typename TR = iter_traits <V, R, T>
+>
+class trav_trav_impl : public trav_base <D, TR, V>
+{
+	using B = trav_base <D, TR, V>;
+	using d = seq_diff <TR>;
+	using P = seq_ptr <TR>;
+
+	using trav = iter_elem <0, V>;
+
+	using derived <D>::der_f;
+	using derived <D>::der;
+	using B::ref;
+
+//-----------------------------------------------------------------------------
+
+	INLINE           l_iter_ref <V> v()       { return trav::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
+
+	INLINE constexpr operator bool() const { return v(); }
+
+	INLINE constexpr R operator*()  const { return ref(*v()); }
+	INLINE           P operator->() const { return &(operator*()); }
+
+	INLINE D&& operator++() && { return ++v(), der_f(); }
+	INLINE D&  operator++() &  { return ++v(), der(); }
+	INLINE D&& operator--() && { return --v(), der_f(); }
+	INLINE D&  operator--() &  { return --v(), der(); }
+
+	INLINE D operator++(int) { return D(v()++); }
+	INLINE D operator--(int) { return D(v()--); }
+
+	INLINE D&& operator+() && { return +v(), der_f(); }
+	INLINE D&  operator+() &  { return +v(), der(); }
+	INLINE D&& operator-() && { return -v(), der_f(); }
+	INLINE D&  operator-() &  { return -v(), der(); }
+
+	INLINE constexpr R operator[](d n) const { return ref(v()[n]); }
+
+	INLINE D&& operator+=(d n) && { return v() += n, der_f(); }
+	INLINE D&  operator+=(d n) &  { return v() += n, der(); }
+	INLINE D&& operator-=(d n) && { return v() -= n, der_f(); }
+	INLINE D&  operator-=(d n) &  { return v() -= n, der(); }
+
+	INLINE D operator+(d n) const { return D(v() + n); }
+	INLINE D operator-(d n) const { return D(v() - n); }
 };
 
 //-----------------------------------------------------------------------------
@@ -174,6 +232,14 @@ template <typename V, typename R, typename T>
 struct traversor <data::iter <>, V, R, T> : iter_trav_impl <V, R, T>
 {
 	using iter_trav_impl <V, R, T>::iter_trav_impl;
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename V, typename R, typename T>
+struct traversor <data::trav <>, V, R, T> : trav_trav_impl <V, R, T>
+{
+	using trav_trav_impl <V, R, T>::trav_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

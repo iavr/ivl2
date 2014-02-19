@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_MANIP_HPP
-#define IVL_CORE_TUPLE_FUN_MANIP_HPP
+#ifndef IVL_CORE_TUPLE_VIEW_FLIP_HPP
+#define IVL_CORE_TUPLE_VIEW_FLIP_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace tuples {
 
 //-----------------------------------------------------------------------------
 
@@ -42,30 +42,38 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using tup_join = uref_of <join_tup, all_tuple>;
-using tup      = uref_of <join_tuple>;
+template <typename U>
+class collection <data::flip <>, U> : public
+	tup_base <flip_tup <U>, flip_p <tup_types <U> > >
+{
+	using P = flip_p <tup_types <U> >;
+	using B = tup_base <flip_tup <U>, P>;
+	using E = elem <0, U>;
 
-using tup_zip   = uref_of <zip_tup,   all_tuple>;
-using tup_inner = uref_of <zip_tuple, any_tuple>;
+	friend base_type_of <B>;
+
+	static constexpr size_t M = P::length - 1;
 
 //-----------------------------------------------------------------------------
 
-struct tup_head
-{
-	template <typename T>
-	INLINE constexpr auto operator()(T&& t) const
-	-> decltype(at()._<0>(fwd <T>(t)))
-		{ return at()._<0>(fwd <T>(t)); }
+	template <size_t J>
+	INLINE r_pick_p <J, P>
+	call_at() && { return _at._<M - J>(E::fwd()); }
+
+	template <size_t J>
+	INLINE l_pick_p <J, P>
+	call_at() & { return _at._<M - J>(E::get()); }
+
+	template <size_t J>
+	INLINE constexpr c_pick_p <J, P>
+	call_at() const& { return _at._<M - J>(E::get()); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
-
-template <template <typename...> class F = base_opt>
-using tup_tail_as = make_as <F, tail_tup>;
-
-template <template <typename...> class F = base_opt>
-using tup_flip_as = make_as <F, flip_tup>;
-
-using tup_tail = tup_tail_as <>;
-using tup_flip = tup_flip_as <>;
 
 //-----------------------------------------------------------------------------
 
@@ -73,15 +81,7 @@ using tup_flip = tup_flip_as <>;
 
 //-----------------------------------------------------------------------------
 
-using details::tup;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::tup  tup;
+}  // namespace tuples
 
 //-----------------------------------------------------------------------------
 
@@ -89,4 +89,4 @@ static __attribute__ ((unused)) afun::tup  tup;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_MANIP_HPP
+#endif  // IVL_CORE_TUPLE_VIEW_FLIP_HPP

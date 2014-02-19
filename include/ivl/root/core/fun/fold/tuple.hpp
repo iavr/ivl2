@@ -78,17 +78,17 @@ class tup_fold
 	op(_false, A&&... a) const
 	{
 		return U()(XE()(E()(static_cast <R <A> >(tup_head()(fwd <A>(a)))...)),
-			tup_tail_of <rref_opt>()(fwd <A>(a))...);
+		           tup_tail_as <rref_opt>()(fwd <A>(a))...);
 	}
 
 public:
 	template <
 		typename... A, typename T = copy <ret <E(R <A>...)> >,
-		only_if <any_tuple <A...>{}>
+		typename N = types::_or <tup_null <A>...>, only_if <any_tuple <A...>{}>
 	= 0>
 	INLINE constexpr copy <ret <XI(T)> >
 	operator()(A&&... a) const
-		{ return op <T>(types::_or <tup_null <A>...>{}, fwd <A>(a)...); }
+		{ return op <T>(N{}, tup_atom_of <A>(fwd <A>(a))...); }
 };
 
 //-----------------------------------------------------------------------------
