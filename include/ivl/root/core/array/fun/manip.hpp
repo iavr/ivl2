@@ -44,8 +44,16 @@ namespace details {
 
 // TODO
 struct seq_join  : tup_join { };
-struct seq_zip   : tup_zip { };
-struct seq_inner : tup_inner { };
+
+// no alias: entry point
+template <typename M = prim_term>
+struct seq_zip_on : uref_map <zip_seq_on <M>, all_seq> { };
+
+template <typename M = prim_term>
+struct seq_inner_on : uref_map <zip_sequence_on <M>, any_seq> { };
+
+using seq_zip   = seq_zip_on <>;
+using seq_inner = seq_inner_on <>;
 
 //-----------------------------------------------------------------------------
 

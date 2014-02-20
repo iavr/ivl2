@@ -93,13 +93,13 @@ template <typename... E> using any_group = any_group_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using all_rref_p  = all_p <is_rref, P>;
-template <typename P> using all_lref_p  = all_p <is_lref, P>;
-template <typename P> using all_clref_p = all_p <is_clref, P>;
+template <typename P> using all_rref_p = all_p <is_rref, P>;
+template <typename P> using all_lref_p = all_p <is_lref, P>;
+template <typename P> using all_cref_p = all_p <is_cref, P>;
 
-template <typename... E> using all_rref  = all_rref_p <pack <E...> >;
-template <typename... E> using all_lref  = all_lref_p <pack <E...> >;
-template <typename... E> using all_clref = all_clref_p <pack <E...> >;
+template <typename... E> using all_rref = all_rref_p <pack <E...> >;
+template <typename... E> using all_lref = all_lref_p <pack <E...> >;
+template <typename... E> using all_cref = all_cref_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 

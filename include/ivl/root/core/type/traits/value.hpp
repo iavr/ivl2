@@ -70,11 +70,11 @@ template <typename T, typename A, only_if <!is_lref <A>()> = 0>
 INLINE constexpr remove_ref <T>&&
 as(A&& a) { return static_cast <remove_ref <T>&&>(a); }
 
-template <typename T, typename A, only_if <is_mlref <A>{}> = 0>
+template <typename T, typename A, only_if <is_mref <A>{}> = 0>
 INLINE constexpr remove_ref <T>&
 as(A&& a) { return static_cast <remove_ref <T>&>(a); }
 
-template <typename T, typename A, only_if <is_clref <A>{}> = 0>
+template <typename T, typename A, only_if <is_cref <A>{}> = 0>
 INLINE constexpr const remove_ref <T>&
 as(A&& a) { return static_cast <const remove_ref <T>&>(a); }
 

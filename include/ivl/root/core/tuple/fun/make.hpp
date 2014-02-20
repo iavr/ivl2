@@ -52,7 +52,7 @@ struct make
 
 //-----------------------------------------------------------------------------
 
-// TODO: keys + operator[] ([val], [rref], [lref], [clref])
+// TODO: keys + operator[] ([val], [rref], [lref], [cref])
 template <
 	template <typename...> class F,
 	template <typename...> class T,
@@ -105,13 +105,30 @@ template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
-using clref_of = make_as <base_opt, T, all_clref, E...>;
+using cref_of = make_as <base_opt, T, all_cref, E...>;
 
-using val   = val_of <>;
-using uref  = uref_of <>;
-using rref  = rref_of <>;
-using lref  = lref_of <>;
-using clref = clref_of <>;
+//-----------------------------------------------------------------------------
+
+template <typename T, template <typename...> class... E>
+using val_map = val_of <T::template map, E...>;
+
+template <typename T, template <typename...> class... E>
+using uref_map = uref_of <T::template map, E...>;
+
+template <typename T, template <typename...> class... E>
+using rref_map = rref_of <T::template map, E...>;
+
+template <typename T, template <typename...> class... E>
+using lref_map = lref_of <T::template map, E...>;
+
+template <typename T, template <typename...> class... E>
+using cref_map = cref_of <T::template map, E...>;
+
+using val  = val_of <>;
+using uref = uref_of <>;
+using rref = rref_of <>;
+using lref = lref_of <>;
+using cref = cref_of <>;
 
 //-----------------------------------------------------------------------------
 
@@ -125,13 +142,13 @@ using details::val_of;
 using details::uref_of;
 using details::rref_of;
 using details::lref_of;
-using details::clref_of;
+using details::cref_of;
 
 using details::val;
 using details::uref;
 using details::rref;
 using details::lref;
-using details::clref;
+using details::cref;
 
 //-----------------------------------------------------------------------------
 
@@ -139,11 +156,11 @@ using details::clref;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::val    val;
-static __attribute__ ((unused)) afun::uref   uref;
-static __attribute__ ((unused)) afun::rref   rref;
-static __attribute__ ((unused)) afun::lref   lref;
-static __attribute__ ((unused)) afun::clref  clref;
+static __attribute__ ((unused)) afun::val   val;
+static __attribute__ ((unused)) afun::uref  uref;
+static __attribute__ ((unused)) afun::rref  rref;
+static __attribute__ ((unused)) afun::lref  lref;
+static __attribute__ ((unused)) afun::cref  cref;
 
 //-----------------------------------------------------------------------------
 

@@ -44,7 +44,7 @@ namespace details {
 
 // no alias: entry point
 template <typename M = prim_term>
-struct seq_apply_on : uref_of <apply_sequence_on <M>::template map> { };
+struct seq_apply_on : uref_map <apply_sequence_on <M> > { };
 
 //-----------------------------------------------------------------------------
 

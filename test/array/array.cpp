@@ -93,6 +93,21 @@ void run()
 	}
 
 	{
+		cout << "zip" << endl;
+		array <char, 4> c = {'a', 'b', 'c', 'd'};
+		array <int, 4>  i = {3, 2, -4, 0};
+		cout << zip(c, i) << endl;
+
+// 		// TODO
+// 		int i, j;
+// 		double f, g;
+// 		zip(_(i, f), _(j, g)) = _(_(3, 4), _(2.71, 3.14));
+// 		cout << _(i, j) << " " << _(f, g) << endl;
+
+		cout << endl;
+	}
+
+	{
 		cout << "apply" << endl;
 		using A = array <int, 11>;
 		A x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};

@@ -80,6 +80,18 @@ using apply_iter = iterator <data::apply <>, I, R, T, M, F>;
 template <typename V, typename R, typename T, typename M, typename F>
 using apply_trav = traversor <data::apply <>, V, R, T, M, F>;
 
+template <typename I, typename R, typename T, typename M>
+using zip_iter = iterator <data::zip <>, I, R, T, M>;
+
+template <typename V, typename R, typename T, typename M>
+using zip_trav = traversor <data::zip <>, V, R, T, M>;
+
+template <typename I, typename R, typename T>
+using join_iter = iterator <data::zip <>, I, R, T>;
+
+template <typename V, typename R, typename T>
+using join_trav = traversor <data::zip <>, V, R, T>;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace details
@@ -97,8 +109,13 @@ using details::flip_iter;
 using details::flip_trav;
 using details::indirect_iter;
 using details::indirect_trav;
+
 using details::apply_iter;
 using details::apply_trav;
+using details::zip_iter;
+using details::zip_trav;
+using details::join_iter;
+using details::join_trav;
 
 //-----------------------------------------------------------------------------
 

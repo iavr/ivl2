@@ -72,15 +72,28 @@ using indirect_seq = sequence <data::indirect <>, K, U>;
 template <typename M, typename F, typename... A>
 using apply_seq = sequence <data::apply <>, M, F, A...>;
 
+template <typename M, typename... U>
+using zip_seq  = sequence <data::zip <>, M, U...>;
+
+template <typename... U>
+using join_seq = sequence <data::join <>, U...>;
+
 //-----------------------------------------------------------------------------
 
 template <typename M, typename F, typename... A>
 using apply_sequence = apply_seq <M, F, seq_atom_of <A>...>;
 
-//-----------------------------------------------------------------------------
+template <typename M, typename... U>
+using zip_sequence = zip_seq <M, seq_atom_of <U>...>;
+
+template <typename... U>
+using join_sequence = join_seq <seq_atom_of <U>...>;
 
 template <typename M> using apply_seq_on      = bind <apply_seq, M>;
 template <typename M> using apply_sequence_on = bind <apply_sequence, M>;
+
+template <typename M> using zip_seq_on      = bind <zip_seq, M>;
+template <typename M> using zip_sequence_on = bind <zip_sequence, M>;
 
 //-----------------------------------------------------------------------------
 
@@ -115,9 +128,15 @@ using details::indirect_seq;
 
 using details::apply_seq;
 using details::apply_seq_on;
+using details::zip_seq;
+using details::zip_seq_on;
+using details::join_seq;
 
 using details::apply_sequence;
 using details::apply_sequence_on;
+using details::zip_sequence;
+using details::zip_sequence_on;
+using details::join_sequence;
 
 //-----------------------------------------------------------------------------
 

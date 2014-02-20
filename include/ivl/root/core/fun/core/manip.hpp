@@ -42,25 +42,38 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <
+	template <typename...> class CS, typename S,
+	template <typename...> class CT, typename T
+>
+using tran_sw = map_switch <t_case <CS, S>, t_case <CT, T> >;
+
 template <typename S, typename T>
-using manip_sw = map_switch <t_case <is_seq, S>, t_case <is_tuple, T> >;
+using tran_all_fun = switch_fun_of <tran_sw <all_seq, S, all_tuple, T> >;
+
+template <typename S, typename T>
+using tran_any_fun = switch_fun_of <tran_sw <any_seq, S, any_tuple, T> >;
+
+template <typename S, typename T>
+using tran_fun = switch_fun_of <tran_sw <is_seq, S, is_tuple, T> >;
 
 //-----------------------------------------------------------------------------
 
 // TODO
 using join  = seq_join;
-using zip   = seq_zip;
-using inner = seq_inner;
+
+using zip   = tran_all_fun <seq_zip,   tup_zip>;
+using inner = tran_all_fun <seq_inner, tup_inner>;
 
 //-----------------------------------------------------------------------------
 
-using head = switch_fun_of <manip_sw <seq_head, tup_head> >;
+using head = tran_fun <seq_head, tup_head>;
 
 template <template <typename...> class F = base_opt>
-using tail_as = switch_fun_of <manip_sw <seq_tail_as <F>, tup_tail_as <F> > >;
+using tail_as = tran_fun <seq_tail_as <F>, tup_tail_as <F> >;
 
 template <template <typename...> class F = base_opt>
-using flip_as = switch_fun_of <manip_sw <seq_flip_as <F>, tup_flip_as <F> > >;
+using flip_as = tran_fun <seq_flip_as <F>, tup_flip_as <F> >;
 
 using tail = tail_as <>;
 using flip = flip_as <>;

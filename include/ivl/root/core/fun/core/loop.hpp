@@ -42,17 +42,20 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class C, typename S, typename T>
-using loop_switch = fun_switch <t_case <C, S>, t_case <any_tuple, T> >;
+template <
+	template <typename...> class CS, typename S,
+	template <typename...> class CT, typename T
+>
+using op_sw = fun_switch <t_case <CS, S>, t_case <CT, T> >;
 
 template <typename S, typename T>
-using apply_sw = loop_switch <any_seq, S, T>;
+using apply_sw = op_sw <any_seq, S, any_tuple, T>;
 
 template <typename S, typename T>
-using loop_sw = loop_switch <travers, S, T>;
+using loop_sw = op_sw <travers, S, any_tuple, T>;
 
 template <typename S, typename T>
-using raw_loop_sw = loop_switch <raw_travers, S, T>;
+using raw_loop_sw = op_sw <raw_travers, S, any_tuple, T>;
 
 //-----------------------------------------------------------------------------
 

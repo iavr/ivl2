@@ -55,6 +55,7 @@
 #include "iter/flip.hpp"
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
+#include "iter/zip.hpp"
 
 #include "base/seq/store.hpp"
 #include "base/seq/base.hpp"
@@ -67,6 +68,7 @@
 #include "view/flip.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
+#include "view/zip.hpp"
 
 #include "fun/manip.hpp"
 
