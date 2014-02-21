@@ -42,9 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-using apply_type = seq_result <decltype(gen <F>()(*gen <A>().begin()...))>;
-
 template <typename... A>
 using apply_length =
 	if_size <_and <fix_seq <A>...>{}, sz_min <id, seq_len <A>...> >;
@@ -54,7 +51,7 @@ struct apply_traits;
 
 template <typename M, typename F, typename... A, typename AP>
 struct apply_traits <M, F, pack <A...>, AP> : seq_traits <
-	apply_type <F, A...>, apply_length <A...>, AP,
+	F(pack <u_seq_ref <A>...>), apply_length <A...>, AP,
 	apply_iter, apply_trav, seq_size <AP>, M, F
 > { };
 

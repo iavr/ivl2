@@ -43,11 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-using indirect_type = seq_result <decltype(gen <U>()[*gen <K>().begin()])>;
-
-template <typename K, typename U, typename T = indirect_type <K, U> >
 using indirect_traits = seq_traits <
-	T, seq_length <K>, K, indirect_iter, indirect_trav, seq_size <K>, U
+	U(_type <u_seq_ref <K> >), seq_length <K>, K,
+	indirect_iter, indirect_trav, seq_size <K>, U
 >;
 
 //-----------------------------------------------------------------------------

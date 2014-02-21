@@ -204,12 +204,15 @@ template <
 >
 struct switch_ref
 {
-	template <typename T> struct map_t;
-	template <typename T> using  map = type_of <map_t <T> >;
+	template <typename T> struct map_t            : remove_ref_t <R <T> > { };
 	template <typename T> struct map_t <T&&>      : id_t <R <T> > { };
 	template <typename T> struct map_t <T&>       : id_t <L <T> > { };
 	template <typename T> struct map_t <const T&> : id_t <C <T> > { };
+	template <typename T> using  map              = type_of <map_t <T> >;
 };
+
+template <typename C, typename T>
+using switch_u = typename C::template map <T>;
 
 template <typename C, typename T>
 using switch_r = typename C::template map <T&&>;

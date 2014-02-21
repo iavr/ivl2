@@ -63,7 +63,7 @@ using tran_fun = switch_fun_of <tran_sw <is_seq, S, is_tuple, T> >;
 using join  = seq_join;
 
 using zip   = tran_all_fun <seq_zip,   tup_zip>;
-using inner = tran_all_fun <seq_inner, tup_inner>;
+using inner = tran_any_fun <seq_inner, tup_inner>;
 
 //-----------------------------------------------------------------------------
 

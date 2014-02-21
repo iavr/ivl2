@@ -131,6 +131,20 @@ using res = type_of <res_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
+template <typename F, typename... A>
+struct bra_ret_t;
+
+template <typename F, typename A>
+struct bra_ret_t <F, A> : bra_ret_t <F(A)> { };
+
+template <typename F, typename A>
+struct bra_ret_t <F(A)> : id_t <decltype(gen <F>()[gen <A>()])> { };
+
+template <typename F, typename... A>
+using bra_ret = type_of <bra_ret_t <F, A...> >;
+
+//-----------------------------------------------------------------------------
+
 // extended elsewhere
 template <typename F, typename... A>
 struct can_call : can_call <F(A...)> { };

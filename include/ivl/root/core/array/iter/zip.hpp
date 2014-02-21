@@ -71,7 +71,6 @@ class zip_iter_impl <pack <I...>, R, T, M, sizes <N...>, D, TR> :
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
 
 //-----------------------------------------------------------------------------
 
@@ -88,7 +87,7 @@ class zip_iter_impl <pack <I...>, R, T, M, sizes <N...>, D, TR> :
 public:
 	using B::B;
 
-	INLINE constexpr R operator*()  const { return ref(F()(*i<N>()...)); }
+	INLINE constexpr R operator*()  const { return F()(*i<N>()...); }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return thru{++i<N>()...}, der_f(); }
@@ -99,7 +98,7 @@ public:
 	INLINE D operator++(int) { return D(i<N>()++...); }
 	INLINE D operator--(int) { return D(i<N>()--...); }
 
-	INLINE constexpr R operator[](d n) const { return ref(F()(i<N>()[n]...)); }
+	INLINE constexpr R operator[](d n) const { return F()(i<N>()[n]...); }
 
 	INLINE D&& operator+=(d n) && { return thru{i<N>() += n...}, der_f(); }
 	INLINE D&  operator+=(d n) &  { return thru{i<N>() += n...}, der(); }
@@ -142,7 +141,6 @@ class zip_trav_impl <pack <V...>, R, T, M, sizes <N...>, D, TR> :
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
 
 //-----------------------------------------------------------------------------
 
@@ -163,8 +161,7 @@ public:
 
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
 
-	INLINE constexpr auto operator*()  const -> decltype(F()(*v<N>()...)) { return F()(*v<N>()...); }
-// 	INLINE constexpr R operator*()  const { return ref(F()(*v<N>()...)); }
+	INLINE constexpr R operator*()  const { return F()(*v<N>()...); }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return thru{++v<N>()...}, der_f(); }
@@ -180,7 +177,7 @@ public:
 	INLINE D&& operator-() && { return thru{-v<N>()...}, der_f(); }
 	INLINE D&  operator-() &  { return thru{-v<N>()...}, der(); }
 
-	INLINE constexpr R operator[](d n) const { return ref(F()(v<N>()[n]...)); }
+	INLINE constexpr R operator[](d n) const { return F()(v<N>()[n]...); }
 
 	INLINE D&& operator+=(d n) && { return thru{v<N>() += n...}, der_f(); }
 	INLINE D&  operator+=(d n) &  { return thru{v<N>() += n...}, der(); }

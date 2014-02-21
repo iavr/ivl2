@@ -89,19 +89,17 @@ template <
 struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
 	public seq_tuple <E...>
 {
-	using VT = remove_type <T>;
-
-	using value_type = VT;
+	using value_type = T;
 	using length_type = L;
 	using size_type = S;
 
-	using fwd_iterator   = I <r_iter <B>, r_ref <T>, VT, r_ref <U>...>;
-	using iterator       = I <l_iter <B>, l_ref <T>, VT, l_ref <U>...>;
-	using const_iterator = I <c_iter <B>, c_ref <T>, VT, c_ref <U>...>;
+	using fwd_iterator   = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
+	using iterator       = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
+	using const_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
 
-	using fwd_traversor   = V <r_trav <B>, r_ref <T>, VT, r_ref <U>...>;
-	using traversor       = V <l_trav <B>, l_ref <T>, VT, l_ref <U>...>;
-	using const_traversor = V <c_trav <B>, c_ref <T>, VT, c_ref <U>...>;
+	using fwd_traversor   = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
+	using traversor       = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
+	using const_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
 
 	using fwd_reference   = seq_ref <fwd_iterator>;
 	using reference       = seq_ref <iterator>;

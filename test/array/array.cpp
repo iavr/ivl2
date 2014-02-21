@@ -93,17 +93,13 @@ void run()
 	}
 
 	{
-		cout << "zip" << endl;
+		cout << "zip/inner" << endl;
 		array <char, 4> c = {'a', 'b', 'c', 'd'};
 		array <int, 4>  i = {3, 2, -4, 0};
 		cout << zip(c, i) << endl;
-
-// 		// TODO
-// 		int i, j;
-// 		double f, g;
-// 		zip(_(i, f), _(j, g)) = _(_(3, 4), _(2.71, 3.14));
-// 		cout << _(i, j) << " " << _(f, g) << endl;
-
+		zip(c, i)[1] = _('e', 18);
+		cout << c << endl << i << endl;
+		cout << inner(c, -24) << endl;
 		cout << endl;
 	}
 

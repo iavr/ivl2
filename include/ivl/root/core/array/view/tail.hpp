@@ -43,12 +43,11 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename U>
-using tail_length =
-	if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
+using tail_length = if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
 
-template <typename U, typename T = seq_type <U> >
+template <typename U>
 using tail_traits = seq_traits <
-	T, tail_length <U>, U, iter_iter, trav_trav
+	u_seq_ref <U>, tail_length <U>, U, iter_iter, trav_trav
 >;
 
 //-----------------------------------------------------------------------------

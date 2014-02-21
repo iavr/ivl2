@@ -42,9 +42,9 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename U, typename T = seq_type <U> >
+template <typename U>
 using flip_traits = seq_traits <
-	T, seq_length <U>, U, flip_iter, flip_trav
+	u_seq_ref <U>, seq_length <U>, U, flip_iter, flip_trav
 >;
 
 //-----------------------------------------------------------------------------

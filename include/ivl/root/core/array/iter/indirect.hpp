@@ -58,7 +58,6 @@ class indirect_iter_impl : public iter_base <D, TR, I, U>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
 
 //-----------------------------------------------------------------------------
 
@@ -73,7 +72,7 @@ class indirect_iter_impl : public iter_base <D, TR, I, U>
 public:
 	using B::B;
 
-	INLINE constexpr R operator*()  const { return ref(u()[*i()]); }
+	INLINE constexpr R operator*()  const { return u()[*i()]; }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return ++i(), der_f(); }
@@ -84,7 +83,7 @@ public:
 	INLINE D operator++(int) { return D(i()++, u()); }
 	INLINE D operator--(int) { return D(i()--, u()); }
 
-	INLINE constexpr R operator[](d n) const { return ref(u()[i()[n]]); }
+	INLINE constexpr R operator[](d n) const { return u()[i()[n]]; }
 
 	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
 	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
@@ -116,7 +115,6 @@ class indirect_trav_impl : public trav_base <D, TR, V, U>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
 
 //-----------------------------------------------------------------------------
 
@@ -135,7 +133,7 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE constexpr R operator*()  const { return ref(u()[*v()]); }
+	INLINE constexpr R operator*()  const { return u()[*v()]; }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return ++v(), der_f(); }
@@ -151,7 +149,7 @@ public:
 	INLINE D&& operator-() && { return -v(), der_f(); }
 	INLINE D&  operator-() &  { return -v(), der(); }
 
-	INLINE constexpr R operator[](d n) const { return ref(u()[v()[n]]); }
+	INLINE constexpr R operator[](d n) const { return u()[v()[n]]; }
 
 	INLINE D&& operator+=(d n) && { return v() += n, der_f(); }
 	INLINE D&  operator+=(d n) &  { return v() += n, der(); }
