@@ -47,30 +47,30 @@ template <typename C, typename... A> struct collection;
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-using raw_tuple = collection <data::raw <>, E...>;
+using raw_tuple = collection <tag::raw, E...>;
 
 template <typename... E>
-using pre_tuple = collection <data::pre <>, E...>;
+using pre_tuple = collection <tag::pre, E...>;
 
 template <typename... E>
-using tuple = collection <data::tuple <>, E...>;
+using tuple = collection <tag::tuple, E...>;
 
 //-----------------------------------------------------------------------------
 
 template <typename U>
-using tail_tup = collection <data::tail <>, U>;
+using tail_tup = collection <tag::tail, U>;
 
 template <typename U>
-using flip_tup = collection <data::flip <>, U>;
+using flip_tup = collection <tag::flip, U>;
 
 template <typename K, typename U>
-using indirect_tup = collection <data::indirect <>, K, U>;
+using indirect_tup = collection <tag::indirect, K, U>;
 
 template <typename F, typename... A>
-using apply_tup = collection <data::apply <>, F, A...>;
+using apply_tup = collection <tag::apply, F, A...>;
 
-template <typename... U> using zip_tup  = collection <data::zip <>,  U...>;
-template <typename... U> using join_tup = collection <data::join <>, U...>;
+template <typename... U> using zip_tup  = collection <tag::zip,  U...>;
+template <typename... U> using join_tup = collection <tag::join, U...>;
 
 //-----------------------------------------------------------------------------
 

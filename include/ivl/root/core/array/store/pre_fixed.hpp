@@ -80,7 +80,7 @@ struct seq_data_t <pre_fixed_array <T, N> > : pack <fixed_store <T, N> > { };
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-class sequence <data::pre_fixed <>, T, sizes <N> > :
+class sequence <tag::pre_fixed, T, sizes <N> > :
 	public seq_base <pre_fixed_array <T, N>, seq_traits <T, size <N> > >,
 	fixed_store <T, N>
 {
@@ -97,7 +97,7 @@ class sequence <data::pre_fixed <>, T, sizes <N> > :
 	using VL = l_trav <TR>;
 	using VC = c_trav <TR>;
 
-	using F = data::flip <>;
+	using F = tag::flip;
 
 //-----------------------------------------------------------------------------
 

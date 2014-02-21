@@ -108,7 +108,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename U>
-struct sequence <data::tail <>, U> : tail_seq_impl <U>
+struct sequence <tag::tail, U> : tail_seq_impl <U>
 {
 	using tail_seq_impl <U>::tail_seq_impl;
 };

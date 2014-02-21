@@ -144,7 +144,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename M, typename F, typename... A>
-struct sequence <data::apply <>, M, F, A...> :
+struct sequence <tag::apply, M, F, A...> :
 	apply_seq_impl <M, F, pack <A...> >
 {
 	using apply_seq_impl <M, F, pack <A...> >::apply_seq_impl;

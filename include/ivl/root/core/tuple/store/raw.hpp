@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::raw <>, E...> :
+class collection <tag::raw, E...> :
 	public access <raw_tuple <E...>, E...>
 {
 	using P = pack <E...>;
@@ -75,7 +75,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <>
-struct collection <data::raw <> > : pack <> { };
+struct collection <tag::raw> : pack <> { };
 
 //-----------------------------------------------------------------------------
 

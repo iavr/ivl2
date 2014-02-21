@@ -47,36 +47,36 @@ template <typename C, typename... A> struct sequence;
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t... N>
-using aggr_array = sequence <data::aggr <>, T, sizes <N...> >;
+using aggr_array = sequence <tag::aggr, T, sizes <N...> >;
 
 template <typename T, size_t... N>
-using pre_fixed_array = sequence <data::pre_fixed <>, T, sizes <N...> >;
+using pre_fixed_array = sequence <tag::pre_fixed, T, sizes <N...> >;
 
 template <typename T, size_t... N>
-using fixed_array = sequence <data::fixed <>, T, sizes <N...> >;
+using fixed_array = sequence <tag::fixed, T, sizes <N...> >;
 
 template <typename T>
-using heap_array = sequence <data::heap <>, T>;
+using heap_array = sequence <tag::heap, T>;
 
 //-----------------------------------------------------------------------------
 
 template <typename U>
-using tail_seq = sequence <data::tail <>, U>;
+using tail_seq = sequence <tag::tail, U>;
 
 template <typename U>
-using flip_seq = sequence <data::flip <>, U>;
+using flip_seq = sequence <tag::flip, U>;
 
 template <typename K, typename U>
-using indirect_seq = sequence <data::indirect <>, K, U>;
+using indirect_seq = sequence <tag::indirect, K, U>;
 
 template <typename M, typename F, typename... A>
-using apply_seq = sequence <data::apply <>, M, F, A...>;
+using apply_seq = sequence <tag::apply, M, F, A...>;
 
 template <typename M, typename... U>
-using zip_seq  = sequence <data::zip <>, M, U...>;
+using zip_seq  = sequence <tag::zip, M, U...>;
 
 template <typename... U>
-using join_seq = sequence <data::join <>, U...>;
+using join_seq = sequence <tag::join, U...>;
 
 //-----------------------------------------------------------------------------
 

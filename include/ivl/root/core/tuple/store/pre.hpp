@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::pre <>, E...> :
+class collection <tag::pre, E...> :
 	public tup_base <pre_tuple <E...>, pack <E...> >
 {
 	using P = pack <E...>;

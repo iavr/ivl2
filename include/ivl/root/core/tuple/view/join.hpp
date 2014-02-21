@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename... U>
-class collection <data::join <>, U...> :
+class collection <tag::join, U...> :
 	public tup_base <join_tup <U...>, join <tup_types <U>...> >
 {
 	using P = join <tup_types <U>...>;

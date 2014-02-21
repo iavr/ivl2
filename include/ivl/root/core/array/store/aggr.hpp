@@ -63,7 +63,7 @@ INLINE T* aggr_ptr(A&&) { return nullptr; }
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-class sequence <data::aggr <>, T, sizes <N> >
+class sequence <tag::aggr, T, sizes <N> >
 {
 	using RR = T&&;
 	using RL = T&;

@@ -70,7 +70,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
-class sequence <data::fixed <>, T, sizes <N> > :
+class sequence <tag::fixed, T, sizes <N> > :
 	public fixed_impl <T, N>
 {
 	using B = fixed_impl <T, N>;

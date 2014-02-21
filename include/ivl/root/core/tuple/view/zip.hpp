@@ -79,7 +79,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... U>
-class collection <data::zip <>, U...> :
+class collection <tag::zip, U...> :
 	public zip_impl <pack <U...> >
 {
 	using B = zip_impl <pack <U...> >;

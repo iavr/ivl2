@@ -128,7 +128,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename M, typename... A>
-struct sequence <data::zip <>, M, A...> :
+struct sequence <tag::zip, M, A...> :
 	zip_seq_impl <M, pack <A...> >
 {
 	using zip_seq_impl <M, pack <A...> >::zip_seq_impl;

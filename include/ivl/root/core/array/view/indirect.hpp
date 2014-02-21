@@ -113,7 +113,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-struct sequence <data::indirect <>, K, U> : indirect_seq_impl <K, U>
+struct sequence <tag::indirect, K, U> : indirect_seq_impl <K, U>
 {
 	using indirect_seq_impl <K, U>::indirect_seq_impl;
 };

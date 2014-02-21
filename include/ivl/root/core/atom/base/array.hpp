@@ -60,7 +60,7 @@ using atom_traits = seq_traits <R, no_size, _type <R>, atom_iter, atom_trav>;
 //-----------------------------------------------------------------------------
 
 template <typename T, typename b>
-class atom_base <T, data::seq <>, b> :
+class atom_base <T, tag::seq, b> :
 	public seq_store <atom_traits <T>, pack <b> >
 {
 	using TR = atom_traits <T>;

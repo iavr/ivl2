@@ -192,7 +192,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T, typename M, typename F>
-struct iterator <data::apply <>, I, R, T, M, F> :
+struct iterator <tag::apply, I, R, T, M, F> :
 	apply_iter_impl <I, R, T, M, F>
 {
 	using apply_iter_impl <I, R, T, M, F>::apply_iter_impl;
@@ -201,7 +201,7 @@ struct iterator <data::apply <>, I, R, T, M, F> :
 //-----------------------------------------------------------------------------
 
 template <typename V, typename R, typename T, typename M, typename F>
-struct traversor <data::apply <>, V, R, T, M, F> :
+struct traversor <tag::apply, V, R, T, M, F> :
 	apply_trav_impl <V, R, T, M, F>
 {
 	using apply_trav_impl <V, R, T, M, F>::apply_trav_impl;

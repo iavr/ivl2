@@ -100,10 +100,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename F>
-class collection <data::apply <>, F>;
+class collection <tag::apply, F>;
 
 template <typename F, typename... A>
-class collection <data::apply <>, F, A...> :
+class collection <tag::apply, F, A...> :
 	public apply_impl <F, pack <A...> >
 {
 	using B = apply_impl <F, pack <A...> >;

@@ -150,7 +150,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename V, typename R, typename T>
-struct iterator <data::flip <>, V, R, T> :
+struct iterator <tag::flip, V, R, T> :
 	flip_iter_impl <V, R, T>
 {
 	using flip_iter_impl <V, R, T>::flip_iter_impl;
@@ -159,7 +159,7 @@ struct iterator <data::flip <>, V, R, T> :
 //-----------------------------------------------------------------------------
 
 template <typename V, typename R, typename T>
-struct traversor <data::flip <>, V, R, T> :
+struct traversor <tag::flip, V, R, T> :
 	flip_trav_impl <V, R, T>
 {
 	using flip_trav_impl <V, R, T>::flip_trav_impl;

@@ -44,7 +44,7 @@ namespace details {
 
 // TODO: remove
 template <typename I>
-class iterator <data::rev <>, I> :
+class iterator <tag::rev, I> :
 	public iter_base <I>,
 	private raw_tuple <I>
 {

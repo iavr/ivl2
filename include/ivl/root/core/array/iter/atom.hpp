@@ -138,7 +138,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T>
-struct iterator <data::atom <>, I, R, T> : atom_iter_impl <I, R, T>
+struct iterator <tag::atom, I, R, T> : atom_iter_impl <I, R, T>
 {
 	using atom_iter_impl <I, R, T>::atom_iter_impl;
 };
@@ -146,7 +146,7 @@ struct iterator <data::atom <>, I, R, T> : atom_iter_impl <I, R, T>
 //-----------------------------------------------------------------------------
 
 template <typename V, typename R, typename T>
-struct traversor <data::atom <>, V, R, T> : atom_trav_impl <V, R, T>
+struct traversor <tag::atom, V, R, T> : atom_trav_impl <V, R, T>
 {
 	using atom_trav_impl <V, R, T>::atom_trav_impl;
 };

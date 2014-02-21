@@ -158,7 +158,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T, typename U>
-struct iterator <data::indirect <>, I, R, T, U> :
+struct iterator <tag::indirect, I, R, T, U> :
 	indirect_iter_impl <I, R, T, U>
 {
 	using indirect_iter_impl <I, R, T, U>::indirect_iter_impl;
@@ -167,7 +167,7 @@ struct iterator <data::indirect <>, I, R, T, U> :
 //-----------------------------------------------------------------------------
 
 template <typename V, typename R, typename T, typename U>
-struct traversor <data::indirect <>, V, R, T, U> :
+struct traversor <tag::indirect, V, R, T, U> :
 	indirect_trav_impl <V, R, T, U>
 {
 	using indirect_trav_impl <V, R, T, U>::indirect_trav_impl;

@@ -46,51 +46,51 @@ template <typename C, typename... A> class iterator;
 template <typename C, typename... A> class traversor;
 
 template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
-using iter_iter = iterator <data::iter <>, I, R, T>;
+using iter_iter = iterator <tag::iter, I, R, T>;
 
 template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
-using iter_trav = traversor <data::iter <>, I, R, T>;
+using iter_trav = traversor <tag::iter, I, R, T>;
 
 template <typename V, typename R = seq_ref <V>, typename T = seq_type <V> >
-using trav_trav = traversor <data::trav <>, V, R, T>;
+using trav_trav = traversor <tag::trav, V, R, T>;
 
 template <typename I, typename R = rref_opt <I>, typename T = I>
-using atom_iter = iterator <data::atom <>, I, R, T>;
+using atom_iter = iterator <tag::atom, I, R, T>;
 
 template <typename I, typename R = rref_opt <I>, typename T = I>
-using atom_trav = traversor <data::atom <>, I, R, T>;
+using atom_trav = traversor <tag::atom, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T>
-using flip_iter = iterator <data::flip <>, I, R, T>;
+using flip_iter = iterator <tag::flip, I, R, T>;
 
 template <typename V, typename R, typename T>
-using flip_trav = traversor <data::flip <>, V, R, T>;
+using flip_trav = traversor <tag::flip, V, R, T>;
 
 template <typename I, typename R, typename T, typename U>
-using indirect_iter = iterator <data::indirect <>, I, R, T, U>;
+using indirect_iter = iterator <tag::indirect, I, R, T, U>;
 
 template <typename V, typename R, typename T, typename U>
-using indirect_trav = traversor <data::indirect <>, V, R, T, U>;
+using indirect_trav = traversor <tag::indirect, V, R, T, U>;
 
 template <typename I, typename R, typename T, typename M, typename F>
-using apply_iter = iterator <data::apply <>, I, R, T, M, F>;
+using apply_iter = iterator <tag::apply, I, R, T, M, F>;
 
 template <typename V, typename R, typename T, typename M, typename F>
-using apply_trav = traversor <data::apply <>, V, R, T, M, F>;
+using apply_trav = traversor <tag::apply, V, R, T, M, F>;
 
 template <typename I, typename R, typename T, typename M>
-using zip_iter = iterator <data::zip <>, I, R, T, M>;
+using zip_iter = iterator <tag::zip, I, R, T, M>;
 
 template <typename V, typename R, typename T, typename M>
-using zip_trav = traversor <data::zip <>, V, R, T, M>;
+using zip_trav = traversor <tag::zip, V, R, T, M>;
 
 template <typename I, typename R, typename T>
-using join_iter = iterator <data::zip <>, I, R, T>;
+using join_iter = iterator <tag::zip, I, R, T>;
 
 template <typename V, typename R, typename T>
-using join_trav = traversor <data::zip <>, V, R, T>;
+using join_trav = traversor <tag::zip, V, R, T>;
 
 //-----------------------------------------------------------------------------
 

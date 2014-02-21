@@ -43,20 +43,20 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename B>
-struct atom_base <T, data::raw <>, B> : B
+struct atom_base <T, tag::raw, B> : B
 {
 	using B::B;
 };
 
 template <typename T, typename B>
-struct atom_base <T, data::atom <>, B> :
+struct atom_base <T, tag::atom, B> :
 	tup_atom_base <T, seq_atom_base <T, B> >
 {
 	using tup_atom_base <T, seq_atom_base <T, B> >::tup_atom_base;
 };
 
 template <typename T, typename B>
-struct atom_base <T, data::ext <>, B> :
+struct atom_base <T, tag::ext, B> :
 	tup_atom_base <T, seq_atom_base <T, B> >
 {
 	using tup_atom_base <T, seq_atom_base <T, B> >::tup_atom_base;

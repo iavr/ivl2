@@ -55,7 +55,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename B>
-struct atom_base <T, data::tup <>, B> : public B
+struct atom_base <T, tag::tup, B> : public B
 {
 	using B::B;
 	using B::val_f;

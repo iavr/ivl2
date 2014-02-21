@@ -68,7 +68,7 @@ class flip_seq_impl :
 
 	using under = elem <0, U>;
 
-	using F = data::flip <>;
+	using F = tag::flip;
 
 //-----------------------------------------------------------------------------
 
@@ -114,7 +114,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename U>
-struct sequence <data::flip <>, U> : flip_seq_impl <U>
+struct sequence <tag::flip, U> : flip_seq_impl <U>
 {
 	using flip_seq_impl <U>::flip_seq_impl;
 };

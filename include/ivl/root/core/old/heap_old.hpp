@@ -42,8 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename... D>
-class array <T, data::heap <D...> >
+template <typename T>
+class array <T, tag::heap>
 {
 
 //-----------------------------------------------------------------------------

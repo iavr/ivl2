@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_TYPE_DATA_HPP
-#define IVL_CORE_ARRAY_TYPE_DATA_HPP
+#ifndef IVL_CORE_ATOM_TYPE_TAG_HPP
+#define IVL_CORE_ATOM_TYPE_TAG_HPP
 
 #include <ivl/ivl>
 
@@ -34,23 +34,21 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace data {
+namespace tag {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct atom { };
-template <typename... D> struct iter { };
-template <typename... D> struct trav { };
+template <typename... D> struct tup_ { };
+template <typename... D> struct seq_ { };
+template <typename... D> struct ext_ { };
 
-template <typename... D> struct aggr { };
-template <typename... D> struct fixed { };
-template <typename... D> struct heap { };
-
-template <typename... D> using pre_fixed = pre <fixed <D...> >;
+using tup = tup_<>;
+using seq = seq_<>;
+using ext = ext_<>;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace data
+}  // namespace tag
 
 //-----------------------------------------------------------------------------
 
@@ -58,4 +56,4 @@ template <typename... D> using pre_fixed = pre <fixed <D...> >;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_TYPE_DATA_HPP
+#endif  // IVL_CORE_ATOM_TYPE_TAG_HPP

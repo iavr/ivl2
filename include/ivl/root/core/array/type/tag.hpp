@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_TYPE_DATA_HPP
-#define IVL_CORE_TUPLE_TYPE_DATA_HPP
+#ifndef IVL_CORE_ARRAY_TYPE_TAG_HPP
+#define IVL_CORE_ARRAY_TYPE_TAG_HPP
 
 #include <ivl/ivl>
 
@@ -34,24 +34,35 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace data {
+namespace tag {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct raw { };
-template <typename... D> struct pre { };
-template <typename... D> struct tuple { };
+template <typename... D> struct atom_ { };
+template <typename... D> struct iter_ { };
+template <typename... D> struct trav_ { };
 
-template <typename... D> struct tail { };
-template <typename... D> struct flip { };
-template <typename... D> struct indirect { };
-template <typename... D> struct apply { };
-template <typename... D> struct zip { };
-template <typename... D> struct join { };
+template <typename... D> struct aggr_ { };
+template <typename... D> struct fixed_ { };
+template <typename... D> struct heap_ { };
+
+template <typename... D> using pre_fixed_ = pre_<fixed_<D...> >;
 
 //-----------------------------------------------------------------------------
 
-}  // namespace data
+using atom = atom_<>;
+using iter = iter_<>;
+using trav = trav_<>;
+
+using aggr  = aggr_<>;
+using fixed = fixed_<>;
+using heap  = heap_<>;
+
+using pre_fixed = pre_fixed_<>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tag
 
 //-----------------------------------------------------------------------------
 
@@ -59,4 +70,4 @@ template <typename... D> struct join { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_TYPE_DATA_HPP
+#endif  // IVL_CORE_ARRAY_TYPE_TAG_HPP

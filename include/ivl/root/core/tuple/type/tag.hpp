@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ATOM_TYPE_DATA_HPP
-#define IVL_CORE_ATOM_TYPE_DATA_HPP
+#ifndef IVL_CORE_TUPLE_TYPE_TAG_HPP
+#define IVL_CORE_TUPLE_TYPE_TAG_HPP
 
 #include <ivl/ivl>
 
@@ -34,17 +34,37 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace data {
+namespace tag {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct tup  { };
-template <typename... D> struct seq  { };
-template <typename... D> struct ext  { };
+template <typename... D> struct raw_ { };
+template <typename... D> struct pre_ { };
+template <typename... D> struct tuple_ { };
+
+template <typename... D> struct tail_ { };
+template <typename... D> struct flip_ { };
+template <typename... D> struct indirect_ { };
+template <typename... D> struct apply_ { };
+template <typename... D> struct zip_ { };
+template <typename... D> struct join_ { };
 
 //-----------------------------------------------------------------------------
 
-}  // namespace data
+using raw   = raw_<>;
+using pre   = pre_<>;
+using tuple = tuple_<>;
+
+using tail     = tail_<>;
+using flip     = flip_<>;
+using indirect = indirect_<>;
+using apply    = apply_<>;
+using zip      = zip_<>;
+using join     = join_<>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace tag
 
 //-----------------------------------------------------------------------------
 
@@ -52,4 +72,4 @@ template <typename... D> struct ext  { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ATOM_TYPE_DATA_HPP
+#endif  // IVL_CORE_TUPLE_TYPE_TAG_HPP

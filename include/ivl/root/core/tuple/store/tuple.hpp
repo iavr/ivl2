@@ -64,7 +64,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... E>
-class collection <data::tuple <>, E...> : public tuple_impl <pack <E...> >
+class collection <tag::tuple, E...> : public tuple_impl <pack <E...> >
 {
 	using P = pack <E...>;
 	using B = tuple_impl <P>;

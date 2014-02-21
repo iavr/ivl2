@@ -186,7 +186,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T, typename M>
-struct iterator <data::zip <>, I, R, T, M> :
+struct iterator <tag::zip, I, R, T, M> :
 	zip_iter_impl <I, R, T, M>
 {
 	using zip_iter_impl <I, R, T, M>::zip_iter_impl;
@@ -195,7 +195,7 @@ struct iterator <data::zip <>, I, R, T, M> :
 //-----------------------------------------------------------------------------
 
 template <typename V, typename R, typename T, typename M>
-struct traversor <data::zip <>, V, R, T, M> :
+struct traversor <tag::zip, V, R, T, M> :
 	zip_trav_impl <V, R, T, M>
 {
 	using zip_trav_impl <V, R, T, M>::zip_trav_impl;

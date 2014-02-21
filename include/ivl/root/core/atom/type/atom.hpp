@@ -43,20 +43,20 @@ template <typename T, typename C, typename B>
 struct atom_base;
 
 template <typename T, typename B>
-using tup_atom_base = atom_base <T, data::tup <>, B>;
+using tup_atom_base = atom_base <T, tag::tup, B>;
 
 template <typename T, typename B>
-using seq_atom_base = atom_base <T, data::seq <>, B>;
+using seq_atom_base = atom_base <T, tag::seq, B>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename C = data::atom <> >
+template <typename T, typename C = tag::atom>
 struct atom;
 
-template <typename T> using raw_atom = atom <T, data::raw <> >;
-template <typename T> using tup_atom = atom <T, data::tup <> >;
-template <typename T> using seq_atom = atom <T, data::seq <> >;
-template <typename T> using ext_atom = atom <T, data::ext <> >;
+template <typename T> using raw_atom = atom <T, tag::raw>;
+template <typename T> using tup_atom = atom <T, tag::tup>;
+template <typename T> using seq_atom = atom <T, tag::seq>;
+template <typename T> using ext_atom = atom <T, tag::ext>;
 
 //-----------------------------------------------------------------------------
 

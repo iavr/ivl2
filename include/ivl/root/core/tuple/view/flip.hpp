@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename U>
-class collection <data::flip <>, U> : public
+class collection <tag::flip, U> : public
 	tup_base <flip_tup <U>, flip_p <tup_types <U> > >
 {
 	using P = flip_p <tup_types <U> >;
