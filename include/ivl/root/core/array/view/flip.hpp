@@ -68,6 +68,8 @@ class flip_seq_impl :
 
 	using under = elem <0, U>;
 
+	using F = data::flip <>;
+
 //-----------------------------------------------------------------------------
 
 	INLINE           r_ref <U> u_f()      { return under::fwd(); }
@@ -90,9 +92,23 @@ public:
 	INLINE           IL end() &      { return IL(--u().begin()); }
 	INLINE constexpr IC end() const& { return IC(--u().begin()); }
 
-	INLINE           VR trav() &&     { return VR(-u_f().trav()); }
-	INLINE           VL trav() &      { return VL(-u().trav()); }
-	INLINE           VC trav() const& { return VC(-u().trav()); }
+//-----------------------------------------------------------------------------
+
+	template <typename... G>
+	INLINE VR trav(G...) && { return VR(u_f().trav(F())); }
+
+	template <typename... G>
+	INLINE VL trav(G...) & { return VL(u().trav(F())); }
+
+	template <typename... G>
+	INLINE constexpr VC trav(G...) const& { return VC(u().trav(F())); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE           VR trav(F) &&     { return VR(u_f().trav()); }
+	INLINE           VL trav(F) &      { return VL(u().trav()); }
+	INLINE constexpr VC trav(F) const& { return VC(u().trav()); }
+
 };
 
 //-----------------------------------------------------------------------------

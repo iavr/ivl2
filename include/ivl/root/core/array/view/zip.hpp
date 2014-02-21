@@ -112,9 +112,17 @@ public:
 	INLINE           IL end() &      { return IL(a<N>().end()...); }
 	INLINE constexpr IC end() const& { return IC(a<N>().end()...); }
 
-	INLINE           VR trav() &&     { return VR(a_f<N>().trav()...); }
-	INLINE           VL trav() &      { return VL(a<N>().trav()...); }
-	INLINE constexpr VC trav() const& { return VC(a<N>().trav()...); }
+//-----------------------------------------------------------------------------
+
+	template <typename... G>
+	INLINE VR trav(G... g) && { return VR(a_f<N>().trav(g...)...); }
+
+	template <typename... G>
+	INLINE VL trav(G... g) & { return VL(a<N>().trav(g...)...); }
+
+	template <typename... G>
+	INLINE constexpr VC trav(G... g) const& { return VC(a<N>().trav(g...)...); }
+
 };
 
 //-----------------------------------------------------------------------------

@@ -93,9 +93,16 @@ public:
 	INLINE           IL end() &      { return IL(u().end()); }
 	INLINE constexpr IC end() const& { return IC(u().end()); }
 
-	INLINE           VR trav() &&     { return VR(++u_f().trav()); }
-	INLINE           VL trav() &      { return VL(++u().trav()); }
-	INLINE           VC trav() const& { return VC(++u().trav()); }
+//-----------------------------------------------------------------------------
+
+	template <typename... G>
+	INLINE VR trav(G... g) && { return VR(++u_f().trav(g...)); }
+
+	template <typename... G>
+	INLINE VL trav(G... g) & { return VL(++u().trav(g...)); }
+
+	template <typename... G>
+	INLINE VC trav(G... g) const& { return VC(++u().trav(g...)); }
 };
 
 //-----------------------------------------------------------------------------

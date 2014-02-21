@@ -299,11 +299,35 @@ template <typename... A> struct c_trav_t <pack <A...> > : pack <c_trav <A>...> {
 
 //-----------------------------------------------------------------------------
 
-template <typename A, typename T, typename U = u_seq_ref <A> >
-using seq_conv = expr <is_conv <U, T>() && !is_conv <A, T>()>;
+template <typename T, bool = is_iter <T>()>
+struct iter_opt_ : rref_opt_t <T> { };
 
-template <typename T, typename A, typename U = u_seq_ref <A> >
-using seq_explicit = expr <is_explicit <T, U>() && !is_explicit <T, A>()>;
+template <typename T>
+struct iter_opt_<T, true> : base_opt_t <T> { };
+
+template <typename T> using iter_opt_t = iter_opt_<T>;
+template <typename T> using iter_opt = type_of <iter_opt_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <size_t N, typename T>
+using iter_elem = tuples::elem <N, iter_opt <T> >;
+
+template <size_t N, typename... E>
+using iter_elem_at = iter_elem <N, pick <N, E...> >;
+
+template <typename T> using r_iter_ref = r_ref <iter_opt <T> >;
+template <typename T> using l_iter_ref = l_ref <iter_opt <T> >;
+template <typename T> using c_iter_ref = c_ref <iter_opt <T> >;
+
+template <size_t N, typename... E>
+using r_iter_pick = r_iter_ref <pick <N, E...> >;
+
+template <size_t N, typename... E>
+using l_iter_pick = l_iter_ref <pick <N, E...> >;
+
+template <size_t N, typename... E>
+using c_iter_pick = c_iter_ref <pick <N, E...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -316,6 +340,14 @@ struct l_ref_t <F(_type <T>)> : bra_ret_t <l_ref <F>(l_ref <T>)> { };
 
 template <typename F, typename T>
 struct c_ref_t <F(_type <T>)> : bra_ret_t <c_ref <F>(c_ref <T>)> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename A, typename T, typename U = u_seq_ref <A> >
+using seq_conv = expr <is_conv <U, T>() && !is_conv <A, T>()>;
+
+template <typename T, typename A, typename U = u_seq_ref <A> >
+using seq_explicit = expr <is_explicit <T, U>() && !is_explicit <T, A>()>;
 
 //-----------------------------------------------------------------------------
 

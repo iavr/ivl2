@@ -142,11 +142,6 @@ public:
 	INLINE D operator++(int) { return D(i()++, e()); }
 	INLINE D operator--(int) { return D(i()--, e()); }
 
-	INLINE D&& operator+() && { return std::swap(++e(), ++i()), der_f(); }
-	INLINE D&  operator+() &  { return std::swap(++e(), ++i()), der(); }
-	INLINE D&& operator-() && { return std::swap(--e(), --i()), der_f(); }
-	INLINE D&  operator-() &  { return std::swap(--e(), --i()), der(); }
-
 	INLINE constexpr R operator[](d n) const { return ref(i()[n]); }
 
 	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
@@ -201,11 +196,6 @@ public:
 
 	INLINE D operator++(int) { return D(v()++); }
 	INLINE D operator--(int) { return D(v()--); }
-
-	INLINE D&& operator+() && { return +v(), der_f(); }
-	INLINE D&  operator+() &  { return +v(), der(); }
-	INLINE D&& operator-() && { return -v(), der_f(); }
-	INLINE D&  operator-() &  { return -v(), der(); }
 
 	INLINE constexpr R operator[](d n) const { return ref(v()[n]); }
 

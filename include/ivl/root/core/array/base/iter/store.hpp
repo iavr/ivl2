@@ -42,38 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, bool = is_iter <T>()>
-struct iter_opt_ : rref_opt_t <T> { };
-
-template <typename T>
-struct iter_opt_<T, true> : base_opt_t <T> { };
-
-template <typename T> using iter_opt_t = iter_opt_<T>;
-template <typename T> using iter_opt = type_of <iter_opt_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <size_t N, typename T>
-using iter_elem = elem <N, iter_opt <T> >;
-
-template <size_t N, typename... E>
-using iter_elem_at = iter_elem <N, pick <N, E...> >;
-
-template <typename T> using r_iter_ref = r_ref <iter_opt <T> >;
-template <typename T> using l_iter_ref = l_ref <iter_opt <T> >;
-template <typename T> using c_iter_ref = c_ref <iter_opt <T> >;
-
-template <size_t N, typename... E>
-using r_iter_pick = r_iter_ref <pick <N, E...> >;
-
-template <size_t N, typename... E>
-using l_iter_pick = l_iter_ref <pick <N, E...> >;
-
-template <size_t N, typename... E>
-using c_iter_pick = c_iter_ref <pick <N, E...> >;
-
-//-----------------------------------------------------------------------------
-
 template <typename... E>
 struct iter_tuple : raw_tuple <iter_opt <E>...>
 	{ using raw_tuple <iter_opt <E>...>::raw_tuple; };

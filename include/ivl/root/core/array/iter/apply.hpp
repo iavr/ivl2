@@ -178,11 +178,6 @@ public:
 	INLINE D operator++(int) { return D(f(), v<N>()++...); }
 	INLINE D operator--(int) { return D(f(), v<N>()--...); }
 
-	INLINE D&& operator+() && { return thru{+v<N>()...}, der_f(); }
-	INLINE D&  operator+() &  { return thru{+v<N>()...}, der(); }
-	INLINE D&& operator-() && { return thru{-v<N>()...}, der_f(); }
-	INLINE D&  operator-() &  { return thru{-v<N>()...}, der(); }
-
 	INLINE constexpr R operator[](d n) const { return f()(v<N>()[n]...); }
 
 	INLINE D&& operator+=(d n) && { return thru{v<N>() += n...}, der_f(); }

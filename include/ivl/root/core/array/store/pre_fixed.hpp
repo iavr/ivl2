@@ -97,6 +97,8 @@ class sequence <data::pre_fixed <>, T, sizes <N> > :
 	using VL = l_trav <TR>;
 	using VC = c_trav <TR>;
 
+	using F = data::flip <>;
+
 //-----------------------------------------------------------------------------
 
 	INLINE T*       b()       { return S::data(); }
@@ -119,13 +121,27 @@ public:
 	INLINE           IL end() &      { return IL(e()); }
 	INLINE constexpr IC end() const& { return IC(e()); }
 
-	INLINE           VR trav() &&     { return VR(b(), e()); }
-	INLINE           VL trav() &      { return VL(b(), e()); }
-	INLINE constexpr VC trav() const& { return VC(b(), e()); }
-
 	INLINE           IR data() &&     { return IR(b()); }
 	INLINE           IL data() &      { return IL(b()); }
 	INLINE constexpr IC data() const& { return IC(b()); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename... G>
+	INLINE VR trav(G...) && { return VR(b(), e()); }
+
+	template <typename... G>
+	INLINE VL trav(G...) & { return VL(b(), e()); }
+
+	template <typename... G>
+	INLINE constexpr VC trav(G...) const& { return VC(b(), e()); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE           VR trav(F) &&     { return VR(e()-1, b()-1); }
+	INLINE           VL trav(F) &      { return VL(e()-1, b()-1); }
+	INLINE constexpr VC trav(F) const& { return VC(e()-1, b()-1); }
+
 };
 
 //-----------------------------------------------------------------------------
