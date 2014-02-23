@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_FUN_META_HPP
-#define IVL_CORE_TUPLE_FUN_META_HPP
+#ifndef IVL_CORE_ARRAY_FUN_META_HPP
+#define IVL_CORE_ARRAY_FUN_META_HPP
 
 #include <ivl/ivl>
 
@@ -42,72 +42,53 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct nop_fun
+template <typename F, typename... A>
+class lookup_fun_impl
+{
+	using R = decltype(F().template _<0>(gen <A>()...));
+	using P = R(*)(A&&...);
+
+	template <size_t I>
+	struct stub
+	{
+		INLINE constexpr static R f(A&&... a)
+			{ return F().template _<I>(fwd <A>(a)...); }
+	};
+
+public:
+	template <size_t... I>
+	INLINE R operator()(sizes <I...>, size_t i, A&&... a) const
+	{
+		static const P table[] = {stub <I>::f...};
+		return table[i](fwd <A>(a)...);
+	};
+};
+
+template <size_t L, typename F>
+struct lookup_fun
 {
 	template <typename... A>
-	INLINE void operator()(A&&... a) const { }
+	INLINE constexpr decltype(F().template _<0>(gen <A>()...))
+	operator()(size_t i, A&&... a) const
+	{
+		return lookup_fun_impl <F, A...>()
+			(sz_rng_of_i <L>(), i, fwd <A>(a)...);
+	};
 };
 
 //-----------------------------------------------------------------------------
 
-struct id_fun
+template <typename OP>
+struct lookup_op_fun
 {
-	template <typename A>
-	INLINE constexpr A&&
-	operator()(A&& a) const { return fwd <A>(a); }
+	template <size_t K, typename C, typename... A>
+	INLINE constexpr auto _(C&& c, A&&... a) const
+	-> decltype(fwd <C>(c).template _<K>(OP(), fwd <A>(a)...))
+		{ return fwd <C>(c).template _<K>(OP(), fwd <A>(a)...); }
 };
 
-//-----------------------------------------------------------------------------
-
-template <typename F, typename... E>
-struct bind_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(F()(E()..., fwd <A>(a)...))
-		{ return F()(E()..., fwd <A>(a)...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <template <typename...> class C>
-struct switch_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <C, A...>()(fwd <A>(a)...))
-		{ return subs <C, A...>()(fwd <A>(a)...); }
-};
-
-template <typename C>
-using switch_fun_of = switch_fun <C::template map>;
-
-//-----------------------------------------------------------------------------
-
-template <typename F>
-struct try_fun_p
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(call_first <F(A...)>()(fwd <A>(a)...))
-		{ return call_first <F(A...)>()(fwd <A>(a)...); }
-};
-
-template <typename... F>
-using try_fun = try_fun_p <pack <F...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename F, size_t I = 0>
-struct mut_fun
-{
-	template <
-		typename... A,
-		only_if <!is_const <remove_ref <pick <I, A...> > >()>
-	= 0>
-	INLINE constexpr ret <F(A...)>
-	operator()(A&&... a) const { return F()(fwd <A>(a)...); }
-};
+template <size_t L, typename OP>
+struct lookup_op : lookup_fun <L, lookup_op_fun <OP> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -115,11 +96,9 @@ struct mut_fun
 
 //-----------------------------------------------------------------------------
 
-using details::id_fun;
-using details::bind_fun;
-using details::switch_fun;
-using details::switch_fun_of;
-using details::try_fun;
+using details::lookup_fun;
+using details::lookup_op_fun;
+using details::lookup_op;
 
 //-----------------------------------------------------------------------------
 
@@ -131,4 +110,4 @@ using details::try_fun;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_FUN_META_HPP
+#endif  // IVL_CORE_ARRAY_FUN_META_HPP

@@ -7,6 +7,12 @@ namespace test {
 using namespace ivl;
 using namespace types;
 using ivl::flip;
+using ivl::join;
+
+//-----------------------------------------------------------------------------
+
+template <size_t N = 0>
+using A = array <int, N>;
 
 //-----------------------------------------------------------------------------
 
@@ -104,14 +110,22 @@ void run()
 	}
 
 	{
+		cout << "join" << endl;
+		A <4> a = {0, 1, 2, 3};
+		A <3> b = {-3.14, 12.71, -8e3};
+		cout << join(mv(a), mv(b), A <>(), A <2>{0, 1}) << endl;
+		cout << endl;
+	}
+
+	{
 		cout << "apply" << endl;
 		using A = array <int, 11>;
 		A x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
 		A y{7, -8, 0, 13, 128, 0, -2, 7, 6, 14, -9};
 		cout << "x = " << x << endl;
 		cout << "y = " << y << endl;
-		cout << "x + y = " << apply(afun::op::add(), x, y) << endl;
-		cout << "x + 3 = " << apply(afun::op::add(), x, 3) << endl;
+		cout << "x + y = " << apply(op::add, x, y) << endl;
+		cout << "x + 3 = " << apply(op::add, x, 3) << endl;
 		cout << endl;
 	}
 

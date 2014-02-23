@@ -138,9 +138,9 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	INLINE           VR trav(F) &&     { return VR(e()-1, b()-1); }
-	INLINE           VL trav(F) &      { return VL(e()-1, b()-1); }
-	INLINE constexpr VC trav(F) const& { return VC(e()-1, b()-1); }
+	INLINE           VR trav(F) &&     { return VR(e() - 1, b() - 1); }
+	INLINE           VL trav(F) &      { return VL(e() - 1, b() - 1); }
+	INLINE constexpr VC trav(F) const& { return VC(e() - 1, b() - 1); }
 
 };
 

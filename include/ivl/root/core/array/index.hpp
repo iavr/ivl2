@@ -37,6 +37,7 @@
 
 #include "fun/value.hpp"
 #include "fun/fold.hpp"
+#include "fun/meta.hpp"
 #include "fun/trav.hpp"
 #include "fun/term.hpp"
 #include "fun/loop.hpp"
@@ -56,6 +57,7 @@
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
 #include "iter/zip.hpp"
+#include "iter/join.hpp"
 
 #include "base/seq/store.hpp"
 #include "base/seq/base.hpp"
@@ -69,6 +71,7 @@
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
 #include "view/zip.hpp"
+#include "view/join.hpp"
 
 #include "fun/manip.hpp"
 

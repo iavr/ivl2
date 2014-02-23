@@ -86,11 +86,11 @@ using zip_iter = iterator <tag::zip, I, R, T, M>;
 template <typename V, typename R, typename T, typename M>
 using zip_trav = traversor <tag::zip, V, R, T, M>;
 
-template <typename I, typename R, typename T>
-using join_iter = iterator <tag::zip, I, R, T>;
+template <typename V, typename R, typename T>
+using join_iter = iterator <tag::join, V, R, T>;
 
 template <typename V, typename R, typename T>
-using join_trav = traversor <tag::zip, V, R, T>;
+using join_trav = traversor <tag::join, V, R, T>;
 
 //-----------------------------------------------------------------------------
 

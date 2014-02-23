@@ -95,8 +95,10 @@ struct val_max_fun
 
 //-----------------------------------------------------------------------------
 
-using val_min = val_fold <val_min_fun>;
-using val_max = val_fold <val_max_fun>;
+using val_min  = val_fold <val_min_fun>;
+using val_max  = val_fold <val_max_fun>;
+using val_sum  = val_fold <afun::op::plus>;
+using val_prod = val_fold <afun::op::mul>;
 
 //-----------------------------------------------------------------------------
 
@@ -108,6 +110,8 @@ using details::_or;
 using details::val_fold;
 using details::val_min;
 using details::val_max;
+using details::val_sum;
+using details::val_prod;
 
 //-----------------------------------------------------------------------------
 
@@ -116,8 +120,10 @@ using details::val_max;
 static __attribute__ ((unused)) afun::_and _and;
 static __attribute__ ((unused)) afun::_or _or;
 
-static __attribute__ ((unused)) afun::val_min val_min;
-static __attribute__ ((unused)) afun::val_max val_max;
+static __attribute__ ((unused)) afun::val_min  val_min;
+static __attribute__ ((unused)) afun::val_max  val_max;
+static __attribute__ ((unused)) afun::val_sum  val_sum;
+static __attribute__ ((unused)) afun::val_prod val_prod;
 
 //-----------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
-   U C++ template library extending syntax towards mathematical notation.
+   A C++ template library extending syntax towards mathematical notation.
 
    Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
@@ -14,17 +14,17 @@
 
    ivl is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR U PARTICULAR PURPOSE.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    See the GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   and a copy of the GNU Lesser General Public License along
+   You should have received u copy of the GNU General Public License
+   and u copy of the GNU Lesser General Public License along
    with ivl. If not, see <http://www.gnu.org/licenses/>. */
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_VIEW_ZIP_HPP
-#define IVL_CORE_ARRAY_VIEW_ZIP_HPP
+#ifndef IVL_CORE_ARRAY_VIEW_JOIN_HPP
+#define IVL_CORE_ARRAY_VIEW_JOIN_HPP
 
 #include <ivl/ivl>
 
@@ -42,28 +42,32 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename M, typename U, typename UP = U>
-struct zip_traits;
+template <typename... U>
+using join_length =
+	if_size <_and <fix_seq <U>...>{}, sz_sum <id, seq_len <U>...> >;
 
-template <typename M, typename... U, typename UP>
-struct zip_traits <M, pack <U...>, UP> : seq_traits <
-	pack <u_seq_ref <U>...>, apply_length <U...>, UP,
-	zip_iter, zip_trav, seq_size <UP>, M
+template <typename U, typename UP = U>
+struct join_traits;
+
+template <typename... U, typename UP>
+struct join_traits <pack <U...>, UP> : seq_traits <
+	common <u_seq_ref <U>...>, join_length <U...>, UP,  // TODO: common & references
+	join_iter, join_trav
 > { };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename M, typename U, typename N = sz_rng_of_p <U>,
-	typename TR = traits_of <zip_traits <M, U> >
+	typename U, typename N = sz_rng_of_p <U>,
+	typename TR = traits_of <join_traits <U> >
 >
-struct zip_seq_impl;
+struct join_seq_impl;
 
-template <typename M, typename... U, size_t... N, typename TR>
-class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
-	public seq_base <zip_seq <M, U...>, TR, U...>
+template <typename... U, size_t... N, typename TR>
+class join_seq_impl <pack <U...>, sizes <N...>, TR> :
+	public seq_base <join_seq <U...>, TR, U...>
 {
-	using B = seq_base <zip_seq <M, U...>, TR, U...>;
+	using B = seq_base <join_seq <U...>, TR, U...>;
 	friend B;
 
 	using S = seq_size <TR>;
@@ -102,7 +106,7 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 public:
 	using B::B;
 
-	INLINE constexpr S size() const { return M().size(u<N>()...); }
+	INLINE constexpr S size() const { return val_sum(u<N>().size()...); }
 
 	INLINE           IR begin() &&     { return IR(u_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(u<N>().begin()...); }
@@ -115,23 +119,23 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename... G>
-	INLINE VR trav(G... g) && { return VR(u_f<N>().trav(g...)...); }
+	INLINE VR trav(G... g) && { return VR(0, u_f<N>().trav(g...)...); }
 
 	template <typename... G>
-	INLINE VL trav(G... g) & { return VL(u<N>().trav(g...)...); }
+	INLINE VL trav(G... g) & { return VL(0, u<N>().trav(g...)...); }
 
 	template <typename... G>
-	INLINE constexpr VC trav(G... g) const& { return VC(u<N>().trav(g...)...); }
+	INLINE constexpr VC trav(G... g) const& { return VC(0, u<N>().trav(g...)...); }
 
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename M, typename... U>
-struct sequence <tag::zip, M, U...> :
-	zip_seq_impl <M, pack <U...> >
+template <typename... U>
+struct sequence <tag::join, U...> :
+	join_seq_impl <pack <U...> >
 {
-	using zip_seq_impl <M, pack <U...> >::zip_seq_impl;
+	using join_seq_impl <pack <U...> >::join_seq_impl;
 };
 
 //-----------------------------------------------------------------------------
@@ -148,4 +152,4 @@ struct sequence <tag::zip, M, U...> :
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_VIEW_ZIP_HPP
+#endif  // IVL_CORE_ARRAY_VIEW_JOIN_HPP

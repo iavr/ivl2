@@ -4,6 +4,7 @@ doc/licenses/lgpl-3.0.txt
 .gitignore_src
 .ignore
 test/array/array
+test/array/test
 test/array/vec
 test/array/vec_op
 test/core/bind
