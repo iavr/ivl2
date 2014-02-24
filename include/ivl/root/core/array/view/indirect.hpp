@@ -84,6 +84,17 @@ class indirect_seq_impl :
 
 //-----------------------------------------------------------------------------
 
+	template <typename P>
+	INLINE VR _trav() && { return VR(i_f().trav(P()), u_f()); }
+
+	template <typename P>
+	INLINE VL _trav() & { return VL(i().trav(P()), u()); }
+
+	template <typename P>
+	INLINE constexpr VC _trav() const& { return VC(i().trav(P()), u()); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
@@ -96,17 +107,6 @@ public:
 	INLINE           IR end() &&     { return IR(i_f().end(), u_f()); }
 	INLINE           IL end() &      { return IL(i().end(),   u()); }
 	INLINE constexpr IC end() const& { return IC(i().end(),   u()); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... G>
-	INLINE VR trav(G... g) && { return VR(i_f().trav(g...), u_f()); }
-
-	template <typename... G>
-	INLINE VL trav(G... g) & { return VL(i().trav(g...), u()); }
-
-	template <typename... G>
-	INLINE constexpr VC trav(G... g) const& { return VC(i().trav(g...), u()); }
 
 };
 

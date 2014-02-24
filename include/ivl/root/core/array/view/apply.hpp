@@ -112,6 +112,17 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
+	template <typename P>
+	INLINE VR _trav() && { return VR(f_f(), a_f<N>().trav(P())...); }
+
+	template <typename P>
+	INLINE VL _trav() & { return VL(f(), a<N>().trav(P())...); }
+
+	template <typename P>
+	INLINE constexpr VC _trav() const& { return VC(f(), a<N>().trav(P())...); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
@@ -124,20 +135,6 @@ public:
 	INLINE           IR end() &&     { return IR(f_f(), a_f<N>().end()...); }
 	INLINE           IL end() &      { return IL(f(),   a<N>().end()...); }
 	INLINE constexpr IC end() const& { return IC(f(),   a<N>().end()...); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... G>
-	INLINE VR
-	trav(G... g) && { return VR(f_f(), a_f<N>().trav(g...)...); }
-
-	template <typename... G>
-	INLINE VL
-	trav(G... g) & { return VL(f(), a<N>().trav(g...)...); }
-
-	template <typename... G>
-	INLINE constexpr VC
-	trav(G... g) const& { return VC(f(), a<N>().trav(g...)...); }
 
 };
 

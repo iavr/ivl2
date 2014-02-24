@@ -97,14 +97,34 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 	using VL = l_trav <TR>;
 	using VC = c_trav <TR>;
 
-	using F = tag::flip;
-
 //-----------------------------------------------------------------------------
 
 	INLINE T*       b()       { return S::data(); }
 	INLINE const T* b() const { return S::data(); }
 	INLINE T*       e()       { return S::data() + N; }
 	INLINE const T* e() const { return S::data() + N; }
+
+//-----------------------------------------------------------------------------
+
+	template <typename P, only_if <!is_flip <P>()> = 0>
+	INLINE VR _trav() && { return VR(b(), e()); }
+
+	template <typename P, only_if <!is_flip <P>()> = 0>
+	INLINE VL _trav() & { return VL(b(), e()); }
+
+	template <typename P, only_if <!is_flip <P>()> = 0>
+	INLINE constexpr VC _trav() const& { return VC(b(), e()); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename P, only_if <is_flip <P>{}> = 0>
+	INLINE VR _trav() && { return VR(e() - 1, b() - 1); }
+
+	template <typename P, only_if <is_flip <P>{}> = 0>
+	INLINE VL _trav() & { return VL(e() - 1, b() - 1); }
+
+	template <typename P, only_if <is_flip <P>{}> = 0>
+	INLINE constexpr VC _trav() const& { return VC(e() - 1, b() - 1); }
 
 //-----------------------------------------------------------------------------
 
@@ -124,23 +144,6 @@ public:
 	INLINE           IR data() &&     { return IR(b()); }
 	INLINE           IL data() &      { return IL(b()); }
 	INLINE constexpr IC data() const& { return IC(b()); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... G>
-	INLINE VR trav(G...) && { return VR(b(), e()); }
-
-	template <typename... G>
-	INLINE VL trav(G...) & { return VL(b(), e()); }
-
-	template <typename... G>
-	INLINE constexpr VC trav(G...) const& { return VC(b(), e()); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE           VR trav(F) &&     { return VR(e() - 1, b() - 1); }
-	INLINE           VL trav(F) &      { return VL(e() - 1, b() - 1); }
-	INLINE constexpr VC trav(F) const& { return VC(e() - 1, b() - 1); }
 
 };
 

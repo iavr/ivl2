@@ -99,6 +99,17 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
+	template <typename P>
+	INLINE VR _trav() && { return VR(u_f<N>().trav(P())...); }
+
+	template <typename P>
+	INLINE VL _trav() & { return VL(u<N>().trav(P())...); }
+
+	template <typename P>
+	INLINE constexpr VC _trav() const& { return VC(u<N>().trav(P())...); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
@@ -111,17 +122,6 @@ public:
 	INLINE           IR end() &&     { return IR(u_f<N>().end()...); }
 	INLINE           IL end() &      { return IL(u<N>().end()...); }
 	INLINE constexpr IC end() const& { return IC(u<N>().end()...); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... G>
-	INLINE VR trav(G... g) && { return VR(u_f<N>().trav(g...)...); }
-
-	template <typename... G>
-	INLINE VL trav(G... g) & { return VL(u<N>().trav(g...)...); }
-
-	template <typename... G>
-	INLINE constexpr VC trav(G... g) const& { return VC(u<N>().trav(g...)...); }
 
 };
 

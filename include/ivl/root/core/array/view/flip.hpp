@@ -68,14 +68,34 @@ class flip_seq_impl :
 
 	using under = elem <0, U>;
 
-	using F = tag::flip;
-
 //-----------------------------------------------------------------------------
 
 	INLINE           r_ref <U> u_f()      { return under::fwd(); }
 	INLINE           r_ref <U> u() &&     { return under::fwd(); }
 	INLINE           l_ref <U> u() &      { return under::get(); }
 	INLINE constexpr c_ref <U> u() const& { return under::get(); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename P, only_if <!is_flip <P>()> = 0>
+	INLINE VR _trav() && { return VR(u_f().trav(flip_on <P>())); }
+
+	template <typename P, only_if <!is_flip <P>()> = 0>
+	INLINE VL _trav() & { return VL(u().trav(flip_on <P>())); }
+
+	template <typename P, only_if <!is_flip <P>()> = 0>
+	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_on <P>())); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename P, only_if <is_flip <P>{}> = 0>
+	INLINE VR _trav() && { return VR(u_f().trav(flip_off <P>())); }
+
+	template <typename P, only_if <is_flip <P>{}> = 0>
+	INLINE VL _trav() & { return VL(u().trav(flip_off <P>())); }
+
+	template <typename P, only_if <is_flip <P>{}> = 0>
+	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_off <P>())); }
 
 //-----------------------------------------------------------------------------
 
@@ -91,23 +111,6 @@ public:
 	INLINE           IR end() &&     { return IR(--u_f().begin()); }
 	INLINE           IL end() &      { return IL(--u().begin()); }
 	INLINE constexpr IC end() const& { return IC(--u().begin()); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... G>
-	INLINE VR trav(G...) && { return VR(u_f().trav(F())); }
-
-	template <typename... G>
-	INLINE VL trav(G...) & { return VL(u().trav(F())); }
-
-	template <typename... G>
-	INLINE constexpr VC trav(G...) const& { return VC(u().trav(F())); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE           VR trav(F) &&     { return VR(u_f().trav()); }
-	INLINE           VL trav(F) &      { return VL(u().trav()); }
-	INLINE constexpr VC trav(F) const& { return VC(u().trav()); }
 
 };
 

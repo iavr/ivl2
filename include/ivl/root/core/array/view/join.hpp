@@ -103,6 +103,17 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
+	template <typename P>
+	INLINE VR _trav() && { return VR(0, u_f<N>().trav(P())...); }
+
+	template <typename P>
+	INLINE VL _trav() & { return VL(0, u<N>().trav(P())...); }
+
+	template <typename P>
+	INLINE constexpr VC _trav() const& { return VC(0, u<N>().trav(P())...); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
@@ -115,17 +126,6 @@ public:
 	INLINE           IR end() &&     { return IR(0, u_f<N>().end()...); }
 	INLINE           IL end() &      { return IL(0, u<N>().end()...); }
 	INLINE constexpr IC end() const& { return IC(0, u<N>().end()...); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename... G>
-	INLINE VR trav(G... g) && { return VR(0, u_f<N>().trav(g...)...); }
-
-	template <typename... G>
-	INLINE VL trav(G... g) & { return VL(0, u<N>().trav(g...)...); }
-
-	template <typename... G>
-	INLINE constexpr VC trav(G... g) const& { return VC(0, u<N>().trav(g...)...); }
 
 };
 

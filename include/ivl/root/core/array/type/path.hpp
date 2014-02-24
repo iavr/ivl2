@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_VIEW_TAIL_HPP
-#define IVL_CORE_ARRAY_VIEW_TAIL_HPP
+#ifndef IVL_CORE_ARRAY_TYPE_PATH_HPP
+#define IVL_CORE_ARRAY_TYPE_PATH_HPP
 
 #include <ivl/ivl>
 
@@ -42,77 +42,60 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename U>
-using tail_length = if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
-
-template <typename U>
-using tail_traits = seq_traits <
-	u_seq_ref <U>, tail_length <U>, U, iter_iter, trav_trav
->;
-
-//-----------------------------------------------------------------------------
-
-template <typename U, typename TR = tail_traits <U> >
-class tail_seq_impl :
-	public seq_base <tail_seq <U>, TR, U>
+template <int R = 0, int B = 0, int F = 0>
+struct path_traits
 {
-	using B = seq_base <tail_seq <U>, TR, U>;
-	friend B;
-
-	using S = seq_size <TR>;
-
-	using IR = r_iter <TR>;
-	using IL = l_iter <TR>;
-	using IC = c_iter <TR>;
-
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
-
-	using under = elem <0, U>;
-
-//-----------------------------------------------------------------------------
-
-	INLINE           r_ref <U> u_f()      { return under::fwd(); }
-	INLINE           r_ref <U> u() &&     { return under::fwd(); }
-	INLINE           l_ref <U> u() &      { return under::get(); }
-	INLINE constexpr c_ref <U> u() const& { return under::get(); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename P>
-	INLINE VR _trav() && { return VR(++u_f().trav(P())); }
-
-	template <typename P>
-	INLINE VL _trav() & { return VL(++u().trav(P())); }
-
-	template <typename P>
-	INLINE VC _trav() const& { return VC(++u().trav(P())); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-
-	INLINE constexpr S size() const { return u().size() - 1; }
-
-	INLINE           IR begin() &&     { return IR(++u_f().begin()); }
-	INLINE           IL begin() &      { return IL(++u().begin()); }
-	INLINE constexpr IC begin() const& { return IC(++u().begin()); }
-
-	INLINE           IR end() &&     { return IR(u_f().end()); }
-	INLINE           IL end() &      { return IL(u().end()); }
-	INLINE constexpr IC end() const& { return IC(u().end()); }
-
+	static constexpr int flipped       = R;
+	static constexpr int bidirectional = B;
+	static constexpr int finite        = F;
 };
 
+using path = path_traits <>;
+
 //-----------------------------------------------------------------------------
 
-template <typename U>
-struct sequence <tag::tail, U> : tail_seq_impl <U>
-{
-	using tail_seq_impl <U>::tail_seq_impl;
-};
+template <typename P> using is_flip = expr <P::flipped>;
+template <typename P> using is_bi   = expr <P::bidirectional>;
+template <typename P> using is_fin  = expr <P::finite>;
+
+//-----------------------------------------------------------------------------
+
+template <int S, typename P> struct set_flip_t { };
+template <int S, typename P> struct set_bi_t   { };
+template <int S, typename P> struct set_fin_t  { };
+
+template <int SET, int R, int B, int F>
+struct set_flip_t <SET, path_traits <R, B, F> > :
+	id_t <path_traits <SET, B, F> > { };
+
+template <int SET, int R, int B, int F>
+struct set_bi_t <SET, path_traits <R, B, F> > :
+	id_t <path_traits <R, SET, F> > { };
+
+template <int SET, int R, int B, int F>
+struct set_fin_t <SET, path_traits <R, B, F> > :
+	id_t <path_traits <R, B, SET> > { };
+
+//-----------------------------------------------------------------------------
+
+template <int S, typename P>
+using set_flip = type_of <details::set_flip_t <S, P> >;
+
+template <int S, typename P>
+using set_bi = type_of <details::set_bi_t <S, P> >;
+
+template <int S, typename P>
+using set_fin = type_of <details::set_fin_t <S, P> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> using flip_on = set_flip <1, P>;
+template <typename P> using bi_on  = set_bi  <1, P>;
+template <typename P> using fin_on = set_fin <1, P>;
+
+template <typename P> using flip_off = set_flip <0, P>;
+template <typename P> using bi_off  = set_bi  <0, P>;
+template <typename P> using fin_off = set_fin <0, P>;
 
 //-----------------------------------------------------------------------------
 
@@ -128,4 +111,4 @@ struct sequence <tag::tail, U> : tail_seq_impl <U>
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_VIEW_TAIL_HPP
+#endif  // IVL_CORE_ARRAY_TYPE_PATH_HPP

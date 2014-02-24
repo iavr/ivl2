@@ -32,6 +32,7 @@
 
 #include "type/tag.hpp"
 #include "type/iter.hpp"
+#include "type/path.hpp"
 #include "type/sequence.hpp"
 #include "type/traits.hpp"
 
