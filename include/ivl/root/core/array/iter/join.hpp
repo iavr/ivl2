@@ -68,9 +68,12 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	using derived <D>::der_f;
 	using derived <D>::der;
 
+	using B::ref;
+
 //-----------------------------------------------------------------------------
 
 	static constexpr size_t L = sizeof...(V);
+	static constexpr size_t Z = size_t(-1);
 	size_t k;
 
 //-----------------------------------------------------------------------------
@@ -85,13 +88,19 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J, size_t K>
-	INLINE l_iter_pick <J, V...>
-	inc() { return J == K ? v<J>()++ : v<J>(); }
+	template <size_t K>
+	INLINE void next(size <K>) { if (!v<K>()) ++k, next(size <K + 1>()); }
+	INLINE void next(size <L>) { }
 
-	template <size_t J, size_t K>
-	INLINE l_iter_pick <J, V...>
-	dec() { return J == K ? v<J>()-- : v<J>(); }
+	template <size_t K>
+	INLINE void prev(size <K>) { if (!v<K>()) --k, prev(size <K - 1>()); }
+	INLINE void prev(size <Z>) { }
+
+	template <size_t K, typename... A>
+	INLINE D inc(A&&... a) { return next(size <K>()), D(K, fwd <A>(a)...); }
+
+	template <size_t K, typename... A>
+	INLINE D dec(A&&... a) { return prev(size <K>()), D(K, fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
@@ -101,12 +110,16 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	struct inc_r { };
 	struct dec_r { };
 
-	template <size_t K> INLINE R    _(deref) const { return *v<K>(); }
+	template <size_t K> INLINE R    _(deref) const { return ref(*v<K>()); }
 
-	template <size_t K> INLINE void _(inc_l) { ++v<K>() ? k : ++k; }
-	template <size_t K> INLINE void _(dec_l) { --v<K>() ? k : ++k; }
-	template <size_t K> INLINE D    _(inc_r) { return D(k, inc <N, K>()...); }
-	template <size_t K> INLINE D    _(dec_r) { return D(k, dec <N, K>()...); }
+	template <size_t K> INLINE void _(inc_l) { ++v<K>(), next(size <K>()); }
+	template <size_t K> INLINE void _(dec_l) { --v<K>(), prev(size <K>()); }
+
+	template <size_t K>
+	INLINE D _(inc_r) { return inc <K>(N == K ? v<N>()++ : v<N>()...); }
+
+	template <size_t K>
+	INLINE D _(dec_r) { return dec <K>(N == K ? v<N>()-- : v<N>()...); }
 
 	template <typename OP> using   op = afun::lookup_op <L, OP>;
 	template <typename OP> friend class afun::lookup_op_fun;
@@ -121,10 +134,10 @@ public:
 	INLINE constexpr R operator*()  const { return op <deref>()(k, der()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D&& operator++() && { return op <inc_l>()(k, der_f()), der_f(); }
-	INLINE D&  operator++() &  { return op <inc_l>()(k, der()),   der(); }
-	INLINE D&& operator--() && { return op <dec_l>()(k, der_f()), der_f(); }
-	INLINE D&  operator--() &  { return op <dec_l>()(k, der()),   der(); }
+	INLINE D&& operator++() && { return op <inc_l>()(k, der()), der_f(); }
+	INLINE D&  operator++() &  { return op <inc_l>()(k, der()), der(); }
+	INLINE D&& operator--() && { return op <dec_l>()(k, der()), der_f(); }
+	INLINE D&  operator--() &  { return op <dec_l>()(k, der()), der(); }
 
 	INLINE D operator++(int) { return op <inc_r>()(k, der()); }
 	INLINE D operator--(int) { return op <dec_r>()(k, der()); }
@@ -159,9 +172,12 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	using derived <D>::der_f;
 	using derived <D>::der;
 
+	using B::ref;
+
 //-----------------------------------------------------------------------------
 
 	static constexpr size_t L = sizeof...(V);
+	static constexpr size_t Z = size_t(-1);
 	size_t k;
 
 //-----------------------------------------------------------------------------
@@ -176,13 +192,23 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J, size_t K>
-	INLINE l_iter_pick <J, V...>
-	inc() { return J == K ? v<J>()++ : v<J>(); }  // TODO: k++
+	template <size_t K>
+	INLINE bool more_t(size <K>) const { return v<K>(); }
+	INLINE bool more_t(size <L>) const { return false; }
 
-	template <size_t J, size_t K>
-	INLINE l_iter_pick <J, V...>
-	dec() { return J == K ? v<J>()-- : v<J>(); }  // TODO: k--
+	template <size_t K>
+	INLINE void next(size <K>) { if (!v<K>()) ++k, next(size <K + 1>()); }
+	INLINE void next(size <L>) { }
+
+	template <size_t K>
+	INLINE void prev(size <K>) { if (!v<K>()) --k, prev(size <K - 1>()); }
+	INLINE void prev(size <Z>) { }
+
+	template <size_t K, typename... A>
+	INLINE D inc(A&&... a) { return next(size <K>()), D(K, fwd <A>(a)...); }
+
+	template <size_t K, typename... A>
+	INLINE D dec(A&&... a) { return prev(size <K>()), D(K, fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
@@ -193,15 +219,21 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	struct inc_r { };
 	struct dec_r { };
 
-	template <size_t K> INLINE bool _(more)  const { return v<K>(); }
-	template <size_t K> INLINE R    _(deref) const { return *v<K>(); }
+	template <size_t K> INLINE bool _(more)  const { return more_t(size <K>()); }
+	template <size_t K> INLINE R    _(deref) const { return ref(*v<K>()); }
 
-	template <size_t K> INLINE void _(inc_l) { ++v<K>() ? k : ++k; }
-	template <size_t K> INLINE void _(dec_l) { --v<K>() ? k : --k; }  // TODO: make "--v<K>() ?" work
-	template <size_t K> INLINE D    _(inc_r) { return D(k, inc <N, K>()...); }
-	template <size_t K> INLINE D    _(dec_r) { return D(k, dec <N, K>()...); }
+	template <size_t K> INLINE void _(inc_l) { ++v<K>(), next(size <K>()); }
+	template <size_t K> INLINE void _(dec_l) { --v<K>(), prev(size <K>()); }
+	// TODO: make "--v<K>() ?" work: traversor bounded at both ends; reset traversor at its begin/end
+
+	template <size_t K>
+	INLINE D _(inc_r) { return inc <K>(N == K ? v<N>()++ : v<N>()...); }
+
+	template <size_t K>
+	INLINE D _(dec_r) { return dec <K>(N == K ? v<N>()-- : v<N>()...); }
 
 	template <typename OP> using   op = afun::lookup_op <L, OP>;
+	template <typename OP> using op_t = afun::lookup_op <L + 1, OP>;
 	template <typename OP> friend class afun::lookup_op_fun;
 
 //-----------------------------------------------------------------------------
@@ -214,15 +246,15 @@ public:
 	// TODO: finite atom (unit)
 	static constexpr bool finite = _and <fin_trav <V>...>{}();  // TODO: () needed by GCC
 
-	INLINE constexpr operator bool() const { return op <more>()(k, der()); }
+	INLINE constexpr operator bool() const { return op_t <more>()(k, der()); }
 
 	INLINE constexpr R operator*()  const { return op <deref>()(k, der()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D&& operator++() && { return op <inc_l>()(k, der_f()), der_f(); }
-	INLINE D&  operator++() &  { return op <inc_l>()(k, der()),   der(); }
-	INLINE D&& operator--() && { return op <dec_l>()(k, der_f()), der_f(); }
-	INLINE D&  operator--() &  { return op <dec_l>()(k, der()),   der(); }
+	INLINE D&& operator++() && { return op <inc_l>()(k, der()), der_f(); }
+	INLINE D&  operator++() &  { return op <inc_l>()(k, der()), der(); }
+	INLINE D&& operator--() && { return op <dec_l>()(k, der()), der_f(); }
+	INLINE D&  operator--() &  { return op <dec_l>()(k, der()), der(); }
 
 	INLINE D operator++(int) { return op <inc_r>()(k, der()); }
 	INLINE D operator--(int) { return op <dec_r>()(k, der()); }

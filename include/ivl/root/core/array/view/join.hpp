@@ -51,7 +51,7 @@ struct join_traits;
 
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
-	common <u_seq_ref <U>...>, join_length <U...>, UP,  // TODO: common & references
+	seq_common <u_seq_ref <U>...>, join_length <U...>, UP,
 	join_iter, join_trav
 > { };
 
@@ -108,13 +108,13 @@ public:
 
 	INLINE constexpr S size() const { return val_sum(u<N>().size()...); }
 
-	INLINE           IR begin() &&     { return IR(u_f<N>().begin()...); }
-	INLINE           IL begin() &      { return IL(u<N>().begin()...); }
-	INLINE constexpr IC begin() const& { return IC(u<N>().begin()...); }
+	INLINE           IR begin() &&     { return IR(0, u_f<N>().begin()...); }
+	INLINE           IL begin() &      { return IL(0, u<N>().begin()...); }
+	INLINE constexpr IC begin() const& { return IC(0, u<N>().begin()...); }
 
-	INLINE           IR end() &&     { return IR(u_f<N>().end()...); }
-	INLINE           IL end() &      { return IL(u<N>().end()...); }
-	INLINE constexpr IC end() const& { return IC(u<N>().end()...); }
+	INLINE           IR end() &&     { return IR(0, u_f<N>().end()...); }
+	INLINE           IL end() &      { return IL(0, u<N>().end()...); }
+	INLINE constexpr IC end() const& { return IC(0, u<N>().end()...); }
 
 //-----------------------------------------------------------------------------
 

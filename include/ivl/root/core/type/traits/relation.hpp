@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+struct B;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -115,25 +116,69 @@ template <typename S, typename D> using is_conv = is_conv_ <S, D>;
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename A, typename B>
+using common_test = decltype(true ? gen <A>() : gen <B>());
+
+template <
+	typename A, typename B, typename T = common_test <A, B>,
+	bool = is_rref <A>() && is_rref <B>()
+>
+struct common_ : id_t <T> { };
+
+template <typename A, typename B, typename T>
+struct common_<A, B, T, false> : remove_rref_t <T> { };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
 template <typename P> struct common_pt;
 template <typename P> using  common_p = type_of <common_pt <P> >;
+
+template <typename... T> using common_t = common_pt <pack <T...> >;
+template <typename... T> using common = type_of <common_t <T...> >;
 
 template <template <typename...> class C, typename E>
 struct common_pt <C <E> > : id_t <E> { };
 
 template <template <typename...> class C, typename E, typename F>
-struct common_pt <C <E, F> > :
-	remove_ref_t <decltype(gen <bool>() ? gen <E>() : gen <F>())> { };
+struct common_pt <C <E, F> > : details::common_<E, F> { };
 
 template <
 	template <typename...> class C,
 	typename E, typename F, typename... G
 >
-struct common_pt <C <E, F, G...> > :
-	common_pt <C <common_p <C <E, F> >, G...> > { };
+struct common_pt <C <E, F, G...> > : common_pt <C <common <E, F>, G...> > { };
 
-template <typename... T> using common_t = common_pt <pack <T...> >;
-template <typename... T> using common = type_of <common_t <T...> >;
+//-----------------------------------------------------------------------------
+
+template <typename P>    struct has_common_p;
+template <typename... T> using  has_common = has_common_p <pack <T...> >;
+
+namespace details {
+
+template <bool C, typename E, typename F, typename... G>
+struct has_common_ : has_common <common <E, F>, G...> { };
+
+template <typename E, typename F, typename... G>
+struct has_common_<false, E, F, G...> : _false { };
+
+}  // namespace details
+
+template <template <typename...> class C, typename E>
+struct has_common_p <C <E> > : _true { };
+
+template <template <typename...> class C, typename E, typename F>
+struct has_common_p <C <E, F> > : sfinae <details::common_test, E, F> { };
+
+template <
+	template <typename...> class C,
+	typename E, typename F, typename... G
+>
+struct has_common_p <C <E, F, G...> > :
+	details::has_common_<has_common <E, F>{}, E, F, G...> { };
 
 //-----------------------------------------------------------------------------
 

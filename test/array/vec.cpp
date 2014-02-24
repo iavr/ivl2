@@ -21,7 +21,7 @@ struct
 {
 	template <
 		typename X, typename Y, typename Z,
-		typename A = array <common <X, Y, Z>, 3>
+		typename A = array <copy <common <X, Y, Z> >, 3>
 	>
 	A operator()(X&& x, Y&& y, Z&& z)
 		{ return A(fwd <Y>(y), fwd <Z>(z), fwd <X>(x)); }
@@ -150,17 +150,17 @@ void run()
 		cout << endl;
 	}
 
-	{
-		cout << "vec function instance" << endl;
-		using A = array <int, 4>;
-		using B = array <double, 4>;
-		cout << _[dist <double>](A{1, 2, 4, 8}, 6, B{5, 6, 7, 8}) << endl;
-		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
-			(A{1, 2, 4, 8}, 6, B{5, 6, 7, 8}) << endl;
-		_[fprint](A{1, 2, 3, 4});
-		cout << endl;
-		cout << endl;
-	}
+// 	{
+// 		cout << "vec function instance" << endl;
+// 		using A = array <int, 4>;
+// 		using B = array <double, 4>;
+// 		cout << _[dist <double>](A{1, 2, 4, 8}, 6, B{5, 6, 7, 8}) << endl;
+// 		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
+// 			(A{1, 2, 4, 8}, 6, B{5, 6, 7, 8}) << endl;
+// 		_[fprint](A{1, 2, 3, 4});
+// 		cout << endl;
+// 		cout << endl;
+// 	}
 
 }
 

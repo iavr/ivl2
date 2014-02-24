@@ -103,11 +103,6 @@ template <typename... E> using all_cref = all_cref_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P>    using all_cons_p = all_p <is_cons, P>;
-template <typename... E> using all_cons   = all_cons_p <pack <E...> >;
-
-//-----------------------------------------------------------------------------
-
 template <typename S, typename D>
 using tup_tx_t = base_opt_t <tx_lref <S, tx_cv <remove_ref <S>, D> >, D>;
 
@@ -185,6 +180,17 @@ template <size_t I, typename P> using c_pick_p = c_ref <pick_p <I, P> >;
 template <size_t I, typename... E> using r_pick = r_ref <pick <I, E...> >;
 template <size_t I, typename... E> using l_pick = l_ref <pick <I, E...> >;
 template <size_t I, typename... E> using c_pick = c_ref <pick <I, E...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename T>
+using r_switch = typename C::template map <r_ref <T> >;
+
+template <typename C, typename T>
+using l_switch = typename C::template map <l_ref <T> >;
+
+template <typename C, typename T>
+using c_switch = typename C::template map <c_ref <T> >;
 
 //-----------------------------------------------------------------------------
 

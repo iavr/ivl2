@@ -289,13 +289,21 @@ template <typename T> struct r_trav_t <_type <T> > : id_t <T> { };
 template <typename T> struct l_trav_t <_type <T> > : id_t <T> { };
 template <typename T> struct c_trav_t <_type <T> > : id_t <T> { };
 
-template <typename... A> struct r_iter_t <pack <A...> > : pack <r_iter <A>...> { };
-template <typename... A> struct l_iter_t <pack <A...> > : pack <l_iter <A>...> { };
-template <typename... A> struct c_iter_t <pack <A...> > : pack <c_iter <A>...> { };
+template <typename... A> struct r_iter_t <pack <A...> > : pack <r_iter <id_t <A> >...> { };
+template <typename... A> struct l_iter_t <pack <A...> > : pack <l_iter <id_t <A> >...> { };
+template <typename... A> struct c_iter_t <pack <A...> > : pack <c_iter <id_t <A> >...> { };
 
-template <typename... A> struct r_trav_t <pack <A...> > : pack <r_trav <A>...> { };
-template <typename... A> struct l_trav_t <pack <A...> > : pack <l_trav <A>...> { };
-template <typename... A> struct c_trav_t <pack <A...> > : pack <c_trav <A>...> { };
+template <typename... A> struct r_trav_t <pack <A...> > : pack <r_trav <id_t <A> >...> { };
+template <typename... A> struct l_trav_t <pack <A...> > : pack <l_trav <id_t <A> >...> { };
+template <typename... A> struct c_trav_t <pack <A...> > : pack <c_trav <id_t <A> >...> { };
+
+template <typename T> struct r_iter_t <id_t <T> > : r_switch <details::iter_sw, T> { };
+template <typename T> struct l_iter_t <id_t <T> > : l_switch <details::iter_sw, T> { };
+template <typename T> struct c_iter_t <id_t <T> > : c_switch <details::iter_sw, T> { };
+
+template <typename T> struct r_trav_t <id_t <T> > : r_switch <details::trav_sw, T> { };
+template <typename T> struct l_trav_t <id_t <T> > : l_switch <details::trav_sw, T> { };
+template <typename T> struct c_trav_t <id_t <T> > : c_switch <details::trav_sw, T> { };
 
 //-----------------------------------------------------------------------------
 
@@ -332,6 +340,10 @@ using c_iter_pick = c_iter_ref <pick <N, E...> >;
 //-----------------------------------------------------------------------------
 
 // extending definition @tuple/type/traits
+template <typename T> struct r_ref_t <_type <T> > : id_t <T> { };
+template <typename T> struct l_ref_t <_type <T> > : id_t <T> { };
+template <typename T> struct c_ref_t <_type <T> > : id_t <T> { };
+
 template <typename F, typename T>
 struct r_ref_t <F(_type <T>)> : bra_ret_t <r_ref <F>(r_ref <T>)> { };
 
@@ -340,6 +352,24 @@ struct l_ref_t <F(_type <T>)> : bra_ret_t <l_ref <F>(l_ref <T>)> { };
 
 template <typename F, typename T>
 struct c_ref_t <F(_type <T>)> : bra_ret_t <c_ref <F>(c_ref <T>)> { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T, bool = is_ref <T>()>
+struct seq_result_ : id_t <T> { };
+
+template <typename T>
+struct seq_result_<T, false> : _type <T> { };
+
+}  // namespace details
+
+template <typename T> using seq_result_t = details::seq_result_<T>;
+template <typename T> using seq_result = type_of <seq_result_t <T> >;
+
+template <typename... T> using seq_common_t = seq_result_t <common <T...> >;
+template <typename... T> using seq_common = type_of <seq_common_t <T...> >;
 
 //-----------------------------------------------------------------------------
 

@@ -68,14 +68,23 @@ template <typename T> using add_uref_t = details::add_uref_<T>;
 template <typename T> using add_rref_t = details::add_rref_<T>;
 template <typename T> using add_lref_t = details::add_lref_<T>;
 
+template <typename T> struct remove_rref_t       : id_t <T> { };
+template <typename T> struct remove_rref_t <T&&> : id_t <T> { };
+
+template <typename T> struct remove_lref_t       : id_t <T> { };
+template <typename T> struct remove_lref_t <T&>  : id_t <T> { };
+
 template <typename T> struct remove_ref_t       : id_t <T> { };
 template <typename T> struct remove_ref_t <T&>  : id_t <T> { };
 template <typename T> struct remove_ref_t <T&&> : id_t <T> { };
 
-template <typename T> using add_uref   = type_of <add_uref_t   <T> >;
-template <typename T> using add_rref   = type_of <add_rref_t   <T> >;
-template <typename T> using add_lref   = type_of <add_lref_t   <T> >;
-template <typename T> using remove_ref = type_of <remove_ref_t <T> >;
+template <typename T> using add_uref = type_of <add_uref_t <T> >;
+template <typename T> using add_rref = type_of <add_rref_t <T> >;
+template <typename T> using add_lref = type_of <add_lref_t <T> >;
+
+template <typename T> using remove_rref = type_of <remove_rref_t <T> >;
+template <typename T> using remove_lref = type_of <remove_lref_t <T> >;
+template <typename T> using remove_ref  = type_of <remove_ref_t  <T> >;
 
 //-----------------------------------------------------------------------------
 
