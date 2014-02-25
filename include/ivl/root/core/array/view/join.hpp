@@ -103,14 +103,14 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
-	template <typename P>
-	INLINE VR _trav() && { return VR(0, u_f<N>().trav(P())...); }
+	template <typename Q>
+	INLINE VR _trav() && { return VR(0, u_f<N>().trav(Q())...); }
 
-	template <typename P>
-	INLINE VL _trav() & { return VL(0, u<N>().trav(P())...); }
+	template <typename Q>
+	INLINE VL _trav() & { return VL(0, u<N>().trav(Q())...); }
 
-	template <typename P>
-	INLINE constexpr VC _trav() const& { return VC(0, u<N>().trav(P())...); }
+	template <typename Q>
+	INLINE constexpr VC _trav() const& { return VC(0, u<N>().trav(Q())...); }
 
 //-----------------------------------------------------------------------------
 

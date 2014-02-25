@@ -115,6 +115,7 @@ void run()
 		B <3> b = {-3.14, 12.71, -8e3};
 		A <3> c = {-3.14, 12.71, -8e3};
 		cout << join(a, b, A <>(), A <2>{0, 1}) << endl;
+		cout << join(A <>(), a, b, A <>(), A <2>{0, 1}, A <>()) << endl;
 		cout << join(a, b) << endl;
 		*join(a, c).begin() = 20;
 		cout << a << endl;

@@ -96,17 +96,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	template <typename P = path>
-	INLINE VR trav(P p = path()) &&
-		{ return der_f().template _trav <P>(); }
+	template <typename Q = path>
+	INLINE VR trav(Q q = path()) &&
+		{ return der_f().template _trav <Q>(); }
 
-	template <typename P = path>
-	INLINE VL trav(P p = path()) &
-		{ return der().template _trav <P>(); }
+	template <typename Q = path>
+	INLINE VL trav(Q q = path()) &
+		{ return der().template _trav <Q>(); }
 
-	template <typename P = path>
-	INLINE constexpr VC trav(P p = path()) const&
-		{ return der().template _trav <P>(); }
+	template <typename Q = path>
+	INLINE constexpr VC trav(Q q = path()) const&
+		{ return der().template _trav <Q>(); }
 
 //-----------------------------------------------------------------------------
 

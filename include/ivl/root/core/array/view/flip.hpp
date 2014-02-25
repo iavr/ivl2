@@ -77,25 +77,25 @@ class flip_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	template <typename P, only_if <!is_flip <P>()> = 0>
-	INLINE VR _trav() && { return VR(u_f().trav(flip_on <P>())); }
+	template <typename Q, only_if <!is_flip <Q>()> = 0>
+	INLINE VR _trav() && { return VR(u_f().trav(flip_on <Q>())); }
 
-	template <typename P, only_if <!is_flip <P>()> = 0>
-	INLINE VL _trav() & { return VL(u().trav(flip_on <P>())); }
+	template <typename Q, only_if <!is_flip <Q>()> = 0>
+	INLINE VL _trav() & { return VL(u().trav(flip_on <Q>())); }
 
-	template <typename P, only_if <!is_flip <P>()> = 0>
-	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_on <P>())); }
+	template <typename Q, only_if <!is_flip <Q>()> = 0>
+	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_on <Q>())); }
 
 //-----------------------------------------------------------------------------
 
-	template <typename P, only_if <is_flip <P>{}> = 0>
-	INLINE VR _trav() && { return VR(u_f().trav(flip_off <P>())); }
+	template <typename Q, only_if <is_flip <Q>{}> = 0>
+	INLINE VR _trav() && { return VR(u_f().trav(flip_off <Q>())); }
 
-	template <typename P, only_if <is_flip <P>{}> = 0>
-	INLINE VL _trav() & { return VL(u().trav(flip_off <P>())); }
+	template <typename Q, only_if <is_flip <Q>{}> = 0>
+	INLINE VL _trav() & { return VL(u().trav(flip_off <Q>())); }
 
-	template <typename P, only_if <is_flip <P>{}> = 0>
-	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_off <P>())); }
+	template <typename Q, only_if <is_flip <Q>{}> = 0>
+	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_off <Q>())); }
 
 //-----------------------------------------------------------------------------
 

@@ -99,14 +99,14 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
-	template <typename P>
-	INLINE VR _trav() && { return VR(u_f<N>().trav(P())...); }
+	template <typename Q>
+	INLINE VR _trav() && { return VR(u_f<N>().trav(Q())...); }
 
-	template <typename P>
-	INLINE VL _trav() & { return VL(u<N>().trav(P())...); }
+	template <typename Q>
+	INLINE VL _trav() & { return VL(u<N>().trav(Q())...); }
 
-	template <typename P>
-	INLINE constexpr VC _trav() const& { return VC(u<N>().trav(P())...); }
+	template <typename Q>
+	INLINE constexpr VC _trav() const& { return VC(u<N>().trav(Q())...); }
 
 //-----------------------------------------------------------------------------
 

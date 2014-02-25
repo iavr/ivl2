@@ -94,14 +94,14 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	template <typename... P>
-	INLINE VR trav(P...) && { return VR(val_f()); }
+	template <typename... Q>
+	INLINE VR trav(Q...) && { return VR(val_f()); }
 
-	template <typename... P>
-	INLINE VL trav(P...) & { return VL(val()); }
+	template <typename... Q>
+	INLINE VL trav(Q...) & { return VL(val()); }
 
-	template <typename... P>
-	INLINE constexpr VC trav(P...) const& { return VC(val()); }
+	template <typename... Q>
+	INLINE constexpr VC trav(Q...) const& { return VC(val()); }
 
 };
 

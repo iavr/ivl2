@@ -212,18 +212,20 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 
 //-----------------------------------------------------------------------------
 
-	struct more { };
-	struct deref { };
-	struct inc_l { };
-	struct dec_l { };
-	struct inc_r { };
-	struct dec_r { };
+	struct more    { };
+	struct deref   { };
+	struct advance { };
+	struct inc_l   { };
+	struct dec_l   { };
+	struct inc_r   { };
+	struct dec_r   { };
 
 	template <size_t K> INLINE bool _(more)  const { return more_t(size <K>()); }
 	template <size_t K> INLINE R    _(deref) const { return ref(*v<K>()); }
 
-	template <size_t K> INLINE void _(inc_l) { ++v<K>(), next(size <K>()); }
-	template <size_t K> INLINE void _(dec_l) { --v<K>(), prev(size <K>()); }
+	template <size_t K> INLINE void _(advance) { next(size <K>()); }
+	template <size_t K> INLINE void _(inc_l)   { ++v<K>(), next(size <K>()); }
+	template <size_t K> INLINE void _(dec_l)   { --v<K>(), prev(size <K>()); }
 	// TODO: make "--v<K>() ?" work: traversor bounded at both ends; reset traversor at its begin/end
 
 	template <size_t K>
@@ -240,8 +242,8 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 
 public:
 	template <typename... A>
-	INLINE constexpr join_trav_impl(size_t k, A&&... a) :
-		k(k), B(fwd <A>(a)...) { }
+	INLINE join_trav_impl(size_t k, A&&... a) :
+		k(k), B(fwd <A>(a)...) { op <advance>()(k, der()); }
 
 	// TODO: finite atom (unit)
 	static constexpr bool finite = _and <fin_trav <V>...>{}();  // TODO: () needed by GCC
