@@ -199,12 +199,12 @@ struct seq_diff_t <pack <I...> > : common_t <seq_diff <I>...> { };
 
 namespace details {
 
-template <typename A> struct r_seq_ref_ : id_t <typename A::fwd_reference> { };
-template <typename A> struct l_seq_ref_ : id_t <typename A::reference> { };
-template <typename A> struct c_seq_ref_ : id_t <typename A::const_reference> { };
+template <typename A> struct r_seq_ref_ : id_t <typename A::r_reference> { };
+template <typename A> struct l_seq_ref_ : id_t <typename A::l_reference> { };
+template <typename A> struct c_seq_ref_ : id_t <typename A::c_reference> { };
 
-template <typename A> struct l_seq_ptr_ : id_t <typename A::pointer> { };
-template <typename A> struct c_seq_ptr_ : id_t <typename A::const_pointer> { };
+template <typename A> struct l_seq_ptr_ : id_t <typename A::l_pointer> { };
+template <typename A> struct c_seq_ptr_ : id_t <typename A::c_pointer> { };
 
 template <typename T> struct r_seq_ref_<T*> : id_t <T&> { };
 template <typename T> struct l_seq_ref_<T*> : id_t <T&> { };
@@ -240,13 +240,13 @@ template <typename T> using c_seq_ptr = type_of <c_seq_ptr_t <T> >;
 
 namespace details {
 
-template <typename A> struct r_iter_ : id_t <typename A::fwd_iterator> { };
-template <typename A> struct l_iter_ : id_t <typename A::iterator> { };
-template <typename A> struct c_iter_ : id_t <typename A::const_iterator> { };
+template <typename A> struct r_iter_ : id_t <typename A::r_iterator> { };
+template <typename A> struct l_iter_ : id_t <typename A::l_iterator> { };
+template <typename A> struct c_iter_ : id_t <typename A::c_iterator> { };
 
-template <typename A> struct r_trav_ : id_t <typename A::fwd_traversor> { };
-template <typename A> struct l_trav_ : id_t <typename A::traversor> { };
-template <typename A> struct c_trav_ : id_t <typename A::const_traversor> { };
+template <typename A> struct r_trav_ : id_t <typename A::r_traversor> { };
+template <typename A> struct l_trav_ : id_t <typename A::l_traversor> { };
+template <typename A> struct c_trav_ : id_t <typename A::c_traversor> { };
 
 template <typename T> struct r_iter_<T*> : id_t <T*> { };
 template <typename T> struct l_iter_<T*> : id_t <T*> { };

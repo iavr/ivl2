@@ -93,28 +93,37 @@ struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
 	using length_type = L;
 	using size_type = S;
 
-	using fwd_iterator   = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
-	using iterator       = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
-	using const_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
+	using r_iterator = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
+	using l_iterator = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
+	using c_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
 
-	using fwd_traversor   = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
-	using traversor       = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
-	using const_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
+	using r_traversor = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
+	using l_traversor = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
+	using c_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
 
-	using fwd_reference   = seq_ref <fwd_iterator>;
-	using reference       = seq_ref <iterator>;
-	using const_reference = seq_ref <const_iterator>;
+	using r_reference = seq_ref <r_iterator>;
+	using l_reference = seq_ref <l_iterator>;
+	using c_reference = seq_ref <c_iterator>;
 
-	using pointer         = seq_ptr <iterator>;
-	using const_pointer   = seq_ptr <const_iterator>;
+	using l_pointer = seq_ptr <l_iterator>;
+	using c_pointer = seq_ptr <c_iterator>;
 
-	using difference_type = seq_diff <iterator>;
+	using difference_type = seq_diff <l_iterator>;
 
-	static constexpr bool   finite = traversor::finite;
+	static constexpr bool   finite = l_traversor::finite;
 	static constexpr bool   fixed  = is_size <L>();
 	static constexpr size_t length = to_size <L>();
 
 	using seq_tuple <E...>::seq_tuple;
+
+//-----------------------------------------------------------------------------
+
+	using iterator        = l_iterator;
+	using const_iterator  = c_iterator;
+	using reference       = l_reference;
+	using const_reference = c_reference;
+	using pointer         = l_pointer;
+	using const_pointer   = c_pointer;
 };
 
 //-----------------------------------------------------------------------------
