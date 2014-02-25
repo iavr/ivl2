@@ -52,7 +52,7 @@ class iter_common : public derived <D>, public iter_store <TR, E...>
 
 protected:
 	template <typename A>
-	INLINE constexpr R ref(A&& a) const { return static_cast <R>(a); }
+	INLINE constexpr R cast(A&& a) const { return static_cast <R>(a); }
 
 public:
 	using iter_store <TR, E...>::iter_store;

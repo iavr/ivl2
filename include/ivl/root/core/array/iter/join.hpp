@@ -68,7 +68,7 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	using derived <D>::der_f;
 	using derived <D>::der;
 
-	using B::ref;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	struct inc_r { };
 	struct dec_r { };
 
-	template <size_t K> INLINE R    _(deref) const { return ref(*v<K>()); }
+	template <size_t K> INLINE R    _(deref) const { return cast(*v<K>()); }
 
 	template <size_t K> INLINE void _(inc_l) { ++v<K>(), next(size <K>()); }
 	template <size_t K> INLINE void _(dec_l) { --v<K>(), prev(size <K>()); }
@@ -172,7 +172,7 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	using derived <D>::der_f;
 	using derived <D>::der;
 
-	using B::ref;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
@@ -221,7 +221,7 @@ class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 	struct dec_r   { };
 
 	template <size_t K> INLINE bool _(more)  const { return more_t(size <K>()); }
-	template <size_t K> INLINE R    _(deref) const { return ref(*v<K>()); }
+	template <size_t K> INLINE R    _(deref) const { return cast(*v<K>()); }
 
 	template <size_t K> INLINE void _(advance) { next(size <K>()); }
 	template <size_t K> INLINE void _(inc_l)   { ++v<K>(), next(size <K>()); }

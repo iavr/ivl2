@@ -57,7 +57,7 @@ class iter_iter_impl : public iter_base <D, TR, I>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ class iter_iter_impl : public iter_base <D, TR, I>
 public:
 	using B::B;
 
-	INLINE constexpr R operator*()  const { return ref(*i()); }
+	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return ++i(), der_f(); }
@@ -80,7 +80,7 @@ public:
 	INLINE D operator++(int) { return D(i()++); }
 	INLINE D operator--(int) { return D(i()--); }
 
-	INLINE constexpr R operator[](d n) const { return ref(i()[n]); }
+	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
 
 	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
 	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
@@ -112,7 +112,7 @@ class iter_trav_impl : public trav_base <D, TR, I, I>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
@@ -131,7 +131,7 @@ public:
 
 	INLINE constexpr operator bool() const { return i() != e(); }
 
-	INLINE constexpr R operator*()  const { return ref(*i()); }
+	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return ++i(), der_f(); }
@@ -142,7 +142,7 @@ public:
 	INLINE D operator++(int) { return D(i()++, e()); }
 	INLINE D operator--(int) { return D(i()--, e()); }
 
-	INLINE constexpr R operator[](d n) const { return ref(i()[n]); }
+	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
 
 	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
 	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
@@ -170,7 +170,7 @@ class trav_trav_impl : public trav_base <D, TR, V>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	using B::ref;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE constexpr R operator*()  const { return ref(*v()); }
+	INLINE constexpr R operator*()  const { return cast(*v()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return ++v(), der_f(); }
@@ -197,7 +197,7 @@ public:
 	INLINE D operator++(int) { return D(v()++); }
 	INLINE D operator--(int) { return D(v()--); }
 
-	INLINE constexpr R operator[](d n) const { return ref(v()[n]); }
+	INLINE constexpr R operator[](d n) const { return cast(v()[n]); }
 
 	INLINE D&& operator+=(d n) && { return v() += n, der_f(); }
 	INLINE D&  operator+=(d n) &  { return v() += n, der(); }
