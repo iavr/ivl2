@@ -65,9 +65,9 @@ class tail_seq_impl :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 	using under = elem <0, U>;
 
@@ -80,14 +80,14 @@ class tail_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	template <typename P>
-	INLINE VR _trav() && { return VR(++u_f().trav(P())); }
+	template <typename Q>
+	INLINE VR <Q> _trav() && { return VR <Q>(++u_f().trav(Q())); }
 
-	template <typename P>
-	INLINE VL _trav() & { return VL(++u().trav(P())); }
+	template <typename Q>
+	INLINE VL <Q> _trav() & { return VL <Q>(++u().trav(Q())); }
 
-	template <typename P>
-	INLINE VC _trav() const& { return VC(++u().trav(P())); }
+	template <typename Q>
+	INLINE VC <Q> _trav() const& { return VC <Q>(++u().trav(Q())); }
 
 //-----------------------------------------------------------------------------
 

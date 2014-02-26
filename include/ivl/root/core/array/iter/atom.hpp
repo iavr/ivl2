@@ -90,8 +90,8 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T,
-	typename D = atom_trav <I, R, T>,
+	typename Q, typename I, typename R, typename T,
+	typename D = atom_trav <Q, I, R, T>,
 	typename TR = iter_traits <I, R, T, size_t>
 >
 class atom_trav_impl : public trav_base <D, TR, T>
@@ -138,17 +138,19 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T>
-struct iterator <tag::atom, I, R, T> : atom_iter_impl <I, R, T>
+struct iterator <tag::atom, I, R, T> :
+	atom_iter_impl <I, R, T>
 {
 	using atom_iter_impl <I, R, T>::atom_iter_impl;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T>
-struct traversor <tag::atom, V, R, T> : atom_trav_impl <V, R, T>
+template <typename Q, typename V, typename R, typename T>
+struct traversor <tag::atom, Q, V, R, T> :
+	atom_trav_impl <Q, V, R, T>
 {
-	using atom_trav_impl <V, R, T>::atom_trav_impl;
+	using atom_trav_impl <Q, V, R, T>::atom_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

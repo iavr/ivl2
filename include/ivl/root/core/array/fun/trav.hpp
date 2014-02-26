@@ -42,48 +42,58 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename Q>
 struct seq_trav
 {
 	template <typename A>
 	INLINE auto operator()(A&& a) const
-	-> decltype(fwd <A>(a).trav())
-		{ return fwd <A>(a).trav(); }
+	-> decltype(fwd <A>(a).trav(Q()))
+		{ return fwd <A>(a).trav(Q()); }
 };
 
+template <typename Q>
 struct cont_trav
 {
 	template <typename A, typename I = begin_of <A> >
-	INLINE constexpr iter_trav <I>
+	INLINE constexpr iter_trav <Q, I>
 	operator()(A&& a) const
-		{ return iter_trav <I>(begin(fwd <A>(a)), end(fwd <A>(a))); }
+		{ return iter_trav <Q, I>(begin(fwd <A>(a)), end(fwd <A>(a))); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename A>
-using trav_sw = _switch <
-	_case <is_trav <A>{}, id_fun>,
-	_case <as_seq <A>{},  seq_trav>,
-	make <atom_trav>
+template <typename Q>
+using trav_sw = t_switch <
+	t_case <is_trav, id_fun>,
+	t_case <as_seq,  seq_trav <Q> >,
+	t_else <make <inf_atom_trav> >
 >;
 
-template <typename A>
-using raw_trav_sw = _switch <
-	_case <is_iter <A>{}, id_fun>,
-	_case <as_seq <A>{},  seq_trav>,
-	_case <is_cont <A>{}, cont_trav>,
-	make <atom_trav>
+template <typename Q>
+using raw_trav_sw = t_switch <
+	t_case <is_iter, id_fun>,
+	t_case <as_seq,  seq_trav <Q> >,
+	t_case <is_cont, cont_trav <Q> >,
+	t_else <make <inf_atom_trav> >
 >;
 
-using trav     = switch_fun <trav_sw>;
-using raw_trav = switch_fun <raw_trav_sw>;
+template <typename Q = path>
+using trav_on = switch_fun_of <trav_sw <Q> >;
+
+template <typename Q = path>
+using raw_trav_on = switch_fun_of <raw_trav_sw <Q> >;
+
+using trav     = trav_on <>;
+using raw_trav = raw_trav_on <>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
 using details::trav;
+using details::trav_on;
 using details::raw_trav;
+using details::raw_trav_on;
 
 //-----------------------------------------------------------------------------
 

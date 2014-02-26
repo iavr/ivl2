@@ -97,8 +97,8 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T,
-	typename D = iter_trav <I, R, T>,
+	typename Q, typename I, typename R, typename T,
+	typename D = iter_trav <Q, I, R, T>,
 	typename TR = iter_traits <I, R, T>
 >
 class iter_trav_impl : public trav_base <D, TR, I, I>
@@ -156,8 +156,8 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T,
-	typename D = trav_trav <V, R, T>,
+	typename Q, typename V, typename R, typename T,
+	typename D = trav_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>
 >
 class trav_trav_impl : public trav_base <D, TR, V>
@@ -211,25 +211,28 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T>
-struct iterator <tag::iter, I, R, T> : iter_iter_impl <I, R, T>
+struct iterator <tag::iter, I, R, T> :
+	iter_iter_impl <I, R, T>
 {
 	using iter_iter_impl <I, R, T>::iter_iter_impl;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T>
-struct traversor <tag::iter, V, R, T> : iter_trav_impl <V, R, T>
+template <typename Q, typename V, typename R, typename T>
+struct traversor <tag::iter, Q, V, R, T> :
+	iter_trav_impl <Q, V, R, T>
 {
-	using iter_trav_impl <V, R, T>::iter_trav_impl;
+	using iter_trav_impl <Q, V, R, T>::iter_trav_impl;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T>
-struct traversor <tag::trav, V, R, T> : trav_trav_impl <V, R, T>
+template <typename Q, typename V, typename R, typename T>
+struct traversor <tag::trav, Q, V, R, T> :
+	trav_trav_impl <Q, V, R, T>
 {
-	using trav_trav_impl <V, R, T>::trav_trav_impl;
+	using trav_trav_impl <Q, V, R, T>::trav_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

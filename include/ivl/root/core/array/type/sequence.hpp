@@ -89,11 +89,11 @@ using zip_sequence = zip_seq <M, seq_atom_of <U>...>;
 template <typename... U>
 using join_sequence = join_seq <seq_atom_of <U>...>;
 
-template <typename M> using apply_seq_on      = bind <apply_seq, M>;
-template <typename M> using apply_sequence_on = bind <apply_sequence, M>;
+template <typename M> using apply_seq_by      = bind <apply_seq, M>;
+template <typename M> using apply_sequence_by = bind <apply_sequence, M>;
 
-template <typename M> using zip_seq_on      = bind <zip_seq, M>;
-template <typename M> using zip_sequence_on = bind <zip_sequence, M>;
+template <typename M> using zip_seq_by      = bind <zip_seq, M>;
+template <typename M> using zip_sequence_by = bind <zip_sequence, M>;
 
 //-----------------------------------------------------------------------------
 
@@ -127,15 +127,15 @@ using details::flip_seq;
 using details::indirect_seq;
 
 using details::apply_seq;
-using details::apply_seq_on;
+using details::apply_seq_by;
 using details::zip_seq;
-using details::zip_seq_on;
+using details::zip_seq_by;
 using details::join_seq;
 
 using details::apply_sequence;
-using details::apply_sequence_on;
+using details::apply_sequence_by;
 using details::zip_sequence;
-using details::zip_sequence_on;
+using details::zip_sequence_by;
 using details::join_sequence;
 
 //-----------------------------------------------------------------------------

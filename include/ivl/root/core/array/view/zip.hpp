@@ -48,7 +48,7 @@ struct zip_traits;
 template <typename M, typename... U, typename UP>
 struct zip_traits <M, pack <U...>, UP> : seq_traits <
 	pack <u_seq_ref <U>...>, apply_length <U...>, UP,
-	zip_iter, zip_trav, seq_size <UP>, M
+	zip_iter, zip_trav, id, seq_size <UP>, M
 > { };
 
 //-----------------------------------------------------------------------------
@@ -72,9 +72,9 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 	template <size_t K>
 	using under = elem_at <K, U...>;
@@ -100,13 +100,16 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VR _trav() && { return VR(u_f<N>().trav(Q())...); }
+	INLINE VR <Q>
+	_trav() && { return VR <Q>(u_f<N>().trav(Q())...); }
 
 	template <typename Q>
-	INLINE VL _trav() & { return VL(u<N>().trav(Q())...); }
+	INLINE VL <Q>
+	_trav() & { return VL <Q>(u<N>().trav(Q())...); }
 
 	template <typename Q>
-	INLINE constexpr VC _trav() const& { return VC(u<N>().trav(Q())...); }
+	INLINE constexpr VC <Q>
+	_trav() const& { return VC <Q>(u<N>().trav(Q())...); }
 
 //-----------------------------------------------------------------------------
 

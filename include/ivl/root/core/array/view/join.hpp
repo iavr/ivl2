@@ -76,9 +76,9 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 	template <size_t K>
 	using under = elem_at <K, U...>;
@@ -104,13 +104,16 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VR _trav() && { return VR(0, u_f<N>().trav(Q())...); }
+	INLINE VR <Q>
+	_trav() && { return VR <Q>(0, u_f<N>().trav(Q())...); }
 
 	template <typename Q>
-	INLINE VL _trav() & { return VL(0, u<N>().trav(Q())...); }
+	INLINE VL <Q>
+	_trav() & { return VL <Q>(0, u<N>().trav(Q())...); }
 
 	template <typename Q>
-	INLINE constexpr VC _trav() const& { return VC(0, u<N>().trav(Q())...); }
+	INLINE constexpr VC <Q>
+	_trav() const& { return VC <Q>(0, u<N>().trav(Q())...); }
 
 //-----------------------------------------------------------------------------
 

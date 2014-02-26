@@ -115,17 +115,17 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T, typename M,
-	typename N = sz_rng_of_p <V>, typename D = zip_trav <V, R, T, M>,
+	typename Q, typename V, typename R, typename T, typename M,
+	typename N = sz_rng_of_p <V>, typename D = zip_trav <Q, V, R, T, M>,
 	typename TR = iter_traits <V, R, T>
 >
 struct zip_trav_impl;
 
 template <
-	typename... V, typename R, typename T, typename M,
+	typename Q, typename... V, typename R, typename T, typename M,
 	size_t... N, typename D, typename TR
 >
-class zip_trav_impl <pack <V...>, R, T, M, sizes <N...>, D, TR> :
+class zip_trav_impl <Q, pack <V...>, R, T, M, sizes <N...>, D, TR> :
 	public trav_base <D, TR, V...>
 {
 	using B = trav_base <D, TR, V...>;
@@ -194,11 +194,11 @@ struct iterator <tag::zip, I, R, T, M> :
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T, typename M>
-struct traversor <tag::zip, V, R, T, M> :
-	zip_trav_impl <V, R, T, M>
+template <typename Q, typename V, typename R, typename T, typename M>
+struct traversor <tag::zip, Q, V, R, T, M> :
+	zip_trav_impl <Q, V, R, T, M>
 {
-	using zip_trav_impl <V, R, T, M>::zip_trav_impl;
+	using zip_trav_impl <Q, V, R, T, M>::zip_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

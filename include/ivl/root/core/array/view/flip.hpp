@@ -44,7 +44,7 @@ namespace details {
 
 template <typename U>
 using flip_traits = seq_traits <
-	u_seq_ref <U>, seq_length <U>, U, flip_iter, flip_trav
+	u_seq_ref <U>, seq_length <U>, U, flip_iter, flip_trav, not_flip
 >;
 
 //-----------------------------------------------------------------------------
@@ -62,9 +62,9 @@ class flip_seq_impl :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 	using under = elem <0, U>;
 
@@ -77,25 +77,17 @@ class flip_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE VR _trav() && { return VR(u_f().trav(flip_on <Q>())); }
+	template <typename Q>
+	INLINE VR <Q>
+	_trav() && { return VR <Q>(u_f().trav(not_flip <Q>())); }
 
-	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE VL _trav() & { return VL(u().trav(flip_on <Q>())); }
+	template <typename Q>
+	INLINE VL <Q>
+	_trav() & { return VL <Q>(u().trav(not_flip <Q>())); }
 
-	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_on <Q>())); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE VR _trav() && { return VR(u_f().trav(flip_off <Q>())); }
-
-	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE VL _trav() & { return VL(u().trav(flip_off <Q>())); }
-
-	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE constexpr VC _trav() const& { return VC(u().trav(flip_off <Q>())); }
+	template <typename Q>
+	INLINE constexpr VC <Q>
+	_trav() const& { return VC <Q>(u().trav(not_flip <Q>())); }
 
 //-----------------------------------------------------------------------------
 

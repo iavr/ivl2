@@ -207,9 +207,9 @@ template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
 //-----------------------------------------------------------------------------
 
 template <
-	template <typename> class R,
-	template <typename> class L,
-	template <typename> class C
+	template <typename...> class R,
+	template <typename...> class L,
+	template <typename...> class C
 >
 struct switch_ref
 {

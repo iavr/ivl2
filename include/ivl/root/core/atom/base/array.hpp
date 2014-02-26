@@ -71,9 +71,9 @@ class atom_base <T, tag::seq, b> :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 //-----------------------------------------------------------------------------
 
@@ -94,14 +94,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	template <typename... Q>
-	INLINE VR trav(Q...) && { return VR(val_f()); }
+	template <typename Q = path>
+	INLINE VR <Q>
+	trav(Q q = path()) && { return VR <Q>(val_f()); }
 
-	template <typename... Q>
-	INLINE VL trav(Q...) & { return VL(val()); }
+	template <typename Q = path>
+	INLINE VL <Q>
+	trav(Q q = path()) & { return VL <Q>(val()); }
 
-	template <typename... Q>
-	INLINE constexpr VC trav(Q...) const& { return VC(val()); }
+	template <typename Q = path>
+	INLINE constexpr VC <Q>
+	trav(Q q = path()) const& { return VC <Q>(val()); }
 
 };
 

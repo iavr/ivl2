@@ -45,7 +45,7 @@ namespace details {
 template <typename K, typename U>
 using indirect_traits = seq_traits <
 	U(_type <u_seq_ref <K> >), seq_length <K>, K,
-	indirect_iter, indirect_trav, seq_size <K>, U
+	indirect_iter, indirect_trav, id, seq_size <K>, U
 >;
 
 //-----------------------------------------------------------------------------
@@ -63,9 +63,9 @@ class indirect_seq_impl :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 	using idx   = elem <0, K>;
 	using under = elem <1, U>;
@@ -84,14 +84,17 @@ class indirect_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	template <typename P>
-	INLINE VR _trav() && { return VR(i_f().trav(P()), u_f()); }
+	template <typename Q>
+	INLINE VR <Q>
+	_trav() && { return VR <Q>(i_f().trav(Q()), u_f()); }
 
-	template <typename P>
-	INLINE VL _trav() & { return VL(i().trav(P()), u()); }
+	template <typename Q>
+	INLINE VL <Q>
+	_trav() & { return VL <Q>(i().trav(Q()), u()); }
 
-	template <typename P>
-	INLINE constexpr VC _trav() const& { return VC(i().trav(P()), u()); }
+	template <typename Q>
+	INLINE constexpr VC <Q>
+	_trav() const& { return VC <Q>(i().trav(Q()), u()); }
 
 //-----------------------------------------------------------------------------
 

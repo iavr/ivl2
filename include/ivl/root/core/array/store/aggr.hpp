@@ -76,9 +76,9 @@ class sequence <tag::aggr, T, sizes <N> >
 	using IL = iter_iter <PL, RL, T>;
 	using IC = iter_iter <PC, RC, T>;
 
-	using VR = iter_trav <PL, RR, T>;
-	using VL = iter_trav <PL, RL, T>;
-	using VC = iter_trav <PC, RC, T>;
+	template <typename Q> using VR = iter_trav <Q, PL, RR, T>;
+	template <typename Q> using VL = iter_trav <Q, PL, RL, T>;
+	template <typename Q> using VC = iter_trav <Q, PC, RC, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -97,27 +97,37 @@ public:
 	aggr_store <T, N> a;
 
 	using value_type = T;
+	using length_type = types::size <N>;
 	using size_type = size_t;
 	using difference_type = ptrdiff_t;
 
-	using fwd_reference   = RR;
-	using reference       = RL;
-	using const_reference = RC;
+	using r_reference = RR;
+	using l_reference = RL;
+	using c_reference = RC;
 
-	using pointer       = PL;
-	using const_pointer = PC;
+	using l_pointer = PL;
+	using c_pointer = PC;
 
-	using fwd_iterator   = IR;
-	using iterator       = IL;
-	using const_iterator = IC;
+	using r_iterator = IR;
+	using l_iterator = IL;
+	using c_iterator = IC;
 
-	using fwd_traversor   = VR;
-	using traversor       = VL;
-	using const_traversor = VC;
+	template <typename Q = path> using r_traversor = VR <Q>;
+	template <typename Q = path> using l_traversor = VL <Q>;
+	template <typename Q = path> using c_traversor = VC <Q>;
 
 	static constexpr bool   finite = true;
 	static constexpr bool   fixed  = true;
 	static constexpr size_t length = N;
+
+//-----------------------------------------------------------------------------
+
+	using reference       = l_reference;
+	using const_reference = c_reference;
+	using pointer         = l_pointer;
+	using const_pointer   = c_pointer;
+	using iterator        = l_iterator;
+	using const_iterator  = c_iterator;
 
 //-----------------------------------------------------------------------------
 
@@ -133,9 +143,21 @@ public:
 	INLINE           IL end() &      { return IL(e()); }
 	INLINE constexpr IC end() const& { return IC(e()); }
 
-	INLINE           VR trav() &&     { return VR(b(), e()); }
-	INLINE           VL trav() &      { return VL(b(), e()); }
-	INLINE constexpr VC trav() const& { return VC(b(), e()); }
+//-----------------------------------------------------------------------------
+
+	template <typename Q = path>
+	INLINE VR <Q>
+	trav(Q q = path()) && { return VR <Q>(b(), e()); }
+
+	template <typename Q = path>
+	INLINE VL <Q>
+	trav(Q q = path()) & { return VL <Q>(b(), e()); }
+
+	template <typename Q = path>
+	INLINE constexpr VC <Q>
+	trav(Q q = path()) const& { return VC <Q>(b(), e()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE           RR operator[](size_t n) &&     { return f(b()[n]); }
 	INLINE           RL operator[](size_t n) &      { return b()[n]; }

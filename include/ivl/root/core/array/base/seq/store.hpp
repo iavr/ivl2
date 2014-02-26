@@ -72,9 +72,10 @@ template <
 	typename T, typename L = no_size, typename B = remove_ref <T>*,
 	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
+	template <typename...> class F = id,
 	typename S = seq_size <B>, typename... U
 >
-struct seq_traits : seq_store <seq_traits <T, L, B, I, V, S, U...> >
+struct seq_traits : seq_store <seq_traits <T, L, B, I, V, F, S, U...> >
 {
 	using traits = seq_traits;
 };
@@ -83,11 +84,11 @@ struct seq_traits : seq_store <seq_traits <T, L, B, I, V, S, U...> >
 
 template <
 	typename T, typename L, typename B, template <typename...> class I,
-	template <typename...> class V, typename S, typename... U,
-	typename... E
+	template <typename...> class V, template <typename...> class F,
+	typename S, typename... U, typename... E
 >
-struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
-	public seq_tuple <E...>
+struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
+	seq_tuple <E...>
 {
 	using value_type = T;
 	using length_type = L;
@@ -97,9 +98,14 @@ struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
 	using l_iterator = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
 	using c_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
 
-	using r_traversor = V <r_trav <B>, r_ref <T>, T, r_ref <U>...>;
-	using l_traversor = V <l_trav <B>, l_ref <T>, T, l_ref <U>...>;
-	using c_traversor = V <c_trav <B>, c_ref <T>, T, c_ref <U>...>;
+	template <typename Q = path>
+	using r_traversor = V <Q, r_trav <B, F <Q> >, r_ref <T>, T, r_ref <U>...>;
+
+	template <typename Q = path>
+	using l_traversor = V <Q, l_trav <B, F <Q> >, l_ref <T>, T, l_ref <U>...>;
+
+	template <typename Q = path>
+	using c_traversor = V <Q, c_trav <B, F <Q> >, c_ref <T>, T, c_ref <U>...>;
 
 	using r_reference = seq_ref <r_iterator>;
 	using l_reference = seq_ref <l_iterator>;
@@ -110,7 +116,7 @@ struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
 
 	using difference_type = seq_diff <l_iterator>;
 
-	static constexpr bool   finite = l_traversor::finite;
+	static constexpr bool   finite = l_traversor <>::finite;
 	static constexpr bool   fixed  = is_size <L>();
 	static constexpr size_t length = to_size <L>();
 
@@ -124,6 +130,7 @@ struct seq_store <seq_traits <T, L, B, I, V, S, U...>, E...> :
 	using const_reference = c_reference;
 	using pointer         = l_pointer;
 	using const_pointer   = c_pointer;
+
 };
 
 //-----------------------------------------------------------------------------

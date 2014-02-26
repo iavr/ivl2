@@ -100,8 +100,8 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T, typename U,
-	typename D = indirect_trav <V, R, T, U>,
+	typename Q, typename V, typename R, typename T, typename U,
+	typename D = indirect_trav <Q, V, R, T, U>,
 	typename TR = iter_traits <V, R, T>
 >
 class indirect_trav_impl : public trav_base <D, TR, V, U>
@@ -166,11 +166,11 @@ struct iterator <tag::indirect, I, R, T, U> :
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T, typename U>
-struct traversor <tag::indirect, V, R, T, U> :
-	indirect_trav_impl <V, R, T, U>
+template <typename Q, typename V, typename R, typename T, typename U>
+struct traversor <tag::indirect, Q, V, R, T, U> :
+	indirect_trav_impl <Q, V, R, T, U>
 {
-	using indirect_trav_impl <V, R, T, U>::indirect_trav_impl;
+	using indirect_trav_impl <Q, V, R, T, U>::indirect_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

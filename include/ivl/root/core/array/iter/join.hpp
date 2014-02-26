@@ -149,17 +149,17 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T,
-	typename N = sz_rng_of_p <V>, typename D = join_trav <V, R, T>,
+	typename Q, typename V, typename R, typename T,
+	typename N = sz_rng_of_p <V>, typename D = join_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>
 >
 struct join_trav_impl;
 
 template <
-	typename... V, typename R, typename T,
+	typename Q, typename... V, typename R, typename T,
 	size_t... N, typename D, typename TR
 >
-class join_trav_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
+class join_trav_impl <Q, pack <V...>, R, T, sizes <N...>, D, TR> :
 	public trav_base <D, TR, V...>
 {
 	using B = trav_base <D, TR, V...>;
@@ -273,11 +273,11 @@ struct iterator <tag::join, V, R, T> :
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T>
-struct traversor <tag::join, V, R, T> :
-	join_trav_impl <V, R, T>
+template <typename Q, typename V, typename R, typename T>
+struct traversor <tag::join, Q, V, R, T> :
+	join_trav_impl <Q, V, R, T>
 {
-	using join_trav_impl <V, R, T>::join_trav_impl;
+	using join_trav_impl <Q, V, R, T>::join_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

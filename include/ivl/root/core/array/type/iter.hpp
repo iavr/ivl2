@@ -45,52 +45,66 @@ namespace details {
 template <typename C, typename... A> class iterator;
 template <typename C, typename... A> class traversor;
 
+//-----------------------------------------------------------------------------
+
 template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
 using iter_iter = iterator <tag::iter, I, R, T>;
 
-template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
-using iter_trav = traversor <tag::iter, I, R, T>;
+template <
+	typename Q, typename I, typename R = seq_ref <I>,
+	typename T = seq_type <I>
+>
+using iter_trav = traversor <tag::iter, Q, I, R, T>;
 
-template <typename V, typename R = seq_ref <V>, typename T = seq_type <V> >
-using trav_trav = traversor <tag::trav, V, R, T>;
+template <
+	typename Q, typename V, typename R = seq_ref <V>,
+	typename T = seq_type <V>
+>
+using trav_trav = traversor <tag::trav, Q, V, R, T>;
 
 template <typename I, typename R = rref_opt <I>, typename T = I>
 using atom_iter = iterator <tag::atom, I, R, T>;
 
+template <typename Q, typename I, typename R = rref_opt <I>, typename T = I>
+using atom_trav = traversor <tag::atom, Q, I, R, T>;
+
 template <typename I, typename R = rref_opt <I>, typename T = I>
-using atom_trav = traversor <tag::atom, I, R, T>;
+using inf_atom_trav = atom_trav <path, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T>
 using flip_iter = iterator <tag::flip, I, R, T>;
 
-template <typename V, typename R, typename T>
-using flip_trav = traversor <tag::flip, V, R, T>;
+template <typename Q, typename V, typename R, typename T>
+using flip_trav = traversor <tag::flip, Q, V, R, T>;
 
 template <typename I, typename R, typename T, typename U>
 using indirect_iter = iterator <tag::indirect, I, R, T, U>;
 
-template <typename V, typename R, typename T, typename U>
-using indirect_trav = traversor <tag::indirect, V, R, T, U>;
+template <typename Q, typename V, typename R, typename T, typename U>
+using indirect_trav = traversor <tag::indirect, Q, V, R, T, U>;
 
 template <typename I, typename R, typename T, typename M, typename F>
 using apply_iter = iterator <tag::apply, I, R, T, M, F>;
 
-template <typename V, typename R, typename T, typename M, typename F>
-using apply_trav = traversor <tag::apply, V, R, T, M, F>;
+template <
+	typename Q, typename V, typename R, typename T,
+	typename M, typename F
+>
+using apply_trav = traversor <tag::apply, Q, V, R, T, M, F>;
 
 template <typename I, typename R, typename T, typename M>
 using zip_iter = iterator <tag::zip, I, R, T, M>;
 
-template <typename V, typename R, typename T, typename M>
-using zip_trav = traversor <tag::zip, V, R, T, M>;
+template <typename Q, typename V, typename R, typename T, typename M>
+using zip_trav = traversor <tag::zip, Q, V, R, T, M>;
 
 template <typename V, typename R, typename T>
 using join_iter = iterator <tag::join, V, R, T>;
 
-template <typename V, typename R, typename T>
-using join_trav = traversor <tag::join, V, R, T>;
+template <typename Q, typename V, typename R, typename T>
+using join_trav = traversor <tag::join, Q, V, R, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -104,6 +118,7 @@ using details::iter_trav;
 using details::trav_trav;
 using details::atom_iter;
 using details::atom_trav;
+using details::inf_atom_trav;
 
 using details::flip_iter;
 using details::flip_trav;

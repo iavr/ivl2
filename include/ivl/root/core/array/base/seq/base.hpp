@@ -57,9 +57,9 @@ class seq_base : public derived <D>, public seq_store <TR, E...>
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 //-----------------------------------------------------------------------------
 
@@ -97,16 +97,16 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename Q = path>
-	INLINE VR trav(Q q = path()) &&
-		{ return der_f().template _trav <Q>(); }
+	INLINE VR <Q>
+	trav(Q q = path()) && { return der_f().template _trav <Q>(); }
 
 	template <typename Q = path>
-	INLINE VL trav(Q q = path()) &
-		{ return der().template _trav <Q>(); }
+	INLINE VL <Q>
+	trav(Q q = path()) & { return der().template _trav <Q>(); }
 
 	template <typename Q = path>
-	INLINE constexpr VC trav(Q q = path()) const&
-		{ return der().template _trav <Q>(); }
+	INLINE constexpr VC <Q>
+	trav(Q q = path()) const& { return der().template _trav <Q>(); }
 
 //-----------------------------------------------------------------------------
 

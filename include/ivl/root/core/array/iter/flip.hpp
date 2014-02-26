@@ -96,8 +96,8 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T,
-	typename D = flip_trav <V, R, T>,
+	typename Q, typename V, typename R, typename T,
+	typename D = flip_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>
 >
 class flip_trav_impl : public trav_base <D, TR, V>
@@ -149,20 +149,20 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T>
-struct iterator <tag::flip, V, R, T> :
-	flip_iter_impl <V, R, T>
+template <typename I, typename R, typename T>
+struct iterator <tag::flip, I, R, T> :
+	flip_iter_impl <I, R, T>
 {
-	using flip_iter_impl <V, R, T>::flip_iter_impl;
+	using flip_iter_impl <I, R, T>::flip_iter_impl;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T>
-struct traversor <tag::flip, V, R, T> :
-	flip_trav_impl <V, R, T>
+template <typename Q, typename V, typename R, typename T>
+struct traversor <tag::flip, Q, V, R, T> :
+	flip_trav_impl <Q, V, R, T>
 {
-	using flip_trav_impl <V, R, T>::flip_trav_impl;
+	using flip_trav_impl <Q, V, R, T>::flip_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

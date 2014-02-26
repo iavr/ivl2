@@ -93,9 +93,9 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 //-----------------------------------------------------------------------------
 
@@ -107,24 +107,24 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 //-----------------------------------------------------------------------------
 
 	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE VR _trav() && { return VR(b(), e()); }
+	INLINE VR <Q> _trav() && { return VR <Q>(b(), e()); }
 
 	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE VL _trav() & { return VL(b(), e()); }
+	INLINE VL <Q> _trav() & { return VL <Q>(b(), e()); }
 
 	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE constexpr VC _trav() const& { return VC(b(), e()); }
+	INLINE constexpr VC <Q> _trav() const& { return VC <Q>(b(), e()); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE VR _trav() && { return VR(e() - 1, b() - 1); }
+	INLINE VR <Q> _trav() && { return VR <Q>(e() - 1, b() - 1); }
 
 	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE VL _trav() & { return VL(e() - 1, b() - 1); }
+	INLINE VL <Q> _trav() & { return VL <Q>(e() - 1, b() - 1); }
 
 	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE constexpr VC _trav() const& { return VC(e() - 1, b() - 1); }
+	INLINE constexpr VC <Q> _trav() const& { return VC <Q>(e() - 1, b() - 1); }
 
 //-----------------------------------------------------------------------------
 

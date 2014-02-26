@@ -44,7 +44,7 @@ namespace details {
 
 // no alias: entry point
 template <typename M = prim_term>
-struct seq_apply_on : uref_map <apply_sequence_on <M> > { };
+struct seq_apply_by : uref_map <apply_sequence_by <M> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ struct cont_head_loop
 //-----------------------------------------------------------------------------
 
 template <typename M>
-struct iter_loop_on
+struct iter_loop_by
 {
 	template <typename F, typename... T>
 	INLINE F&& operator()(F&& f, T&&... t) const
@@ -93,40 +93,40 @@ struct iter_loop_on
 };
 
 template <typename M = prim_term>
-using seq_loop_on = switch_fun_of <
-	iter_sw <cont_loop, iter_loop_on <M>, trav>
+using seq_loop_by = switch_fun_of <
+	iter_sw <cont_loop, iter_loop_by <M>, trav>
 >;
 
 template <typename M = prim_term>
-using seq_raw_loop_on = switch_fun_of <
-	raw_iter_sw <cont_loop, iter_loop_on <M>, raw_trav>
+using seq_raw_loop_by = switch_fun_of <
+	raw_iter_sw <cont_loop, iter_loop_by <M>, raw_trav>
 >;
 
 //-----------------------------------------------------------------------------
 
 template <typename M>
-struct iter_head_loop_on
+struct iter_head_loop_by
 {
 	template <typename F, typename G, typename... T>
 	INLINE void operator()(F&& f, G&& g, T&&... t) const
 	{
 		if (M().more(t...))
 			fwd <F>(f)(*t...),
-			seq_loop_on <M>()(fwd <G>(g), ++t...);
+			seq_loop_by <M>()(fwd <G>(g), ++t...);
 	}
 };
 
 template <typename M = prim_term>
-using seq_head_loop_on = switch_fun_of <cdr_switch <
-	iter_sw <cont_head_loop, iter_head_loop_on <M> >
+using seq_head_loop_by = switch_fun_of <cdr_switch <
+	iter_sw <cont_head_loop, iter_head_loop_by <M> >
 > >;
 
 //-----------------------------------------------------------------------------
 
-using seq_apply     = seq_apply_on <>;
-using seq_loop      = seq_loop_on <>;
-using seq_raw_loop  = seq_raw_loop_on <>;
-using seq_head_loop = seq_head_loop_on <>;
+using seq_apply     = seq_apply_by <>;
+using seq_loop      = seq_loop_by <>;
+using seq_raw_loop  = seq_raw_loop_by <>;
+using seq_head_loop = seq_head_loop_by <>;
 
 //-----------------------------------------------------------------------------
 
@@ -135,13 +135,13 @@ using seq_head_loop = seq_head_loop_on <>;
 //-----------------------------------------------------------------------------
 
 using details::seq_apply;
-using details::seq_apply_on;
+using details::seq_apply_by;
 using details::seq_loop;
-using details::seq_loop_on;
+using details::seq_loop_by;
 using details::seq_raw_loop;
-using details::seq_raw_loop_on;
+using details::seq_raw_loop_by;
 using details::seq_head_loop;
-using details::seq_head_loop_on;
+using details::seq_head_loop_by;
 
 //-----------------------------------------------------------------------------
 

@@ -118,17 +118,17 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T, typename M, typename F,
-	typename N = sz_rng_of_p <V>, typename D = apply_trav <V, R, T, M, F>,
+	typename Q, typename V, typename R, typename T, typename M, typename F,
+	typename N = sz_rng_of_p <V>, typename D = apply_trav <Q, V, R, T, M, F>,
 	typename TR = iter_traits <V, R, T>
 >
 struct apply_trav_impl;
 
 template <
-	typename... V, typename R, typename T, typename M, typename F,
+	typename Q, typename... V, typename R, typename T, typename M, typename F,
 	size_t... N, typename D, typename TR
 >
-class apply_trav_impl <pack <V...>, R, T, M, F, sizes <N...>, D, TR> :
+class apply_trav_impl <Q, pack <V...>, R, T, M, F, sizes <N...>, D, TR> :
 	public trav_base <D, TR, F, V...>
 {
 	using B = trav_base <D, TR, F, V...>;
@@ -200,11 +200,14 @@ struct iterator <tag::apply, I, R, T, M, F> :
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename R, typename T, typename M, typename F>
-struct traversor <tag::apply, V, R, T, M, F> :
-	apply_trav_impl <V, R, T, M, F>
+template <
+	typename Q, typename V, typename R, typename T,
+	typename M, typename F
+>
+struct traversor <tag::apply, Q, V, R, T, M, F> :
+	apply_trav_impl <Q, V, R, T, M, F>
 {
-	using apply_trav_impl <V, R, T, M, F>::apply_trav_impl;
+	using apply_trav_impl <Q, V, R, T, M, F>::apply_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

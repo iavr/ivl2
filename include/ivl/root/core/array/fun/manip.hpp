@@ -52,13 +52,13 @@ using arr      = uref_of <join_sequence>;
 
 // no alias: entry point
 template <typename M = prim_term>
-struct seq_zip_on : uref_map <zip_seq_on <M>, all_seq> { };
+struct seq_zip_by : uref_map <zip_seq_by <M>, all_seq> { };
 
 template <typename M = prim_term>
-struct seq_inner_on : uref_map <zip_sequence_on <M>, any_seq> { };
+struct seq_inner_by : uref_map <zip_sequence_by <M>, any_seq> { };
 
-using seq_zip   = seq_zip_on <>;
-using seq_inner = seq_inner_on <>;
+using seq_zip   = seq_zip_by <>;
+using seq_inner = seq_inner_by <>;
 
 //-----------------------------------------------------------------------------
 

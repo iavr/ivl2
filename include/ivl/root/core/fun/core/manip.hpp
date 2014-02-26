@@ -46,7 +46,7 @@ template <
 	template <typename...> class CS, typename S,
 	template <typename...> class CT, typename T
 >
-using tran_sw = map_switch <t_case <CS, S>, t_case <CT, T> >;
+using tran_sw = t_switch <t_case <CS, S>, t_case <CT, T> >;
 
 template <typename S, typename T>
 using tran_all_fun = switch_fun_of <tran_sw <all_seq, S, all_tuple, T> >;

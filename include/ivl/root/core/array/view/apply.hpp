@@ -52,7 +52,7 @@ struct apply_traits;
 template <typename M, typename F, typename... A, typename AP>
 struct apply_traits <M, F, pack <A...>, AP> : seq_traits <
 	F(pack <u_seq_ref <A>...>), apply_length <A...>, AP,
-	apply_iter, apply_trav, seq_size <AP>, M, F
+	apply_iter, apply_trav, id, seq_size <AP>, M, F
 > { };
 
 //-----------------------------------------------------------------------------
@@ -76,9 +76,9 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 	using IL = l_iter <TR>;
 	using IC = c_iter <TR>;
 
-	using VR = r_trav <TR>;
-	using VL = l_trav <TR>;
-	using VC = c_trav <TR>;
+	template <typename Q> using VR = r_trav <TR, Q>;
+	template <typename Q> using VL = l_trav <TR, Q>;
+	template <typename Q> using VC = c_trav <TR, Q>;
 
 	using fun = elem <0, F>;
 
@@ -113,13 +113,16 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VR _trav() && { return VR(f_f(), a_f<N>().trav(Q())...); }
+	INLINE VR <Q>
+	_trav() && { return VR <Q>(f_f(), a_f<N>().trav(Q())...); }
 
 	template <typename Q>
-	INLINE VL _trav() & { return VL(f(), a<N>().trav(Q())...); }
+	INLINE VL <Q>
+	_trav() & { return VL <Q>(f(), a<N>().trav(Q())...); }
 
 	template <typename Q>
-	INLINE constexpr VC _trav() const& { return VC(f(), a<N>().trav(Q())...); }
+	INLINE constexpr VC <Q>
+	_trav() const& { return VC <Q>(f(), a<N>().trav(Q())...); }
 
 //-----------------------------------------------------------------------------
 
@@ -129,12 +132,12 @@ public:
 	INLINE constexpr S size() const { return M().size(a<N>()...); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
-	INLINE           IL begin() &      { return IL(f(),   a<N>().begin()...); }
-	INLINE constexpr IC begin() const& { return IC(f(),   a<N>().begin()...); }
+	INLINE           IL begin() &      { return IL(f(), a<N>().begin()...); }
+	INLINE constexpr IC begin() const& { return IC(f(), a<N>().begin()...); }
 
 	INLINE           IR end() &&     { return IR(f_f(), a_f<N>().end()...); }
-	INLINE           IL end() &      { return IL(f(),   a<N>().end()...); }
-	INLINE constexpr IC end() const& { return IC(f(),   a<N>().end()...); }
+	INLINE           IL end() &      { return IL(f(), a<N>().end()...); }
+	INLINE constexpr IC end() const& { return IC(f(), a<N>().end()...); }
 
 };
 

@@ -96,7 +96,7 @@ struct arg_switch
 }  // namespace details
 
 template <typename... C>
-struct map_switch
+struct t_switch
 {
 	template <typename... A>
 	using map = typename details::arg_switch <A...>::template map <C...>;
@@ -112,7 +112,7 @@ struct cdr_switch
 };
 
 template <typename... C>
-using fun_switch = cdr_switch <map_switch <C...> >;
+using fun_switch = cdr_switch <t_switch <C...> >;
 
 //-----------------------------------------------------------------------------
 

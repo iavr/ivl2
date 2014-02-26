@@ -42,64 +42,77 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <int R = 0, int B = 0, int F = 0>
-struct path_traits
+template <int R = 0, int I = 0, int F = 0>
+struct path_ : id_t <path_<R, I, F> >
 {
-	static constexpr int flipped       = R;
-	static constexpr int bidirectional = B;
-	static constexpr int finite        = F;
+	static constexpr int flipped = R;
+	static constexpr int inner   = I;
+	static constexpr int finite  = F;
 };
 
-using path = path_traits <>;
+using path = path_<>;
 
 //-----------------------------------------------------------------------------
 
 template <typename P> using is_flip = expr <P::flipped>;
-template <typename P> using is_bi   = expr <P::bidirectional>;
+template <typename P> using is_in   = expr <P::inner>;
 template <typename P> using is_fin  = expr <P::finite>;
 
 //-----------------------------------------------------------------------------
 
 template <int S, typename P> struct set_flip_t { };
-template <int S, typename P> struct set_bi_t   { };
+template <int S, typename P> struct set_in_t   { };
 template <int S, typename P> struct set_fin_t  { };
 
-template <int SET, int R, int B, int F>
-struct set_flip_t <SET, path_traits <R, B, F> > :
-	id_t <path_traits <SET, B, F> > { };
+template <int S, typename P> using set_flip = type_of <set_flip_t <S, P> >;
+template <int S, typename P> using set_in   = type_of <set_in_t <S, P> >;
+template <int S, typename P> using set_fin  = type_of <set_fin_t <S, P> >;
 
-template <int SET, int R, int B, int F>
-struct set_bi_t <SET, path_traits <R, B, F> > :
-	id_t <path_traits <R, SET, F> > { };
+template <int SET, int R, int I, int F>
+struct set_flip_t <SET, path_<R, I, F> > : path_<SET, I, F> { };
 
-template <int SET, int R, int B, int F>
-struct set_fin_t <SET, path_traits <R, B, F> > :
-	id_t <path_traits <R, B, SET> > { };
+template <int SET, int R, int I, int F>
+struct set_in_t <SET, path_<R, I, F> > : path_<R, SET, F> { };
 
-//-----------------------------------------------------------------------------
-
-template <int S, typename P>
-using set_flip = type_of <details::set_flip_t <S, P> >;
-
-template <int S, typename P>
-using set_bi = type_of <details::set_bi_t <S, P> >;
-
-template <int S, typename P>
-using set_fin = type_of <details::set_fin_t <S, P> >;
+template <int SET, int R, int I, int F>
+struct set_fin_t <SET, path_<R, I, F> > : path_<R, I, SET> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename P> using flip_on = set_flip <1, P>;
-template <typename P> using bi_on  = set_bi  <1, P>;
-template <typename P> using fin_on = set_fin <1, P>;
+template <typename P> using in_on   = set_in  <1, P>;
+template <typename P> using fin_on  = set_fin <1, P>;
 
 template <typename P> using flip_off = set_flip <0, P>;
-template <typename P> using bi_off  = set_bi  <0, P>;
-template <typename P> using fin_off = set_fin <0, P>;
+template <typename P> using in_off   = set_in  <0, P>;
+template <typename P> using fin_off  = set_fin <0, P>;
+
+//-----------------------------------------------------------------------------
+
+template <typename P> struct not_flip_t { };
+template <typename P> struct not_in_t   { };
+template <typename P> struct not_fin_t  { };
+
+template <typename P> using not_flip = type_of <not_flip_t <P> >;
+template <typename P> using not_in   = type_of <not_in_t <P> >;
+template <typename P> using not_fin  = type_of <not_fin_t <P> >;
+
+template <int R, int I, int F>
+struct not_flip_t <path_<R, I, F> > : path_<!R, I, F> { };
+
+template <int R, int I, int F>
+struct not_in_t <path_<R, I, F> > : path_<R, !I, F> { };
+
+template <int R, int I, int F>
+struct not_fin_t <path_<R, I, F> > : path_<R, I, !F> { };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::path;
 
 //-----------------------------------------------------------------------------
 

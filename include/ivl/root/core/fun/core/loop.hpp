@@ -64,8 +64,8 @@ using apply = switch_fun_of <apply_sw <seq_apply, tup_apply> >;
 //-----------------------------------------------------------------------------
 
 template <typename M = prim_term>
-using head_loop_on = switch_fun_of <cdr_switch <
-	loop_sw <seq_head_loop_on <M>, tup_head_loop>
+using head_loop_by = switch_fun_of <cdr_switch <
+	loop_sw <seq_head_loop_by <M>, tup_head_loop>
 > >;
 
 //-----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ struct sep_loop_
 	template <typename S, typename F, typename A>
 	INLINE void operator()(S&& s, F&& f, A&& a) const
 	{
-		head_loop_on <>()
+		head_loop_by <>()
 			(fwd <F>(f), pre_fun()(fwd <F>(f), fwd <S>(s)), fwd <A>(a));
 	}
 };
@@ -96,18 +96,18 @@ struct sep_loop_opt
 //-----------------------------------------------------------------------------
 
 template <typename M = prim_term>
-struct loop_on : sep_loop_opt,
-	switch_fun_of <loop_sw <seq_loop_on <M>, tup_loop> > { };
+struct loop_by : sep_loop_opt,
+	switch_fun_of <loop_sw <seq_loop_by <M>, tup_loop> > { };
 
 template <typename M = prim_term>
-struct raw_loop_on : sep_loop_opt,
-	switch_fun_of <raw_loop_sw <seq_loop_on <M>, tup_loop> > { };
+struct raw_loop_by : sep_loop_opt,
+	switch_fun_of <raw_loop_sw <seq_loop_by <M>, tup_loop> > { };
 
 //-----------------------------------------------------------------------------
 
-using loop      = loop_on <>;
-using raw_loop  = raw_loop_on <>;
-using head_loop = head_loop_on <>;
+using loop      = loop_by <>;
+using raw_loop  = raw_loop_by <>;
+using head_loop = head_loop_by <>;
 
 //-----------------------------------------------------------------------------
 
@@ -117,11 +117,11 @@ using head_loop = head_loop_on <>;
 
 using details::apply;
 using details::loop;
-using details::loop_on;
+using details::loop_by;
 using details::raw_loop;
-using details::raw_loop_on;
+using details::raw_loop_by;
 using details::head_loop;
-using details::head_loop_on;
+using details::head_loop_by;
 using details::sep_loop;
 
 //-----------------------------------------------------------------------------
