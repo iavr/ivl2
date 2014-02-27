@@ -94,9 +94,9 @@ struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
 	using length_type = L;
 	using size_type = S;
 
-	using r_iterator = I <r_iter <B>, r_ref <T>, T, r_ref <U>...>;
-	using l_iterator = I <l_iter <B>, l_ref <T>, T, l_ref <U>...>;
-	using c_iterator = I <c_iter <B>, c_ref <T>, T, c_ref <U>...>;
+	using r_iterator = I <r_iter_trav <B, F>, r_ref <T>, T, r_ref <U>...>;
+	using l_iterator = I <l_iter_trav <B, F>, l_ref <T>, T, l_ref <U>...>;
+	using c_iterator = I <c_iter_trav <B, F>, c_ref <T>, T, c_ref <U>...>;
 
 	template <typename Q = path>
 	using r_traversor = V <Q, r_trav <B, F <Q> >, r_ref <T>, T, r_ref <U>...>;

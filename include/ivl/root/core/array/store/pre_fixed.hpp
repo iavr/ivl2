@@ -106,25 +106,17 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 
 //-----------------------------------------------------------------------------
 
-	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE VR <Q> _trav() && { return VR <Q>(b(), e()); }
+	template <typename Q>
+	INLINE VR <Q>
+	_trav() && { return afun::ends_trav <VR, Q>()(b(), e()); }
 
-	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE VL <Q> _trav() & { return VL <Q>(b(), e()); }
+	template <typename Q>
+	INLINE VL <Q>
+	_trav() & { return afun::ends_trav <VL, Q>()(b(), e()); }
 
-	template <typename Q, only_if <!is_flip <Q>()> = 0>
-	INLINE constexpr VC <Q> _trav() const& { return VC <Q>(b(), e()); }
-
-//-----------------------------------------------------------------------------
-
-	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE VR <Q> _trav() && { return VR <Q>(e() - 1, b() - 1); }
-
-	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE VL <Q> _trav() & { return VL <Q>(e() - 1, b() - 1); }
-
-	template <typename Q, only_if <is_flip <Q>{}> = 0>
-	INLINE constexpr VC <Q> _trav() const& { return VC <Q>(e() - 1, b() - 1); }
+	template <typename Q>
+	INLINE constexpr VC <Q>
+	_trav() const& { return afun::ends_trav <VC, Q>()(b(), e()); }
 
 //-----------------------------------------------------------------------------
 

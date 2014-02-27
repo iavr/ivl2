@@ -30,7 +30,6 @@
 
 //-----------------------------------------------------------------------------
 
-struct A;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -364,6 +363,59 @@ struct l_trav_t <id_t <T>, Q> : l_switch <details::trav_sw <Q>, T> { };
 
 template <typename T, typename Q>
 struct c_trav_t <id_t <T>, Q> : c_switch <details::trav_sw <Q>, T> { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <
+	typename B, template <typename...> class F,
+	typename FP = F <path>, bool I = path_in <FP>()
+>
+struct r_iter_trav_ : r_iter_t <B> { };
+
+template <
+	typename B, template <typename...> class F,
+	typename FP = F <path>, bool I = path_in <FP>()
+>
+struct l_iter_trav_ : l_iter_t <B> { };
+
+template <
+	typename B, template <typename...> class F,
+	typename FP = F <path>, bool I = path_in <FP>()
+>
+struct c_iter_trav_ : c_iter_t <B> { };
+
+template <typename B, template <typename...> class F, typename FP>
+struct r_iter_trav_<B, F, FP, true> : r_trav_t <B, FP> { };
+
+template <typename B, template <typename...> class F, typename FP>
+struct l_iter_trav_<B, F, FP, true> : l_trav_t <B, FP> { };
+
+template <typename B, template <typename...> class F, typename FP>
+struct c_iter_trav_<B, F, FP, true> : c_trav_t <B, FP> { };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+template <typename B, template <typename...> class F>
+using r_iter_trav_t = details::r_iter_trav_<B, F>;
+
+template <typename B, template <typename...> class F>
+using l_iter_trav_t = details::l_iter_trav_<B, F>;
+
+template <typename B, template <typename...> class F>
+using c_iter_trav_t = details::c_iter_trav_<B, F>;
+
+template <typename B, template <typename...> class F>
+using r_iter_trav = type_of <r_iter_trav_t <B, F> >;
+
+template <typename B, template <typename...> class F>
+using l_iter_trav = type_of <l_iter_trav_t <B, F> >;
+
+template <typename B, template <typename...> class F>
+using c_iter_trav = type_of <c_iter_trav_t <B, F> >;
 
 //-----------------------------------------------------------------------------
 

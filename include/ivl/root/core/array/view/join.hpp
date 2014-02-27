@@ -52,7 +52,7 @@ struct join_traits;
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
 	seq_common <u_seq_ref <U>...>, join_length <U...>, UP,
-	join_iter, join_trav
+	join_iter, join_trav, in_on
 > { };
 
 //-----------------------------------------------------------------------------
@@ -85,6 +85,12 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
+	using in = in_on <path>;
+
+	static constexpr size_t L = sizeof...(U);
+
+//-----------------------------------------------------------------------------
+
 	template <size_t K>
 	INLINE r_pick <K, U...>
 	u_f() { return under <K>::fwd(); }
@@ -105,15 +111,15 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 	template <typename Q>
 	INLINE VR <Q>
-	_trav() && { return VR <Q>(0, u_f<N>().trav(Q())...); }
+	_trav() && { return VR <Q>(0, u_f<N>().trav(in_on <Q>())...); }
 
 	template <typename Q>
 	INLINE VL <Q>
-	_trav() & { return VL <Q>(0, u<N>().trav(Q())...); }
+	_trav() & { return VL <Q>(0, u<N>().trav(in_on <Q>())...); }
 
 	template <typename Q>
 	INLINE constexpr VC <Q>
-	_trav() const& { return VC <Q>(0, u<N>().trav(Q())...); }
+	_trav() const& { return VC <Q>(0, u<N>().trav(in_on <Q>())...); }
 
 //-----------------------------------------------------------------------------
 
@@ -122,13 +128,13 @@ public:
 
 	INLINE constexpr S size() const { return val_sum(u<N>().size()...); }
 
-	INLINE           IR begin() &&     { return IR(0, u_f<N>().begin()...); }
-	INLINE           IL begin() &      { return IL(0, u<N>().begin()...); }
-	INLINE constexpr IC begin() const& { return IC(0, u<N>().begin()...); }
+	INLINE           IR begin() &&     { return IR(0, u_f<N>().trav(in())...); }
+	INLINE           IL begin() &      { return IL(0, u<N>().  trav(in())...); }
+	INLINE constexpr IC begin() const& { return IC(0, u<N>().  trav(in())...); }
 
-	INLINE           IR end() &&     { return IR(0, u_f<N>().end()...); }
-	INLINE           IL end() &      { return IL(0, u<N>().end()...); }
-	INLINE constexpr IC end() const& { return IC(0, u<N>().end()...); }
+	INLINE           IR end() &&     { return IR(L, u_f<N>().trav(in())...); }
+	INLINE           IL end() &      { return IL(L, u<N>().  trav(in())...); }
+	INLINE constexpr IC end() const& { return IC(L, u<N>().  trav(in())...); }
 
 };
 

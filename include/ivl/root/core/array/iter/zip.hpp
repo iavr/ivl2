@@ -44,8 +44,9 @@ namespace details {
 
 template <
 	typename I, typename R, typename T, typename M,
-	typename N = sz_rng_of_p <I>, typename D = zip_iter <I, R, T, M>,
-	typename TR = iter_traits <I, R, T>
+	typename D = zip_iter <I, R, T, M>,
+	typename TR = iter_traits <I, R, T>,
+	typename N = sz_rng_of_p <I>
 >
 struct zip_iter_impl;
 
@@ -53,9 +54,9 @@ struct zip_iter_impl;
 
 template <
 	typename... I, typename R, typename T, typename M,
-	size_t... N, typename D, typename TR
+	typename D, typename TR, size_t... N
 >
-class zip_iter_impl <pack <I...>, R, T, M, sizes <N...>, D, TR> :
+class zip_iter_impl <pack <I...>, R, T, M, D, TR, sizes <N...> > :
 	public iter_base <D, TR, I...>
 {
 	using B = iter_base <D, TR, I...>;
@@ -116,16 +117,17 @@ public:
 
 template <
 	typename Q, typename V, typename R, typename T, typename M,
-	typename N = sz_rng_of_p <V>, typename D = zip_trav <Q, V, R, T, M>,
-	typename TR = iter_traits <V, R, T>
+	typename D = zip_trav <Q, V, R, T, M>,
+	typename TR = iter_traits <V, R, T>,
+	typename N = sz_rng_of_p <V>
 >
 struct zip_trav_impl;
 
 template <
 	typename Q, typename... V, typename R, typename T, typename M,
-	size_t... N, typename D, typename TR
+	typename D, typename TR, size_t... N
 >
-class zip_trav_impl <Q, pack <V...>, R, T, M, sizes <N...>, D, TR> :
+class zip_trav_impl <Q, pack <V...>, R, T, M, D, TR, sizes <N...> > :
 	public trav_base <D, TR, V...>
 {
 	using B = trav_base <D, TR, V...>;
@@ -160,6 +162,9 @@ public:
 	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
+
+	INLINE bool operator+() const { return term().more(+v<N>()...); }
+	INLINE bool operator-() const { return term().more(-v<N>()...); }
 
 	INLINE constexpr R operator*()  const { return F()(*v<N>()...); }
 	INLINE           P operator->() const { return &(operator*()); }

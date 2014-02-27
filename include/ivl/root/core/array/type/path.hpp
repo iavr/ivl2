@@ -54,9 +54,9 @@ using path = path_<>;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using is_flip = expr <P::flipped>;
-template <typename P> using is_in   = expr <P::inner>;
-template <typename P> using is_fin  = expr <P::finite>;
+template <typename P> using path_flip = expr <P::flipped>;
+template <typename P> using path_in   = expr <P::inner>;
+template <typename P> using path_fin  = expr <P::finite>;
 
 //-----------------------------------------------------------------------------
 
@@ -113,6 +113,10 @@ struct not_fin_t <path_<R, I, F> > : path_<R, I, !F> { };
 //-----------------------------------------------------------------------------
 
 using details::path;
+
+using details::path_flip;
+using details::path_in;
+using details::path_fin;
 
 //-----------------------------------------------------------------------------
 

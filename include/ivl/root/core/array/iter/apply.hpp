@@ -44,8 +44,9 @@ namespace details {
 
 template <
 	typename I, typename R, typename T, typename M, typename F,
-	typename N = sz_rng_of_p <I>, typename D = apply_iter <I, R, T, M, F>,
-	typename TR = iter_traits <I, R, T>
+	typename D = apply_iter <I, R, T, M, F>,
+	typename TR = iter_traits <I, R, T>,
+	typename N = sz_rng_of_p <I>
 >
 struct apply_iter_impl;
 
@@ -53,9 +54,9 @@ struct apply_iter_impl;
 
 template <
 	typename... I, typename R, typename T, typename M, typename F,
-	size_t... N, typename D, typename TR
+	typename D, typename TR, size_t... N
 >
-class apply_iter_impl <pack <I...>, R, T, M, F, sizes <N...>, D, TR> :
+class apply_iter_impl <pack <I...>, R, T, M, F, D, TR, sizes <N...> > :
 	public iter_base <D, TR, F, I...>
 {
 	using B = iter_base <D, TR, F, I...>;
@@ -119,16 +120,17 @@ public:
 
 template <
 	typename Q, typename V, typename R, typename T, typename M, typename F,
-	typename N = sz_rng_of_p <V>, typename D = apply_trav <Q, V, R, T, M, F>,
-	typename TR = iter_traits <V, R, T>
+	typename D = apply_trav <Q, V, R, T, M, F>,
+	typename TR = iter_traits <V, R, T>,
+	typename N = sz_rng_of_p <V>
 >
 struct apply_trav_impl;
 
 template <
 	typename Q, typename... V, typename R, typename T, typename M, typename F,
-	size_t... N, typename D, typename TR
+	typename D, typename TR, size_t... N
 >
-class apply_trav_impl <Q, pack <V...>, R, T, M, F, sizes <N...>, D, TR> :
+class apply_trav_impl <Q, pack <V...>, R, T, M, F, D, TR, sizes <N...> > :
 	public trav_base <D, TR, F, V...>
 {
 	using B = trav_base <D, TR, F, V...>;
@@ -166,6 +168,9 @@ public:
 	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
+
+	INLINE bool operator+() const { return term().more(+v<N>()...); }
+	INLINE bool operator-() const { return term().more(-v<N>()...); }
 
 	INLINE constexpr R operator*()  const { return f()(*v<N>()...); }
 	INLINE           P operator->() const { return &(operator*()); }

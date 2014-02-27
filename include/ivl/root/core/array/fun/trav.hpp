@@ -88,12 +88,43 @@ using raw_trav = raw_trav_on <>;
 
 //-----------------------------------------------------------------------------
 
+template <template <typename> class V, typename Q>
+class ends_trav
+{
+	using R = V <Q>;
+	using B = sizes <path_flip <Q>{}, path_in <Q>{}>;
+
+	template <typename I>
+	INLINE constexpr R
+	trav(sizes <0, 0>, I&& b, I&& e) const { return R(b, e); }
+
+	template <typename I>
+	INLINE constexpr R
+	trav(sizes <1, 0>, I&& b, I&& e) const { return R(e-1, b-1); }
+
+	template <typename I>
+	INLINE constexpr R
+	trav(sizes <0, 1>, I&& b, I&& e) const { return R(b, b, e-1); }
+
+	template <typename I>
+	INLINE constexpr R
+	trav(sizes <1, 1>, I&& b, I&& e) const { return R(e-1, e-1, b); }
+
+public:
+	template <typename I>
+	INLINE constexpr R
+	operator()(I&& b, I&& e) const { return trav(B(), b, e); }
+};
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::trav;
 using details::trav_on;
 using details::raw_trav;
 using details::raw_trav_on;
+using details::ends_trav;
 
 //-----------------------------------------------------------------------------
 

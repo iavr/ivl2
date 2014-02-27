@@ -44,8 +44,9 @@ namespace details {
 
 template <
 	typename V, typename R, typename T,
-	typename N = sz_rng_of_p <V>, typename D = join_iter <V, R, T>,
-	typename TR = iter_traits <V, R, T>
+	typename D = join_iter <V, R, T>,
+	typename TR = iter_traits <V, R, T>,
+	typename N = sz_rng_of_p <V>
 >
 struct join_iter_impl;
 
@@ -53,9 +54,9 @@ struct join_iter_impl;
 
 template <
 	typename... V, typename R, typename T,
-	size_t... N, typename D, typename TR
+	typename D, typename TR, size_t... N
 >
-class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
+class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	public iter_base <D, TR, V...>
 {
 	using B = iter_base <D, TR, V...>;
@@ -72,9 +73,16 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 
 //-----------------------------------------------------------------------------
 
+	size_t k;
+
 	static constexpr size_t L = sizeof...(V);
 	static constexpr size_t Z = size_t(-1);
-	size_t k;
+
+	using SL = size <L>;
+	using SZ = size <Z>;
+
+	template <typename OP> using   op = afun::lookup_op <L, OP>;
+	template <typename OP> friend class afun::lookup_op_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -89,40 +97,60 @@ class join_iter_impl <pack <V...>, R, T, sizes <N...>, D, TR> :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE void next(size <K>) { if (!v<K>()) ++k, next(size <K + 1>()); }
-	INLINE void next(size <L>) { }
+	INLINE void next(size <K>, _true = yes) { ++k, next(size <K + 1>(), no); }
 
 	template <size_t K>
-	INLINE void prev(size <K>) { if (!v<K>()) --k, prev(size <K - 1>()); }
-	INLINE void prev(size <Z>) { }
+	INLINE void prev(size <K>, _true = yes) { --k, prev(size <K - 1>(), no); }
 
-	template <size_t K, typename... A>
-	INLINE D inc(A&&... a) { return next(size <K>()), D(K, fwd <A>(a)...); }
+	template <size_t K>
+	INLINE void next(size <K> s, _false) { if (!v<K>()) next(s); }
 
-	template <size_t K, typename... A>
-	INLINE D dec(A&&... a) { return prev(size <K>()), D(K, fwd <A>(a)...); }
+	template <size_t K>
+	INLINE void prev(size <K> s, _false) { if (!v<K>()) prev(s); }
+
+	template <bool F> INLINE void next(SL, expr <F>) { }
+	template <bool F> INLINE void prev(SZ, expr <F>) { }
 
 //-----------------------------------------------------------------------------
 
-	struct deref { };
-	struct inc_l { };
-	struct dec_l { };
-	struct inc_r { };
-	struct dec_r { };
+	struct deref   { };
+	struct advance { };
+	struct inc_l   { };
+	struct dec_l   { };
+	struct inc_r   { };
+	struct dec_r   { };
 
-	template <size_t K> INLINE R    _(deref) const { return cast(*v<K>()); }
-
-	template <size_t K> INLINE void _(inc_l) { ++v<K>(), next(size <K>()); }
-	template <size_t K> INLINE void _(dec_l) { --v<K>(), prev(size <K>()); }
+//-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE D _(inc_r) { return inc <K>(N == K ? v<N>()++ : v<N>()...); }
+	INLINE R _(deref, size <K>) const { return cast(*v<K>()); }
 
 	template <size_t K>
-	INLINE D _(dec_r) { return dec <K>(N == K ? v<N>()-- : v<N>()...); }
+	INLINE void _(advance, size <K>) { next(size <K>(), no); }
 
-	template <typename OP> using   op = afun::lookup_op <L, OP>;
-	template <typename OP> friend class afun::lookup_op_fun;
+	template <size_t K>
+	INLINE void
+	_(inc_l, size <K>) { +v<K>() ? _do(++v<K>()) : next(size <K>()); }
+
+	template <size_t K>
+	INLINE void
+	_(dec_l, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
+
+	template <size_t K>
+	INLINE D _(inc_r, size <K>) { return D(K,
+		N == K ? +v<K>() ? v<N>()++ : next(size <K>()), v<N>() : v<N>()
+	...); }
+
+	template <size_t K>
+	INLINE D _(dec_r, size <K>) { return D(K,
+		N == K ? -v<K>() ? v<N>()-- : prev(size <K>()), v<N>() : v<N>()
+	...); }
+
+	INLINE void _(inc_l, SZ) { next(SZ()); }
+	INLINE void _(dec_l, SL) { prev(SL()); }
+
+	INLINE D _(inc_r, SZ) { return D((next(SZ()), -1), v<N>()...); }
+	INLINE D _(dec_r, SL) { return D((prev(SL()),  L), v<N>()...); }
 
 //-----------------------------------------------------------------------------
 
@@ -150,16 +178,17 @@ public:
 
 template <
 	typename Q, typename V, typename R, typename T,
-	typename N = sz_rng_of_p <V>, typename D = join_trav <Q, V, R, T>,
-	typename TR = iter_traits <V, R, T>
+	typename D = join_trav <Q, V, R, T>,
+	typename TR = iter_traits <V, R, T>,
+	typename N = sz_rng_of_p <V>
 >
 struct join_trav_impl;
 
 template <
 	typename Q, typename... V, typename R, typename T,
-	size_t... N, typename D, typename TR
+	typename D, typename TR, size_t... N
 >
-class join_trav_impl <Q, pack <V...>, R, T, sizes <N...>, D, TR> :
+class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 	public trav_base <D, TR, V...>
 {
 	using B = trav_base <D, TR, V...>;
@@ -176,9 +205,17 @@ class join_trav_impl <Q, pack <V...>, R, T, sizes <N...>, D, TR> :
 
 //-----------------------------------------------------------------------------
 
+	size_t k;
+
 	static constexpr size_t L = sizeof...(V);
 	static constexpr size_t Z = size_t(-1);
-	size_t k;
+
+	using SL = size <L>;
+	using SZ = size <Z>;
+
+	template <typename OP> using   op = afun::lookup_op <L, OP>;
+	template <typename OP> using op_t = afun::lookup_op <L + 1, OP>;
+	template <typename OP> friend class afun::lookup_op_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -193,22 +230,21 @@ class join_trav_impl <Q, pack <V...>, R, T, sizes <N...>, D, TR> :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE bool more_t(size <K>) const { return v<K>(); }
-	INLINE bool more_t(size <L>) const { return false; }
+	INLINE void next(size <K>, _true = yes) { ++k, next(size <K + 1>(), no); }
 
 	template <size_t K>
-	INLINE void next(size <K>) { if (!v<K>()) ++k, next(size <K + 1>()); }
-	INLINE void next(size <L>) { }
+	INLINE void prev(size <K>, _true = yes) { --k, prev(size <K - 1>(), no); }
 
 	template <size_t K>
-	INLINE void prev(size <K>) { if (!v<K>()) --k, prev(size <K - 1>()); }
-	INLINE void prev(size <Z>) { }
+	INLINE void next(size <K> s, _false) { if (!v<K>()) next(s); }
 
-	template <size_t K, typename... A>
-	INLINE D inc(A&&... a) { return next(size <K>()), D(K, fwd <A>(a)...); }
+	template <size_t K>
+	INLINE void prev(size <K> s, _false) { if (!v<K>()) prev(s); }
 
-	template <size_t K, typename... A>
-	INLINE D dec(A&&... a) { return prev(size <K>()), D(K, fwd <A>(a)...); }
+	INLINE void next(SL, _true)  { }
+	INLINE void next(SL, _false) { }
+	INLINE void prev(SZ, _true)  { }
+	INLINE void prev(SZ, _false) { }
 
 //-----------------------------------------------------------------------------
 
@@ -220,23 +256,41 @@ class join_trav_impl <Q, pack <V...>, R, T, sizes <N...>, D, TR> :
 	struct inc_r   { };
 	struct dec_r   { };
 
-	template <size_t K> INLINE bool _(more)  const { return more_t(size <K>()); }
-	template <size_t K> INLINE R    _(deref) const { return cast(*v<K>()); }
-
-	template <size_t K> INLINE void _(advance) { next(size <K>()); }
-	template <size_t K> INLINE void _(inc_l)   { ++v<K>(), next(size <K>()); }
-	template <size_t K> INLINE void _(dec_l)   { --v<K>(), prev(size <K>()); }
-	// TODO: make "--v<K>() ?" work: traversor bounded at both ends; reset traversor at its begin/end
+//-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE D _(inc_r) { return inc <K>(N == K ? v<N>()++ : v<N>()...); }
+	INLINE bool _(more, size <K>) const { return v<K>(); }
+	INLINE bool _(more, SL)       const { return false; }
 
 	template <size_t K>
-	INLINE D _(dec_r) { return dec <K>(N == K ? v<N>()-- : v<N>()...); }
+	INLINE R _(deref, size <K>) const { return cast(*v<K>()); }
 
-	template <typename OP> using   op = afun::lookup_op <L, OP>;
-	template <typename OP> using op_t = afun::lookup_op <L + 1, OP>;
-	template <typename OP> friend class afun::lookup_op_fun;
+	template <size_t K>
+	INLINE void _(advance, size <K>) { next(size <K>(), no); }
+
+	template <size_t K>
+	INLINE void
+	_(inc_l, size <K>) { +v<K>() ? _do(++v<K>()) : next(size <K>()); }
+
+	template <size_t K>
+	INLINE void
+	_(dec_l, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
+
+	template <size_t K>
+	INLINE D _(inc_r, size <K>) { return D(K,
+		N == K ? +v<K>() ? v<N>()++ : next(size <K>()), v<N>() : v<N>()
+	...); }
+
+	template <size_t K>
+	INLINE D _(dec_r, size <K>) { return D(K,
+		N == K ? -v<K>() ? v<N>()-- : prev(size <K>()), v<N>() : v<N>()
+	...); }
+
+	INLINE void _(inc_l, SZ) { next(SZ()); }
+	INLINE void _(dec_l, SL) { prev(SL()); }
+
+	INLINE D _(inc_r, SZ) { return D((next(SZ()), Z), v<N>()...); }
+	INLINE D _(dec_r, SL) { return D((prev(SL()), L), v<N>()...); }
 
 //-----------------------------------------------------------------------------
 

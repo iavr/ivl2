@@ -83,8 +83,8 @@ struct lookup_op_fun
 {
 	template <size_t K, typename C, typename... A>
 	INLINE constexpr auto _(C&& c, A&&... a) const
-	-> decltype(fwd <C>(c).template _<K>(OP(), fwd <A>(a)...))
-		{ return fwd <C>(c).template _<K>(OP(), fwd <A>(a)...); }
+	-> decltype(fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...))
+		{ return fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...); }
 };
 
 template <size_t L, typename OP>

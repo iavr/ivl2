@@ -53,6 +53,7 @@
 #include "base/iter/base.hpp"
 
 #include "iter/iter.hpp"
+#include "iter/trav.hpp"
 #include "iter/atom.hpp"
 #include "iter/flip.hpp"
 #include "iter/indirect.hpp"

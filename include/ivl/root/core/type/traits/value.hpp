@@ -50,6 +50,8 @@ template <size_t N> struct sized { char arr[N]; };
 
 struct thru { template <typename... T> thru(T&&...) { } };
 
+template <typename... T> void _do(T&&...) { };
+
 //-----------------------------------------------------------------------------
 
 template <typename A>

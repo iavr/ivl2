@@ -113,6 +113,9 @@ public:
 
 	INLINE constexpr operator bool() const { return true; }
 
+	INLINE bool operator+() const { return true; }
+	INLINE bool operator-() const { return true; }
+
 	INLINE constexpr R operator*()  const { return cast(B::val()); }
 	INLINE           P operator->() const { return &(operator*()); }
 

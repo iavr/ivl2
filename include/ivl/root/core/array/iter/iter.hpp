@@ -97,65 +97,6 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T,
-	typename D = iter_trav <Q, I, R, T>,
-	typename TR = iter_traits <I, R, T>
->
-class iter_trav_impl : public trav_base <D, TR, I, I>
-{
-	using B = trav_base <D, TR, I, I>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
-
-	using iter = iter_elem <0, I>;
-	using end  = iter_elem <1, I>;
-
-	using derived <D>::der_f;
-	using derived <D>::der;
-	using B::cast;
-
-//-----------------------------------------------------------------------------
-
-	INLINE           l_iter_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
-
-	INLINE           l_iter_ref <I> e()       { return end::get(); }
-	INLINE constexpr c_iter_ref <I> e() const { return end::get(); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-
-	static constexpr bool finite = true;
-
-	INLINE constexpr operator bool() const { return i() != e(); }
-
-	INLINE constexpr R operator*()  const { return cast(*i()); }
-	INLINE           P operator->() const { return &(operator*()); }
-
-	INLINE D&& operator++() && { return ++i(), der_f(); }
-	INLINE D&  operator++() &  { return ++i(), der(); }
-	INLINE D&& operator--() && { return --i(), der_f(); }
-	INLINE D&  operator--() &  { return --i(), der(); }
-
-	INLINE D operator++(int) { return D(i()++, e()); }
-	INLINE D operator--(int) { return D(i()--, e()); }
-
-	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
-
-	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
-	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
-	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
-	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
-
-	INLINE D operator+(d n) const { return D(i() + n, e()); }
-	INLINE D operator-(d n) const { return D(i() - n, e()); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <
 	typename Q, typename V, typename R, typename T,
 	typename D = trav_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>
@@ -215,15 +156,6 @@ struct iterator <tag::iter, I, R, T> :
 	iter_iter_impl <I, R, T>
 {
 	using iter_iter_impl <I, R, T>::iter_iter_impl;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename Q, typename V, typename R, typename T>
-struct traversor <tag::iter, Q, V, R, T> :
-	iter_trav_impl <Q, V, R, T>
-{
-	using iter_trav_impl <Q, V, R, T>::iter_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

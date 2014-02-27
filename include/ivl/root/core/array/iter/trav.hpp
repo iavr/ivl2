@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_INDIRECT_HPP
-#define IVL_CORE_ARRAY_ITER_INDIRECT_HPP
+#ifndef IVL_CORE_ARRAY_ITER_TRAV_HPP
+#define IVL_CORE_ARRAY_ITER_TRAV_HPP
 
 #include <ivl/ivl>
 
@@ -43,36 +43,42 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename U,
-	typename D = indirect_iter <I, R, T, U>,
-	typename TR = iter_traits <I, R, T>
+	typename Q, typename I, typename R, typename T,
+	typename D = iter_trav <Q, I, R, T>,
+	typename TR = iter_traits <I, R, T>,
+	bool = path_in <Q>{}
 >
-class indirect_iter_impl : public iter_base <D, TR, I, U>
+class iter_trav_impl : public trav_base <D, TR, I, I>
 {
-	using B = iter_base <D, TR, I, U>;
+	using B = trav_base <D, TR, I, I>;
 	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
-	using iter  = iter_elem <0, I>;
-	using under = iter_elem <1, U>;
+	using iter = iter_elem <0, I>;
+	using end  = iter_elem <1, I>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
 	INLINE           l_iter_ref <I> i()       { return iter::get(); }
 	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
 
-	INLINE           l_iter_ref <U> u()       { return under::get(); }
-	INLINE constexpr c_iter_ref <U> u() const { return under::get(); }
+	INLINE           l_iter_ref <I> e()       { return end::get(); }
+	INLINE constexpr c_iter_ref <I> e() const { return end::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using B::B;
 
-	INLINE constexpr R operator*()  const { return u()[*i()]; }
+	static constexpr bool finite = true;
+
+	INLINE constexpr operator bool() const { return i() != e(); }
+
+	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
 	INLINE D&& operator++() && { return ++i(), der_f(); }
@@ -80,100 +86,93 @@ public:
 	INLINE D&& operator--() && { return --i(), der_f(); }
 	INLINE D&  operator--() &  { return --i(), der(); }
 
-	INLINE D operator++(int) { return D(i()++, u()); }
-	INLINE D operator--(int) { return D(i()--, u()); }
+	INLINE D operator++(int) { return D(i()++, e()); }
+	INLINE D operator--(int) { return D(i()--, e()); }
 
-	INLINE constexpr R operator[](d n) const { return u()[i()[n]]; }
+	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
 
 	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
 	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
 	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
 	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
 
-	INLINE D operator+(d n) const { return D(i() + n, u()); }
-	INLINE D operator-(d n) const { return D(i() - n, u()); }
-
-	// TODO
-	INLINE bool operator!=(D o) { return i() != o.i(); }
+	INLINE D operator+(d n) const { return D(i() + n, e()); }
+	INLINE D operator-(d n) const { return D(i() - n, e()); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename V, typename R, typename T, typename U,
-	typename D = indirect_trav <Q, V, R, T, U>,
-	typename TR = iter_traits <V, R, T>
+	typename Q, typename I, typename R, typename T,
+	typename D, typename TR
 >
-class indirect_trav_impl : public trav_base <D, TR, V, U>
+class iter_trav_impl <Q, I, R, T, D, TR, true> :
+	public trav_base <D, TR, I, I, I>
 {
-	using B = trav_base <D, TR, V, U>;
+	using B = trav_base <D, TR, I, I, I>;
 	using d = seq_diff <TR>;
 	using P = seq_ptr <TR>;
 
-	using trav  = iter_elem <0, V>;
-	using under = iter_elem <1, U>;
+	using first = iter_elem <0, I>;
+	using iter  = iter_elem <1, I>;
+	using last  = iter_elem <2, I>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
+	using B::cast;
 
 //-----------------------------------------------------------------------------
 
-	INLINE           l_iter_ref <V> v()       { return trav::get(); }
-	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
+	INLINE           l_iter_ref <I> f()       { return first::get(); }
+	INLINE constexpr c_iter_ref <I> f() const { return first::get(); }
 
-	INLINE           l_iter_ref <U> u()       { return under::get(); }
-	INLINE constexpr c_iter_ref <U> u() const { return under::get(); }
+	INLINE           l_iter_ref <I> i()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
+
+	INLINE           l_iter_ref <I> l()       { return last::get(); }
+	INLINE constexpr c_iter_ref <I> l() const { return last::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using B::B;
 
-	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
+	static constexpr bool finite = true;
 
-	INLINE constexpr operator bool() const { return v(); }
+	INLINE constexpr operator bool() const { return i() != l() + 1; }
 
-	INLINE bool operator+() const { return v(); }
-	INLINE bool operator-() const { return v(); }
+	INLINE bool operator+() const { return i() != l(); }
+	INLINE bool operator-() const { return i() != f(); }
 
-	INLINE constexpr R operator*()  const { return u()[*v()]; }
+	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D&& operator++() && { return ++v(), der_f(); }
-	INLINE D&  operator++() &  { return ++v(), der(); }
-	INLINE D&& operator--() && { return --v(), der_f(); }
-	INLINE D&  operator--() &  { return --v(), der(); }
+	INLINE D&& operator++() && { return ++i(), der_f(); }
+	INLINE D&  operator++() &  { return ++i(), der(); }
+	INLINE D&& operator--() && { return --i(), der_f(); }
+	INLINE D&  operator--() &  { return --i(), der(); }
 
-	INLINE D operator++(int) { return D(v()++, u()); }
-	INLINE D operator--(int) { return D(v()--, u()); }
+	INLINE D operator++(int) { return D(f(), i()++, l()); }
+	INLINE D operator--(int) { return D(f(), i()--, l()); }
 
-	INLINE constexpr R operator[](d n) const { return u()[v()[n]]; }
+	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
 
-	INLINE D&& operator+=(d n) && { return v() += n, der_f(); }
-	INLINE D&  operator+=(d n) &  { return v() += n, der(); }
-	INLINE D&& operator-=(d n) && { return v() -= n, der_f(); }
-	INLINE D&  operator-=(d n) &  { return v() -= n, der(); }
+	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
+	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
+	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
+	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
 
-	INLINE D operator+(d n) const { return D(v() + n, u()); }
-	INLINE D operator-(d n) const { return D(v() - n, u()); }
+	INLINE D operator+(d n) const { return D(f(), i() + n, l()); }
+	INLINE D operator-(d n) const { return D(f(), i() - n, l()); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R, typename T, typename U>
-struct iterator <tag::indirect, I, R, T, U> :
-	indirect_iter_impl <I, R, T, U>
+template <typename Q, typename V, typename R, typename T>
+struct traversor <tag::iter, Q, V, R, T> :
+	iter_trav_impl <Q, V, R, T>
 {
-	using indirect_iter_impl <I, R, T, U>::indirect_iter_impl;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename Q, typename V, typename R, typename T, typename U>
-struct traversor <tag::indirect, Q, V, R, T, U> :
-	indirect_trav_impl <Q, V, R, T, U>
-{
-	using indirect_trav_impl <Q, V, R, T, U>::indirect_trav_impl;
+	using iter_trav_impl <Q, V, R, T>::iter_trav_impl;
 };
 
 //-----------------------------------------------------------------------------
@@ -190,4 +189,4 @@ struct traversor <tag::indirect, Q, V, R, T, U> :
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_INDIRECT_HPP
+#endif  // IVL_CORE_ARRAY_ITER_TRAV_HPP
