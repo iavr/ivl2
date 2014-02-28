@@ -109,17 +109,31 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
-	template <typename Q>
+	template <typename Q, only_if <!path_flip <Q>()> = 0>
 	INLINE VR <Q>
-	_trav() && { return VR <Q>(0, u_f<N>().trav(in_on <Q>())...); }
+	_trav() && { return VR <Q>(0, L, u_f<N>().trav(in_on <Q>())...); }
 
-	template <typename Q>
+	template <typename Q, only_if <!path_flip <Q>()> = 0>
 	INLINE VL <Q>
-	_trav() & { return VL <Q>(0, u<N>().trav(in_on <Q>())...); }
+	_trav() & { return VL <Q>(0, L, u<N>().trav(in_on <Q>())...); }
 
-	template <typename Q>
+	template <typename Q, only_if <!path_flip <Q>()> = 0>
 	INLINE constexpr VC <Q>
-	_trav() const& { return VC <Q>(0, u<N>().trav(in_on <Q>())...); }
+	_trav() const& { return VC <Q>(0, L, u<N>().trav(in_on <Q>())...); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename Q, only_if <path_flip <Q>{}> = 0>
+	INLINE VR <Q>
+	_trav() && { return VR <Q>(L-1, -1, u_f<N>().trav(in_on <Q>())...); }
+
+	template <typename Q, only_if <path_flip <Q>{}> = 0>
+	INLINE VL <Q>
+	_trav() & { return VL <Q>(L-1, -1, u<N>().trav(in_on <Q>())...); }
+
+	template <typename Q, only_if <path_flip <Q>{}> = 0>
+	INLINE constexpr VC <Q>
+	_trav() const& { return VC <Q>(L-1, -1, u<N>().trav(in_on <Q>())...); }
 
 //-----------------------------------------------------------------------------
 

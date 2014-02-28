@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
+template <size_t B, typename F, typename... A>
 class lookup_fun_impl
 {
 	using R = decltype(F().template _<0>(gen <A>()...));
@@ -59,20 +59,21 @@ public:
 	template <size_t... I>
 	INLINE R operator()(sizes <I...>, size_t i, A&&... a) const
 	{
-		static const P table[] = {stub <I>::f...};
-		return table[i](fwd <A>(a)...);
+		static const P table[] = {stub <I + B>::f...};
+		static const P *index = table - B;
+		return index[i](fwd <A>(a)...);
 	};
 };
 
-template <size_t L, typename F>
+template <size_t B, size_t E, typename F>
 struct lookup_fun
 {
 	template <typename... A>
 	INLINE constexpr decltype(F().template _<0>(gen <A>()...))
 	operator()(size_t i, A&&... a) const
 	{
-		return lookup_fun_impl <F, A...>()
-			(sz_rng_of_i <L>(), i, fwd <A>(a)...);
+		return lookup_fun_impl <B, F, A...>()
+			(sz_rng <0, E - B>(), i, fwd <A>(a)...);
 	};
 };
 
@@ -87,8 +88,8 @@ struct lookup_op_fun
 		{ return fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...); }
 };
 
-template <size_t L, typename OP>
-struct lookup_op : lookup_fun <L, lookup_op_fun <OP> > { };
+template <size_t B, size_t E, typename OP>
+struct lookup_op : lookup_fun <B, E, lookup_op_fun <OP> > { };
 
 //-----------------------------------------------------------------------------
 

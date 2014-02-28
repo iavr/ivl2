@@ -119,11 +119,7 @@ void run()
 		cout << join(a, b) << endl;
 		*join(a, c).begin() = 20;
 		cout << a << endl;
-
-		auto zz = join(A <>(), a, b, A <>(), A <2>{0, 1}, A <>());
-		auto ii = zz.end();
-// 		--ii;
-// 		cout << *ii << endl;
+		cout << flip(join(a, c, A <>(), A <2>{0, 1})) << endl;
 		cout << endl;
 	}
 

@@ -121,6 +121,9 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 	using derived <D>::der;
 	using B::cast;
 
+	using flip    = expr <path_flip <Q>{}>;
+	using no_flip = expr <!path_flip <Q>()>;
+
 //-----------------------------------------------------------------------------
 
 	INLINE           l_iter_ref <I> f()       { return first::get(); }
@@ -134,15 +137,23 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
+	INLINE constexpr bool more(_true)  const { return i() != l() + 1; }
+	INLINE constexpr bool more(_false) const { return i() != l() - 1; }
+
+	INLINE constexpr bool inside(_true)  const { return i() != l(); }
+	INLINE constexpr bool inside(_false) const { return i() != f(); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
 	static constexpr bool finite = true;
 
-	INLINE constexpr operator bool() const { return i() != l() + 1; }
+	INLINE constexpr operator bool() const { return more(no_flip()); }
 
-	INLINE bool operator+() const { return i() != l(); }
-	INLINE bool operator-() const { return i() != f(); }
+	INLINE bool operator+() const { return inside(no_flip()); }
+	INLINE bool operator-() const { return inside(flip()); }
 
 	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }

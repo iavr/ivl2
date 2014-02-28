@@ -469,16 +469,28 @@ struct c_ref_t <F(_type <T>)> : bra_ret_t <c_ref <F>(c_ref <T>)> { };
 
 namespace details {
 
-template <typename T, bool = is_ref <T>()>
-struct seq_result_ : id_t <T> { };
+template <typename T, typename R, bool = is_ref <R>()>
+struct seq_result_ : id_t <R> { };
 
-template <typename T>
-struct seq_result_<T, false> : _type <T> { };
+template <typename T, typename R>
+struct seq_result_<T, R, false> : _type <T> { };
+
+template <typename T, typename R>
+struct seq_result_<_type <T>, R, false> : _type <T> { };
 
 }  // namespace details
 
-template <typename T> using seq_result_t = details::seq_result_<T>;
-template <typename T> using seq_result = type_of <seq_result_t <T> >;
+template <typename T, typename R = T>
+using seq_result_t = details::seq_result_<T, R>;
+
+template <typename T, typename R = T>
+using seq_result = type_of <seq_result_t <T, R> >;
+
+template <typename A>
+using seq_type_of_t = seq_result_t <seq_type <A>, u_seq_ref <A> >;
+
+template <typename A>
+using seq_type_of = type_of <seq_type_of_t <A> >;
 
 template <typename... T> using seq_common_t = seq_result_t <common <T...> >;
 template <typename... T> using seq_common = type_of <seq_common_t <T...> >;

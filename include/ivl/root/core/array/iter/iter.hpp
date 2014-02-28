@@ -127,6 +127,9 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
+	INLINE bool operator+() const { return +v(); }
+	INLINE bool operator-() const { return -v(); }
+
 	INLINE constexpr R operator*()  const { return cast(*v()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
