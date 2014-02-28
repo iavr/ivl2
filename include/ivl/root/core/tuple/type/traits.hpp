@@ -144,32 +144,40 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename C, typename T> struct opt_ref_;
+
+template <typename T>
+struct opt_ref_<tag::rref, T> : base_opt_t <T&&, T> { };
+
+template <typename T>
+struct opt_ref_<tag::lref, T> : base_opt_t <T&, T> { };
+
+template <typename T>
+struct opt_ref_<tag::cref, T> : base_opt_t <const T&, T> { };
+
+}  // namespace details
+
 // extended elsewhere
-template <typename T> struct r_ref_t : base_opt_t <T&&, T> { };
-template <typename T> struct l_ref_t : base_opt_t <T&, T> { };
-template <typename T> struct c_ref_t : base_opt_t <const T&, T> { };
+template <typename C, typename T> struct ref_t : details::opt_ref_<C, T> { };
+template <typename C, typename T> using  ref = type_of <ref_t <C, T> >;
+
+template <typename C, typename... E>
+struct ref_t <C, pack <E...> > : id_t <pre_tuple <ref <C, E>...> > { };
+
+template <typename C, typename F, typename... E>
+struct ref_t <C, F(pack <E...>)> : ret_t <ref <C, F>(ref <C, E>...)> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename T> using r_ref_t = ref_t <tag::rref, T>;
+template <typename T> using l_ref_t = ref_t <tag::lref, T>;
+template <typename T> using c_ref_t = ref_t <tag::cref, T>;
 
 template <typename T> using r_ref = type_of <r_ref_t <T> >;
 template <typename T> using l_ref = type_of <l_ref_t <T> >;
 template <typename T> using c_ref = type_of <c_ref_t <T> >;
-
-template <typename... E>
-struct r_ref_t <pack <E...> > : id_t <pre_tuple <r_ref <E>...> > { };
-
-template <typename... E>
-struct l_ref_t <pack <E...> > : id_t <pre_tuple <l_ref <E>...> > { };
-
-template <typename... E>
-struct c_ref_t <pack <E...> > : id_t <pre_tuple <c_ref <E>...> > { };
-
-template <typename F, typename... E>
-struct r_ref_t <F(pack <E...>)> : ret_t <r_ref <F>(r_ref <E>...)> { };
-
-template <typename F, typename... E>
-struct l_ref_t <F(pack <E...>)> : ret_t <l_ref <F>(l_ref <E>...)> { };
-
-template <typename F, typename... E>
-struct c_ref_t <F(pack <E...>)> : ret_t <c_ref <F>(c_ref <E>...)> { };
 
 //-----------------------------------------------------------------------------
 

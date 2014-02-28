@@ -451,19 +451,12 @@ using c_iter_pick = c_iter_ref <pick <N, E...> >;
 
 //-----------------------------------------------------------------------------
 
-// extending definition @tuple/type/traits
-template <typename T> struct r_ref_t <_type <T> > : id_t <T> { };
-template <typename T> struct l_ref_t <_type <T> > : id_t <T> { };
-template <typename T> struct c_ref_t <_type <T> > : id_t <T> { };
+// // extending definition @tuple/type/traits
+template <typename C, typename T>
+struct ref_t <C, _type <T> > : id_t <T> { };
 
-template <typename F, typename T>
-struct r_ref_t <F(_type <T>)> : bra_ret_t <r_ref <F>(r_ref <T>)> { };
-
-template <typename F, typename T>
-struct l_ref_t <F(_type <T>)> : bra_ret_t <l_ref <F>(l_ref <T>)> { };
-
-template <typename F, typename T>
-struct c_ref_t <F(_type <T>)> : bra_ret_t <c_ref <F>(c_ref <T>)> { };
+template <typename C, typename F, typename T>
+struct ref_t <C, F(_type <T>)> : bra_ret_t <ref <C, F>(ref <C, T>)> { };
 
 //-----------------------------------------------------------------------------
 
