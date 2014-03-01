@@ -144,24 +144,21 @@ using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename C, typename T> struct add_ref_t;
+template <typename C, typename T> using  add_ref = type_of <add_ref_t <C, T> >;
 
-template <typename C, typename T> struct opt_ref_;
+template <typename T> struct add_ref_t <tag::rref, T> : id_t <T&&> { };
+template <typename T> struct add_ref_t <tag::lref, T> : id_t <T&> { };
+template <typename T> struct add_ref_t <tag::cref, T> : id_t <const T&> { };
 
-template <typename T>
-struct opt_ref_<tag::rref, T> : base_opt_t <T&&, T> { };
-
-template <typename T>
-struct opt_ref_<tag::lref, T> : base_opt_t <T&, T> { };
-
-template <typename T>
-struct opt_ref_<tag::cref, T> : base_opt_t <const T&, T> { };
-
-}  // namespace details
+//-----------------------------------------------------------------------------
 
 // extended elsewhere
-template <typename C, typename T> struct ref_t : details::opt_ref_<C, T> { };
-template <typename C, typename T> using  ref = type_of <ref_t <C, T> >;
+template <typename C, typename T>
+struct ref_t : base_opt_t <add_ref <C, T>, T> { };
+
+template <typename C, typename T>
+using ref = type_of <ref_t <C, T> >;
 
 template <typename C, typename... E>
 struct ref_t <C, pack <E...> > : id_t <pre_tuple <ref <C, E>...> > { };
@@ -191,45 +188,34 @@ template <size_t I, typename... E> using c_pick = c_ref <pick <I, E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename T>
-using r_switch = typename C::template map <r_ref <T> >;
-
-template <typename C, typename T>
-using l_switch = typename C::template map <l_ref <T> >;
-
-template <typename C, typename T>
-using c_switch = typename C::template map <c_ref <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T> struct t_ref_t            : r_ref_t <T> { };
-template <typename T> struct t_ref_t <T&>       : l_ref_t <T> { };
-template <typename T> struct t_ref_t <const T&> : c_ref_t <T> { };
-template <typename T> using  t_ref              = type_of <t_ref_t <T> >;
+template <typename T> struct tup_ref_t            : r_ref_t <T> { };
+template <typename T> struct tup_ref_t <T&>       : l_ref_t <T> { };
+template <typename T> struct tup_ref_t <const T&> : c_ref_t <T> { };
+template <typename T> using  tup_ref              = type_of <tup_ref_t <T> >;
 
 template <typename T>
-struct t_ref_types_t : type_map_t <t_ref_t, tup_types <T> > { };
+struct tup_refs_t : type_map_t <tup_ref_t, tup_types <T> > { };
 
-template <typename T> using t_ref_types = type_of <t_ref_types_t <T> >;
+template <typename T> using tup_refs = type_of <tup_refs_t <T> >;
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
 template <typename P, typename T, bool = is_tup_type <T>()>
-struct tup_cons_ : all2 <is_cons, P, t_ref_types <T> > { };
+struct tup_cons_ : all2 <is_cons, P, tup_refs <T> > { };
 
 template <typename T, typename P, bool = is_tup_type <T>()>
-struct tup_conv_ : all2 <is_conv, t_ref_types <T>, P> { };
+struct tup_conv_ : all2 <is_conv, tup_refs <T>, P> { };
 
 template <typename P, typename T, bool = is_tup_type <T>()>
-struct tup_assign_ : all2 <is_assign, t_ref_types <P>, t_ref_types <T> > { };
+struct tup_assign_ : all2 <is_assign, tup_refs <P>, tup_refs <T> > { };
 
 template <typename P, typename T> struct tup_cons_<P, T, false>   : _false { };
 template <typename T, typename P> struct tup_conv_<T, P, false>   : _false { };
 template <typename P, typename T> struct tup_assign_<P, T, false> : _false { };
 
-template <typename P, typename T, typename R = t_ref_types <P> >
+template <typename P, typename T, typename R = tup_refs <P> >
 struct tup_atom_assign_;
 
 template <typename P, typename T, typename... E>

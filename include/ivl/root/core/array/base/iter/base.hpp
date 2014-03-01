@@ -45,10 +45,10 @@ namespace details {
 template <typename D, typename TR, typename... E>
 class iter_common : public derived <D>, public iter_store <TR, E...>
 {
-	using R = seq_ref <TR>;
+	using R = seq_iref <TR>;
 	using T = seq_type <TR>;
 	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using P = seq_iptr <TR>;
 
 protected:
 	template <typename A>

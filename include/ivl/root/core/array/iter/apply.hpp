@@ -60,8 +60,8 @@ class apply_iter_impl <pack <I...>, R, T, M, F, D, TR, sizes <N...> > :
 	public iter_base <D, TR, F, I...>
 {
 	using B = iter_base <D, TR, F, I...>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using d = seq_diff <B>;
+	using P = seq_iptr <B>;
 
 	using fun = iter_elem <0, F>;
 
@@ -135,7 +135,7 @@ class apply_trav_impl <Q, pack <V...>, R, T, M, F, D, TR, sizes <N...> > :
 {
 	using B = trav_base <D, TR, F, V...>;
 	using d = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using P = seq_iptr <B>;
 
 	using fun = iter_elem <0, F>;
 

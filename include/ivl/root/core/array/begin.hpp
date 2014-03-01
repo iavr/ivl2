@@ -37,10 +37,10 @@ namespace ivl {
 namespace types {
 namespace traits {
 
-template <typename I> struct seq_ref_t;
+template <typename I> struct seq_iref_t;
 template <typename I> struct seq_type_t;
 
-template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;
+template <typename I> using seq_iref = type_of <seq_iref_t <I> >;
 template <typename I> using seq_type = type_of <seq_type_t <I> >;
 
 }  // namespace traits

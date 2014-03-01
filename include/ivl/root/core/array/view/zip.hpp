@@ -47,7 +47,7 @@ struct zip_traits;
 
 template <typename M, typename... U, typename UP>
 struct zip_traits <M, pack <U...>, UP> : seq_traits <
-	pack <u_seq_ref <U>...>, apply_length <U...>, UP,
+	pack <seq_ref <U>...>, apply_length <U...>, UP,
 	zip_iter, zip_trav, id, seq_size <UP>, M
 > { };
 

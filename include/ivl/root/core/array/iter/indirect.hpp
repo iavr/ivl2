@@ -50,8 +50,8 @@ template <
 class indirect_iter_impl : public iter_base <D, TR, I, U>
 {
 	using B = iter_base <D, TR, I, U>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using d = seq_diff <B>;
+	using P = seq_iptr <B>;
 
 	using iter  = iter_elem <0, I>;
 	using under = iter_elem <1, U>;
@@ -107,8 +107,8 @@ template <
 class indirect_trav_impl : public trav_base <D, TR, V, U>
 {
 	using B = trav_base <D, TR, V, U>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using d = seq_diff <B>;
+	using P = seq_iptr <B>;
 
 	using trav  = iter_elem <0, V>;
 	using under = iter_elem <1, U>;

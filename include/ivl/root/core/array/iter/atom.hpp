@@ -50,8 +50,8 @@ template <
 class atom_iter_impl : public iter_base <D, TR, T>
 {
 	using B = iter_base <D, TR, T>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using d = seq_diff <B>;
+	using P = seq_iptr <B>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -97,8 +97,8 @@ template <
 class atom_trav_impl : public trav_base <D, TR, T>
 {
 	using B = iter_base <D, TR, T>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using d = seq_diff <B>;
+	using P = seq_iptr <B>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;

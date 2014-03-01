@@ -51,7 +51,7 @@ struct join_traits;
 
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
-	seq_common <u_seq_ref <U>...>, join_length <U...>, UP,
+	seq_common <seq_ref <U>...>, join_length <U...>, UP,
 	join_iter, join_trav, in_on
 > { };
 

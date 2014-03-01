@@ -47,17 +47,17 @@ template <typename C, typename... A> class traversor;
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R = seq_ref <I>, typename T = seq_type <I> >
+template <typename I, typename R = seq_iref <I>, typename T = seq_type <I> >
 using iter_iter = iterator <tag::iter, I, R, T>;
 
 template <
-	typename Q, typename I, typename R = seq_ref <I>,
+	typename Q, typename I, typename R = seq_iref <I>,
 	typename T = seq_type <I>
 >
 using iter_trav = traversor <tag::iter, Q, I, R, T>;
 
 template <
-	typename Q, typename V, typename R = seq_ref <V>,
+	typename Q, typename V, typename R = seq_iref <V>,
 	typename T = seq_type <V>
 >
 using trav_trav = traversor <tag::trav, Q, V, R, T>;

@@ -60,8 +60,8 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	public iter_base <D, TR, V...>
 {
 	using B = iter_base <D, TR, V...>;
-	using d = seq_diff <TR>;
-	using P = seq_ptr <TR>;
+	using d = seq_diff <B>;
+	using P = seq_iptr <B>;
 
 	template <size_t K>
 	using trav = iter_elem_at <K, V...>;
@@ -191,7 +191,7 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 {
 	using B = trav_base <D, TR, V...>;
 	using d = seq_diff <B>;
-	using P = seq_ptr <B>;
+	using P = seq_iptr <B>;
 
 	template <size_t K>
 	using trav = iter_elem_at <K, V...>;

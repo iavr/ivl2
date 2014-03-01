@@ -155,33 +155,33 @@ using has_range = expr <has_begin <T>() && has_end <T>()>;
 
 namespace details {
 
-template <typename I> struct seq_ref_  : id_t <typename I::reference> { };
+template <typename I> struct seq_iref_ : id_t <typename I::reference> { };
 template <typename I> struct seq_type_ : id_t <typename I::value_type> { };
 template <typename I> struct seq_size_ : id_t <typename I::size_type> { };
 template <typename I> struct seq_diff_ : id_t <typename I::difference_type> { };
-template <typename I> struct seq_ptr_  : id_t <typename I::pointer> { };
+template <typename I> struct seq_iptr_ : id_t <typename I::pointer> { };
 
-template <typename T> struct seq_ref_<T*>  : id_t <T&> { };
+template <typename T> struct seq_iref_<T*> : id_t <T&> { };
 template <typename T> struct seq_type_<T*> : id_t <T> { };
 template <typename T> struct seq_size_<T*> : id_t <size_t> { };
 template <typename T> struct seq_diff_<T*> : id_t <ptrdiff_t> { };
-template <typename T> struct seq_ptr_<T*>  : id_t <T*> { };
+template <typename T> struct seq_iptr_<T*> : id_t <T*> { };
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename I> struct seq_ref_t  : details::seq_ref_<raw_type <I> > { };
+template <typename I> struct seq_iref_t : details::seq_iref_<raw_type <I> > { };
 template <typename I> struct seq_type_t : details::seq_type_<raw_type <I> > { };
 template <typename I> struct seq_size_t : details::seq_size_<raw_type <I> > { };
 template <typename I> struct seq_diff_t : details::seq_diff_<raw_type <I> > { };
-template <typename I> struct seq_ptr_t  : details::seq_ptr_<raw_type <I> > { };
+template <typename I> struct seq_iptr_t : details::seq_iptr_<raw_type <I> > { };
 
-// template <typename I> using seq_ref  = type_of <seq_ref_t <I> >;   // defined @begin
+// template <typename I> using seq_iref = type_of <seq_iref_t <I> >;  // defined @begin
 // template <typename I> using seq_type = type_of <seq_type_t <I> >;  // defined @begin
 template <typename I> using seq_size = type_of <seq_size_t <I> >;
 template <typename I> using seq_diff = type_of <seq_diff_t <I> >;
-template <typename I> using seq_ptr  = type_of <seq_ptr_t <I> >;
+template <typename I> using seq_iptr = type_of <seq_iptr_t <I> >;
 
 //-----------------------------------------------------------------------------
 
@@ -212,28 +212,37 @@ template <typename T> struct c_seq_ref_<T*> : id_t <const T&> { };
 template <typename T> struct l_seq_ptr_<T*> : id_t <T*> { };
 template <typename T> struct c_seq_ptr_<T*> : id_t <const T*> { };
 
-using seq_ref_sw = switch_ref <r_seq_ref_, l_seq_ref_, c_seq_ref_>;
-using seq_ptr_sw = switch_ref <l_seq_ptr_, l_seq_ptr_, c_seq_ptr_>;
+using seq_ref_sw = ref_switch <r_seq_ref_, l_seq_ref_, c_seq_ref_>;
+using seq_ptr_sw = ref_switch <l_seq_ptr_, l_seq_ptr_, c_seq_ptr_>;
 
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using u_seq_ref_t = switch_u <details::seq_ref_sw, T>;
-template <typename T> using r_seq_ref_t = switch_r <details::seq_ref_sw, T>;
-template <typename T> using l_seq_ref_t = switch_l <details::seq_ref_sw, T>;
-template <typename T> using c_seq_ref_t = switch_c <details::seq_ref_sw, T>;
+template <typename T> using r_seq_ref_t = details::r_seq_ref_<raw_type <T> >;
+template <typename T> using l_seq_ref_t = details::l_seq_ref_<raw_type <T> >;
+template <typename T> using c_seq_ref_t = details::c_seq_ref_<raw_type <T> >;
 
-template <typename T> using l_seq_ptr_t = switch_l <details::seq_ptr_sw, T>;
-template <typename T> using c_seq_ptr_t = switch_c <details::seq_ptr_sw, T>;
+template <typename T> using l_seq_ptr_t = details::l_seq_ptr_<raw_type <T> >;
+template <typename T> using c_seq_ptr_t = details::c_seq_ptr_<raw_type <T> >;
 
-template <typename T> using u_seq_ref = type_of <u_seq_ref_t <T> >;
 template <typename T> using r_seq_ref = type_of <r_seq_ref_t <T> >;
 template <typename T> using l_seq_ref = type_of <l_seq_ref_t <T> >;
 template <typename T> using c_seq_ref = type_of <c_seq_ref_t <T> >;
 
 template <typename T> using l_seq_ptr = type_of <l_seq_ptr_t <T> >;
 template <typename T> using c_seq_ptr = type_of <c_seq_ptr_t <T> >;
+
+template <typename T> using seq_ref_t = switch_ref <details::seq_ref_sw, T>;
+template <typename T> using seq_ptr_t = switch_ref <details::seq_ptr_sw, T>;
+
+template <typename T> using seq_ref = type_of <seq_ref_t <T> >;
+template <typename T> using seq_ptr = type_of <seq_ptr_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename T, typename... Q> struct iter_t;
+template <typename C, typename T, typename Q>    struct trav_t;
 
 //-----------------------------------------------------------------------------
 
@@ -266,14 +275,22 @@ template <typename Q, typename T> struct c_trav_<Q, T*> : id_t <const T*> { };
 
 //-----------------------------------------------------------------------------
 
-using iter_sw = switch_ref <r_iter_, l_iter_, c_iter_>;
+using iter_sw = ref_switch <r_iter_, l_iter_, c_iter_>;
 
 template <typename Q>
-using trav_sw = switch_ref <
-	bind <r_trav_, Q>::template map,
-	bind <l_trav_, Q>::template map,
-	bind <c_trav_, Q>::template map
+using trav_sw = t_ref_switch <
+	bind <r_trav_, Q>,
+	bind <l_trav_, Q>,
+	bind <c_trav_, Q>
 >;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename T, typename Q, bool I = path_in <Q>()>
+struct iter_trav_ : iter_t <C, T> { };
+
+template <typename C, typename T, typename Q>
+struct iter_trav_<C, T, Q, true> : trav_t <C, T, Q> { };
 
 //-----------------------------------------------------------------------------
 
@@ -281,24 +298,69 @@ using trav_sw = switch_ref <
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct r_iter_t : switch_r <details::iter_sw, T> { };
-template <typename T> struct l_iter_t : switch_l <details::iter_sw, T> { };
-template <typename T> struct c_iter_t : switch_c <details::iter_sw, T> { };
+template <typename C, typename T, typename Q>
+struct iter_t <C, T, Q> : details::iter_trav_<C, T, Q> { };
 
-template <typename T, typename Q = arrays::path>
-struct r_trav_t : switch_r <details::trav_sw <Q>, T> { };
+template <typename C, typename T>
+struct iter_t <C, T> : switch_ref <details::iter_sw, add_ref <C, T> > { };
 
-template <typename T, typename Q = arrays::path>
-struct l_trav_t : switch_l <details::trav_sw <Q>, T> { };
+template <typename C, typename T, typename Q>
+struct trav_t : switch_ref <details::trav_sw <Q>, add_ref <C, T> > { };
 
-template <typename T, typename Q = arrays::path>
-struct c_trav_t : switch_c <details::trav_sw <Q>, T> { };
+template <typename C, typename T, typename... Q>
+using iter = type_of <iter_t <C, T, Q...> >;
+
+template <typename C, typename T, typename Q>
+using trav = type_of <trav_t <C, T, Q> >;
+
+template <typename C, typename T>
+struct iter_t <C, _type <T> > : id_t <T> { };
+
+template <typename C, typename T, typename Q>
+struct trav_t <C, _type <T>, Q> : id_t <T> { };
+
+template <typename C, typename... A>
+struct iter_t <C, pack <A...> > : pack <iter <C, id_t <A> >...> { };
+
+template <typename C, typename... A, typename Q>
+struct trav_t <C, pack <A...>, Q> : pack <trav <C, id_t <A>, Q>...> { };
+
+template <typename C, typename T>
+struct iter_t <C, id_t <T> > : switch_ref <details::iter_sw, ref <C, T> > { };
+
+template <typename C, typename T, typename Q>
+struct trav_t <C, id_t <T>, Q> : switch_ref <details::trav_sw <Q>, ref <C, T> > { };
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using r_iter = type_of <r_iter_t <T> >;
-template <typename T> using l_iter = type_of <l_iter_t <T> >;
-template <typename T> using c_iter = type_of <c_iter_t <T> >;
+template <typename T, typename... Q>
+using r_iter_t = iter_t <tag::rref, T, Q...>;
+
+template <typename T, typename... Q>
+using l_iter_t = iter_t <tag::lref, T, Q...>;
+
+template <typename T, typename... Q>
+using c_iter_t = iter_t <tag::cref, T, Q...>;
+
+template <typename T, typename... Q>
+using r_iter = type_of <r_iter_t <T, Q...> >;
+
+template <typename T, typename... Q>
+using l_iter = type_of <l_iter_t <T, Q...> >;
+
+template <typename T, typename... Q>
+using c_iter = type_of <c_iter_t <T, Q...> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename Q = arrays::path>
+using r_trav_t = trav_t <tag::rref, T, Q>;
+
+template <typename T, typename Q = arrays::path>
+using l_trav_t = trav_t <tag::lref, T, Q>;
+
+template <typename T, typename Q = arrays::path>
+using c_trav_t = trav_t <tag::cref, T, Q>;
 
 template <typename T, typename Q = arrays::path>
 using r_trav = type_of <r_trav_t <T, Q> >;
@@ -308,114 +370,6 @@ using l_trav = type_of <l_trav_t <T, Q> >;
 
 template <typename T, typename Q = arrays::path>
 using c_trav = type_of <c_trav_t <T, Q> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T> struct r_iter_t <_type <T> > : id_t <T> { };
-template <typename T> struct l_iter_t <_type <T> > : id_t <T> { };
-template <typename T> struct c_iter_t <_type <T> > : id_t <T> { };
-
-template <typename T, typename Q>
-struct r_trav_t <_type <T>, Q> : id_t <T> { };
-
-template <typename T, typename Q>
-struct l_trav_t <_type <T>, Q> : id_t <T> { };
-
-template <typename T, typename Q>
-struct c_trav_t <_type <T>, Q> : id_t <T> { };
-
-//-----------------------------------------------------------------------------
-
-template <typename... A>
-struct r_iter_t <pack <A...> > : pack <r_iter <id_t <A> >...> { };
-
-template <typename... A>
-struct l_iter_t <pack <A...> > : pack <l_iter <id_t <A> >...> { };
-
-template <typename... A>
-struct c_iter_t <pack <A...> > : pack <c_iter <id_t <A> >...> { };
-
-template <typename... A, typename Q>
-struct r_trav_t <pack <A...>, Q> : pack <r_trav <id_t <A>, Q>...> { };
-
-template <typename... A, typename Q>
-struct l_trav_t <pack <A...>, Q> : pack <l_trav <id_t <A>, Q>...> { };
-
-template <typename... A, typename Q>
-struct c_trav_t <pack <A...>, Q> : pack <c_trav <id_t <A>, Q>...> { };
-
-//-----------------------------------------------------------------------------
-
-template <typename T>
-struct r_iter_t <id_t <T> > : r_switch <details::iter_sw, T> { };
-
-template <typename T>
-struct l_iter_t <id_t <T> > : l_switch <details::iter_sw, T> { };
-
-template <typename T>
-struct c_iter_t <id_t <T> > : c_switch <details::iter_sw, T> { };
-
-template <typename T, typename Q>
-struct r_trav_t <id_t <T>, Q> : r_switch <details::trav_sw <Q>, T> { };
-
-template <typename T, typename Q>
-struct l_trav_t <id_t <T>, Q> : l_switch <details::trav_sw <Q>, T> { };
-
-template <typename T, typename Q>
-struct c_trav_t <id_t <T>, Q> : c_switch <details::trav_sw <Q>, T> { };
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-template <
-	typename B, template <typename...> class F,
-	typename FP = F <path>, bool I = path_in <FP>()
->
-struct r_iter_trav_ : r_iter_t <B> { };
-
-template <
-	typename B, template <typename...> class F,
-	typename FP = F <path>, bool I = path_in <FP>()
->
-struct l_iter_trav_ : l_iter_t <B> { };
-
-template <
-	typename B, template <typename...> class F,
-	typename FP = F <path>, bool I = path_in <FP>()
->
-struct c_iter_trav_ : c_iter_t <B> { };
-
-template <typename B, template <typename...> class F, typename FP>
-struct r_iter_trav_<B, F, FP, true> : r_trav_t <B, FP> { };
-
-template <typename B, template <typename...> class F, typename FP>
-struct l_iter_trav_<B, F, FP, true> : l_trav_t <B, FP> { };
-
-template <typename B, template <typename...> class F, typename FP>
-struct c_iter_trav_<B, F, FP, true> : c_trav_t <B, FP> { };
-
-}  // namespace details
-
-//-----------------------------------------------------------------------------
-
-template <typename B, template <typename...> class F>
-using r_iter_trav_t = details::r_iter_trav_<B, F>;
-
-template <typename B, template <typename...> class F>
-using l_iter_trav_t = details::l_iter_trav_<B, F>;
-
-template <typename B, template <typename...> class F>
-using c_iter_trav_t = details::c_iter_trav_<B, F>;
-
-template <typename B, template <typename...> class F>
-using r_iter_trav = type_of <r_iter_trav_t <B, F> >;
-
-template <typename B, template <typename...> class F>
-using l_iter_trav = type_of <l_iter_trav_t <B, F> >;
-
-template <typename B, template <typename...> class F>
-using c_iter_trav = type_of <c_iter_trav_t <B, F> >;
 
 //-----------------------------------------------------------------------------
 
@@ -480,7 +434,7 @@ template <typename T, typename R = T>
 using seq_result = type_of <seq_result_t <T, R> >;
 
 template <typename A>
-using seq_type_of_t = seq_result_t <seq_type <A>, u_seq_ref <A> >;
+using seq_type_of_t = seq_result_t <seq_type <A>, seq_ref <A> >;
 
 template <typename A>
 using seq_type_of = type_of <seq_type_of_t <A> >;
@@ -490,10 +444,10 @@ template <typename... T> using seq_common = type_of <seq_common_t <T...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename A, typename T, typename U = u_seq_ref <A> >
+template <typename A, typename T, typename U = seq_ref <A> >
 using seq_conv = expr <is_conv <U, T>() && !is_conv <A, T>()>;
 
-template <typename T, typename A, typename U = u_seq_ref <A> >
+template <typename T, typename A, typename U = seq_ref <A> >
 using seq_explicit = expr <is_explicit <T, U>() && !is_explicit <T, A>()>;
 
 //-----------------------------------------------------------------------------

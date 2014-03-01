@@ -94,9 +94,9 @@ struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
 	using length_type = L;
 	using size_type = S;
 
-	using r_iterator = I <r_iter_trav <B, F>, r_ref <T>, T, r_ref <U>...>;
-	using l_iterator = I <l_iter_trav <B, F>, l_ref <T>, T, l_ref <U>...>;
-	using c_iterator = I <c_iter_trav <B, F>, c_ref <T>, T, c_ref <U>...>;
+	using r_iterator = I <r_iter <B, F <path> >, r_ref <T>, T, r_ref <U>...>;
+	using l_iterator = I <l_iter <B, F <path> >, l_ref <T>, T, l_ref <U>...>;
+	using c_iterator = I <c_iter <B, F <path> >, c_ref <T>, T, c_ref <U>...>;
 
 	template <typename Q = path>
 	using r_traversor = V <Q, r_trav <B, F <Q> >, r_ref <T>, T, r_ref <U>...>;
@@ -107,12 +107,12 @@ struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
 	template <typename Q = path>
 	using c_traversor = V <Q, c_trav <B, F <Q> >, c_ref <T>, T, c_ref <U>...>;
 
-	using r_reference = seq_ref <r_iterator>;
-	using l_reference = seq_ref <l_iterator>;
-	using c_reference = seq_ref <c_iterator>;
+	using r_reference = seq_iref <r_iterator>;
+	using l_reference = seq_iref <l_iterator>;
+	using c_reference = seq_iref <c_iterator>;
 
-	using l_pointer = seq_ptr <l_iterator>;
-	using c_pointer = seq_ptr <c_iterator>;
+	using l_pointer = seq_iptr <l_iterator>;
+	using c_pointer = seq_iptr <c_iterator>;
 
 	using difference_type = seq_diff <l_iterator>;
 

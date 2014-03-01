@@ -119,8 +119,6 @@ struct add_const_<T, false> : id_t <const T> { };
 
 }  // namespace details
 
-//-----------------------------------------------------------------------------
-
 template <typename T> using add_const_t = details::add_const_<T>;
 
 template <typename T> struct remove_const_t           : id_t <T> { };
@@ -167,51 +165,12 @@ struct remove_cv_t : remove_vol_t <remove_const <T> > { };
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class P, template <typename...> class F>
-struct transfer
-{
-	template <typename S, typename D>
-	using map = _if <P <S>{}, F <D>, id_t <D> >;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename S, typename D>
-using tx_rref_t = transfer <is_rref, add_rref_t>::map <S, D>;
-
-template <typename S, typename D>
-using tx_lref_t = transfer <is_lref, add_lref_t>::map <S, D>;
-
-template <typename S, typename D>
-using tx_ptr_t = transfer <is_ptr, add_ptr_t>::map <S, D>;
-
-template <typename S, typename D>
-using tx_const_t = transfer <is_const, add_const_t>::map <S, D>;
-
-template <typename S, typename D>
-using tx_vol_t = transfer <is_vol, add_vol_t>::map <S, D>;
-
-template <typename S, typename D> using tx_rref  = type_of <tx_rref_t <S, D> >;
-template <typename S, typename D> using tx_lref  = type_of <tx_lref_t <S, D> >;
-template <typename S, typename D> using tx_ptr   = type_of <tx_ptr_t <S, D> >;
-template <typename S, typename D> using tx_const = type_of <tx_const_t <S, D> >;
-template <typename S, typename D> using tx_vol   = type_of <tx_vol_t <S, D> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename S, typename D>
-using tx_cv_t = tx_vol_t <S, tx_const <S, D> >;
-
-template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
-
-//-----------------------------------------------------------------------------
-
 template <
 	template <typename...> class R,
 	template <typename...> class L,
 	template <typename...> class C
 >
-struct switch_ref
+struct ref_switch
 {
 	template <typename T> struct map_t            : remove_ref_t <R <T> > { };
 	template <typename T> struct map_t <T&&>      : id_t <R <T> > { };
@@ -220,28 +179,12 @@ struct switch_ref
 	template <typename T> using  map              = type_of <map_t <T> >;
 };
 
-template <typename C, typename T>
-using switch_u = typename C::template map <T>;
+template <typename R, typename L, typename C>
+using t_ref_switch =
+	ref_switch <R::template map, L::template map, C::template map>;
 
-template <typename C, typename T>
-using switch_r = typename C::template map <T&&>;
-
-template <typename C, typename T>
-using switch_l = typename C::template map <T&>;
-
-template <typename C, typename T>
-using switch_c = typename C::template map <const T&>;
-
-//-----------------------------------------------------------------------------
-
-template <typename T>
-using ref2ptr_t = _if <is_ref <T>{}, add_ptr_t <remove_ref <T> >, id_t <T> >;
-
-template <typename T>
-using ptr2ref_t = _if <is_ptr <T>{}, add_lref_t <remove_ptr <T> >, id_t <T> >;
-
-template <typename T> using ref2ptr = type_of <ref2ptr_t <T> >;
-template <typename T> using ptr2ref = type_of <ptr2ref_t <T> >;
+template <typename S, typename T>
+using switch_ref = typename S::template map <T>;
 
 //-----------------------------------------------------------------------------
 
@@ -261,6 +204,60 @@ template <typename T> using raw_type   = type_of <raw_type_t <T> >;
 
 template <typename T> using bare_type_t = remove_ptr_t <raw_type <T> >;
 template <typename T> using bare_type   = type_of <bare_type_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class P, template <typename...> class F>
+struct transfer
+{
+	template <typename S, typename D>
+	using map = _if <P <S>{}, F <D>, id_t <D> >;
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename S, typename D>
+using tx_rref_t = transfer <is_rref, add_rref_t>::map <S, D>;
+
+template <typename S, typename D>
+using tx_lref_t = transfer <is_lref, add_lref_t>::map <S, D>;
+
+template <typename S, typename D>
+using tx_cref_t = transfer <is_cref, add_cref_t>::map <S, D>;
+
+template <typename S, typename D>
+using tx_ptr_t = transfer <is_ptr, add_ptr_t>::map <S, D>;
+
+template <typename S, typename D>
+using tx_const_t = transfer <is_const, add_const_t>::map <S, D>;
+
+template <typename S, typename D>
+using tx_vol_t = transfer <is_vol, add_vol_t>::map <S, D>;
+
+template <typename S, typename D> using tx_rref  = type_of <tx_rref_t <S, D> >;
+template <typename S, typename D> using tx_lref  = type_of <tx_lref_t <S, D> >;
+template <typename S, typename D> using tx_cref  = type_of <tx_cref_t <S, D> >;
+template <typename S, typename D> using tx_ptr   = type_of <tx_ptr_t <S, D> >;
+template <typename S, typename D> using tx_const = type_of <tx_const_t <S, D> >;
+template <typename S, typename D> using tx_vol   = type_of <tx_vol_t <S, D> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename S, typename D>
+using tx_cv_t = tx_vol_t <S, tx_const <S, D> >;
+
+template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+using ref2ptr_t = _if <is_ref <T>{}, add_ptr_t <remove_ref <T> >, id_t <T> >;
+
+template <typename T>
+using ptr2ref_t = _if <is_ptr <T>{}, add_lref_t <remove_ptr <T> >, id_t <T> >;
+
+template <typename T> using ref2ptr = type_of <ref2ptr_t <T> >;
+template <typename T> using ptr2ref = type_of <ptr2ref_t <T> >;
 
 //-----------------------------------------------------------------------------
 

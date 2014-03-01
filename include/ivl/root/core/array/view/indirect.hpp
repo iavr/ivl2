@@ -44,7 +44,7 @@ namespace details {
 
 template <typename K, typename U>
 using indirect_traits = seq_traits <
-	U(_type <u_seq_ref <K> >), seq_length <K>, K,
+	U(_type <seq_ref <K> >), seq_length <K>, K,
 	indirect_iter, indirect_trav, id, seq_size <K>, U
 >;
 
