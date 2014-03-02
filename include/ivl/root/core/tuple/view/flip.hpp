@@ -44,9 +44,9 @@ namespace details {
 
 template <typename U>
 class collection <tag::flip, U> : public
-	tup_base <flip_tup <U>, flip_p <tup_types <U> > >
+	tup_base <flip_tup <U>, flip_p <tup_type <U> > >
 {
-	using P = flip_p <tup_types <U> >;
+	using P = flip_p <tup_type <U> >;
 	using B = tup_base <flip_tup <U>, P>;
 	using E = elem <0, U>;
 

@@ -46,7 +46,6 @@ template <typename D, typename TR, typename... E>
 class seq_base : public derived <D>, public seq_store <TR, E...>
 {
 	using B = seq_store <TR, E...>;
-	using T = seq_type <TR>;
 	using S = seq_size <TR>;
 
 	using RR = r_seq_ref <TR>;

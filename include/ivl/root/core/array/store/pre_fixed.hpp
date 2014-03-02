@@ -47,6 +47,9 @@ class fixed_store
 {
 	T a[N];
 
+	template <typename E>
+	using cast = tx_cv <remove_ref <E>, T>;
+
 protected:
 	INLINE T*       data()       { return a; }
 	INLINE const T* data() const { return a; }
@@ -56,7 +59,7 @@ public:
 	INLINE constexpr fixed_store() : a{} { }
 
 	template <typename... E, only_if <sizeof...(E) == N> = 0>
-	INLINE constexpr fixed_store(E&&... e) : a{fwd <T>(e)...} { }
+	INLINE constexpr fixed_store(E&&... e) : a{fwd <cast <E> >(e)...} { }
 
 // 	// TODO: remove
 // 	INLINE fixed_store(initializer_list <T>&& l)

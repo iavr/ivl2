@@ -38,10 +38,6 @@ namespace tag {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct rref_ { };
-template <typename... D> struct lref_ { };
-template <typename... D> struct cref_ { };
-
 template <typename... D> struct raw_ { };
 template <typename... D> struct pre_ { };
 template <typename... D> struct tuple_ { };
@@ -54,10 +50,6 @@ template <typename... D> struct zip_ { };
 template <typename... D> struct join_ { };
 
 //-----------------------------------------------------------------------------
-
-using rref  = rref_<>;
-using lref  = lref_<>;
-using cref  = cref_<>;
 
 using raw   = raw_<>;
 using pre   = pre_<>;

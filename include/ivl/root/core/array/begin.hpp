@@ -38,10 +38,10 @@ namespace types {
 namespace traits {
 
 template <typename I> struct seq_iref_t;
-template <typename I> struct seq_type_t;
+template <typename I> struct seq_val_t;
 
 template <typename I> using seq_iref = type_of <seq_iref_t <I> >;
-template <typename I> using seq_type = type_of <seq_type_t <I> >;
+template <typename I> using seq_val  = type_of <seq_val_t <I> >;
 
 }  // namespace traits
 }  // namespace types

@@ -103,63 +103,17 @@ template <typename... E> using all_cref = all_cref_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename D>
-using tup_tx_t = base_opt_t <tx_lref <S, tx_cv <remove_ref <S>, D> >, D>;
+// extending definition @type/traits/ref
+template <typename C, typename... E>
+struct type_t <C, pack <E...> > : pack <type <C, E>...> { };
 
-template <typename S, typename D> using tup_tx = type_of <tup_tx_t <S, D> >;
-
-template <typename T> using raw_types = type_of <raw_type <T> >;
-
-template <typename T>
-struct tup_types_t :
-	type_map_t <bind <tup_tx_t, T>::template map, raw_types <T> > { };
-
-template <typename... E> struct tup_types_t <pack <E...> > : pack <E...> { };
-template <typename T>    struct tup_types_t <_type <T> >   : _type <T> { };
-template <typename T>    using  tup_types = type_of <tup_types_t <T> >;
+template <typename C, typename F, typename... E>
+struct type_t <C, F(pack <E...>)> :
+	id_t <type <C, F>(pack <type <C, E>...>)> { };
 
 //-----------------------------------------------------------------------------
 
-namespace details {
-
-// TODO: define for sequences
-template <typename T, bool = is_tuple <T>()>
-struct common_of_ : id_t <T> { };
-
-template <typename T>
-struct common_of_<T, true> : id_t <common_or_p <int, tup_types <T> > > { };
-
-}  // namespace details
-
-template <typename T> using common_of_t = details::common_of_<raw_type <T> >;
-template <typename T> using common_of = type_of <common_of_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <size_t I, typename T>
-using tup_elem_t = tup_tx_t <T, pick_p <I, raw_types <T> > >;
-
-template <size_t I, typename T>
-using tup_elem = type_of <tup_elem_t <I, T> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename C, typename T> struct add_ref_t;
-template <typename C, typename T> using  add_ref = type_of <add_ref_t <C, T> >;
-
-template <typename T> struct add_ref_t <tag::rref, T> : id_t <T&&> { };
-template <typename T> struct add_ref_t <tag::lref, T> : id_t <T&> { };
-template <typename T> struct add_ref_t <tag::cref, T> : id_t <const T&> { };
-
-//-----------------------------------------------------------------------------
-
-// extended elsewhere
-template <typename C, typename T>
-struct ref_t : base_opt_t <add_ref <C, T>, T> { };
-
-template <typename C, typename T>
-using ref = type_of <ref_t <C, T> >;
-
+// extending definition @type/traits/ref
 template <typename C, typename... E>
 struct ref_t <C, pack <E...> > : id_t <pre_tuple <ref <C, E>...> > { };
 
@@ -168,54 +122,47 @@ struct ref_t <C, F(pack <E...>)> : ret_t <ref <C, F>(ref <C, E>...)> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using r_ref_t = ref_t <tag::rref, T>;
-template <typename T> using l_ref_t = ref_t <tag::lref, T>;
-template <typename T> using c_ref_t = ref_t <tag::cref, T>;
-
-template <typename T> using r_ref = type_of <r_ref_t <T> >;
-template <typename T> using l_ref = type_of <l_ref_t <T> >;
-template <typename T> using c_ref = type_of <c_ref_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <size_t I, typename P> using r_pick_p = r_ref <pick_p <I, P> >;
-template <size_t I, typename P> using l_pick_p = l_ref <pick_p <I, P> >;
-template <size_t I, typename P> using c_pick_p = c_ref <pick_p <I, P> >;
-
-template <size_t I, typename... E> using r_pick = r_ref <pick <I, E...> >;
-template <size_t I, typename... E> using l_pick = l_ref <pick <I, E...> >;
-template <size_t I, typename... E> using c_pick = c_ref <pick <I, E...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T> struct tup_ref_t            : r_ref_t <T> { };
-template <typename T> struct tup_ref_t <T&>       : l_ref_t <T> { };
-template <typename T> struct tup_ref_t <const T&> : c_ref_t <T> { };
-template <typename T> using  tup_ref              = type_of <tup_ref_t <T> >;
+template <typename T> using tup_val = type_of <raw_type <T> >;
 
 template <typename T>
-struct tup_refs_t : type_map_t <tup_ref_t, tup_types <T> > { };
+struct tup_type_t :
+	type_map_t <bind <tx_type_t, T>::template map, tup_val <T> > { };
 
-template <typename T> using tup_refs = type_of <tup_refs_t <T> >;
+template <typename... E> struct tup_type_t <pack <E...> > : pack <E...> { };
+template <typename T>    struct tup_type_t <_type <T> >   : _type <T> { };
+
+template <typename T>
+using tup_ref_t = type_map_t <bind <tx_ref_t, T>::template map, tup_val <T> >;
+
+template <typename T> using tup_type = type_of <tup_type_t <T> >;
+template <typename T> using tup_ref  = type_of <tup_ref_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+template <size_t I, typename T>
+using tup_elem_t = tx_type_t <T, pick_p <I, tup_val <T> > >;
+
+template <size_t I, typename T>
+using tup_elem = type_of <tup_elem_t <I, T> >;
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
 template <typename P, typename T, bool = is_tup_type <T>()>
-struct tup_cons_ : all2 <is_cons, P, tup_refs <T> > { };
+struct tup_cons_ : all2 <is_cons, P, tup_ref <T> > { };
 
 template <typename T, typename P, bool = is_tup_type <T>()>
-struct tup_conv_ : all2 <is_conv, tup_refs <T>, P> { };
+struct tup_conv_ : all2 <is_conv, tup_ref <T>, P> { };
 
 template <typename P, typename T, bool = is_tup_type <T>()>
-struct tup_assign_ : all2 <is_assign, tup_refs <P>, tup_refs <T> > { };
+struct tup_assign_ : all2 <is_assign, tup_ref <P>, tup_ref <T> > { };
 
 template <typename P, typename T> struct tup_cons_<P, T, false>   : _false { };
 template <typename T, typename P> struct tup_conv_<T, P, false>   : _false { };
 template <typename P, typename T> struct tup_assign_<P, T, false> : _false { };
 
-template <typename P, typename T, typename R = tup_refs <P> >
+template <typename P, typename T, typename R = tup_ref <P> >
 struct tup_atom_assign_;
 
 template <typename P, typename T, typename... E>
@@ -251,6 +198,22 @@ struct tup_atom_assign <C, T, true> : _false { };
 
 template <typename T, size_t L> struct tup_op_ref_assign : is_op_ref <T> { };
 template <typename T>           struct tup_op_ref_assign <T, 1>: _false { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+// TODO: define for sequences
+template <typename T, bool = is_tuple <T>()>
+struct common_of_ : id_t <T> { };
+
+template <typename T>
+struct common_of_<T, true> : id_t <common_or_p <int, tup_type <T> > > { };
+
+}  // namespace details
+
+template <typename T> using common_of_t = details::common_of_<raw_type <T> >;
+template <typename T> using common_of = type_of <common_of_t <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -295,14 +258,14 @@ template <typename... P> using tup_tran   = type_of <tup_tran_t <P...> >;
 //-----------------------------------------------------------------------------
 
 template <typename... A>
-using tup_tran_len = tran_len <tup_types <tup_atom_of <A> >...>;
+using tup_tran_len = tran_len <tup_type <tup_atom_of <A> >...>;
 
 template <typename... A>
 using tup_tran_rng = sz_rng_of_i <tup_tran_len <A...>{}>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct tup_arg_t : tup_types <tup_atom_of <T> > { };
+template <typename T> struct tup_arg_t : tup_ref <tup_atom_of <T> > { };
 template <typename T> using  tup_arg = type_of <tup_arg_t <T> >;
 
 template <typename... T> struct tup_args_t;
@@ -311,7 +274,7 @@ template <typename... T> using  tup_args = type_of <tup_args_t <T...> >;
 template <typename... T>
 struct tup_args_t : id_t <tup_tran <tup_arg <T>...> > { };
 
-template <typename T> struct tup_args_t <T> : tup_types_t <T> { };
+template <typename T> struct tup_args_t <T> : tup_type_t <T> { };
 
 //-----------------------------------------------------------------------------
 
@@ -348,13 +311,10 @@ namespace details {
 // extending definition @type/traits/transform
 template <typename C, typename... A>
 struct copy_rec <collection <C, A...> > :
-	copy_rec <type_of <collection <C, A...> > > { };
+	copy_rec <tup_ref <collection <C, A...> > > { };
 
 template <typename... E>
 struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };
-
-template <typename F, typename... E>
-struct copy_rec <F(pack <E...>)>  : id_t <copy <ret <F(E...)> > > { };
 
 }  // namespace details
 

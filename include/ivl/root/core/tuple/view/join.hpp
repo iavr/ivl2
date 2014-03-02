@@ -44,11 +44,11 @@ namespace details {
 
 template <typename... U>
 class collection <tag::join, U...> :
-	public tup_base <join_tup <U...>, join <tup_types <U>...> >
+	public tup_base <join_tup <U...>, join <tup_type <U>...> >
 {
-	using P = join <tup_types <U>...>;
-	using M = major <tup_types <U>...>;
-	using m = minor <tup_types <U>...>;
+	using P = join <tup_type <U>...>;
+	using M = major <tup_type <U>...>;
+	using m = minor <tup_type <U>...>;
 	using B = tup_base <join_tup <U...>, P>;
 
 	template <size_t J> using under = elem_at <J, U...>;

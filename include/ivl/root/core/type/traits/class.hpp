@@ -30,7 +30,6 @@
 
 //-----------------------------------------------------------------------------
 
-struct M;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -138,26 +137,6 @@ using details::is_empty;
 using details::is_complete;
 using details::is_abstract;
 using details::is_poly;
-
-//-----------------------------------------------------------------------------
-
-template <typename T>
-using is_base_opt = expr <is_empty <T>() && !is_final <T>()>;
-
-// no alias: faster on clang
-template <typename T, typename R = raw_type <T>, typename Q = R>
-struct base_opt_t : _if_t <is_base_opt <Q>{}, R, T> { };
-
-template <typename T, typename R = raw_type <T>, typename Q = R>
-using base_opt = type_of <base_opt_t <T, R, Q> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T> using uref_opt_t = base_opt_t <add_uref <T> >;
-template <typename T> using uref_opt = type_of <uref_opt_t <T> >;
-
-template <typename T> using rref_opt_t = base_opt_t <add_rref <T> >;
-template <typename T> using rref_opt = type_of <rref_opt_t <T> >;
 
 //-----------------------------------------------------------------------------
 

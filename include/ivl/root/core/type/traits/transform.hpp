@@ -165,29 +165,6 @@ struct remove_cv_t : remove_vol_t <remove_const <T> > { };
 
 //-----------------------------------------------------------------------------
 
-template <
-	template <typename...> class R,
-	template <typename...> class L,
-	template <typename...> class C
->
-struct ref_switch
-{
-	template <typename T> struct map_t            : remove_ref_t <R <T> > { };
-	template <typename T> struct map_t <T&&>      : id_t <R <T> > { };
-	template <typename T> struct map_t <T&>       : id_t <L <T> > { };
-	template <typename T> struct map_t <const T&> : id_t <C <T> > { };
-	template <typename T> using  map              = type_of <map_t <T> >;
-};
-
-template <typename R, typename L, typename C>
-using t_ref_switch =
-	ref_switch <R::template map, L::template map, C::template map>;
-
-template <typename S, typename T>
-using switch_ref = typename S::template map <T>;
-
-//-----------------------------------------------------------------------------
-
 template <typename T>
 using is_mref = expr <is_lref <T>() && !is_const <remove_ref <T> >()>;
 
@@ -196,14 +173,6 @@ using is_cref = expr <is_lref <T>() && is_const <remove_ref <T> >()>;
 
 template <typename T> using add_cref_t = add_lref_t <add_const <T> >;
 template <typename T> using add_cref   = type_of <add_cref_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T> using raw_type_t = remove_cv_t <remove_ref <T> >;
-template <typename T> using raw_type   = type_of <raw_type_t <T> >;
-
-template <typename T> using bare_type_t = remove_ptr_t <raw_type <T> >;
-template <typename T> using bare_type   = type_of <bare_type_t <T> >;
 
 //-----------------------------------------------------------------------------
 
@@ -247,6 +216,14 @@ template <typename S, typename D>
 using tx_cv_t = tx_vol_t <S, tx_const <S, D> >;
 
 template <typename S, typename D> using tx_cv = type_of <tx_cv_t <S, D> >;
+
+//-----------------------------------------------------------------------------
+
+template <typename T> using raw_type_t = remove_cv_t <remove_ref <T> >;
+template <typename T> using raw_type   = type_of <raw_type_t <T> >;
+
+template <typename T> using bare_type_t = remove_ptr_t <raw_type <T> >;
+template <typename T> using bare_type   = type_of <bare_type_t <T> >;
 
 //-----------------------------------------------------------------------------
 

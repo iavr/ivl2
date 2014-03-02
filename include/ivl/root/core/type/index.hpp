@@ -30,6 +30,7 @@
 
 #include "begin.hpp"
 
+#include "core/tag.hpp"
 #include "core/entity.hpp"
 #include "core/derive.hpp"
 
@@ -60,6 +61,7 @@
 #include "traits/sfinae.hpp"
 #include "traits/class.hpp"
 #include "traits/relation.hpp"
+#include "traits/ref.hpp"
 #include "traits/pod.hpp"
 #include "traits/life.hpp"
 #include "traits/result.hpp"

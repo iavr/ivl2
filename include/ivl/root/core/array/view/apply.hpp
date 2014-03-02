@@ -51,7 +51,7 @@ struct apply_traits;
 
 template <typename M, typename F, typename... A, typename AP>
 struct apply_traits <M, F, pack <A...>, AP> : seq_traits <
-	F(pack <seq_ref <A>...>), apply_length <A...>, AP,
+	F(pack <seq_type <A>...>), apply_length <A...>, AP,
 	apply_iter, apply_trav, id, seq_size <AP>, M, F
 > { };
 

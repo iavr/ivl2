@@ -49,9 +49,9 @@ struct tup_data_t <indirect_tup <K, U> > : pack <U> { };
 
 template <typename K, typename U>
 class collection <tag::indirect, K, U> : public
-	tup_base <indirect_tup <K, U>, choose_p <K, tup_types <U> > >
+	tup_base <indirect_tup <K, U>, choose_p <K, tup_type <U> > >
 {
-	using P = choose_p <K, tup_types <U> >;
+	using P = choose_p <K, tup_type <U> >;
 	using B = tup_base <indirect_tup <K, U>, P>;
 	using E = elem <0, U>;
 

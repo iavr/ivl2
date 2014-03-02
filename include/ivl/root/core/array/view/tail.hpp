@@ -47,7 +47,7 @@ using tail_length = if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
 
 template <typename U>
 using tail_traits = seq_traits <
-	seq_type_of <U>, tail_length <U>, U, iter_iter, trav_trav
+	seq_type <U>, tail_length <U>, U, iter_iter, trav_trav
 >;
 
 //-----------------------------------------------------------------------------

@@ -382,8 +382,8 @@ void run()
 // 	{
 // 		using C = pack <double&, int&&>;
 // 		using T = tuple <double&, int>;
-// 		report_map <tup_types, C>();
-// 		report_map <tup_types, T>();
+// 		report_map <tup_type, C>();
+// 		report_map <tup_type, T>();
 // 		report_pred <tup_cons, C, T>();
 // 		report_pred <tup_assign, C, T>();
 // 		report_pred <tup_conv, T, C>();
@@ -393,14 +393,14 @@ void run()
 //
 // 	{
 // 		using T = tuple <int, double&, const char, volatile long&, int&&>;
-// 		report_map <tup_types, T>();
-// 		report_map <tup_types, const T>();
-// 		report_map <tup_types, volatile T>();
-// 		report_map <tup_types, const volatile T>();
-// 		report_map <tup_types, T&>();
-// 		report_map <tup_types, const T&>();
-// 		report_map <tup_types, T&&>();
-// 		report_map <tup_types, const volatile T&&>();
+// 		report_map <tup_type, T>();
+// 		report_map <tup_type, const T>();
+// 		report_map <tup_type, volatile T>();
+// 		report_map <tup_type, const volatile T>();
+// 		report_map <tup_type, T&>();
+// 		report_map <tup_type, const T&>();
+// 		report_map <tup_type, T&&>();
+// 		report_map <tup_type, const volatile T&&>();
 // 	}
 //
 // //-----------------------------------------------------------------------------

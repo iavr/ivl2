@@ -47,9 +47,9 @@ struct zip_impl;
 
 template <typename... U, size_t... I>
 class zip_impl <pack <U...>, sizes <I...> > :
-	public tup_base <zip_tup <U...>, tup_tran <tup_types <U>...> >
+	public tup_base <zip_tup <U...>, tup_tran <tup_type <U>...> >
 {
-	using P = tup_tran <tup_types <U>...>;
+	using P = tup_tran <tup_type <U>...>;
 	using B = tup_base <zip_tup <U...>, P>;
 
 	template <size_t J> using under = elem_at <J, U...>;

@@ -58,7 +58,7 @@ public:
 
 template <typename F, typename... A>
 using apply_types =
-	map <apply_type <F>::template map, tup_tran <tup_types <A>...> >;
+	map <apply_type <F>::template map, tup_tran <tup_type <A>...> >;
 
 //-----------------------------------------------------------------------------
 

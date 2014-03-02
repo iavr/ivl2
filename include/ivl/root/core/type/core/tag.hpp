@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_VIEW_TAIL_HPP
-#define IVL_CORE_TUPLE_VIEW_TAIL_HPP
+#ifndef IVL_CORE_TYPE_CORE_TAG_HPP
+#define IVL_CORE_TYPE_CORE_TAG_HPP
 
 #include <ivl/ivl>
 
@@ -34,52 +34,23 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace tag {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename... D> struct rref_ { };
+template <typename... D> struct lref_ { };
+template <typename... D> struct cref_ { };
 
 //-----------------------------------------------------------------------------
 
-template <typename U>
-class collection <tag::tail, U> : public
-	tup_base <tail_tup <U>, cdr <tup_type <U> > >
-{
-	using P = cdr <tup_type <U> >;
-	using B = tup_base <tail_tup <U>, P>;
-	using E = elem <0, U>;
-
-	friend base_type_of <B>;
+using rref = rref_<>;
+using lref = lref_<>;
+using cref = cref_<>;
 
 //-----------------------------------------------------------------------------
 
-	template <size_t J>
-	INLINE r_pick_p <J, P>
-	call_at() && { return _at._<J + 1>(E::fwd()); }
-
-	template <size_t J>
-	INLINE l_pick_p <J, P>
-	call_at() & { return _at._<J + 1>(E::get()); }
-
-	template <size_t J>
-	INLINE constexpr c_pick_p <J, P>
-	call_at() const& { return _at._<J + 1>(E::get()); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-	using B::base_type::operator=;
-};
-
-//-----------------------------------------------------------------------------
-
-}  // namespace details
-
-//-----------------------------------------------------------------------------
-
-}  // namespace tuples
+}  // namespace tag
 
 //-----------------------------------------------------------------------------
 
@@ -87,4 +58,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_VIEW_TAIL_HPP
+#endif  // IVL_CORE_TYPE_CORE_TAG_HPP
