@@ -142,6 +142,20 @@ struct tx_ref_t <const S&, D> : c_ref_t <D> { };
 
 //-----------------------------------------------------------------------------
 
+template <typename S, typename D>
+using tx_types_t = type_map_t <bind <tx_type_t, S>::template map, D>;
+
+template <typename S, typename D>
+using tx_refs_t = type_map_t <bind <tx_ref_t, S>::template map, D>;
+
+template <typename S, typename D>
+using tx_types = type_of <tx_types_t <S, D> >;
+
+template <typename S, typename D>
+using tx_refs  = type_of <tx_refs_t <S, D> >;
+
+//-----------------------------------------------------------------------------
+
 template <
 	template <typename...> class R,
 	template <typename...> class L,

@@ -72,13 +72,13 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 
 	using S = seq_size <TR>;
 
-	using IR = r_iter <TR>;
-	using IL = l_iter <TR>;
-	using IC = c_iter <TR>;
+	using IR = r_seq_iter <TR>;
+	using IL = l_seq_iter <TR>;
+	using IC = c_seq_iter <TR>;
 
-	template <typename Q> using VR = r_trav <TR, Q>;
-	template <typename Q> using VL = l_trav <TR, Q>;
-	template <typename Q> using VC = c_trav <TR, Q>;
+	template <typename Q> using VR = r_seq_trav <TR, Q>;
+	template <typename Q> using VL = l_seq_trav <TR, Q>;
+	template <typename Q> using VC = c_seq_trav <TR, Q>;
 
 	using fun = elem <0, F>;
 

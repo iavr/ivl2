@@ -66,7 +66,7 @@ template <typename Q>
 using trav_sw = t_switch <
 	t_case <is_trav, id_fun>,
 	t_case <as_seq,  seq_trav <Q> >,
-	t_else <make <inf_atom_trav> >
+	t_else <make <inf_trav> >
 >;
 
 template <typename Q>
@@ -74,7 +74,7 @@ using raw_trav_sw = t_switch <
 	t_case <is_iter, id_fun>,
 	t_case <as_seq,  seq_trav <Q> >,
 	t_case <is_cont, cont_trav <Q> >,
-	t_else <make <inf_atom_trav> >
+	t_else <make <inf_trav> >
 >;
 
 template <typename Q = path>
@@ -88,32 +88,32 @@ using raw_trav = raw_trav_on <>;
 
 //-----------------------------------------------------------------------------
 
-template <template <typename> class V, typename Q>
+template <template <typename> class VT, typename Q>
 class ends_trav
 {
-	using R = V <Q>;
-	using B = sizes <path_flip <Q>{}, path_in <Q>{}>;
+	using R = VT <Q>;
+	using C = sizes <path_flip <Q>{}, path_in <Q>{}>;
 
-	template <typename I>
+	template <typename B, typename E, typename... V>
 	INLINE constexpr R
-	trav(sizes <0, 0>, I&& b, I&& e) const { return R(b, e); }
+	trav(sizes <0, 0>, B&& b, E&& e, V&&... v) const { return R(b, e, v...); }
 
-	template <typename I>
+	template <typename B, typename E, typename... V>
 	INLINE constexpr R
-	trav(sizes <1, 0>, I&& b, I&& e) const { return R(e-1, b-1); }
+	trav(sizes <1, 0>, B&& b, E&& e, V&&... v) const { return R(e-1, b-1, v...); }
 
-	template <typename I>
+	template <typename B, typename E, typename... V>
 	INLINE constexpr R
-	trav(sizes <0, 1>, I&& b, I&& e) const { return R(b, b, e-1); }
+	trav(sizes <0, 1>, B&& b, E&& e, V&&... v) const { return R(b, e-1, v...); }
 
-	template <typename I>
+	template <typename B, typename E, typename... V>
 	INLINE constexpr R
-	trav(sizes <1, 1>, I&& b, I&& e) const { return R(e-1, e-1, b); }
+	trav(sizes <1, 1>, B&& b, E&& e, V&&... v) const { return R(e-1, b, v...); }
 
 public:
-	template <typename I>
+	template <typename B, typename E, typename... V>
 	INLINE constexpr R
-	operator()(I&& b, I&& e) const { return trav(B(), b, e); }
+	operator()(B&& b, E&& e, V&&... v) const { return trav(C(), b, e, v...); }
 };
 
 //-----------------------------------------------------------------------------

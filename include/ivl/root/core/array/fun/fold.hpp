@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct _and
+struct val_and
 {
 	INLINE constexpr bool operator()() const { return true; }
 
@@ -51,13 +51,55 @@ struct _and
 		{ return fwd <A>(a) && operator()(fwd <An>(an)...); }
 };
 
-struct _or
+struct val_or
 {
 	INLINE constexpr bool operator()() const { return false; }
 
 	template <typename A, typename... An>
 	INLINE constexpr bool operator()(A&& a, An&&... an) const
 		{ return fwd <A>(a) || operator()(fwd <An>(an)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <size_t Z = 0>
+class val_first
+{
+	template <size_t I>
+	INLINE constexpr size_t find(size <I>) const { return I; }
+
+	template <size_t I, typename A, typename... An>
+	INLINE constexpr size_t find(size <I>, A&& a, An&&... an) const
+		{ return fwd <A>(a) ? I : find(size <I + 1>(), fwd <An>(an)...); }
+
+public:
+	template <typename... A>
+	INLINE constexpr size_t
+	operator()(A&&... a) const { return find(size <Z>(), fwd <A>(a)...); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <size_t Z = 0>
+class val_last
+{
+	static constexpr size_t M = Z - 1;
+
+	template <size_t I>
+	INLINE constexpr size_t find(size <I>) const { return M; }
+
+	template <size_t I, typename A, typename... An>
+	INLINE constexpr size_t find(size <I>, A&& a, An&&... an) const
+		{ return test <I>(fwd <A>(a), find(size <I + 1>(), fwd <An>(an)...)); }
+
+	template <size_t I, typename A>
+	INLINE constexpr size_t
+	test(A&& a, size_t t) const { return t != M ? t : fwd <A>(a) ? I : M; }
+
+public:
+	template <typename... A>
+	INLINE constexpr size_t
+	operator()(A&&... a) const { return find(size <Z>(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -104,8 +146,11 @@ using val_prod = val_fold <afun::op::mul>;
 
 }  // namespace details
 
-using details::_and;
-using details::_or;
+using details::val_and;
+using details::val_or;
+
+using details::val_first;
+using details::val_last;
 
 using details::val_fold;
 using details::val_min;
@@ -117,13 +162,16 @@ using details::val_prod;
 
 }  // namespace afun
 
-static __attribute__ ((unused)) afun::_and _and;
-static __attribute__ ((unused)) afun::_or _or;
+static __attribute__ ((unused)) afun::val_and  val_and;
+static __attribute__ ((unused)) afun::val_or   val_or;
 
-static __attribute__ ((unused)) afun::val_min  val_min;
-static __attribute__ ((unused)) afun::val_max  val_max;
-static __attribute__ ((unused)) afun::val_sum  val_sum;
-static __attribute__ ((unused)) afun::val_prod val_prod;
+static __attribute__ ((unused)) afun::val_first <> val_first;
+static __attribute__ ((unused)) afun::val_last  <> val_last;
+
+static __attribute__ ((unused)) afun::val_min   val_min;
+static __attribute__ ((unused)) afun::val_max   val_max;
+static __attribute__ ((unused)) afun::val_sum   val_sum;
+static __attribute__ ((unused)) afun::val_prod  val_prod;
 
 //-----------------------------------------------------------------------------
 

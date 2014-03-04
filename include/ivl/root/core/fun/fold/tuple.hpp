@@ -84,7 +84,7 @@ class tup_fold
 public:
 	template <
 		typename... A, typename T = copy <ret <E(R <A>...)> >,
-		typename N = types::_or <tup_null <A>...>, only_if <any_tuple <A...>{}>
+		typename N = _or <tup_null <A>...>, only_if <any_tuple <A...>{}>
 	= 0>
 	INLINE constexpr copy <ret <XI(T)> >
 	operator()(A&&... a) const

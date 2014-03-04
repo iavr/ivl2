@@ -232,28 +232,26 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE void next(size <K>, _true = yes) { ++k, next(size <K + 1>(), no); }
+	INLINE void next(size <K>) { ++k, next_cond(size <K + 1>()); }
 
 	template <size_t K>
-	INLINE void prev(size <K>, _true = yes) { --k, prev(size <K - 1>(), no); }
+	INLINE void prev(size <K>) { --k, prev_cond(size <K - 1>()); }
 
 	template <size_t K>
-	INLINE void next(size <K> s, _false) { if (!v<K>()) next(s); }
+	INLINE void next_cond(size <K> s) { if (!v<K>() && K != e) next(s); }
 
 	template <size_t K>
-	INLINE void prev(size <K> s, _false) { if (!v<K>()) prev(s); }
+	INLINE void prev_cond(size <K> s) { if (!v<K>() && K != e) prev(s); }
 
-	INLINE void next(SL, _true)  { }
-	INLINE void next(SL, _false) { }
-	INLINE void prev(SM, _true)  { }
-	INLINE void prev(SM, _false) { }
+	INLINE void next(SL)  { }
+	INLINE void prev(SM)  { }
 
-	template <size_t K> INLINE void advance(_true)  { prev(size <K>(), no); }
-	template <size_t K> INLINE void advance(_false) { next(size <K>(), no); }
+	INLINE void next_cond(SL) { }
+	INLINE void prev_cond(SM) { }
 
 //-----------------------------------------------------------------------------
 
-	struct init   { };
+// 	struct init   { };
 	struct deref  { };
 	struct inc_l  { };
 	struct dec_l  { };
@@ -261,11 +259,6 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 	struct dec_r  { };
 
 //-----------------------------------------------------------------------------
-
-	template <size_t K>
-	INLINE void _(init, size <K>) { advance <K>(flipped()); }
-	INLINE void _(init, SM)       { }
-	INLINE void _(init, SL)       { }
 
 	template <size_t K>
 	INLINE R _(deref, size <K>) const { return cast(*v<K>()); }
@@ -298,8 +291,8 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 
 public:
 	template <typename... A>
-	INLINE join_trav_impl(size_t k, size_t e, A&&... a) :
-		k(k), e(e), B(fwd <A>(a)...) { op_ML <init>()(k, der()); }
+	INLINE constexpr join_trav_impl(size_t k, size_t e, A&&... a) :
+		k(k), e(e), B(fwd <A>(a)...) { }
 
 	// TODO: finite atom (unit)
 	static constexpr bool finite = _and <fin_trav <V>...>{}();  // TODO: () needed by GCC

@@ -124,18 +124,14 @@ struct ref_t <C, F(pack <E...>)> : ret_t <ref <C, F>(ref <C, E>...)> { };
 
 template <typename T> using tup_val = type_of <raw_type <T> >;
 
-template <typename T>
-struct tup_type_t :
-	type_map_t <bind <tx_type_t, T>::template map, tup_val <T> > { };
-
-template <typename... E> struct tup_type_t <pack <E...> > : pack <E...> { };
-template <typename T>    struct tup_type_t <_type <T> >   : _type <T> { };
-
-template <typename T>
-using tup_ref_t = type_map_t <bind <tx_ref_t, T>::template map, tup_val <T> >;
+template <typename T> struct tup_type_t : tx_types_t <T, tup_val <T> > { };
+template <typename T> using  tup_ref_t  = tx_refs_t <T, tup_val <T> >;
 
 template <typename T> using tup_type = type_of <tup_type_t <T> >;
 template <typename T> using tup_ref  = type_of <tup_ref_t <T> >;
+
+template <typename... E> struct tup_type_t <pack <E...> > : pack <E...> { };
+template <typename T>    struct tup_type_t <_type <T> >   : _type <T> { };
 
 //-----------------------------------------------------------------------------
 

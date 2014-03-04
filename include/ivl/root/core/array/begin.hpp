@@ -54,8 +54,6 @@ namespace details {
 using namespace types;
 using namespace tuples;
 using afun::make;
-using types::_and;
-using types::_or;
 using types::bind;
 
 }  // namespace details

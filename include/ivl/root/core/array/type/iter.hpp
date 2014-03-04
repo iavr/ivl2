@@ -62,6 +62,22 @@ template <
 >
 using trav_trav = traversor <tag::trav, Q, V, R, T>;
 
+//-----------------------------------------------------------------------------
+
+template <typename I, typename R = seq_iref <I>, typename T = seq_val <I> >
+struct ptr_iter_t : id_t <iter_iter <I, R, T> > { };
+
+template <typename I, typename R = seq_iref <I>, typename T = seq_val <I> >
+using ptr_iter = type_of <ptr_iter_t <I, R, T> >;
+
+template <typename T>
+struct ptr_iter_t <T*, T&, T> : id_t <T*> { };
+
+template <typename T>
+struct ptr_iter_t <const T*, const T&, T> : id_t <const T*> { };
+
+//-----------------------------------------------------------------------------
+
 template <typename I, typename R = rref_opt <I>, typename T = I>
 using atom_iter = iterator <tag::atom, I, R, T>;
 
@@ -69,7 +85,7 @@ template <typename Q, typename I, typename R = rref_opt <I>, typename T = I>
 using atom_trav = traversor <tag::atom, Q, I, R, T>;
 
 template <typename I, typename R = rref_opt <I>, typename T = I>
-using inf_atom_trav = atom_trav <path, I, R, T>;
+using inf_trav = atom_trav <path, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -116,9 +132,11 @@ using details::traversor;
 using details::iter_iter;
 using details::iter_trav;
 using details::trav_trav;
+using details::ptr_iter;
+
 using details::atom_iter;
 using details::atom_trav;
-using details::inf_atom_trav;
+using details::inf_trav;
 
 using details::flip_iter;
 using details::flip_trav;

@@ -70,7 +70,7 @@ template <typename TR, typename... E> struct seq_store;
 
 template <
 	typename T, typename L = no_size, typename B = remove_ref <T>*,
-	template <typename...> class I = iter_iter,
+	template <typename...> class I = ptr_iter,
 	template <typename...> class V = iter_trav,
 	template <typename...> class F = id,
 	typename S = seq_size <B>, typename... U

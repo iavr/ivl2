@@ -148,6 +148,9 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 public:
 	using B::B;
 
+	template <typename J, typename E>
+	INLINE constexpr iter_trav_impl(J&& i, E&& e) : B(i, i, e) { }
+
 	static constexpr bool finite = true;
 
 	INLINE constexpr operator bool() const { return more(no_flip()); }
