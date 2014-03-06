@@ -71,6 +71,8 @@ public:
 	INLINE constexpr R operator*()  const { return *i(); }
 	INLINE           P operator->() const { return &(operator*()); }
 
+//-----------------------------------------------------------------------------
+
 	INLINE D&& operator++() && { return --i(), der_f(); }
 	INLINE D&  operator++() &  { return --i(), der(); }
 	INLINE D&& operator--() && { return ++i(), der_f(); }
@@ -78,6 +80,8 @@ public:
 
 	INLINE D operator++(int) { return D(i()--); }
 	INLINE D operator--(int) { return D(i()++); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return i()[-n]; }
 
@@ -89,8 +93,10 @@ public:
 	INLINE D operator+(d n) const { return D(i() - n); }
 	INLINE D operator-(d n) const { return D(i() + n); }
 
+//-----------------------------------------------------------------------------
+
 	// TODO
-	INLINE bool operator!=(D o) { return i() != o.i(); }
+	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -107,6 +113,7 @@ class flip_trav_impl : public trav_base <D, TR, V>
 	using P = seq_iptr <B>;
 
 	using trav = iter_elem <0, V>;
+	using E = edge;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -125,11 +132,10 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE bool operator+() const { return -v(); }
-	INLINE bool operator-() const { return +v(); }
-
 	INLINE constexpr R operator*()  const { return *v(); }
 	INLINE           P operator->() const { return &(operator*()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE D&& operator++() && { return --v(), der_f(); }
 	INLINE D&  operator++() &  { return --v(), der(); }
@@ -138,6 +144,8 @@ public:
 
 	INLINE D operator++(int) { return D(v()--); }
 	INLINE D operator--(int) { return D(v()++); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return v()[-n]; }
 
@@ -148,6 +156,21 @@ public:
 
 	INLINE D operator+(d n) const { return D(v() - n); }
 	INLINE D operator-(d n) const { return D(v() + n); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE bool operator+() const { return -v(); }
+	INLINE bool operator-() const { return +v(); }
+
+	INLINE D&& operator<<=(E) && { return v() >>= E(), der_f(); }
+	INLINE D&  operator<<=(E) &  { return v() >>= E(), der(); }
+	INLINE D&& operator>>=(E) && { return v() <<= E(), der_f(); }
+	INLINE D&  operator>>=(E) &  { return v() <<= E(), der(); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return v() != o.v(); }
 };
 
 //-----------------------------------------------------------------------------

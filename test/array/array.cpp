@@ -111,15 +111,16 @@ void run()
 
 	{
 		cout << "join" << endl;
+		A <> E;
 		A <4> a = {0, 1, 2, 3};
 		B <3> b = {-3.14, 12.71, -8e3};
 		A <3> c = {-3.14, 12.71, -8e3};
-		cout << join(a, b, A <>(), A <2>{0, 1}) << endl;
-		cout << join(A <>(), a, b, A <>(), A <2>{0, 1}, A <>()) << endl;
+		cout << join(a, b, E, A <2>{0, 1}) << endl;
+		cout << join(E, a, b, E, A <2>{0, 1}, E) << endl;
 		cout << join(a, b) << endl;
 		*join(a, c).begin() = 20;
 		cout << a << endl;
-		cout << flip(join(a, c, A <>(), A <2>{0, 1})) << endl;
+		cout << flip(join(a, c, E, A <2>{0, 1})) << endl;
 		cout << endl;
 	}
 

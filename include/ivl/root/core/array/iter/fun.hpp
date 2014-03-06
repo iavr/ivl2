@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_TRAV_HPP
-#define IVL_CORE_ARRAY_FUN_TRAV_HPP
+#ifndef IVL_CORE_ARRAY_ITER_FUN_HPP
+#define IVL_CORE_ARRAY_ITER_FUN_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,65 +42,71 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename Q>
-struct seq_trav
+template <template <typename> class VT, typename Q>
+class ends
 {
-	template <typename A>
-	INLINE auto operator()(A&& a) const
-	-> decltype(fwd <A>(a).trav(Q()))
-		{ return fwd <A>(a).trav(Q()); }
-};
+	using R = VT <Q>;
+	using C = sizes <path_flip <Q>{}, path_edge <Q>{}>;
 
-template <typename Q>
-struct cont_trav
-{
-	template <typename A, typename I = begin_of <A> >
-	INLINE constexpr iter_trav <Q, I>
-	operator()(A&& a) const
-		{ return iter_trav <Q, I>(begin(fwd <A>(a)), end(fwd <A>(a))); }
+	template <typename B, typename E>
+	INLINE constexpr R
+	trav(sizes <0, 0>, B&& b, E&& e) const { return R(b, e); }
+
+	template <typename B, typename E>
+	INLINE constexpr R
+	trav(sizes <1, 0>, B&& b, E&& e) const { return R(--e, --b); }
+
+	template <typename B, typename E>
+	INLINE constexpr R
+	trav(sizes <0, 1>, B&& b, E&& e) const { return R(b, --e); }
+
+	template <typename B, typename E>
+	INLINE constexpr R
+	trav(sizes <1, 1>, B&& b, E&& e) const { return R(--e, b); }
+
+public:
+	template <typename B, typename E>
+	INLINE constexpr R
+	operator()(B&& b, E&& e) const { return trav(C(), b, e); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename Q>
-using trav_sw = t_switch <
-	t_case <is_trav, id_fun>,
-	t_case <as_seq,  seq_trav <Q> >,
-	t_else <make <inf_trav> >
->;
+template <template <typename> class VT, typename Q>
+class join_ends
+{
+	using R = VT <Q>;
+	using C = sizes <path_flip <Q>{}, path_edge <Q>{}>;
 
-template <typename Q>
-using raw_trav_sw = t_switch <
-	t_case <is_iter, id_fun>,
-	t_case <as_seq,  seq_trav <Q> >,
-	t_case <is_cont, cont_trav <Q> >,
-	t_else <make <inf_trav> >
->;
+	template <typename F, typename L, typename... V, size_t N = sizeof...(V)>
+	INLINE constexpr R
+	trav(sizes <0, 0>, F&& f, L&& l, V&&... v) const { return R(f, N, v...); }
 
-template <typename Q = path>
-using trav_on = switch_fun_of <trav_sw <Q> >;
+	template <typename F, typename L, typename... V>
+	INLINE constexpr R
+	trav(sizes <1, 0>, F&& f, L&& l, V&&... v) const { return R(l, -1, v...); }
 
-template <typename Q = path>
-using raw_trav_on = switch_fun_of <raw_trav_sw <Q> >;
+	template <typename F, typename L, typename... V>
+	INLINE constexpr R
+	trav(sizes <0, 1>, F&& f, L&& l, V&&... v) const { return R(f, l, v...); }
 
-using trav     = trav_on <>;
-using raw_trav = raw_trav_on <>;
+	template <typename F, typename L, typename... V>
+	INLINE constexpr R
+	trav(sizes <1, 1>, F&& f, L&& l, V&&... v) const { return R(l, f, v...); }
+
+public:
+	template <typename F, typename L, typename... V>
+	INLINE constexpr R
+	operator()(F&& f, L&& l, V&&... v) const { return trav(C(), f, l, v...); }
+};
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::trav;
-using details::trav_on;
-using details::raw_trav;
-using details::raw_trav_on;
-
 //-----------------------------------------------------------------------------
 
-}  // namespace afun
-
-static __attribute__ ((unused)) afun::trav      trav;
-static __attribute__ ((unused)) afun::raw_trav  raw_trav;
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -108,4 +114,4 @@ static __attribute__ ((unused)) afun::raw_trav  raw_trav;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_TRAV_HPP
+#endif  // IVL_CORE_ARRAY_ITER_FUN_HPP

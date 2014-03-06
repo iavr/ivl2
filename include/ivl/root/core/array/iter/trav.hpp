@@ -46,7 +46,7 @@ template <
 	typename Q, typename I, typename R, typename T,
 	typename D = iter_trav <Q, I, R, T>,
 	typename TR = iter_traits <I, R, T>,
-	bool = path_in <Q>{}
+	bool = path_edge <Q>{}
 >
 class iter_trav_impl : public trav_base <D, TR, I, I>
 {
@@ -59,6 +59,7 @@ class iter_trav_impl : public trav_base <D, TR, I, I>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
+
 	using B::cast;
 
 //-----------------------------------------------------------------------------
@@ -81,6 +82,8 @@ public:
 	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
+//-----------------------------------------------------------------------------
+
 	INLINE D&& operator++() && { return ++i(), der_f(); }
 	INLINE D&  operator++() &  { return ++i(), der(); }
 	INLINE D&& operator--() && { return --i(), der_f(); }
@@ -88,6 +91,8 @@ public:
 
 	INLINE D operator++(int) { return D(i()++, e()); }
 	INLINE D operator--(int) { return D(i()--, e()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
 
@@ -98,6 +103,11 @@ public:
 
 	INLINE D operator+(d n) const { return D(i() + n, e()); }
 	INLINE D operator-(d n) const { return D(i() - n, e()); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -117,12 +127,17 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 	using iter  = iter_elem <1, I>;
 	using last  = iter_elem <2, I>;
 
+	using E = edge;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
+
 	using B::cast;
 
-	using flip    = expr <path_flip <Q>{}>;
-	using no_flip = expr <!path_flip <Q>()>;
+//-----------------------------------------------------------------------------
+
+	using F1 = expr <path_flip <Q>{}>;
+	using F0 = expr <!path_flip <Q>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -137,11 +152,17 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
+	INLINE constexpr bool non_empty(_true)  const { return f() != l() + 1; }
+	INLINE constexpr bool non_empty(_false) const { return f() != l() - 1; }
+
 	INLINE constexpr bool more(_true)  const { return i() != l() + 1; }
 	INLINE constexpr bool more(_false) const { return i() != l() - 1; }
 
 	INLINE constexpr bool inside(_true)  const { return i() != l(); }
 	INLINE constexpr bool inside(_false) const { return i() != f(); }
+
+	INLINE void to_edge(_true)  { i() = f(); }
+	INLINE void to_edge(_false) { if (non_empty(F0())) i() = l(); }
 
 //-----------------------------------------------------------------------------
 
@@ -153,13 +174,14 @@ public:
 
 	static constexpr bool finite = true;
 
-	INLINE constexpr operator bool() const { return more(no_flip()); }
+	INLINE constexpr operator bool() const { return more(F0()); }
 
-	INLINE bool operator+() const { return inside(no_flip()); }
-	INLINE bool operator-() const { return inside(flip()); }
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator*()  const { return cast(*i()); }
 	INLINE           P operator->() const { return &(operator*()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE D&& operator++() && { return ++i(), der_f(); }
 	INLINE D&  operator++() &  { return ++i(), der(); }
@@ -168,6 +190,8 @@ public:
 
 	INLINE D operator++(int) { return D(f(), i()++, l()); }
 	INLINE D operator--(int) { return D(f(), i()--, l()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
 
@@ -178,6 +202,21 @@ public:
 
 	INLINE D operator+(d n) const { return D(f(), i() + n, l()); }
 	INLINE D operator-(d n) const { return D(f(), i() - n, l()); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE bool operator+() const { return inside(F0()); }
+	INLINE bool operator-() const { return inside(F1()); }
+
+	INLINE D&& operator<<=(E) && { return to_edge(F0()), der_f(); }
+	INLINE D&  operator<<=(E) &  { return to_edge(F0()), der(); }
+	INLINE D&& operator>>=(E) && { return to_edge(F1()), der_f(); }
+	INLINE D&  operator>>=(E) &  { return to_edge(F1()), der(); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------

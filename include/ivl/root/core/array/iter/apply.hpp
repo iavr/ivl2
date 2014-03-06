@@ -94,6 +94,8 @@ public:
 	INLINE constexpr R operator*()  const { return f()(*i<N>()...); }
 	INLINE           P operator->() const { return &(operator*()); }
 
+//-----------------------------------------------------------------------------
+
 	INLINE D&& operator++() && { return thru{++i<N>()...}, der_f(); }
 	INLINE D&  operator++() &  { return thru{++i<N>()...}, der(); }
 	INLINE D&& operator--() && { return thru{--i<N>()...}, der_f(); }
@@ -101,6 +103,8 @@ public:
 
 	INLINE D operator++(int) { return D(f(), i<N>()++...); }
 	INLINE D operator--(int) { return D(f(), i<N>()--...); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return f()(i<N>()[n]...); }
 
@@ -112,8 +116,11 @@ public:
 	INLINE D operator+(d n) const { return D(f(), i<N>() + n...); }
 	INLINE D operator-(d n) const { return D(f(), i<N>() - n...); }
 
+//-----------------------------------------------------------------------------
+
 	// TODO
-	INLINE bool operator!=(D o) { return term().more(i<N>() != o.template i<N>()...); }
+	INLINE bool operator!=(const D& o)
+		{ return term().more(i<N>() != o.template i<N>()...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -143,6 +150,7 @@ class apply_trav_impl <Q, pack <V...>, R, T, M, F, D, TR, sizes <N...> > :
 	using trav = iter_elem_at <K + 1, F, V...>;
 
 	using term = raw_type <M>;
+	using E = edge;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -169,11 +177,10 @@ public:
 
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
 
-	INLINE bool operator+() const { return term().more(+v<N>()...); }
-	INLINE bool operator-() const { return term().more(-v<N>()...); }
-
 	INLINE constexpr R operator*()  const { return f()(*v<N>()...); }
 	INLINE           P operator->() const { return &(operator*()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE D&& operator++() && { return thru{++v<N>()...}, der_f(); }
 	INLINE D&  operator++() &  { return thru{++v<N>()...}, der(); }
@@ -182,6 +189,8 @@ public:
 
 	INLINE D operator++(int) { return D(f(), v<N>()++...); }
 	INLINE D operator--(int) { return D(f(), v<N>()--...); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return f()(v<N>()[n]...); }
 
@@ -192,6 +201,22 @@ public:
 
 	INLINE D operator+(d n) const { return D(f(), v<N>() + n...); }
 	INLINE D operator-(d n) const { return D(f(), v<N>() - n...); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE bool operator+() const { return term().more(+v<N>()...); }
+	INLINE bool operator-() const { return term().more(-v<N>()...); }
+
+	INLINE D&& operator<<=(E) && { return thru{v<N>() <<= E()...}, der_f(); }
+	INLINE D&  operator<<=(E) &  { return thru{v<N>() <<= E()...}, der(); }
+	INLINE D&& operator>>=(E) && { return thru{v<N>() >>= E()...}, der_f(); }
+	INLINE D&  operator>>=(E) &  { return thru{v<N>() >>= E()...}, der(); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o)
+		{ return term().more(v<N>() != o.template v<N>()...); }
 };
 
 //-----------------------------------------------------------------------------

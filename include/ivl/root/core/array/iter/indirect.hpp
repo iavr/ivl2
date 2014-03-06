@@ -75,6 +75,8 @@ public:
 	INLINE constexpr R operator*()  const { return u()[*i()]; }
 	INLINE           P operator->() const { return &(operator*()); }
 
+//-----------------------------------------------------------------------------
+
 	INLINE D&& operator++() && { return ++i(), der_f(); }
 	INLINE D&  operator++() &  { return ++i(), der(); }
 	INLINE D&& operator--() && { return --i(), der_f(); }
@@ -82,6 +84,8 @@ public:
 
 	INLINE D operator++(int) { return D(i()++, u()); }
 	INLINE D operator--(int) { return D(i()--, u()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return u()[i()[n]]; }
 
@@ -93,8 +97,10 @@ public:
 	INLINE D operator+(d n) const { return D(i() + n, u()); }
 	INLINE D operator-(d n) const { return D(i() - n, u()); }
 
+//-----------------------------------------------------------------------------
+
 	// TODO
-	INLINE bool operator!=(D o) { return i() != o.i(); }
+	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -112,6 +118,8 @@ class indirect_trav_impl : public trav_base <D, TR, V, U>
 
 	using trav  = iter_elem <0, V>;
 	using under = iter_elem <1, U>;
+
+	using E = edge;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -133,11 +141,10 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE bool operator+() const { return v(); }
-	INLINE bool operator-() const { return v(); }
-
 	INLINE constexpr R operator*()  const { return u()[*v()]; }
 	INLINE           P operator->() const { return &(operator*()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE D&& operator++() && { return ++v(), der_f(); }
 	INLINE D&  operator++() &  { return ++v(), der(); }
@@ -146,6 +153,8 @@ public:
 
 	INLINE D operator++(int) { return D(v()++, u()); }
 	INLINE D operator--(int) { return D(v()--, u()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return u()[v()[n]]; }
 
@@ -156,6 +165,21 @@ public:
 
 	INLINE D operator+(d n) const { return D(v() + n, u()); }
 	INLINE D operator-(d n) const { return D(v() - n, u()); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE bool operator+() const { return v(); }
+	INLINE bool operator-() const { return v(); }
+
+	INLINE D&& operator<<=(E) && { return v() <<= E(), der_f(); }
+	INLINE D&  operator<<=(E) &  { return v() <<= E(), der(); }
+	INLINE D&& operator>>=(E) && { return v() >>= E(), der_f(); }
+	INLINE D&  operator>>=(E) &  { return v() >>= E(), der(); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return v() != o.v(); }
 };
 
 //-----------------------------------------------------------------------------

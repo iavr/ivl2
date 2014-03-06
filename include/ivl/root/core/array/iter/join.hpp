@@ -81,8 +81,11 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	using SM = size <M>;
 	using SL = size <L>;
 
-	template <typename OP> using   op = afun::lookup_op <0, L-1, OP>;
-	template <typename OP> friend class afun::lookup_op_fun;
+	template <typename OP> using    op = afun::lookup_op <0, L-1, OP>;
+	template <typename OP> using  op_M = afun::lookup_op <M, L-1, OP>;
+	template <typename OP> using  op_L = afun::lookup_op <0, L, OP>;
+	template <typename OP> using op_ML = afun::lookup_op <M, L, OP>;
+	template <typename OP> friend  class afun::lookup_op_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -97,21 +100,22 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE void next(size <K>, _true = yes) { ++k, next(size <K + 1>(), no); }
+	INLINE void next(size <K>) { ++k, next_cond(size <K + 1>()); }
 
 	template <size_t K>
-	INLINE void prev(size <K>, _true = yes) { --k, prev(size <K - 1>(), no); }
+	INLINE void prev(size <K>) { --k, prev_cond(size <K - 1>()); }
 
 	template <size_t K>
-	INLINE void next(size <K> s, _false) { if (!v<K>()) next(s); }
+	INLINE void next_cond(size <K> s) { if (!v<K>()) next(s); }
 
 	template <size_t K>
-	INLINE void prev(size <K> s, _false) { if (!v<K>()) prev(s); }
+	INLINE void prev_cond(size <K> s) { if (!v<K>()) prev(s); }
 
-	INLINE void next(SL, _true)  { }
-	INLINE void next(SL, _false) { }
-	INLINE void prev(SM, _true)  { }
-	INLINE void prev(SM, _false) { }
+	INLINE void next(SL)  { }
+	INLINE void prev(SM)  { }
+
+	INLINE void next_cond(SL) { }
+	INLINE void prev_cond(SM) { }
 
 //-----------------------------------------------------------------------------
 
@@ -120,11 +124,14 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	struct dec_l  { };
 	struct inc_r  { };
 	struct dec_r  { };
+	struct comp   { };
 
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
 	INLINE R _(deref, size <K>) const { return cast(*v<K>()); }
+
+//-----------------------------------------------------------------------------
 
 	template <size_t K>
 	INLINE void
@@ -134,21 +141,32 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	INLINE void
 	_(dec_l, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
 
+	INLINE void _(inc_l, SM) { next(SM()); }
+	INLINE void _(dec_l, SL) { prev(SL()); }
+
+//-----------------------------------------------------------------------------
+
 	template <size_t K>
 	INLINE D _(inc_r, size <K>) { return D(K,
-		N == K ? +v<K>() ? v<N>()++ : next(size <K>()), v<N>() : v<N>()
+		N == K ? +v<K>() ? v<N>()++ : (next(size <K>()), v<N>()) : v<N>()
 	...); }
 
 	template <size_t K>
 	INLINE D _(dec_r, size <K>) { return D(K,
-		N == K ? -v<K>() ? v<N>()-- : prev(size <K>()), v<N>() : v<N>()
+		N == K ? -v<K>() ? v<N>()-- : (prev(size <K>()), v<N>()) : v<N>()
 	...); }
-
-	INLINE void _(inc_l, SM) { next(SM()); }
-	INLINE void _(dec_l, SL) { prev(SL()); }
 
 	INLINE D _(inc_r, SM) { return D((next(SM()), M), v<N>()...); }
 	INLINE D _(dec_r, SL) { return D((prev(SL()), L), v<N>()...); }
+
+//-----------------------------------------------------------------------------
+
+	template <size_t K>
+	INLINE bool _(comp, size <K>, const D& o) const
+		{ return v<K>() != o.template v<K>(); }
+
+	INLINE bool _(comp, SM, const D& o) const { return false; }
+	INLINE bool _(comp, SL, const D& o) const { return false; }
 
 //-----------------------------------------------------------------------------
 
@@ -160,16 +178,21 @@ public:
 	INLINE constexpr R operator*()  const { return op <deref>()(k, der()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
-	INLINE D&& operator++() && { return op <inc_l>()(k, der()), der_f(); }
-	INLINE D&  operator++() &  { return op <inc_l>()(k, der()), der(); }
-	INLINE D&& operator--() && { return op <dec_l>()(k, der()), der_f(); }
-	INLINE D&  operator--() &  { return op <dec_l>()(k, der()), der(); }
+//-----------------------------------------------------------------------------
 
-	INLINE D operator++(int) { return op <inc_r>()(k, der()); }
-	INLINE D operator--(int) { return op <dec_r>()(k, der()); }
+	INLINE D&& operator++() && { return op_M <inc_l>()(k, der()), der_f(); }
+	INLINE D&  operator++() &  { return op_M <inc_l>()(k, der()), der(); }
+	INLINE D&& operator--() && { return op_L <dec_l>()(k, der()), der_f(); }
+	INLINE D&  operator--() &  { return op_L <dec_l>()(k, der()), der(); }
 
-// 	// TODO : lookup binary OP
-// 	INLINE bool operator!=(D o) { return k != o.k || ...; }
+	INLINE D operator++(int) { return op_M <inc_r>()(k, der()); }
+	INLINE D operator--(int) { return op_L <dec_r>()(k, der()); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE constexpr bool operator!=(const D& o) const
+		{ return k != o.k || op_ML <comp>()(k, der(), o); }
 };
 
 //-----------------------------------------------------------------------------
@@ -178,7 +201,8 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D = join_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>,
-	typename N = sz_rng_of_p <V>
+	typename N = sz_rng_of_p <V>,
+	bool = path_edge <Q>()
 >
 struct join_trav_impl;
 
@@ -186,9 +210,11 @@ template <
 	typename Q, typename... V, typename R, typename T,
 	typename D, typename TR, size_t... N
 >
-class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
+class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false> :
 	public trav_base <D, TR, V...>
 {
+protected:
+
 	using B = trav_base <D, TR, V...>;
 	using d = seq_diff <B>;
 	using P = seq_iptr <B>;
@@ -217,8 +243,6 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 	template <typename OP> using op_ML = afun::lookup_op <M, L, OP>;
 	template <typename OP> friend  class afun::lookup_op_fun;
 
-	using flipped = expr <path_flip <Q>{}>;
-
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
@@ -238,10 +262,10 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 	INLINE void prev(size <K>) { --k, prev_cond(size <K - 1>()); }
 
 	template <size_t K>
-	INLINE void next_cond(size <K> s) { if (!v<K>() && K != e) next(s); }
+	INLINE void next_cond(size <K> s) { if (!v<K>()) next(s); }
 
 	template <size_t K>
-	INLINE void prev_cond(size <K> s) { if (!v<K>() && K != e) prev(s); }
+	INLINE void prev_cond(size <K> s) { if (!v<K>()) prev(s); }
 
 	INLINE void next(SL)  { }
 	INLINE void prev(SM)  { }
@@ -251,17 +275,19 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
-// 	struct init   { };
 	struct deref  { };
 	struct inc_l  { };
 	struct dec_l  { };
 	struct inc_r  { };
 	struct dec_r  { };
+	struct comp   { };
 
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
 	INLINE R _(deref, size <K>) const { return cast(*v<K>()); }
+
+//-----------------------------------------------------------------------------
 
 	template <size_t K>
 	INLINE void
@@ -271,21 +297,32 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...> > :
 	INLINE void
 	_(dec_l, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
 
-	template <size_t K>
-	INLINE D _(inc_r, size <K>) { return D(K,
-		N == K ? +v<K>() ? v<N>()++ : next(size <K>()), v<N>() : v<N>()
-	...); }
-
-	template <size_t K>
-	INLINE D _(dec_r, size <K>) { return D(K,
-		N == K ? -v<K>() ? v<N>()-- : prev(size <K>()), v<N>() : v<N>()
-	...); }
-
 	INLINE void _(inc_l, SM) { next(SM()); }
 	INLINE void _(dec_l, SL) { prev(SL()); }
 
-	INLINE D _(inc_r, SM) { return D((next(SM()), M), v<N>()...); }
-	INLINE D _(dec_r, SL) { return D((prev(SL()), L), v<N>()...); }
+//-----------------------------------------------------------------------------
+
+	template <size_t K>
+	INLINE D _(inc_r, size <K>) { return D(K, e,
+		N == K ? +v<K>() ? v<N>()++ : (next(size <K>()), v<N>()) : v<N>()
+	...); }
+
+	template <size_t K>
+	INLINE D _(dec_r, size <K>) { return D(K, e,
+		N == K ? -v<K>() ? v<N>()-- : (prev(size <K>()), v<N>()) : v<N>()
+	...); }
+
+	INLINE D _(inc_r, SM) { return D((next(SM()), M), e, v<N>()...); }
+	INLINE D _(dec_r, SL) { return D((prev(SL()), L), e, v<N>()...); }
+
+//-----------------------------------------------------------------------------
+
+	template <size_t K>
+	INLINE bool _(comp, size <K>, const D& o) const
+		{ return v<K>() != o.template v<K>(); }
+
+	INLINE bool _(comp, SM, const D& o) const { return false; }
+	INLINE bool _(comp, SL, const D& o) const { return false; }
 
 //-----------------------------------------------------------------------------
 
@@ -302,6 +339,8 @@ public:
 	INLINE constexpr R operator*()  const { return op <deref>()(k, der()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
+//-----------------------------------------------------------------------------
+
 	INLINE D&& operator++() && { return op_M <inc_l>()(k, der()), der_f(); }
 	INLINE D&  operator++() &  { return op_M <inc_l>()(k, der()), der(); }
 	INLINE D&& operator--() && { return op_L <dec_l>()(k, der()), der_f(); }
@@ -309,6 +348,105 @@ public:
 
 	INLINE D operator++(int) { return op_M <inc_r>()(k, der()); }
 	INLINE D operator--(int) { return op_L <dec_r>()(k, der()); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE constexpr bool operator!=(const D& o) const
+		{ return k != o.k || op_ML <comp>()(k, der(), o); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename Q, typename... V, typename R, typename T,
+	typename D, typename TR, size_t... N
+>
+class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
+	public join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>
+{
+	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>;
+	using E = edge;
+
+	using B::der_f;
+	using B::der;
+
+	using B::_;
+
+//-----------------------------------------------------------------------------
+
+	using F1 = expr <path_flip <Q>{}>;
+	using F0 = expr <!path_flip <Q>()>;
+
+//-----------------------------------------------------------------------------
+
+	size_t f;
+
+	using B::k;
+
+	      size_t& l()       { return B::e; }
+	const size_t& l() const { return B::e; }
+
+	template <typename OP> using op = typename B::template op <OP>;
+	template <typename OP> friend class afun::lookup_op_fun;
+
+//-----------------------------------------------------------------------------
+
+	template <size_t K>
+	INLINE l_iter_pick <K, V...>
+	v() { return B::template v<K>(); }
+
+	template <size_t K>
+	INLINE constexpr c_iter_pick <K, V...>
+	v() const { return B::template v<K>(); }
+
+//-----------------------------------------------------------------------------
+
+	struct plus  { };
+	struct minus { };
+
+	template <size_t K> INLINE bool _(plus,  size <K>) const { return +v<K>(); }
+	template <size_t K> INLINE bool _(minus, size <K>) const { return -v<K>(); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE constexpr bool non_empty(_true)  const { return f != l() + 1; }
+	INLINE constexpr bool non_empty(_false) const { return f != l() - 1; }
+
+	INLINE constexpr bool more(_true)  const { return k != l() + 1; }
+	INLINE constexpr bool more(_false) const { return k != l() - 1; }
+
+	INLINE constexpr bool
+	inside(_true) const { return k != l() || op <plus>()(k, der()); }
+
+	INLINE constexpr bool
+	inside(_false) const { return k != f || op <minus>()(k, der()); }
+
+	INLINE void to_edge(_true)
+		{ k = f, thru{v<N>() <<= E()...}; }
+
+	INLINE void to_edge(_false)
+		{ if (non_empty(F0())) k = l(), thru{v<N>() >>= E()...}; }
+
+//-----------------------------------------------------------------------------
+
+public:
+	template <typename... A>
+	INLINE constexpr join_trav_impl(size_t k, size_t l, A&&... a) :
+		B(k, l, fwd <A>(a)...), f(k) { }
+
+	INLINE constexpr operator bool() const { return more(F0()); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE bool operator+() const { return inside(F0()); }
+	INLINE bool operator-() const { return inside(F1()); }
+
+	INLINE D&& operator<<=(E) && { return to_edge(F0()), der_f(); }
+	INLINE D&  operator<<=(E) &  { return to_edge(F0()), der(); }
+	INLINE D&& operator>>=(E) && { return to_edge(F1()), der_f(); }
+	INLINE D&  operator>>=(E) &  { return to_edge(F1()), der(); }
+
 };
 
 //-----------------------------------------------------------------------------

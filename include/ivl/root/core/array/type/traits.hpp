@@ -379,7 +379,7 @@ using trav_sw = t_ref_switch <
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename T, typename Q, bool I = path_in <Q>()>
+template <typename C, typename T, typename Q, bool I = path_edge <Q>()>
 struct iter_trav_ : iter_t <C, T> { };
 
 template <typename C, typename T, typename Q>

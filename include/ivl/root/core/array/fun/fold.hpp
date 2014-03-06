@@ -62,7 +62,6 @@ struct val_or
 
 //-----------------------------------------------------------------------------
 
-template <size_t Z = 0>
 class val_first
 {
 	template <size_t I>
@@ -75,15 +74,14 @@ class val_first
 public:
 	template <typename... A>
 	INLINE constexpr size_t
-	operator()(A&&... a) const { return find(size <Z>(), fwd <A>(a)...); }
+	operator()(A&&... a) const { return find(size <0>(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <size_t Z = 0>
 class val_last
 {
-	static constexpr size_t M = Z - 1;
+	static constexpr size_t M = -1;
 
 	template <size_t I>
 	INLINE constexpr size_t find(size <I>) const { return M; }
@@ -99,7 +97,7 @@ class val_last
 public:
 	template <typename... A>
 	INLINE constexpr size_t
-	operator()(A&&... a) const { return find(size <Z>(), fwd <A>(a)...); }
+	operator()(A&&... a) const { return find(size <0>(), fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -162,11 +160,11 @@ using details::val_prod;
 
 }  // namespace afun
 
-static __attribute__ ((unused)) afun::val_and  val_and;
-static __attribute__ ((unused)) afun::val_or   val_or;
+static __attribute__ ((unused)) afun::val_and   val_and;
+static __attribute__ ((unused)) afun::val_or    val_or;
 
-static __attribute__ ((unused)) afun::val_first <> val_first;
-static __attribute__ ((unused)) afun::val_last  <> val_last;
+static __attribute__ ((unused)) afun::val_first val_first;
+static __attribute__ ((unused)) afun::val_last  val_last;
 
 static __attribute__ ((unused)) afun::val_min   val_min;
 static __attribute__ ((unused)) afun::val_max   val_max;

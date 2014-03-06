@@ -55,6 +55,7 @@ class atom_iter_impl : public iter_base <D, TR, T>
 
 	using derived <D>::der_f;
 	using derived <D>::der;
+
 	using B::cast;
 
 //-----------------------------------------------------------------------------
@@ -65,6 +66,8 @@ public:
 	INLINE constexpr R operator*()  const { return cast(B::val()); }
 	INLINE           P operator->() const { return &(operator*()); }
 
+//-----------------------------------------------------------------------------
+
 	INLINE D&& operator++() && { return der_f(); }
 	INLINE D&  operator++() &  { return der(); }
 	INLINE D&& operator--() && { return der_f(); }
@@ -72,6 +75,8 @@ public:
 
 	INLINE D operator++(int) { return der(); }
 	INLINE D operator--(int) { return der(); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return cast(B::val()); }
 
@@ -83,8 +88,10 @@ public:
 	INLINE D operator+(d n) const { return der(); }
 	INLINE D operator-(d n) const { return der(); }
 
+//-----------------------------------------------------------------------------
+
 	// TODO
-	INLINE bool operator!=(D o) { return true; }
+	INLINE bool operator!=(const D& o) { return true; }
 };
 
 //-----------------------------------------------------------------------------
@@ -100,8 +107,11 @@ class atom_trav_impl : public trav_base <D, TR, T>
 	using d = seq_diff <B>;
 	using P = seq_iptr <B>;
 
+	using E = edge;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
+	
 	using B::cast;
 
 //-----------------------------------------------------------------------------
@@ -113,11 +123,10 @@ public:
 
 	INLINE constexpr operator bool() const { return true; }
 
-	INLINE bool operator+() const { return true; }
-	INLINE bool operator-() const { return true; }
-
 	INLINE constexpr R operator*()  const { return cast(B::val()); }
 	INLINE           P operator->() const { return &(operator*()); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE D&& operator++() && { return der_f(); }
 	INLINE D&  operator++() &  { return der(); }
@@ -126,6 +135,8 @@ public:
 
 	INLINE D operator++(int) { return der(); }
 	INLINE D operator--(int) { return der(); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr R operator[](d n) const { return cast(B::val()); }
 
@@ -136,6 +147,21 @@ public:
 
 	INLINE D& operator+(d n) const { return der(); }
 	INLINE D& operator-(d n) const { return der(); }
+
+//-----------------------------------------------------------------------------
+
+	INLINE bool operator+() const { return true; }
+	INLINE bool operator-() const { return true; }
+
+	INLINE D&& operator<<=(E) && { return der_f(); }
+	INLINE D&  operator<<=(E) &  { return der(); }
+	INLINE D&& operator>>=(E) && { return der_f(); }
+	INLINE D&  operator>>=(E) &  { return der(); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return true; }
 };
 
 //-----------------------------------------------------------------------------

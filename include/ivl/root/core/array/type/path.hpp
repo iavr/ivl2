@@ -42,11 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <int R = 0, int I = 0, int F = 0>
-struct path_ : id_t <path_<R, I, F> >
+template <int R = 0, int E = 0, int F = 0>
+struct path_ : id_t <path_<R, E, F> >
 {
 	static constexpr int flipped = R;
-	static constexpr int inner   = I;
+	static constexpr int edge    = E;
 	static constexpr int finite  = F;
 };
 
@@ -55,56 +55,56 @@ using path = path_<>;
 //-----------------------------------------------------------------------------
 
 template <typename P> using path_flip = expr <P::flipped>;
-template <typename P> using path_in   = expr <P::inner>;
+template <typename P> using path_edge = expr <P::edge>;
 template <typename P> using path_fin  = expr <P::finite>;
 
 //-----------------------------------------------------------------------------
 
 template <int S, typename P> struct set_flip_t { };
-template <int S, typename P> struct set_in_t   { };
+template <int S, typename P> struct set_edge_t { };
 template <int S, typename P> struct set_fin_t  { };
 
 template <int S, typename P> using set_flip = type_of <set_flip_t <S, P> >;
-template <int S, typename P> using set_in   = type_of <set_in_t <S, P> >;
+template <int S, typename P> using set_edge = type_of <set_edge_t <S, P> >;
 template <int S, typename P> using set_fin  = type_of <set_fin_t <S, P> >;
 
-template <int SET, int R, int I, int F>
-struct set_flip_t <SET, path_<R, I, F> > : path_<SET, I, F> { };
+template <int SET, int R, int E, int F>
+struct set_flip_t <SET, path_<R, E, F> > : path_<SET, E, F> { };
 
-template <int SET, int R, int I, int F>
-struct set_in_t <SET, path_<R, I, F> > : path_<R, SET, F> { };
+template <int SET, int R, int E, int F>
+struct set_edge_t <SET, path_<R, E, F> > : path_<R, SET, F> { };
 
-template <int SET, int R, int I, int F>
-struct set_fin_t <SET, path_<R, I, F> > : path_<R, I, SET> { };
+template <int SET, int R, int E, int F>
+struct set_fin_t <SET, path_<R, E, F> > : path_<R, E, SET> { };
 
 //-----------------------------------------------------------------------------
 
 template <typename P> using flip_on = set_flip <1, P>;
-template <typename P> using in_on   = set_in  <1, P>;
+template <typename P> using edge_on = set_edge <1, P>;
 template <typename P> using fin_on  = set_fin <1, P>;
 
 template <typename P> using flip_off = set_flip <0, P>;
-template <typename P> using in_off   = set_in  <0, P>;
+template <typename P> using edge_off = set_edge <0, P>;
 template <typename P> using fin_off  = set_fin <0, P>;
 
 //-----------------------------------------------------------------------------
 
 template <typename P> struct not_flip_t { };
-template <typename P> struct not_in_t   { };
+template <typename P> struct not_edge_t { };
 template <typename P> struct not_fin_t  { };
 
 template <typename P> using not_flip = type_of <not_flip_t <P> >;
-template <typename P> using not_in   = type_of <not_in_t <P> >;
+template <typename P> using not_edge = type_of <not_edge_t <P> >;
 template <typename P> using not_fin  = type_of <not_fin_t <P> >;
 
-template <int R, int I, int F>
-struct not_flip_t <path_<R, I, F> > : path_<!R, I, F> { };
+template <int R, int E, int F>
+struct not_flip_t <path_<R, E, F> > : path_<!R, E, F> { };
 
-template <int R, int I, int F>
-struct not_in_t <path_<R, I, F> > : path_<R, !I, F> { };
+template <int R, int E, int F>
+struct not_edge_t <path_<R, E, F> > : path_<R, !E, F> { };
 
-template <int R, int I, int F>
-struct not_fin_t <path_<R, I, F> > : path_<R, I, !F> { };
+template <int R, int E, int F>
+struct not_fin_t <path_<R, E, F> > : path_<R, E, !F> { };
 
 //-----------------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ struct not_fin_t <path_<R, I, F> > : path_<R, I, !F> { };
 using details::path;
 
 using details::path_flip;
-using details::path_in;
+using details::path_edge;
 using details::path_fin;
 
 //-----------------------------------------------------------------------------
