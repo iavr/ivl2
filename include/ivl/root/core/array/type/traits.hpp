@@ -197,8 +197,8 @@ struct seq_diff_t <pack <I...> > : common_t <seq_diff <I>...> { };
 //-----------------------------------------------------------------------------
 
 // extending definition @type/traits/ref
-template <typename C, typename T>
-struct type_t <C, _type <T> > : id_t <T> { };
+template <typename C, typename... T>
+struct type_t <C, _type <T...> > : _type <type <C, T>...> { };
 
 template <typename C, typename F, typename T>
 struct type_t <C, F(_type <T>)> : id_t <type <C, F>(_type <type <C, T> >)> { };
@@ -206,8 +206,8 @@ struct type_t <C, F(_type <T>)> : id_t <type <C, F>(_type <type <C, T> >)> { };
 //-----------------------------------------------------------------------------
 
 // extending definition @type/traits/ref
-template <typename C, typename T>
-struct ref_t <C, _type <T> > : id_t <T> { };
+template <typename C, typename... T>
+struct ref_t <C, _type <T...> > : common_t <ref <C, T>...> { };
 
 template <typename C, typename F, typename T>
 struct ref_t <C, F(_type <T>)> : bra_ret_t <ref <C, F>(ref <C, T>)> { };
@@ -219,27 +219,6 @@ template <typename T> using seq_type   = type_of <seq_type_t <T> >;
 
 template <typename T> using seq_ref_t = tx_ref_t <T, seq_val <T> >;
 template <typename T> using seq_ref   = type_of <seq_ref_t <T> >;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-template <typename T, bool = is_ref <T>()>
-struct seq_result_ : id_t <T> { };
-
-template <typename T>
-struct seq_result_<T, false> : _type <T> { };
-
-template <typename T>
-struct seq_result_<_type <T>, false> : _type <T> { };
-
-}  // namespace details
-
-template <typename T> using seq_result_t = details::seq_result_<T>;
-template <typename T> using seq_result   = type_of <seq_result_t <T> >;
-
-template <typename... T> using seq_common_t = seq_result_t <common <T...> >;
-template <typename... T> using seq_common = type_of <seq_common_t <T...> >;
 
 //-----------------------------------------------------------------------------
 

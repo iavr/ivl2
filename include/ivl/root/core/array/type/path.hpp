@@ -79,13 +79,14 @@ struct set_fin_t <SET, path_<R, E, F> > : path_<R, E, SET> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using flip_on = set_flip <1, P>;
-template <typename P> using edge_on = set_edge <1, P>;
-template <typename P> using fin_on  = set_fin <1, P>;
+template <typename P = path> using flip_on  = set_flip <1, P>;
+template <typename P = path> using flip_off = set_flip <0, P>;
 
-template <typename P> using flip_off = set_flip <0, P>;
-template <typename P> using edge_off = set_edge <0, P>;
-template <typename P> using fin_off  = set_fin <0, P>;
+template <typename P = path> using edge_on  = set_edge <1, P>;
+template <typename P = path> using edge_off = set_edge <0, P>;
+
+template <typename P = path> using fin_on  = set_fin <1, P>;
+template <typename P = path> using fin_off = set_fin <0, P>;
 
 //-----------------------------------------------------------------------------
 
@@ -117,6 +118,15 @@ using details::path;
 using details::path_flip;
 using details::path_edge;
 using details::path_fin;
+
+using details::flip_on;
+using details::flip_off;
+
+using details::edge_on;
+using details::edge_off;
+
+using details::fin_on;
+using details::fin_off;
 
 //-----------------------------------------------------------------------------
 

@@ -51,7 +51,7 @@ struct join_traits;
 
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
-	seq_common <seq_type <U>...>, join_length <U...>, UP,
+	_type <seq_type <U>...>, join_length <U...>, UP,
 	join_iter, join_trav, edge_on
 > { };
 
@@ -122,7 +122,7 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 	template <typename IT, typename... V>
 	static INLINE constexpr IT
-	e(V&&... v) { return IT(L, v...); }
+	e(V&&... v) { return IT(L, v >>= E()...); }
 
 	template <template <typename> class VT, typename Q, typename... V>
 	static INLINE constexpr VT <Q>
@@ -153,9 +153,9 @@ public:
 	INLINE           IL begin() &      { return b <IL>(u  <N>().trav(EP())...); }
 	INLINE constexpr IC begin() const& { return b <IC>(u  <N>().trav(EP())...); }
 
-	INLINE           IR end() &&     { return e <IR>(u_f<N>().trav(EP()) >>= E()...); }
-	INLINE           IL end() &      { return e <IL>(u  <N>().trav(EP()) >>= E()...); }
-	INLINE constexpr IC end() const& { return e <IC>(u  <N>().trav(EP()) >>= E()...); }
+	INLINE           IR end() &&     { return e <IR>(u_f<N>().trav(EP())...); }
+	INLINE           IL end() &      { return e <IL>(u  <N>().trav(EP())...); }
+	INLINE constexpr IC end() const& { return e <IC>(u  <N>().trav(EP())...); }
 
 };
 

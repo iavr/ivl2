@@ -402,11 +402,13 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 
 //-----------------------------------------------------------------------------
 
-	struct plus  { };
-	struct minus { };
+	struct elem_in { };
 
-	template <size_t K> INLINE bool _(plus,  size <K>) const { return +v<K>(); }
-	template <size_t K> INLINE bool _(minus, size <K>) const { return -v<K>(); }
+	template <size_t K>
+	INLINE bool _(elem_in, size <K>, _true)  const { return +v<K>(); }
+
+	template <size_t K>
+	INLINE bool _(elem_in, size <K>, _false) const { return -v<K>(); }
 
 //-----------------------------------------------------------------------------
 
@@ -417,16 +419,19 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 	INLINE constexpr bool more(_false) const { return k != l() - 1; }
 
 	INLINE constexpr bool
-	inside(_true) const { return k != l() || op <plus>()(k, der()); }
+	inside(_true) const { return k != l() || op <elem_in>()(k, der(), F0()); }
 
 	INLINE constexpr bool
-	inside(_false) const { return k != f || op <minus>()(k, der()); }
+	inside(_false) const { return k != f || op <elem_in>()(k, der(), F1()); }
 
 	INLINE void to_edge(_true)
-		{ k = f, thru{v<N>() <<= E()...}; }
+		{ k = f, elem_edge(F0()); }
 
 	INLINE void to_edge(_false)
-		{ if (non_empty(F0())) k = l(), thru{v<N>() >>= E()...}; }
+		{ if (non_empty(F0())) k = l(), elem_edge(F1()); }
+
+	INLINE void elem_edge(_true)  { thru{v<N>() <<= E()...}; }
+	INLINE void elem_edge(_false) { thru{v<N>() >>= E()...}; }
 
 //-----------------------------------------------------------------------------
 

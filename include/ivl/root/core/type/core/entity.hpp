@@ -63,8 +63,8 @@ struct type_seq : id_t <T>, seq <length <T>{}> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-struct _type : type_seq <_type <T> > { };
+template <typename... T>
+struct _type : type_seq <_type <T...> > { };
 
 template <typename... E>
 struct pack : type_seq <pack <E...> > { };
