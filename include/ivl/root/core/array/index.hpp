@@ -54,16 +54,17 @@
 #include "base/seq/store.hpp"
 #include "base/seq/base.hpp"
 
+#include "iter/fun.hpp"
+#include "iter/op.hpp"
 #include "iter/iter.hpp"
 #include "iter/trav.hpp"
 #include "iter/atom.hpp"
+
 #include "iter/flip.hpp"
 #include "iter/indirect.hpp"
 #include "iter/apply.hpp"
 #include "iter/zip.hpp"
 #include "iter/join.hpp"
-#include "iter/fun.hpp"
-#include "iter/op.hpp"
 
 #include "store/aggr.hpp"
 #include "store/pre_fixed.hpp"

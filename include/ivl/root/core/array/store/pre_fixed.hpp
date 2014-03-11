@@ -111,15 +111,15 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 
 	template <typename Q>
 	INLINE VR <Q>
-	_trav() && { return ends <VR, Q>()(b(), e()); }
+	_trav() && { return trav_ends <VR, Q>()(b(), e()); }
 
 	template <typename Q>
 	INLINE VL <Q>
-	_trav() & { return ends <VL, Q>()(b(), e()); }
+	_trav() & { return trav_ends <VL, Q>()(b(), e()); }
 
 	template <typename Q>
 	INLINE constexpr VC <Q>
-	_trav() const& { return ends <VC, Q>()(b(), e()); }
+	_trav() const& { return trav_ends <VC, Q>()(b(), e()); }
 
 //-----------------------------------------------------------------------------
 

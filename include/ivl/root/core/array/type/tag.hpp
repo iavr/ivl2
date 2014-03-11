@@ -41,6 +41,7 @@ namespace tag {
 template <typename... D> struct atom_ { };
 template <typename... D> struct iter_ { };
 template <typename... D> struct trav_ { };
+template <typename... D> struct edge_ { };
 
 template <typename... D> struct aggr_ { };
 template <typename... D> struct fixed_ { };
@@ -53,6 +54,7 @@ template <typename... D> using pre_fixed_ = pre_<fixed_<D...> >;
 using atom = atom_<>;
 using iter = iter_<>;
 using trav = trav_<>;
+using edge = edge_<>;
 
 using aggr  = aggr_<>;
 using fixed = fixed_<>;

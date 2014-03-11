@@ -215,6 +215,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
+	template <bool F>
+	INLINE void tail() { }
+
+	template <bool F, bool E>
+	INLINE void flip() { }
+
+	INLINE void swap() { std::swap(i(), l()); }
+	INLINE void sync() { f() = i(); }
+
+//-----------------------------------------------------------------------------
+
 	// TODO
 	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };

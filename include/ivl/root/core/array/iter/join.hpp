@@ -351,6 +351,17 @@ public:
 
 //-----------------------------------------------------------------------------
 
+	template <bool F>
+	INLINE void tail() { }
+
+	template <bool F, bool E>
+	INLINE void flip() { thru{ends_flip <F, true>(v<N>())...}; }
+
+	INLINE void swap() { std::swap(k, e); }
+	INLINE void sync() { }
+
+//-----------------------------------------------------------------------------
+
 	// TODO
 	INLINE constexpr bool operator!=(const D& o) const
 		{ return k != o.k || op_ML <comp>()(k, der(), o); }
@@ -451,6 +462,17 @@ public:
 	INLINE D&  operator<<=(E) &  { return to_edge(F0()), der(); }
 	INLINE D&& operator>>=(E) && { return to_edge(F1()), der_f(); }
 	INLINE D&  operator>>=(E) &  { return to_edge(F1()), der(); }
+
+//-----------------------------------------------------------------------------
+
+	template <bool F>
+	INLINE void tail() { }
+
+	template <bool F, bool E>
+	INLINE void flip() { thru{ends_flip <F, true>(v<N>())...}; }
+
+	INLINE void swap() { std::swap(k, l()); }
+	INLINE void sync() { f = k; }
 
 };
 

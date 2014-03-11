@@ -42,6 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename P = path> using set_join = set_edge <set_fin <> >;
+
 template <typename... U>
 using join_length =
 	if_size <_and <fix_seq <U>...>{}, sz_sum <id, seq_len <U>...> >;
@@ -52,7 +54,7 @@ struct join_traits;
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
 	_type <seq_type <U>...>, join_length <U...>, UP,
-	join_iter, join_trav, edge_on
+	join_iter, join_trav, set_join
 > { };
 
 //-----------------------------------------------------------------------------
@@ -86,7 +88,7 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 //-----------------------------------------------------------------------------
 
 	using E  = edge;
-	using EP = edge_on <path>;
+	using JP = set_join <>;
 
 	using FF = afun::val_first;
 	using FL = afun::val_last;
@@ -124,23 +126,31 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 	static INLINE constexpr IT
 	e(V&&... v) { return IT(L, v >>= E()...); }
 
+// 	template <template <typename> class VT, typename Q, typename... V>
+// 	static INLINE constexpr VT <Q>
+// 	t(V&&... v) { return FV <VT, Q>()(FF()(v...), FL()(v...), v...); }
+
 	template <template <typename> class VT, typename Q, typename... V>
 	static INLINE constexpr VT <Q>
-	t(V&&... v) { return FV <VT, Q>()(FF()(v...), FL()(v...), v...); }
+	t(V&&... v) { return FV <VT, Q>()(FF()(v...), last <Q>(v...), v...); }
+
+	template <typename Q, typename... V, bool E = path_edge <Q>()>
+	static INLINE constexpr size_t
+	last(V&&... v) { return E ? FL()(v...) : L; }
 
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
 	INLINE VR <Q>
-	_trav() && { return t <VR, Q>(u_f<N>().trav(edge_on <Q>())...); }
+	_trav() && { return t <VR, Q>(u_f<N>().trav(set_join <Q>())...); }
 
 	template <typename Q>
 	INLINE VL <Q>
-	_trav() & { return t <VL, Q>(u<N>().trav(edge_on <Q>())...); }
+	_trav() & { return t <VL, Q>(u<N>().trav(set_join <Q>())...); }
 
 	template <typename Q>
 	INLINE constexpr VC <Q>
-	_trav() const& { return t <VC, Q>(u<N>().trav(edge_on <Q>())...); }
+	_trav() const& { return t <VC, Q>(u<N>().trav(set_join <Q>())...); }
 
 //-----------------------------------------------------------------------------
 
@@ -149,13 +159,13 @@ public:
 
 	INLINE constexpr S size() const { return val_sum(u<N>().size()...); }
 
-	INLINE           IR begin() &&     { return b <IR>(u_f<N>().trav(EP())...); }
-	INLINE           IL begin() &      { return b <IL>(u  <N>().trav(EP())...); }
-	INLINE constexpr IC begin() const& { return b <IC>(u  <N>().trav(EP())...); }
+	INLINE           IR begin() &&     { return b <IR>(u_f<N>().trav(JP())...); }
+	INLINE           IL begin() &      { return b <IL>(u  <N>().trav(JP())...); }
+	INLINE constexpr IC begin() const& { return b <IC>(u  <N>().trav(JP())...); }
 
-	INLINE           IR end() &&     { return e <IR>(u_f<N>().trav(EP())...); }
-	INLINE           IL end() &      { return e <IL>(u  <N>().trav(EP())...); }
-	INLINE constexpr IC end() const& { return e <IC>(u  <N>().trav(EP())...); }
+	INLINE           IR end() &&     { return e <IR>(u_f<N>().trav(JP())...); }
+	INLINE           IL end() &      { return e <IL>(u  <N>().trav(JP())...); }
+	INLINE constexpr IC end() const& { return e <IC>(u  <N>().trav(JP())...); }
 
 };
 

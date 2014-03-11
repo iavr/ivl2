@@ -42,15 +42,21 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <int R = 0, int E = 0, int F = 0>
-struct path_ : id_t <path_<R, E, F> >
+template <
+	typename C = tag::trav,
+	bool F = false, bool E = false, bool I = false
+>
+struct path_ : id_t <path_<C, F, E, I> >
 {
-	static constexpr int flipped = R;
-	static constexpr int edge    = E;
-	static constexpr int finite  = F;
+	using path = C;
+	static constexpr bool flipped = F;
+	static constexpr bool edge    = E;
+	static constexpr bool finite  = I;
 };
 
 using path = path_<>;
+
+template <typename P> using path_of = typename P::path;
 
 //-----------------------------------------------------------------------------
 
@@ -60,52 +66,27 @@ template <typename P> using path_fin  = expr <P::finite>;
 
 //-----------------------------------------------------------------------------
 
-template <int S, typename P> struct set_flip_t { };
-template <int S, typename P> struct set_edge_t { };
-template <int S, typename P> struct set_fin_t  { };
+template <typename P = path> struct set_tail_t { };
+template <typename P = path> struct set_flip_t { };
+template <typename P = path> struct set_edge_t { };
+template <typename P = path> struct set_fin_t  { };
 
-template <int S, typename P> using set_flip = type_of <set_flip_t <S, P> >;
-template <int S, typename P> using set_edge = type_of <set_edge_t <S, P> >;
-template <int S, typename P> using set_fin  = type_of <set_fin_t <S, P> >;
+template <typename P = path> using set_tail = type_of <set_tail_t <P> >;
+template <typename P = path> using set_flip = type_of <set_flip_t <P> >;
+template <typename P = path> using set_edge = type_of <set_edge_t <P> >;
+template <typename P = path> using set_fin  = type_of <set_fin_t <P> >;
 
-template <int SET, int R, int E, int F>
-struct set_flip_t <SET, path_<R, E, F> > : path_<SET, E, F> { };
+template <typename C, bool F, bool E, bool I>
+struct set_tail_t <path_<C, F, E, I> > : path_<tag::tail_<C>, F, E, I> { };
 
-template <int SET, int R, int E, int F>
-struct set_edge_t <SET, path_<R, E, F> > : path_<R, SET, F> { };
+template <typename C, bool F, bool E, bool I>
+struct set_flip_t <path_<C, F, E, I> > : path_<tag::flip_<C>, !F, E, I> { };
 
-template <int SET, int R, int E, int F>
-struct set_fin_t <SET, path_<R, E, F> > : path_<R, E, SET> { };
+template <typename C, bool F, bool E, bool I>
+struct set_edge_t <path_<C, F, E, I> > : path_<tag::edge_<C>, F, true, I> { };
 
-//-----------------------------------------------------------------------------
-
-template <typename P = path> using flip_on  = set_flip <1, P>;
-template <typename P = path> using flip_off = set_flip <0, P>;
-
-template <typename P = path> using edge_on  = set_edge <1, P>;
-template <typename P = path> using edge_off = set_edge <0, P>;
-
-template <typename P = path> using fin_on  = set_fin <1, P>;
-template <typename P = path> using fin_off = set_fin <0, P>;
-
-//-----------------------------------------------------------------------------
-
-template <typename P> struct not_flip_t { };
-template <typename P> struct not_edge_t { };
-template <typename P> struct not_fin_t  { };
-
-template <typename P> using not_flip = type_of <not_flip_t <P> >;
-template <typename P> using not_edge = type_of <not_edge_t <P> >;
-template <typename P> using not_fin  = type_of <not_fin_t <P> >;
-
-template <int R, int E, int F>
-struct not_flip_t <path_<R, E, F> > : path_<!R, E, F> { };
-
-template <int R, int E, int F>
-struct not_edge_t <path_<R, E, F> > : path_<R, !E, F> { };
-
-template <int R, int E, int F>
-struct not_fin_t <path_<R, E, F> > : path_<R, E, !F> { };
+template <typename C, bool F, bool E, bool I>
+struct set_fin_t <path_<C, F, E, I> > : path_<C, F, E, true> { };
 
 //-----------------------------------------------------------------------------
 
@@ -114,19 +95,16 @@ struct not_fin_t <path_<R, E, F> > : path_<R, E, !F> { };
 //-----------------------------------------------------------------------------
 
 using details::path;
+using details::path_of;
 
 using details::path_flip;
 using details::path_edge;
 using details::path_fin;
 
-using details::flip_on;
-using details::flip_off;
-
-using details::edge_on;
-using details::edge_off;
-
-using details::fin_on;
-using details::fin_off;
+using details::set_tail;
+using details::set_flip;
+using details::set_edge;
+using details::set_fin;
 
 //-----------------------------------------------------------------------------
 
