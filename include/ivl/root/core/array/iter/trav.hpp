@@ -48,11 +48,10 @@ template <
 	typename TR = iter_traits <I, R, T>,
 	bool = path_edge <Q>{}
 >
-class iter_trav_impl : public trav_base <D, TR, I, I>
+class iter_trav_impl : public trav_base <D, TR, Q, I, I>
 {
-	using B = trav_base <D, TR, I, I>;
+	using B = trav_base <D, TR, Q, I, I>;
 	using d = seq_diff <B>;
-	using P = seq_iptr <B>;
 
 	using iter = iter_elem <0, I>;
 	using end  = iter_elem <1, I>;
@@ -79,8 +78,7 @@ public:
 
 	INLINE constexpr operator bool() const { return i() != e(); }
 
-	INLINE constexpr R operator*()  const { return cast(*i()); }
-	INLINE           P operator->() const { return &(operator*()); }
+	INLINE constexpr R operator*() const { return cast(*i()); }
 
 //-----------------------------------------------------------------------------
 
@@ -106,6 +104,11 @@ public:
 
 //-----------------------------------------------------------------------------
 
+	INLINE D&& swap() && { return std::swap(i(), e()), der_f(); }
+	INLINE D&  swap() &  { return std::swap(i(), e()), der(); }
+
+//-----------------------------------------------------------------------------
+
 	// TODO
 	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
@@ -117,27 +120,22 @@ template <
 	typename D, typename TR
 >
 class iter_trav_impl <Q, I, R, T, D, TR, true> :
-	public trav_base <D, TR, I, I, I>
+	public trav_base <D, TR, Q, I, I, I>
 {
-	using B = trav_base <D, TR, I, I, I>;
+	using B = trav_base <D, TR, Q, I, I, I>;
 	using d = seq_diff <B>;
-	using P = seq_iptr <B>;
 
 	using first = iter_elem <0, I>;
 	using iter  = iter_elem <1, I>;
 	using last  = iter_elem <2, I>;
 
-	using E = edge;
+	using P = arrays::iter;
+	using E = arrays::edge;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
 
 	using B::cast;
-
-//-----------------------------------------------------------------------------
-
-	using F1 = expr <path_flip <Q>{}>;
-	using F0 = expr <!path_flip <Q>()>;
 
 //-----------------------------------------------------------------------------
 
@@ -152,17 +150,15 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
-	INLINE constexpr bool non_empty(_true)  const { return f() != l() + 1; }
-	INLINE constexpr bool non_empty(_false) const { return f() != l() - 1; }
+	INLINE constexpr bool empty() const { return f() == l() + 1; }
 
-	INLINE constexpr bool more(_true)  const { return i() != l() + 1; }
-	INLINE constexpr bool more(_false) const { return i() != l() - 1; }
+	INLINE void iter_left()  {               i() = f(); }
+	INLINE void iter_right() { if (!empty()) i() = l(); }
 
-	INLINE constexpr bool inside(_true)  const { return i() != l(); }
-	INLINE constexpr bool inside(_false) const { return i() != f(); }
+	INLINE void edge_left()  { if (!empty()) l() = i(); }
+	INLINE void edge_right() {               f() = i(); }
 
-	INLINE void to_edge(_true)  { i() = f(); }
-	INLINE void to_edge(_false) { if (non_empty(F0())) i() = l(); }
+	INLINE void _swap() { if (!empty()) i() = i() == f() ? l() : f(); }
 
 //-----------------------------------------------------------------------------
 
@@ -174,12 +170,11 @@ public:
 
 	static constexpr bool finite = true;
 
-	INLINE constexpr operator bool() const { return more(F0()); }
+	INLINE constexpr operator bool() const { return i() != l() + 1; }
 
 //-----------------------------------------------------------------------------
 
-	INLINE constexpr R operator*()  const { return cast(*i()); }
-	INLINE           P operator->() const { return &(operator*()); }
+	INLINE constexpr R operator*() const { return cast(*i()); }
 
 //-----------------------------------------------------------------------------
 
@@ -205,24 +200,21 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	INLINE bool operator+() const { return inside(F0()); }
-	INLINE bool operator-() const { return inside(F1()); }
+	INLINE bool operator+() const { return i() != l(); }
+	INLINE bool operator-() const { return i() != f(); }
 
-	INLINE D&& operator<<=(E) && { return to_edge(F0()), der_f(); }
-	INLINE D&  operator<<=(E) &  { return to_edge(F0()), der(); }
-	INLINE D&& operator>>=(E) && { return to_edge(F1()), der_f(); }
-	INLINE D&  operator>>=(E) &  { return to_edge(F1()), der(); }
+	INLINE D&& operator<<=(P) && { return iter_left(),  der_f(); }
+	INLINE D&  operator<<=(P) &  { return iter_left(),  der(); }
+	INLINE D&& operator>>=(P) && { return iter_right(), der_f(); }
+	INLINE D&  operator>>=(P) &  { return iter_right(), der(); }
 
-//-----------------------------------------------------------------------------
+	INLINE D&& operator<<=(E) && { return edge_left(), der_f(); }
+	INLINE D&  operator<<=(E) &  { return edge_left(), der(); }
+	INLINE D&& operator>>=(E) && { return edge_right(), der_f(); }
+	INLINE D&  operator>>=(E) &  { return edge_right(), der(); }
 
-	template <bool F>
-	INLINE void tail() { }
-
-	template <bool F, bool E>
-	INLINE void flip() { }
-
-	INLINE void swap() { std::swap(i(), l()); }
-	INLINE void sync() { f() = i(); }
+	INLINE D&& swap() && { return _swap(), der_f(); }
+	INLINE D&  swap() &  { return _swap(), der(); }
 
 //-----------------------------------------------------------------------------
 

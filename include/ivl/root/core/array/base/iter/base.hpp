@@ -43,27 +43,84 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR, typename... E>
-class iter_common : public derived <D>, public iter_store <TR, E...>
+class iter_base :
+	public derived <D>,
+	public iter_store <TR, E...>
 {
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
 	using P = seq_iptr <TR>;
 
 protected:
+	using derived <D>::der_f;
+	using derived <D>::der;
+
 	template <typename A>
 	INLINE constexpr R cast(A&& a) const { return static_cast <R>(a); }
 
 public:
 	using iter_store <TR, E...>::iter_store;
+
+	INLINE P operator->() const { return &(der().operator*()); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename TR, typename... E>
-using iter_base = iter_common <D, TR, E...>;
+template <
+	typename D, typename TR, typename Q, typename E,
+	bool = path_edge <Q>()
+>
+class trav_base_impl;
 
-template <typename D, typename TR, typename... E>
-using trav_base = iter_common <D, TR, E...>;
+//-----------------------------------------------------------------------------
+
+template <typename D, typename TR, typename Q, typename... E>
+class trav_base_impl <D, TR, Q, pack <E...>, false> :
+	public iter_base <D, TR, E...>
+{
+	using B = iter_base <D, TR, E...>;
+
+protected:
+	using B::der_f;
+	using B::der;
+
+public:
+	using B::B;
+
+	INLINE D&& operator<<=(edge) && { return der_f(); }
+	INLINE D&  operator<<=(edge) &  { return der(); }
+	INLINE D&& operator>>=(edge) && { return der_f(); }
+	INLINE D&  operator>>=(edge) &  { return der(); }
+
+	INLINE D&& flip() && { return --((--der_f()).swap()); }
+	INLINE D&  flip() &  { return --((--der  ()).swap()); }
+
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename D, typename TR, typename Q, typename... E>
+class trav_base_impl <D, TR, Q, pack <E...>, true> :
+	public trav_base_impl <D, TR, Q, pack <E...>, false>
+{
+	using B = trav_base_impl <D, TR, Q, pack <E...>, false>;
+
+protected:
+	using B::der_f;
+	using B::der;
+
+public:
+	using B::B;
+
+	INLINE D&& flip() && { return der_f().swap(); }
+	INLINE D&  flip() &  { return der  ().swap(); }
+
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename D, typename TR, typename Q, typename... E>
+using trav_base = trav_base_impl <D, TR, Q, pack <E...> >;
 
 //-----------------------------------------------------------------------------
 

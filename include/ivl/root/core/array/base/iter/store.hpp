@@ -44,7 +44,9 @@ namespace details {
 
 template <typename... E>
 struct iter_tuple : raw_tuple <iter_opt <E>...>
-	{ using raw_tuple <iter_opt <E>...>::raw_tuple; };
+{
+	using raw_tuple <iter_opt <E>...>::raw_tuple;
+};
 
 template <>
 struct iter_tuple <> { };

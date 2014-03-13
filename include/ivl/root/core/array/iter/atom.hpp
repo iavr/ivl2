@@ -51,7 +51,6 @@ class atom_iter_impl : public iter_base <D, TR, T>
 {
 	using B = iter_base <D, TR, T>;
 	using d = seq_diff <B>;
-	using P = seq_iptr <B>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -63,8 +62,7 @@ class atom_iter_impl : public iter_base <D, TR, T>
 public:
 	using B::B;
 
-	INLINE constexpr R operator*()  const { return cast(B::val()); }
-	INLINE           P operator->() const { return &(operator*()); }
+	INLINE constexpr R operator*() const { return cast(B::val()); }
 
 //-----------------------------------------------------------------------------
 
@@ -101,17 +99,17 @@ template <
 	typename D = atom_trav <Q, I, R, T>,
 	typename TR = iter_traits <I, R, T, size_t>
 >
-class atom_trav_impl : public trav_base <D, TR, T>
+class atom_trav_impl : public trav_base <D, TR, Q, T>
 {
-	using B = iter_base <D, TR, T>;
+	using B = trav_base <D, TR, Q, T>;
 	using d = seq_diff <B>;
-	using P = seq_iptr <B>;
 
+	using P = iter;
 	using E = edge;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
-	
+
 	using B::cast;
 
 //-----------------------------------------------------------------------------
@@ -123,8 +121,7 @@ public:
 
 	INLINE constexpr operator bool() const { return true; }
 
-	INLINE constexpr R operator*()  const { return cast(B::val()); }
-	INLINE           P operator->() const { return &(operator*()); }
+	INLINE constexpr R operator*() const { return cast(B::val()); }
 
 //-----------------------------------------------------------------------------
 
@@ -153,10 +150,18 @@ public:
 	INLINE bool operator+() const { return true; }
 	INLINE bool operator-() const { return true; }
 
+	INLINE D&& operator<<=(P) && { return der_f(); }
+	INLINE D&  operator<<=(P) &  { return der(); }
+	INLINE D&& operator>>=(P) && { return der_f(); }
+	INLINE D&  operator>>=(P) &  { return der(); }
+
 	INLINE D&& operator<<=(E) && { return der_f(); }
 	INLINE D&  operator<<=(E) &  { return der(); }
 	INLINE D&& operator>>=(E) && { return der_f(); }
 	INLINE D&  operator>>=(E) &  { return der(); }
+
+	INLINE D&& swap() && { return der_f(); }
+	INLINE D&  swap() &  { return der(); }
 
 //-----------------------------------------------------------------------------
 

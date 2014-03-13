@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename P = path> using set_join = set_edge <set_fin <> >;
+template <typename P = path> using join_path = edge_path <fin_path <> >;
 
 template <typename... U>
 using join_length =
@@ -54,7 +54,7 @@ struct join_traits;
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
 	_type <seq_type <U>...>, join_length <U...>, UP,
-	join_iter, join_trav, set_join
+	join_iter, join_trav, join_path
 > { };
 
 //-----------------------------------------------------------------------------
@@ -88,13 +88,13 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 //-----------------------------------------------------------------------------
 
 	using E  = edge;
-	using JP = set_join <>;
+	using JP = join_path <>;
 
 	using FF = afun::val_first;
 	using FL = afun::val_last;
 
-	template <template <typename> class VT, typename Q>
-	using FV = join_ends <VT, Q>;
+// 	template <template <typename> class VT, typename Q>
+// 	using FV = join_ends <VT, Q>;
 
 	static constexpr size_t L = sizeof...(U);
 
@@ -126,13 +126,10 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 	static INLINE constexpr IT
 	e(V&&... v) { return IT(L, v >>= E()...); }
 
-// 	template <template <typename> class VT, typename Q, typename... V>
-// 	static INLINE constexpr VT <Q>
-// 	t(V&&... v) { return FV <VT, Q>()(FF()(v...), FL()(v...), v...); }
-
 	template <template <typename> class VT, typename Q, typename... V>
 	static INLINE constexpr VT <Q>
-	t(V&&... v) { return FV <VT, Q>()(FF()(v...), last <Q>(v...), v...); }
+// 	t(V&&... v) { return FV <VT, Q>()(FF()(v...), last <Q>(v...), v...); }
+	t(V&&... v) { return VT <Q>(FF()(v...), last <Q>(v...), v...); }
 
 	template <typename Q, typename... V, bool E = path_edge <Q>()>
 	static INLINE constexpr size_t
@@ -142,15 +139,15 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 	template <typename Q>
 	INLINE VR <Q>
-	_trav() && { return t <VR, Q>(u_f<N>().trav(set_join <Q>())...); }
+	_trav() && { return t <VR, Q>(u_f<N>().trav(join_path <Q>())...); }
 
 	template <typename Q>
 	INLINE VL <Q>
-	_trav() & { return t <VL, Q>(u<N>().trav(set_join <Q>())...); }
+	_trav() & { return t <VL, Q>(u<N>().trav(join_path <Q>())...); }
 
 	template <typename Q>
 	INLINE constexpr VC <Q>
-	_trav() const& { return t <VC, Q>(u<N>().trav(set_join <Q>())...); }
+	_trav() const& { return t <VC, Q>(u<N>().trav(join_path <Q>())...); }
 
 //-----------------------------------------------------------------------------
 
@@ -181,6 +178,8 @@ struct sequence <tag::join, U...> :
 //-----------------------------------------------------------------------------
 
 }  // namespace details
+
+using details::join_path;
 
 //-----------------------------------------------------------------------------
 

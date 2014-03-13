@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename V, only_if <is_trav <V>{}> = 0>
-V&& operator<<=(V&& v, uscore) { return fwd <V>(v) <<= arrays::edge(); }
+V&& operator<<=(V&& v, uscore) { return fwd <V>(v) <<= arrays::iter(); }
 
 template <typename V, only_if <is_trav <V>{}> = 0>
-V&& operator>>=(V&& v, uscore) { return fwd <V>(v) >>= arrays::edge(); }
+V&& operator>>=(V&& v, uscore) { return fwd <V>(v) >>= arrays::iter(); }
 
 //-----------------------------------------------------------------------------
 

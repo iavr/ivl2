@@ -44,7 +44,7 @@ namespace details {
 
 template <typename U>
 using flip_traits = seq_traits <
-	seq_type <U>, seq_length <U>, U, flip_iter, flip_trav, set_flip
+	seq_type <U>, seq_length <U>, U, flip_iter, flip_trav
 >;
 
 //-----------------------------------------------------------------------------
@@ -77,17 +77,20 @@ class flip_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	template <typename Q>
-	INLINE VR <Q>
-	_trav() && { return VR <Q>(u_f().trav(set_flip <Q>())); }
+	template <template <typename> class VT, typename Q, typename V>
+	static INLINE constexpr VT <Q>
+	t(V&& v) { return VT <Q>(fwd <V>(v).flip()); }  // TODO: why fwd <V>(v) ?
+
+//-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VL <Q>
-	_trav() & { return VL <Q>(u().trav(set_flip <Q>())); }
+	INLINE VR <Q> _trav() && { return t <VR, Q>(u_f().trav(Q())); }
 
 	template <typename Q>
-	INLINE constexpr VC <Q>
-	_trav() const& { return VC <Q>(u().trav(set_flip <Q>())); }
+	INLINE VL <Q> _trav() & { return t <VL, Q>(u().trav(Q())); }
+
+	template <typename Q>
+	INLINE constexpr VC <Q> _trav() const& { return t <VC, Q>(u().trav(Q())); }
 
 //-----------------------------------------------------------------------------
 

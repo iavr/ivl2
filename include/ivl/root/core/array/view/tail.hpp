@@ -47,7 +47,7 @@ using tail_length = if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
 
 template <typename U>
 using tail_traits = seq_traits <
-	seq_type <U>, tail_length <U>, U, iter_iter, trav_trav, set_tail
+	seq_type <U>, tail_length <U>, U, iter_iter, trav_trav
 >;
 
 //-----------------------------------------------------------------------------
@@ -80,14 +80,20 @@ class tail_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	template <typename Q>
-	INLINE VR <Q> _trav() && { return VR <Q>(u_f().trav(set_tail <Q>())); }
+	template <template <typename> class VT, typename Q, typename V>
+	static INLINE constexpr VT <Q>
+	t(V&& v) { return VT <Q>(++fwd <V>(v) >>= edge()); }  // TODO: why fwd <V>(v) ?
+
+//-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VL <Q> _trav() & { return VL <Q>(u().trav(set_tail <Q>())); }
+	INLINE VR <Q> _trav() && { return t <VR, Q>(u_f().trav(Q())); }
 
 	template <typename Q>
-	INLINE VC <Q> _trav() const& { return VC <Q>(u().trav(set_tail <Q>())); }
+	INLINE VL <Q> _trav() & { return t <VL, Q>(u().trav(Q())); }
+
+	template <typename Q>
+	INLINE VC <Q> _trav() const& { return t <VC, Q>(u().trav(Q())); }
 
 //-----------------------------------------------------------------------------
 

@@ -42,51 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename C = tag::trav,
-	bool F = false, bool E = false, bool I = false
->
-struct path_ : id_t <path_<C, F, E, I> >
+template <bool E = false, bool I = false>
+struct path_ : id_t <path_<E, I> >
 {
-	using path = C;
-	static constexpr bool flipped = F;
 	static constexpr bool edge    = E;
 	static constexpr bool finite  = I;
 };
 
 using path = path_<>;
 
-template <typename P> using path_of = typename P::path;
-
 //-----------------------------------------------------------------------------
 
-template <typename P> using path_flip = expr <P::flipped>;
 template <typename P> using path_edge = expr <P::edge>;
 template <typename P> using path_fin  = expr <P::finite>;
 
 //-----------------------------------------------------------------------------
 
-template <typename P = path> struct set_tail_t { };
-template <typename P = path> struct set_flip_t { };
-template <typename P = path> struct set_edge_t { };
-template <typename P = path> struct set_fin_t  { };
+template <typename P = path> struct edge_path_t { };
+template <typename P = path> struct fin_path_t  { };
 
-template <typename P = path> using set_tail = type_of <set_tail_t <P> >;
-template <typename P = path> using set_flip = type_of <set_flip_t <P> >;
-template <typename P = path> using set_edge = type_of <set_edge_t <P> >;
-template <typename P = path> using set_fin  = type_of <set_fin_t <P> >;
+template <typename P = path> using edge_path = type_of <edge_path_t <P> >;
+template <typename P = path> using fin_path  = type_of <fin_path_t <P> >;
 
-template <typename C, bool F, bool E, bool I>
-struct set_tail_t <path_<C, F, E, I> > : path_<tag::tail_<C>, F, E, I> { };
+template <bool E, bool I>
+struct edge_path_t <path_<E, I> > : path_<true, I> { };
 
-template <typename C, bool F, bool E, bool I>
-struct set_flip_t <path_<C, F, E, I> > : path_<tag::flip_<C>, !F, E, I> { };
-
-template <typename C, bool F, bool E, bool I>
-struct set_edge_t <path_<C, F, E, I> > : path_<tag::edge_<C>, F, true, I> { };
-
-template <typename C, bool F, bool E, bool I>
-struct set_fin_t <path_<C, F, E, I> > : path_<C, F, E, true> { };
+template <bool E, bool I>
+struct fin_path_t <path_<E, I> > : path_<E, true> { };
 
 //-----------------------------------------------------------------------------
 
@@ -95,16 +77,12 @@ struct set_fin_t <path_<C, F, E, I> > : path_<C, F, E, true> { };
 //-----------------------------------------------------------------------------
 
 using details::path;
-using details::path_of;
 
-using details::path_flip;
 using details::path_edge;
 using details::path_fin;
 
-using details::set_tail;
-using details::set_flip;
-using details::set_edge;
-using details::set_fin;
+using details::edge_path;
+using details::fin_path;
 
 //-----------------------------------------------------------------------------
 

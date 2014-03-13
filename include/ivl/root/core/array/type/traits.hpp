@@ -398,10 +398,12 @@ template <typename C, typename... A, typename Q>
 struct trav_t <C, pack <A...>, Q> : pack <trav <C, id_t <A>, Q>...> { };
 
 template <typename C, typename T>
-struct iter_t <C, id_t <T> > : switch_ref <details::iter_sw, ref <C, T> > { };
+struct iter_t <C, id_t <T> > :
+	switch_ref <details::iter_sw, ref <C, T> > { };
 
 template <typename C, typename T, typename Q>
-struct trav_t <C, id_t <T>, Q> : switch_ref <details::trav_sw <Q>, ref <C, T> > { };
+struct trav_t <C, id_t <T>, Q> :
+	switch_ref <details::trav_sw <Q>, ref <C, T> > { };
 
 //-----------------------------------------------------------------------------
 

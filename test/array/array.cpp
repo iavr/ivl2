@@ -125,7 +125,7 @@ void run()
 		cout << join(a, b) << endl;
 		*join(a, c).begin() = 20;
 		cout << a << endl;
-// 		cout << flip(join(a, c, E, A <2>{0, 1})) << endl;  // TODO
+		cout << flip(join(a, c, E, A <2>{0, 1})) << endl;  // TODO
 		cout << endl;
 	}
 
