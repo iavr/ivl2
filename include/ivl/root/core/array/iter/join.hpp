@@ -219,6 +219,8 @@ protected:
 	template <size_t K>
 	using trav = iter_elem_at <K, V...>;
 
+	using E = edge;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
 
@@ -303,25 +305,25 @@ protected:
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE D _(inc_r, size <K>) { return D(K, e,
+	INLINE D _(inc_r, size <K>) { return D(K, e, e,
 		N == K ? +v<K>() ? v<N>()++ : (next(size <K>()), v<N>()) : v<N>()
 	...); }
 
 	template <size_t K>
-	INLINE D _(dec_r, size <K>) { return D(K, e,
+	INLINE D _(dec_r, size <K>) { return D(K, e, e,
 		N == K ? -v<K>() ? v<N>()-- : (prev(size <K>()), v<N>()) : v<N>()
 	...); }
 
-	INLINE D _(inc_r, SM) { return D((next(SM()), M), e, v<N>()...); }
-	INLINE D _(dec_r, SL) { return D((prev(SL()), L), e, v<N>()...); }
+	INLINE D _(inc_r, SM) { return D((next(SM()), M), e, e, v<N>()...); }
+	INLINE D _(dec_r, SL) { return D((prev(SL()), L), e, e, v<N>()...); }
 
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE void _(elem_left, size <K>) { v<K>() <<= edge(); }
+	INLINE void _(elem_left, size <K>) { v<K>() <<= E(); }
 
 	template <size_t K>
-	INLINE void _(elem_right, size <K>) { v<K>() >>= edge(); }
+	INLINE void _(elem_right, size <K>) { v<K>() >>= E(); }
 
 	INLINE void _(elem_left, SM) { }
 	INLINE void _(elem_left, SL) { }
@@ -349,7 +351,7 @@ protected:
 
 public:
 	template <typename... A>
-	INLINE constexpr join_trav_impl(size_t k, size_t e, A&&... a) :
+	INLINE constexpr join_trav_impl(size_t k, size_t, size_t e, A&&... a) :
 		k(k), e(e), B(fwd <A>(a)...) { }
 
 	// TODO: finite atom (unit)
@@ -371,10 +373,10 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	INLINE D&& operator<<=(edge) && { return edge_left(), der_f(); }
-	INLINE D&  operator<<=(edge) &  { return edge_left(), der(); }
-	INLINE D&& operator>>=(edge) && { return edge_right(), der_f(); }
-	INLINE D&  operator>>=(edge) &  { return edge_right(), der(); }
+	INLINE D&& operator<<=(E) && { return edge_left(), der_f(); }
+	INLINE D&  operator<<=(E) &  { return edge_left(), der(); }
+	INLINE D&& operator>>=(E) && { return edge_right(), der_f(); }
+	INLINE D&  operator>>=(E) &  { return edge_right(), der(); }
 
 	INLINE D&& swap() && { return std::swap(k, e), elem_flip(), der_f(); }
 	INLINE D&  swap() &  { return std::swap(k, e), elem_flip(), der(); }
@@ -396,6 +398,9 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 	public join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>
 {
 	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>;
+
+	using P = iter;
+	using E = edge;
 
 	using B::elem_flip;
 
@@ -438,8 +443,8 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 
 	INLINE constexpr bool empty() const { return f == l() + 1; }
 
-	INLINE void elem_left()  { thru{v<N>() <<= iter()...}; }
-	INLINE void elem_right() { thru{v<N>() >>= iter()...}; }
+	INLINE void elem_left()  { thru{v<N>() <<= P()...}; }
+	INLINE void elem_right() { thru{v<N>() >>= P()...}; }
 
 	INLINE void iter_left()  {               k = f,   elem_left(); }
 	INLINE void iter_right() { if (!empty()) k = l(), elem_right(); }
@@ -453,8 +458,8 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 
 public:
 	template <typename... A>
-	INLINE constexpr join_trav_impl(size_t k, size_t l, A&&... a) :
-		B(k, l, fwd <A>(a)...), f(k) { }
+	INLINE constexpr join_trav_impl(size_t k, size_t l, size_t, A&&... a) :
+		B(k, l, l, fwd <A>(a)...), f(k) { }
 
 	INLINE constexpr operator bool() const { return k != l() + 1; }
 
@@ -463,15 +468,15 @@ public:
 	INLINE bool operator+() const { return k != l() || op <plus> ()(k, der()); }
 	INLINE bool operator-() const { return k != f   || op <minus>()(k, der()); }
 
-	INLINE D&& operator<<=(iter) && { return iter_left(),  der_f(); }
-	INLINE D&  operator<<=(iter) &  { return iter_left(),  der(); }
-	INLINE D&& operator>>=(iter) && { return iter_right(), der_f(); }
-	INLINE D&  operator>>=(iter) &  { return iter_right(), der(); }
+	INLINE D&& operator<<=(P) && { return iter_left(),  der_f(); }
+	INLINE D&  operator<<=(P) &  { return iter_left(),  der(); }
+	INLINE D&& operator>>=(P) && { return iter_right(), der_f(); }
+	INLINE D&  operator>>=(P) &  { return iter_right(), der(); }
 
-	INLINE D&& operator<<=(edge) && { return edge_left(), der_f(); }
-	INLINE D&  operator<<=(edge) &  { return edge_left(), der(); }
-	INLINE D&& operator>>=(edge) && { return edge_right(), der_f(); }
-	INLINE D&  operator>>=(edge) &  { return edge_right(), der(); }
+	INLINE D&& operator<<=(E) && { return edge_left(), der_f(); }
+	INLINE D&  operator<<=(E) &  { return edge_left(), der(); }
+	INLINE D&& operator>>=(E) && { return edge_right(), der_f(); }
+	INLINE D&  operator>>=(E) &  { return edge_right(), der(); }
 
 	INLINE D&& swap() && { return _swap(), der_f(); }
 	INLINE D&  swap() &  { return _swap(), der(); }

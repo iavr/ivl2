@@ -163,10 +163,8 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 //-----------------------------------------------------------------------------
 
 public:
-	using B::B;
-
 	template <typename J, typename E>
-	INLINE constexpr iter_trav_impl(J&& i, E&& e) : B(i, i, e) { }
+	INLINE constexpr iter_trav_impl(J&& i, E e) : B(i, i, --e) { }  // TODO: E&& e
 
 	static constexpr bool finite = true;
 
@@ -183,8 +181,8 @@ public:
 	INLINE D&& operator--() && { return --i(), der_f(); }
 	INLINE D&  operator--() &  { return --i(), der(); }
 
-	INLINE D operator++(int) { return D(f(), i()++, l()); }
-	INLINE D operator--(int) { return D(f(), i()--, l()); }
+	INLINE D operator++(int) { return D(i()++, l()); }  // TODO : (f(), i()++, l())
+	INLINE D operator--(int) { return D(i()--, l()); }  // TODO
 
 //-----------------------------------------------------------------------------
 
@@ -195,8 +193,8 @@ public:
 	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
 	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
 
-	INLINE D operator+(d n) const { return D(f(), i() + n, l()); }
-	INLINE D operator-(d n) const { return D(f(), i() - n, l()); }
+	INLINE D operator+(d n) const { return D(i() + n, l()); }  // TODO: D(f(), i() + n, l())
+	INLINE D operator-(d n) const { return D(i() - n, l()); }  // TODO
 
 //-----------------------------------------------------------------------------
 

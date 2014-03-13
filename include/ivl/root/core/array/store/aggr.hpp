@@ -147,15 +147,15 @@ public:
 
 	template <typename Q = path>
 	INLINE VR <Q>
-	trav(Q q = path()) && { return trav_ends <VR, Q>()(b(), e()); }
+	trav(Q q = path()) && { return VR <Q>(b(), e()); }
 
 	template <typename Q = path>
 	INLINE VL <Q>
-	trav(Q q = path()) & { return trav_ends <VL, Q>()(b(), e()); }
+	trav(Q q = path()) & { return VL <Q>(b(), e()); }
 
 	template <typename Q = path>
 	INLINE constexpr VC <Q>
-	trav(Q q = path()) const& { return trav_ends <VC, Q>()(b(), e()); }
+	trav(Q q = path()) const& { return VC <Q>(b(), e()); }
 
 //-----------------------------------------------------------------------------
 

@@ -42,7 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename P = path> using join_path = edge_path <fin_path <> >;
+template <typename P = path>
+using join_path = edge_path <fin_path <> >;
 
 template <typename... U>
 using join_length =
@@ -93,9 +94,6 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 	using FF = afun::val_first;
 	using FL = afun::val_last;
 
-// 	template <template <typename> class VT, typename Q>
-// 	using FV = join_ends <VT, Q>;
-
 	static constexpr size_t L = sizeof...(U);
 
 //-----------------------------------------------------------------------------
@@ -128,12 +126,7 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 	template <template <typename> class VT, typename Q, typename... V>
 	static INLINE constexpr VT <Q>
-// 	t(V&&... v) { return FV <VT, Q>()(FF()(v...), last <Q>(v...), v...); }
-	t(V&&... v) { return VT <Q>(FF()(v...), last <Q>(v...), v...); }
-
-	template <typename Q, typename... V, bool E = path_edge <Q>()>
-	static INLINE constexpr size_t
-	last(V&&... v) { return E ? FL()(v...) : L; }
+	t(V&&... v) { return VT <Q>(FF()(v...), FL()(v...), L, v...); }
 
 //-----------------------------------------------------------------------------
 

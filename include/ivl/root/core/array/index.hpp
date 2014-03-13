@@ -54,7 +54,6 @@
 #include "base/seq/store.hpp"
 #include "base/seq/base.hpp"
 
-#include "iter/fun.hpp"
 #include "iter/op.hpp"
 #include "iter/iter.hpp"
 #include "iter/trav.hpp"
