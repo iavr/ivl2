@@ -56,6 +56,9 @@ class iter_trav_impl : public trav_base <D, TR, Q, I, I>
 	using iter = iter_elem <0, I>;
 	using end  = iter_elem <1, I>;
 
+	friend base_type_of <B>;
+	friend base_trav_of <B>;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
 
@@ -71,6 +74,16 @@ class iter_trav_impl : public trav_base <D, TR, Q, I, I>
 
 //-----------------------------------------------------------------------------
 
+	INLINE void inc() { ++i(); }
+	INLINE void dec() { --i(); }
+
+	INLINE void add(d n) { i() += n; }
+	INLINE void sub(d n) { i() -= n; }
+
+	INLINE void _swap() { std::swap(i(), e()); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
@@ -78,34 +91,8 @@ public:
 
 	INLINE constexpr operator bool() const { return i() != e(); }
 
-	INLINE constexpr R operator*() const { return cast(*i()); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& operator++() && { return ++i(), der_f(); }
-	INLINE D&  operator++() &  { return ++i(), der(); }
-	INLINE D&& operator--() && { return --i(), der_f(); }
-	INLINE D&  operator--() &  { return --i(), der(); }
-
-	INLINE D operator++(int) { return D(i()++, e()); }
-	INLINE D operator--(int) { return D(i()--, e()); }
-
-//-----------------------------------------------------------------------------
-
+	INLINE constexpr R operator*()     const { return cast(*i()); }
 	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
-
-	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
-	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
-	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
-	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
-
-	INLINE D operator+(d n) const { return D(i() + n, e()); }
-	INLINE D operator-(d n) const { return D(i() - n, e()); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& swap() && { return std::swap(i(), e()), der_f(); }
-	INLINE D&  swap() &  { return std::swap(i(), e()), der(); }
 
 //-----------------------------------------------------------------------------
 
@@ -132,6 +119,9 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 	using P = arrays::iter;
 	using E = arrays::edge;
 
+	friend base_type_of <B>;
+	friend base_trav_of <B>;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
 
@@ -150,15 +140,20 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
-	INLINE constexpr bool empty() const { return f() == l() + 1; }
+	INLINE void inc() { ++i(); }
+	INLINE void dec() { --i(); }
 
-	INLINE void iter_left()  {               i() = f(); }
-	INLINE void iter_right() { if (!empty()) i() = l(); }
+	INLINE void add(d n) { i() += n; }
+	INLINE void sub(d n) { i() -= n; }
 
-	INLINE void edge_left()  { if (!empty()) l() = i(); }
-	INLINE void edge_right() {               f() = i(); }
+	INLINE void shift_l(P) {               i() = f(); }
+	INLINE void shift_r(P) { if (!empty()) i() = l(); }
+	INLINE void shift_l(E) { if (!empty()) l() = i(); }
+	INLINE void shift_r(E) {               f() = i(); }
 
 	INLINE void _swap() { if (!empty()) i() = i() == f() ? l() : f(); }
+
+	INLINE constexpr bool empty() const { return f() == l() + 1; }
 
 //-----------------------------------------------------------------------------
 
@@ -170,49 +165,11 @@ public:
 
 	INLINE constexpr operator bool() const { return i() != l() + 1; }
 
-//-----------------------------------------------------------------------------
-
-	INLINE constexpr R operator*() const { return cast(*i()); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& operator++() && { return ++i(), der_f(); }
-	INLINE D&  operator++() &  { return ++i(), der(); }
-	INLINE D&& operator--() && { return --i(), der_f(); }
-	INLINE D&  operator--() &  { return --i(), der(); }
-
-	INLINE D operator++(int) { return D(i()++, l()); }  // TODO : (f(), i()++, l())
-	INLINE D operator--(int) { return D(i()--, l()); }  // TODO
-
-//-----------------------------------------------------------------------------
-
+	INLINE constexpr R operator*()     const { return cast(*i()); }
 	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
-
-	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
-	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
-	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
-	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
-
-	INLINE D operator+(d n) const { return D(i() + n, l()); }  // TODO: D(f(), i() + n, l())
-	INLINE D operator-(d n) const { return D(i() - n, l()); }  // TODO
-
-//-----------------------------------------------------------------------------
 
 	INLINE bool operator+() const { return i() != l(); }
 	INLINE bool operator-() const { return i() != f(); }
-
-	INLINE D&& operator<<=(P) && { return iter_left(),  der_f(); }
-	INLINE D&  operator<<=(P) &  { return iter_left(),  der(); }
-	INLINE D&& operator>>=(P) && { return iter_right(), der_f(); }
-	INLINE D&  operator>>=(P) &  { return iter_right(), der(); }
-
-	INLINE D&& operator<<=(E) && { return edge_left(), der_f(); }
-	INLINE D&  operator<<=(E) &  { return edge_left(), der(); }
-	INLINE D&& operator>>=(E) && { return edge_right(), der_f(); }
-	INLINE D&  operator>>=(E) &  { return edge_right(), der(); }
-
-	INLINE D&& swap() && { return _swap(), der_f(); }
-	INLINE D&  swap() &  { return _swap(), der(); }
 
 //-----------------------------------------------------------------------------
 

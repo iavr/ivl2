@@ -42,24 +42,24 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename... E>
-struct iter_tuple : raw_tuple <iter_opt <E>...>
+template <typename D, typename... E>
+struct iter_tuple : der_tuple <D, iter_opt <E>...>
 {
-	using raw_tuple <iter_opt <E>...>::raw_tuple;
+	using der_tuple <D, iter_opt <E>...>::der_tuple;
 };
 
-template <>
-struct iter_tuple <> { };
+template <typename D>
+struct iter_tuple <D> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename TR, typename... E> struct iter_store;
+template <typename D, typename TR, typename... E> struct iter_store;
 
 template <
 	typename I, typename R = seq_iref <I>, typename T = seq_val <I>,
-	typename D = seq_diff <I>, typename P = remove_ref <R>*
+	typename d = seq_diff <I>, typename P = remove_ref <R>*
 >
-struct iter_traits : iter_store <iter_traits <I, R, T, D, P> >
+struct iter_traits : iter_store <nat, iter_traits <I, R, T, d, P> >
 {
 	using traits = iter_traits;
 };
@@ -67,19 +67,20 @@ struct iter_traits : iter_store <iter_traits <I, R, T, D, P> >
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename D, typename P,
+	typename D,
+	typename I, typename R, typename T, typename d, typename P,
 	typename... E
 >
-struct iter_store <iter_traits <I, R, T, D, P>, E...> :
-	protected iter_tuple <E...>
+struct iter_store <D, iter_traits <I, R, T, d, P>, E...> :
+	protected iter_tuple <D, E...>
 {
 	using iterator_type = I;
 	using reference = R;
 	using value_type = T;
-	using difference_type = D;
+	using difference_type = d;
 	using pointer = P;
 
-	using iter_tuple <E...>::iter_tuple;
+	using iter_tuple <D, E...>::iter_tuple;
 };
 
 //-----------------------------------------------------------------------------

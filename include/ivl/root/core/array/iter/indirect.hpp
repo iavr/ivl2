@@ -55,6 +55,8 @@ class indirect_iter_impl : public iter_base <D, TR, I, U>
 	using iter  = iter_elem <0, I>;
 	using under = iter_elem <1, U>;
 
+	friend base_type_of <B>;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
 
@@ -68,32 +70,19 @@ class indirect_iter_impl : public iter_base <D, TR, I, U>
 
 //-----------------------------------------------------------------------------
 
+	INLINE void inc() { ++i(); }
+	INLINE void dec() { --i(); }
+
+	INLINE void add(d n) { i() += n; }
+	INLINE void sub(d n) { i() -= n; }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
-	INLINE constexpr R operator*() const { return u()[*i()]; }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& operator++() && { return ++i(), der_f(); }
-	INLINE D&  operator++() &  { return ++i(), der(); }
-	INLINE D&& operator--() && { return --i(), der_f(); }
-	INLINE D&  operator--() &  { return --i(), der(); }
-
-	INLINE D operator++(int) { return D(i()++, u()); }
-	INLINE D operator--(int) { return D(i()--, u()); }
-
-//-----------------------------------------------------------------------------
-
+	INLINE constexpr R operator*()     const { return u()[*i()]; }
 	INLINE constexpr R operator[](d n) const { return u()[i()[n]]; }
-
-	INLINE D&& operator+=(d n) && { return i() += n, der_f(); }
-	INLINE D&  operator+=(d n) &  { return i() += n, der(); }
-	INLINE D&& operator-=(d n) && { return i() -= n, der_f(); }
-	INLINE D&  operator-=(d n) &  { return i() -= n, der(); }
-
-	INLINE D operator+(d n) const { return D(i() + n, u()); }
-	INLINE D operator-(d n) const { return D(i() - n, u()); }
 
 //-----------------------------------------------------------------------------
 
@@ -116,8 +105,8 @@ class indirect_trav_impl : public trav_base <D, TR, Q, V, U>
 	using trav  = iter_elem <0, V>;
 	using under = iter_elem <1, U>;
 
-	using P = iter;
-	using E = edge;
+	friend B;
+	friend base_type_of <B>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -132,6 +121,19 @@ class indirect_trav_impl : public trav_base <D, TR, Q, V, U>
 
 //-----------------------------------------------------------------------------
 
+	INLINE void inc() { ++v(); }
+	INLINE void dec() { --v(); }
+
+	INLINE void add(d n) { v() += n; }
+	INLINE void sub(d n) { v() -= n; }
+
+	template <typename P> INLINE void shift_l(P) { v() <<= P(); }
+	template <typename P> INLINE void shift_r(P) { v() >>= P(); }
+
+	INLINE void _swap() { v().swap(); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
 
@@ -139,47 +141,11 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE constexpr R operator*() const { return u()[*v()]; }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& operator++() && { return ++v(), der_f(); }
-	INLINE D&  operator++() &  { return ++v(), der(); }
-	INLINE D&& operator--() && { return --v(), der_f(); }
-	INLINE D&  operator--() &  { return --v(), der(); }
-
-	INLINE D operator++(int) { return D(v()++, u()); }
-	INLINE D operator--(int) { return D(v()--, u()); }
-
-//-----------------------------------------------------------------------------
-
+	INLINE constexpr R operator*()     const { return u()[*v()]; }
 	INLINE constexpr R operator[](d n) const { return u()[v()[n]]; }
-
-	INLINE D&& operator+=(d n) && { return v() += n, der_f(); }
-	INLINE D&  operator+=(d n) &  { return v() += n, der(); }
-	INLINE D&& operator-=(d n) && { return v() -= n, der_f(); }
-	INLINE D&  operator-=(d n) &  { return v() -= n, der(); }
-
-	INLINE D operator+(d n) const { return D(v() + n, u()); }
-	INLINE D operator-(d n) const { return D(v() - n, u()); }
-
-//-----------------------------------------------------------------------------
 
 	INLINE bool operator+() const { return v(); }
 	INLINE bool operator-() const { return v(); }
-
-	INLINE D&& operator<<=(P) && { return v() <<= P(), der_f(); }
-	INLINE D&  operator<<=(P) &  { return v() <<= P(), der(); }
-	INLINE D&& operator>>=(P) && { return v() >>= P(), der_f(); }
-	INLINE D&  operator>>=(P) &  { return v() >>= P(), der(); }
-
-	INLINE D&& operator<<=(E) && { return v() <<= E(), der_f(); }
-	INLINE D&  operator<<=(E) &  { return v() <<= E(), der(); }
-	INLINE D&& operator>>=(E) && { return v() >>= E(), der_f(); }
-	INLINE D&  operator>>=(E) &  { return v() >>= E(), der(); }
-
-	INLINE D&& swap() && { return v().swap(), der_f(); }
-	INLINE D&  swap() &  { return v().swap(), der(); }
 
 //-----------------------------------------------------------------------------
 

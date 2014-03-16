@@ -65,6 +65,8 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	template <size_t K>
 	using trav = iter_elem_at <K, V...>;
 
+	friend base_type_of <B>;
+
 	using derived <D>::der_f;
 	using derived <D>::der;
 
@@ -119,10 +121,8 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 //-----------------------------------------------------------------------------
 
 	struct deref  { };
-	struct inc_l  { };
-	struct dec_l  { };
-	struct inc_r  { };
-	struct dec_r  { };
+	struct _inc   { };
+	struct _dec   { };
 	struct comp   { };
 
 //-----------------------------------------------------------------------------
@@ -134,29 +134,14 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 
 	template <size_t K>
 	INLINE void
-	_(inc_l, size <K>) { +v<K>() ? _do(++v<K>()) : next(size <K>()); }
+	_(_inc, size <K>) { +v<K>() ? _do(++v<K>()) : next(size <K>()); }
 
 	template <size_t K>
 	INLINE void
-	_(dec_l, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
+	_(_dec, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
 
-	INLINE void _(inc_l, SM) { next(SM()); }
-	INLINE void _(dec_l, SL) { prev(SL()); }
-
-//-----------------------------------------------------------------------------
-
-	template <size_t K>
-	INLINE D _(inc_r, size <K>) { return D(K,
-		N == K ? +v<K>() ? v<N>()++ : (next(size <K>()), v<N>()) : v<N>()
-	...); }
-
-	template <size_t K>
-	INLINE D _(dec_r, size <K>) { return D(K,
-		N == K ? -v<K>() ? v<N>()-- : (prev(size <K>()), v<N>()) : v<N>()
-	...); }
-
-	INLINE D _(inc_r, SM) { return D((next(SM()), M), v<N>()...); }
-	INLINE D _(dec_r, SL) { return D((prev(SL()), L), v<N>()...); }
+	INLINE void _(_inc, SM) { next(SM()); }
+	INLINE void _(_dec, SL) { prev(SL()); }
 
 //-----------------------------------------------------------------------------
 
@@ -169,22 +154,17 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
+	INLINE void inc() { op_M <_inc>()(k, der()); }
+	INLINE void dec() { op_L <_dec>()(k, der()); }
+
+//-----------------------------------------------------------------------------
+
 public:
 	template <typename... A>
 	INLINE constexpr join_iter_impl(size_t k, A&&... a) :
 		k(k), B(fwd <A>(a)...) { }
 
 	INLINE constexpr R operator*() const { return op <deref>()(k, der()); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& operator++() && { return op_M <inc_l>()(k, der()), der_f(); }
-	INLINE D&  operator++() &  { return op_M <inc_l>()(k, der()), der(); }
-	INLINE D&& operator--() && { return op_L <dec_l>()(k, der()), der_f(); }
-	INLINE D&  operator--() &  { return op_L <dec_l>()(k, der()), der(); }
-
-	INLINE D operator++(int) { return op_M <inc_r>()(k, der()); }
-	INLINE D operator--(int) { return op_L <dec_r>()(k, der()); }
 
 //-----------------------------------------------------------------------------
 
@@ -219,7 +199,10 @@ protected:
 	template <size_t K>
 	using trav = iter_elem_at <K, V...>;
 
-	using E = edge;
+	using E = arrays::edge;
+
+	friend base_type_of <B>;
+	friend base_trav_of <B>;
 
 	using derived <D>::der_f;
 	using derived <D>::der;
@@ -275,14 +258,11 @@ protected:
 //-----------------------------------------------------------------------------
 
 	struct deref  { };
-	struct inc_l  { };
-	struct dec_l  { };
-	struct inc_r  { };
-	struct dec_r  { };
+	struct _inc   { };
+	struct _dec   { };
 	struct comp   { };
-
-	struct elem_left { };
-	struct elem_right { };
+	struct elem_l { };
+	struct elem_r { };
 
 //-----------------------------------------------------------------------------
 
@@ -293,43 +273,28 @@ protected:
 
 	template <size_t K>
 	INLINE void
-	_(inc_l, size <K>) { +v<K>() ? _do(++v<K>()) : next(size <K>()); }
+	_(_inc, size <K>) { +v<K>() ? _do(++v<K>()) : next(size <K>()); }
 
 	template <size_t K>
 	INLINE void
-	_(dec_l, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
+	_(_dec, size <K>) { -v<K>() ? _do(--v<K>()) : prev(size <K>()); }
 
-	INLINE void _(inc_l, SM) { next(SM()); }
-	INLINE void _(dec_l, SL) { prev(SL()); }
-
-//-----------------------------------------------------------------------------
-
-	template <size_t K>
-	INLINE D _(inc_r, size <K>) { return D(K, e, e,
-		N == K ? +v<K>() ? v<N>()++ : (next(size <K>()), v<N>()) : v<N>()
-	...); }
-
-	template <size_t K>
-	INLINE D _(dec_r, size <K>) { return D(K, e, e,
-		N == K ? -v<K>() ? v<N>()-- : (prev(size <K>()), v<N>()) : v<N>()
-	...); }
-
-	INLINE D _(inc_r, SM) { return D((next(SM()), M), e, e, v<N>()...); }
-	INLINE D _(dec_r, SL) { return D((prev(SL()), L), e, e, v<N>()...); }
+	INLINE void _(_inc, SM) { next(SM()); }
+	INLINE void _(_dec, SL) { prev(SL()); }
 
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE void _(elem_left, size <K>) { v<K>() <<= E(); }
+	INLINE void _(elem_l, size <K>) { v<K>() <<= E(); }
 
 	template <size_t K>
-	INLINE void _(elem_right, size <K>) { v<K>() >>= E(); }
+	INLINE void _(elem_r, size <K>) { v<K>() >>= E(); }
 
-	INLINE void _(elem_left, SM) { }
-	INLINE void _(elem_left, SL) { }
+	INLINE void _(elem_l, SM) { }
+	INLINE void _(elem_l, SL) { }
 
-	INLINE void _(elem_right, SM) { }
-	INLINE void _(elem_right, SL) { }
+	INLINE void _(elem_r, SM) { }
+	INLINE void _(elem_r, SL) { }
 
 //-----------------------------------------------------------------------------
 
@@ -342,8 +307,13 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-	INLINE void edge_left()  { op_ML <elem_left>()(k, der()); }
-	INLINE void edge_right() { op_ML <elem_right>()(k, der()); }
+	INLINE void inc() { op_M <_inc>()(k, der()); }
+	INLINE void dec() { op_L <_dec>()(k, der()); }
+
+	INLINE void shift_l(E) { op_ML <elem_l>()(k, der()); }
+	INLINE void shift_r(E) { op_ML <elem_r>()(k, der()); }
+
+	INLINE void _swap() { std::swap(k, e), elem_flip(); }
 
 	INLINE void elem_flip() { thru{v<N>().flip()...}; }
 
@@ -363,26 +333,6 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	INLINE D&& operator++() && { return op_M <inc_l>()(k, der()), der_f(); }
-	INLINE D&  operator++() &  { return op_M <inc_l>()(k, der()), der(); }
-	INLINE D&& operator--() && { return op_L <dec_l>()(k, der()), der_f(); }
-	INLINE D&  operator--() &  { return op_L <dec_l>()(k, der()), der(); }
-
-	INLINE D operator++(int) { return op_M <inc_r>()(k, der()); }
-	INLINE D operator--(int) { return op_L <dec_r>()(k, der()); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE D&& operator<<=(E) && { return edge_left(), der_f(); }
-	INLINE D&  operator<<=(E) &  { return edge_left(), der(); }
-	INLINE D&& operator>>=(E) && { return edge_right(), der_f(); }
-	INLINE D&  operator>>=(E) &  { return edge_right(), der(); }
-
-	INLINE D&& swap() && { return std::swap(k, e), elem_flip(), der_f(); }
-	INLINE D&  swap() &  { return std::swap(k, e), elem_flip(), der(); }
-
-//-----------------------------------------------------------------------------
-
 	// TODO
 	INLINE constexpr bool operator!=(const D& o) const
 		{ return k != o.k || op_ML <comp>()(k, der(), o); }
@@ -399,8 +349,11 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 {
 	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>;
 
-	using P = iter;
-	using E = edge;
+	using P = arrays::iter;
+	using E = arrays::edge;
+
+	friend base_type_of <B>;
+	friend base_trav_of <B>;
 
 	using B::elem_flip;
 
@@ -443,14 +396,13 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 
 	INLINE constexpr bool empty() const { return f == l() + 1; }
 
-	INLINE void elem_left()  { thru{v<N>() <<= P()...}; }
-	INLINE void elem_right() { thru{v<N>() >>= P()...}; }
+	INLINE void elem_l() { thru{v<N>() <<= P()...}; }
+	INLINE void elem_r() { thru{v<N>() >>= P()...}; }
 
-	INLINE void iter_left()  {               k = f,   elem_left(); }
-	INLINE void iter_right() { if (!empty()) k = l(), elem_right(); }
-
-	INLINE void edge_left()  { B::edge_left();  if (!empty()) l() = k; }
-	INLINE void edge_right() { B::edge_right();               f   = k; }
+	INLINE void shift_l(P) {               k = f,   elem_l(); }
+	INLINE void shift_r(P) { if (!empty()) k = l(), elem_r(); }
+	INLINE void shift_l(E) { B::shift_l(E()); if (!empty()) l() = k; }
+	INLINE void shift_r(E) { B::shift_r(E());               f   = k; }
 
 	INLINE void _swap() { if (!empty()) k = k == f ? l() : f, elem_flip(); }
 
@@ -463,23 +415,8 @@ public:
 
 	INLINE constexpr operator bool() const { return k != l() + 1; }
 
-//-----------------------------------------------------------------------------
-
 	INLINE bool operator+() const { return k != l() || op <plus> ()(k, der()); }
 	INLINE bool operator-() const { return k != f   || op <minus>()(k, der()); }
-
-	INLINE D&& operator<<=(P) && { return iter_left(),  der_f(); }
-	INLINE D&  operator<<=(P) &  { return iter_left(),  der(); }
-	INLINE D&& operator>>=(P) && { return iter_right(), der_f(); }
-	INLINE D&  operator>>=(P) &  { return iter_right(), der(); }
-
-	INLINE D&& operator<<=(E) && { return edge_left(), der_f(); }
-	INLINE D&  operator<<=(E) &  { return edge_left(), der(); }
-	INLINE D&& operator>>=(E) && { return edge_right(), der_f(); }
-	INLINE D&  operator>>=(E) &  { return edge_right(), der(); }
-
-	INLINE D&& swap() && { return _swap(), der_f(); }
-	INLINE D&  swap() &  { return _swap(), der(); }
 
 };
 

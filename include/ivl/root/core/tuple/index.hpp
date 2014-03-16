@@ -47,6 +47,7 @@
 #include "base/base.hpp"
 
 #include "store/raw.hpp"
+#include "store/der.hpp"
 #include "store/pre.hpp"
 #include "store/tuple.hpp"
 

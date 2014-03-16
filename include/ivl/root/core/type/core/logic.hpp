@@ -46,7 +46,7 @@ template <bool B> using boolean = c_boolean <B>;
 template <bool B> using expr    = boolean <B>;
 
 using _false = c_false;
-using _true = c_true ;
+using _true  = c_true;
 
 static __attribute__ ((unused)) _false no;
 static __attribute__ ((unused)) _true  yes;
@@ -69,8 +69,7 @@ struct eq : _false { };
 template <typename A>
 struct eq <A, A> : _true { };
 
-template <typename A, typename B> using is_eq = eq <A, B>;
-template <typename A, typename B> using neq   = expr <!eq <A, B>()>;
+template <typename A, typename B> using neq = expr <!eq <A, B>()>;
 
 //-----------------------------------------------------------------------------
 

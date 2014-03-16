@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_OP_HPP
-#define IVL_CORE_ARRAY_ITER_OP_HPP
+#ifndef IVL_CORE_TUPLE_STORE_DER_HPP
+#define IVL_CORE_TUPLE_STORE_DER_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace tuples {
 
 //-----------------------------------------------------------------------------
 
@@ -42,27 +42,32 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator++(I&& i, int) { copy <I> c(i); return ++i, c; }
-
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator--(I&& i, int) { copy <I> c(i); return --i, c; }
-
-//-----------------------------------------------------------------------------
-
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator+(I&& i, seq_diff <I> n) { return copy <I>(i) += n; }
-
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator-(I&& i, seq_diff <I> n) { return copy <I>(i) -= n; }
+template <typename D, typename... E>
+struct der_tuple : raw_tuple <E...>
+{
+	using raw_tuple <E...>::raw_tuple;
+};
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename A, only_if <is_trav <V>{}> = 0>
-INLINE copy <V> operator<<(V&& v, A&& a) { return copy <V>(v) <<= fwd <A>(a); }
+template <typename D, typename E>
+class der_tuple <D, E> : public raw_tuple <E>
+{
+	using B = raw_tuple <E>;
 
-template <typename V, typename A, only_if <is_trav <V>{}> = 0>
-INLINE copy <V> operator>>(V&& v, A&& a) { return copy <V>(v) >>= fwd <A>(a); }
+protected:
+	template <typename A>
+	static INLINE constexpr bool is_elem(id_t <A>)  { return true; }
+	static INLINE constexpr bool is_elem(id_t <D>)  { return false; }
+	static INLINE constexpr bool is_elem(id_t <D&>) { return false; }
+
+public:
+	// TODO: the following is slower in GCC, hence the need for elem():
+	// template <typename A, only_if <!eq <D, remove_ref <A> >()> = 0>
+
+	template <typename A, only_if <is_elem(id_t <A>())> = 0>
+	explicit INLINE constexpr der_tuple(A&& a) : B(fwd <A>(a)) { }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -70,7 +75,9 @@ INLINE copy <V> operator>>(V&& v, A&& a) { return copy <V>(v) >>= fwd <A>(a); }
 
 //-----------------------------------------------------------------------------
 
-}  // namespace arrays
+}  // namespace tuples
+
+using tuples::details::der_tuple;
 
 //-----------------------------------------------------------------------------
 
@@ -78,4 +85,4 @@ INLINE copy <V> operator>>(V&& v, A&& a) { return copy <V>(v) >>= fwd <A>(a); }
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_OP_HPP
+#endif  // IVL_CORE_TUPLE_STORE_DER_HPP

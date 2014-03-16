@@ -42,7 +42,6 @@ namespace logic {
 
 //-----------------------------------------------------------------------------
 
-// not a type
 using nat = id_t <>;
 
 template <typename T> using is_nat = eq <nat, T>;
