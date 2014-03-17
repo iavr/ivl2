@@ -42,6 +42,45 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename D, typename TR, typename N, typename M>
+class zip_iter_base;
+
+template <typename D, typename TR, size_t... N, typename M>
+class zip_iter_base <D, TR, sizes <N...>, M> :
+	public derived <D, _false>
+{
+	using derived <D, _false>::der;
+
+	using R = seq_iref <TR>;
+	using d = seq_diff <TR>;
+
+	using term = raw_type <M>;
+
+//-----------------------------------------------------------------------------
+
+protected:
+	INLINE void inc() { thru{++der().template v<N>()...}; }
+	INLINE void dec() { thru{--der().template v<N>()...}; }
+
+	INLINE void add(d n) { thru{der().template v<N>() += n...}; }
+	INLINE void sub(d n) { thru{der().template v<N>() -= n...}; }
+
+//-----------------------------------------------------------------------------
+
+public:
+	INLINE constexpr R operator*() const
+		{ return afun::rref()(*der().template v<N>()...); }
+
+	INLINE constexpr R operator[](d n) const
+		{ return afun::rref()( der().template v<N>()[n]...); }
+
+	// TODO
+	INLINE bool operator!=(const D& o)
+		{ return term().more(der().template v<N>() != o.template v<N>()...); }
+};
+
+//-----------------------------------------------------------------------------
+
 template <
 	typename I, typename R, typename T, typename M,
 	typename D = zip_iter <I, R, T, M>,
@@ -57,54 +96,32 @@ template <
 	typename D, typename TR, size_t... N
 >
 class zip_iter_impl <pack <I...>, R, T, M, D, TR, sizes <N...> > :
+	public zip_iter_base <D, TR, sizes <N...>, M>,
 	public iter_base <D, TR, I...>
 {
+	using S = zip_iter_base <D, TR, sizes <N...>, M>;
 	using B = iter_base <D, TR, I...>;
-	using d = seq_diff <B>;
 
-	using F = afun::rref;
+	friend S;
+	friend base_type_of <B>;
+
+//-----------------------------------------------------------------------------
 
 	template <size_t K>
 	using iter = iter_elem_at <K, I...>;
 
-	using term = raw_type <M>;
-
-	friend base_type_of <B>;
-
-	using derived <D>::der_f;
-	using derived <D>::der;
-
-//-----------------------------------------------------------------------------
-
 	template <size_t K>
 	INLINE l_iter_pick <K, I...>
-	i() { return iter <K>::get(); }
+	v() { return iter <K>::get(); }
 
 	template <size_t K>
 	INLINE constexpr c_iter_pick <K, I...>
-	i() const { return iter <K>::get(); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE void inc() { thru{++i<N>()...}; }
-	INLINE void dec() { thru{--i<N>()...}; }
-
-	INLINE void add(d n) { thru{i<N>() += n...}; }
-	INLINE void sub(d n) { thru{i<N>() -= n...}; }
+	v() const { return iter <K>::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using B::B;
-
-	INLINE constexpr R operator*()     const { return F()(*i<N>()...); }
-	INLINE constexpr R operator[](d n) const { return F()(i<N>()[n]...); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o)
-		{ return term().more(i<N>() != o.template i<N>()...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -122,25 +139,22 @@ template <
 	typename D, typename TR, size_t... N
 >
 class zip_trav_impl <Q, pack <V...>, R, T, M, D, TR, sizes <N...> > :
+	public zip_iter_base <D, TR, sizes <N...>, M>,
 	public trav_base <D, TR, Q, V...>
 {
+	using S = zip_iter_base <D, TR, sizes <N...>, M>;
 	using B = trav_base <D, TR, Q, V...>;
-	using d = seq_diff <B>;
 
-	using F = afun::rref;
-
-	template <size_t K>
-	using trav = iter_elem_at <K, V...>;
-
-	using term = raw_type <M>;
-
+	friend S;
 	friend B;
 	friend base_type_of <B>;
 
-	using derived <D>::der_f;
-	using derived <D>::der;
+	using term = raw_type <M>;
 
 //-----------------------------------------------------------------------------
+
+	template <size_t K>
+	using trav = iter_elem_at <K, V...>;
 
 	template <size_t K>
 	INLINE l_iter_pick <K, V...>
@@ -151,12 +165,6 @@ class zip_trav_impl <Q, pack <V...>, R, T, M, D, TR, sizes <N...> > :
 	v() const { return trav <K>::get(); }
 
 //-----------------------------------------------------------------------------
-
-	INLINE void inc() { thru{++v<N>()...}; }
-	INLINE void dec() { thru{--v<N>()...}; }
-
-	INLINE void add(d n) { thru{v<N>() += n...}; }
-	INLINE void sub(d n) { thru{v<N>() -= n...}; }
 
 	template <typename P> INLINE void shift_l(P) { thru{v<N>() <<= P()...}; }
 	template <typename P> INLINE void shift_r(P) { thru{v<N>() >>= P()...}; }
@@ -172,17 +180,8 @@ public:
 
 	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
 
-	INLINE constexpr R operator*()     const { return F()(*v<N>()...); }
-	INLINE constexpr R operator[](d n) const { return F()(v<N>()[n]...); }
-
 	INLINE bool operator+() const { return term().more(+v<N>()...); }
 	INLINE bool operator-() const { return term().more(-v<N>()...); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o)
-		{ return term().more(v<N>() != o.template v<N>()...); }
 };
 
 //-----------------------------------------------------------------------------

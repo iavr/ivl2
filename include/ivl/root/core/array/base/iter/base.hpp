@@ -159,8 +159,8 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-using base_trav_of = typename T::base_trav;
+template <typename T> using base_trav_of = typename T::base_trav;
+template <typename T> using base_impl_of = typename T::base_impl;
 
 //-----------------------------------------------------------------------------
 

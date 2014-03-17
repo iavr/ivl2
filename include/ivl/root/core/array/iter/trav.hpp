@@ -42,29 +42,63 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename D, typename TR>
+class iter_trav_base : public derived <D, _false>
+{
+	using derived <D, _false>::der;
+
+	using R = seq_iref <TR>;
+	using d = seq_diff <TR>;
+
+//-----------------------------------------------------------------------------
+
+protected:
+	INLINE void inc() { ++der().i(); }
+	INLINE void dec() { --der().i(); }
+
+	INLINE void add(d n) { der().i() += n; }
+	INLINE void sub(d n) { der().i() -= n; }
+
+//-----------------------------------------------------------------------------
+
+public:
+	static constexpr bool finite = true;
+
+	INLINE constexpr R operator*() const
+		{ return der().cast(*der().i()); }
+
+	INLINE constexpr R operator[](d n) const
+		{ return der().cast( der().i()[n]); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return der().i() != o.i(); }
+};
+
+//-----------------------------------------------------------------------------
+
 template <
 	typename Q, typename I, typename R, typename T,
 	typename D = iter_trav <Q, I, R, T>,
 	typename TR = iter_traits <I, R, T>,
 	bool = path_edge <Q>{}
 >
-class iter_trav_impl : public trav_base <D, TR, Q, I, I>
+class iter_trav_impl :
+	public iter_trav_base <D, TR>,
+	public trav_base <D, TR, Q, I, I>
 {
+	using S = iter_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, I, I>;
-	using d = seq_diff <B>;
 
-	using iter = iter_elem <0, I>;
-	using end  = iter_elem <1, I>;
-
+	friend S;
 	friend base_type_of <B>;
 	friend base_trav_of <B>;
 
-	using derived <D>::der_f;
-	using derived <D>::der;
-
-	using B::cast;
-
 //-----------------------------------------------------------------------------
+
+	using iter = iter_elem <0, I>;
+	using end  = iter_elem <1, I>;
 
 	INLINE           l_iter_ref <I> i()       { return iter::get(); }
 	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
@@ -74,12 +108,6 @@ class iter_trav_impl : public trav_base <D, TR, Q, I, I>
 
 //-----------------------------------------------------------------------------
 
-	INLINE void inc() { ++i(); }
-	INLINE void dec() { --i(); }
-
-	INLINE void add(d n) { i() += n; }
-	INLINE void sub(d n) { i() -= n; }
-
 	INLINE void _swap() { std::swap(i(), e()); }
 
 //-----------------------------------------------------------------------------
@@ -87,17 +115,7 @@ class iter_trav_impl : public trav_base <D, TR, Q, I, I>
 public:
 	using B::B;
 
-	static constexpr bool finite = true;
-
 	INLINE constexpr operator bool() const { return i() != e(); }
-
-	INLINE constexpr R operator*()     const { return cast(*i()); }
-	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -107,27 +125,21 @@ template <
 	typename D, typename TR
 >
 class iter_trav_impl <Q, I, R, T, D, TR, true> :
+	public iter_trav_base <D, TR>,
 	public trav_base <D, TR, Q, I, I, I>
 {
+	using S = iter_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, I, I, I>;
-	using d = seq_diff <B>;
+
+	friend S;
+	friend base_type_of <B>;
+	friend base_trav_of <B>;
+
+//-----------------------------------------------------------------------------
 
 	using first = iter_elem <0, I>;
 	using iter  = iter_elem <1, I>;
 	using last  = iter_elem <2, I>;
-
-	using P = arrays::iter;
-	using E = arrays::edge;
-
-	friend base_type_of <B>;
-	friend base_trav_of <B>;
-
-	using derived <D>::der_f;
-	using derived <D>::der;
-
-	using B::cast;
-
-//-----------------------------------------------------------------------------
 
 	INLINE           l_iter_ref <I> f()       { return first::get(); }
 	INLINE constexpr c_iter_ref <I> f() const { return first::get(); }
@@ -140,11 +152,8 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
-	INLINE void inc() { ++i(); }
-	INLINE void dec() { --i(); }
-
-	INLINE void add(d n) { i() += n; }
-	INLINE void sub(d n) { i() -= n; }
+	using P = arrays::iter;
+	using E = arrays::edge;
 
 	INLINE void shift_l(P) {               i() = f(); }
 	INLINE void shift_r(P) { if (!empty()) i() = l(); }
@@ -159,22 +168,12 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 public:
 	template <typename J, typename E>
-	INLINE constexpr iter_trav_impl(J&& i, E e) : B(i, i, --e) { }  // TODO: E&& e
-
-	static constexpr bool finite = true;
+	INLINE iter_trav_impl(J&& i, E&& e) : B(i, i, e) { --l(); }
 
 	INLINE constexpr operator bool() const { return i() != l() + 1; }
 
-	INLINE constexpr R operator*()     const { return cast(*i()); }
-	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
-
 	INLINE bool operator+() const { return i() != l(); }
 	INLINE bool operator-() const { return i() != f(); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------

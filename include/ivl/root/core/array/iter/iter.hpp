@@ -42,50 +42,66 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename D, typename TR>
+class iter_iter_base : public derived <D, _false>
+{
+	using derived <D, _false>::der;
+
+	using R = seq_iref <TR>;
+	using d = seq_diff <TR>;
+
+//-----------------------------------------------------------------------------
+
+protected:
+	INLINE void inc() { ++der().v(); }
+	INLINE void dec() { --der().v(); }
+
+	INLINE void add(d n) { der().v() += n; }
+	INLINE void sub(d n) { der().v() -= n; }
+
+//-----------------------------------------------------------------------------
+
+public:
+	INLINE constexpr R operator*() const
+		{ return der().cast(*der().v()); }
+
+	INLINE constexpr R operator[](d n) const
+		{ return der().cast( der().v()[n]); }
+
+//-----------------------------------------------------------------------------
+
+	// TODO
+	INLINE bool operator!=(const D& o) { return der().v() != o.v(); }
+};
+
+//-----------------------------------------------------------------------------
+
 template <
 	typename I, typename R, typename T,
 	typename D = iter_iter <I, R, T>,
 	typename TR = iter_traits <I, R, T>
 >
-class iter_iter_impl : public iter_base <D, TR, I>
+class iter_iter_impl :
+	public iter_iter_base <D, TR>,
+	public iter_base <D, TR, I>
 {
+	using S = iter_iter_base <D, TR>;
 	using B = iter_base <D, TR, I>;
-	using d = seq_diff <B>;
+
+	friend S;
+	friend base_type_of <B>;
+
+//-----------------------------------------------------------------------------
 
 	using iter = iter_elem <0, I>;
 
-	friend base_type_of <B>;
-
-	using derived <D>::der_f;
-	using derived <D>::der;
-
-	using B::cast;
-
-//-----------------------------------------------------------------------------
-
-	INLINE           l_iter_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE void inc() { ++i(); }
-	INLINE void dec() { --i(); }
-
-	INLINE void add(d n) { i() += n; }
-	INLINE void sub(d n) { i() -= n; }
+	INLINE           l_iter_ref <I> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <I> v() const { return iter::get(); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using B::B;
-
-	INLINE constexpr R operator*()     const { return cast(*i()); }
-	INLINE constexpr R operator[](d n) const { return cast(i()[n]); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o) { return i() != o.i(); }
 };
 
 //-----------------------------------------------------------------------------
@@ -95,38 +111,31 @@ template <
 	typename D = trav_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>
 >
-class trav_trav_impl : public trav_base <D, TR, Q, V>
+class trav_trav_impl :
+	public iter_iter_base <D, TR>,
+	public trav_base <D, TR, Q, V>
 {
+	using S = iter_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
 	using d = seq_diff <B>;
 
-	using trav = iter_elem <0, V>;
-
+	friend S;
 	friend B;
 	friend base_type_of <B>;
 
-	using derived <D>::der_f;
-	using derived <D>::der;
-
-	using B::cast;
-
 //-----------------------------------------------------------------------------
 
-	INLINE void inc() { ++v(); }
-	INLINE void dec() { --v(); }
+	using trav = iter_elem <0, V>;
 
-	INLINE void add(d n) { v() += n; }
-	INLINE void sub(d n) { v() -= n; }
+	INLINE           l_iter_ref <V> v()       { return trav::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
+
+//-----------------------------------------------------------------------------
 
 	template <typename P> INLINE void shift_l(P) { v() <<= P(); }
 	template <typename P> INLINE void shift_r(P) { v() >>= P(); }
 
 	INLINE void _swap() { v().swap(); }
-
-//-----------------------------------------------------------------------------
-
-	INLINE           l_iter_ref <V> v()       { return trav::get(); }
-	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
 
 //-----------------------------------------------------------------------------
 
@@ -137,16 +146,8 @@ public:
 
 	INLINE constexpr operator bool() const { return v(); }
 
-	INLINE constexpr R operator*()     const { return cast(*v()); }
-	INLINE constexpr R operator[](d n) const { return cast(v()[n]); }
-
 	INLINE bool operator+() const { return +v(); }
 	INLINE bool operator-() const { return -v(); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o) { return v() != o.v(); }
 };
 
 //-----------------------------------------------------------------------------

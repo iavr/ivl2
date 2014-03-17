@@ -42,25 +42,17 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename I, typename R, typename T,
-	typename D = atom_iter <I, R, T>,
-	typename TR = iter_traits <I, R, T, size_t>
->
-class atom_iter_impl : public iter_base <D, TR, T>
+template <typename D, typename TR>
+class atom_iter_base : public derived <D, _false>
 {
-	using B = iter_base <D, TR, T>;
-	using d = seq_diff <B>;
+	using derived <D, _false>::der;
 
-	friend base_type_of <B>;
-
-	using derived <D>::der_f;
-	using derived <D>::der;
-
-	using B::cast;
+	using R = seq_iref <TR>;
+	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
+protected:
 	INLINE void inc() { }
 	INLINE void dec() { }
 
@@ -70,10 +62,11 @@ class atom_iter_impl : public iter_base <D, TR, T>
 //-----------------------------------------------------------------------------
 
 public:
-	using B::B;
+	INLINE constexpr R operator*() const
+		{ return der().cast(der().val()); }
 
-	INLINE constexpr R operator*()     const { return cast(B::val()); }
-	INLINE constexpr R operator[](d n) const { return cast(B::val()); }
+	INLINE constexpr R operator[](d n) const
+		{ return der().cast(der().val()); }
 
 //-----------------------------------------------------------------------------
 
@@ -84,30 +77,48 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
+	typename I, typename R, typename T,
+	typename D = atom_iter <I, R, T>,
+	typename TR = iter_traits <I, R, T, size_t>
+>
+class atom_iter_impl :
+	public atom_iter_base <D, TR>,
+	public iter_base <D, TR, T>
+{
+	using S = atom_iter_base <D, TR>;
+	using B = iter_base <D, TR, T>;
+
+	friend S;
+	friend base_type_of <B>;
+
+	using B::val;
+	using B::cast;
+
+public:
+	using B::B;
+
+};
+
+//-----------------------------------------------------------------------------
+
+template <
 	typename Q, typename I, typename R, typename T,
 	typename D = atom_trav <Q, I, R, T>,
 	typename TR = iter_traits <I, R, T, size_t>
 >
-class atom_trav_impl : public trav_base <D, TR, Q, T>
+class atom_trav_impl :
+	public atom_iter_base <D, TR>,
+	public trav_base <D, TR, Q, T>
 {
+	using S = atom_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, T>;
-	using d = seq_diff <B>;
 
+	friend S;
 	friend B;
 	friend base_type_of <B>;
 
-	using derived <D>::der_f;
-	using derived <D>::der;
-
+	using B::val;
 	using B::cast;
-
-//-----------------------------------------------------------------------------
-
-	INLINE void inc() { }
-	INLINE void dec() { }
-
-	INLINE void add(d n) { }
-	INLINE void sub(d n) { }
 
 //-----------------------------------------------------------------------------
 
@@ -118,16 +129,8 @@ public:
 
 	INLINE constexpr operator bool() const { return true; }
 
-	INLINE constexpr R operator*()     const { return cast(B::val()); }
-	INLINE constexpr R operator[](d n) const { return cast(B::val()); }
-
 	INLINE bool operator+() const { return true; }
 	INLINE bool operator-() const { return true; }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o) { return true; }
 };
 
 //-----------------------------------------------------------------------------
