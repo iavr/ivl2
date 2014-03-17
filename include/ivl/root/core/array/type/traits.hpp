@@ -481,6 +481,21 @@ using c_iter_pick = c_iter_ref <pick <N, E...> >;
 
 namespace details {
 
+template <typename D, typename V>
+struct iter_comp_ : _false { };
+
+template <typename D>
+struct iter_comp_<D, D> : _true { };
+
+}  // namespace details
+
+template <typename D, typename V>
+using iter_comp = details::iter_comp_<D, raw_type <V> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
 template <typename S> struct seq_ret_;
 
 template <typename F, typename... A>

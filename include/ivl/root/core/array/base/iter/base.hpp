@@ -76,6 +76,32 @@ public:
 	INLINE D&  operator+=(d n) &  { return der().  add(n), der(); }
 	INLINE D&& operator-=(d n) && { return der_f().sub(n), der_f(); }
 	INLINE D&  operator-=(d n) &  { return der().  sub(n), der(); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	INLINE constexpr bool operator==(V&& v) const
+		{ return der().comp(afun::op::eq(), v); }
+
+	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	INLINE constexpr bool operator!=(V&& v) const
+		{ return der().comp(afun::op::neq(), v); }
+
+	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	INLINE constexpr bool operator<(V&& v) const
+		{ return der().comp(afun::op::lt(), v); }
+
+	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	INLINE constexpr bool operator<=(V&& v) const
+		{ return der().comp(afun::op::le(), v); }
+
+	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	INLINE constexpr bool operator>(V&& v) const
+		{ return der().comp(afun::op::gt(), v); }
+
+	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	INLINE constexpr bool operator>=(V&& v) const
+		{ return der().comp(afun::op::ge(), v); }
 };
 
 //-----------------------------------------------------------------------------

@@ -84,8 +84,8 @@ protected:
 	template <size_t K>
 	INLINE void prev_cond(size <K> s) { if (!der().template v<K>()) prev(s); }
 
-	INLINE void next(SL)  { }
-	INLINE void prev(SM)  { }
+	INLINE void next(SL) { }
+	INLINE void prev(SM) { }
 
 	INLINE void next_cond(SL) { }
 	INLINE void prev_cond(SM) { }
@@ -95,7 +95,7 @@ protected:
 	struct deref  { };
 	struct _inc   { };
 	struct _dec   { };
-	struct comp   { };
+	struct _comp  { };
 
 //-----------------------------------------------------------------------------
 
@@ -122,17 +122,24 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-	template <size_t K>
-	INLINE bool _(comp, size <K>, const D& o) const
-		{ return der().template v<K>() != o.template v<K>(); }
+	template <size_t K, typename F, typename V>
+	INLINE bool _(_comp, size <K>, F, V&& v) const
+		{ return F()(der().template v<K>(), v.template v<K>()); }
 
-	INLINE bool _(comp, SM, const D& o) const { return false; }
-	INLINE bool _(comp, SL, const D& o) const { return false; }
+	template <typename F, typename V>
+	INLINE bool _(_comp, SM, F, V&&) const { return false; }
+
+	template <typename F, typename V>
+	INLINE bool _(_comp, SL, F, V&&) const { return false; }
 
 //-----------------------------------------------------------------------------
 
 	INLINE void inc() { op_M <_inc>()(k, der()); }
 	INLINE void dec() { op_L <_dec>()(k, der()); }
+
+	template <typename F, typename V>
+	INLINE constexpr bool comp(F, V&& v) const
+		{ return F()(k, v.k) || op_ML <_comp>()(k, der(), F(), v); }
 
 //-----------------------------------------------------------------------------
 
@@ -142,10 +149,6 @@ public:
 	join_iter_base(size_t k) : k(k) { }
 
 	INLINE constexpr R operator*() const { return op <deref>()(k, der()); }
-
-	// TODO
-	INLINE constexpr bool operator!=(const D& o) const
-		{ return k != o.k || op_ML <comp>()(k, der(), o); }
 };
 
 //-----------------------------------------------------------------------------

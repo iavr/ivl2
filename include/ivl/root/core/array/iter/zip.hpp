@@ -65,6 +65,11 @@ protected:
 	INLINE void add(d n) { thru{der().template v<N>() += n...}; }
 	INLINE void sub(d n) { thru{der().template v<N>() -= n...}; }
 
+	template <typename F, typename V>
+	INLINE constexpr bool
+	comp(F, V&& v) const
+		{ return term().more(F()(der().template v<N>(), v.template v<N>())...); }
+
 //-----------------------------------------------------------------------------
 
 public:
@@ -73,10 +78,6 @@ public:
 
 	INLINE constexpr R operator[](d n) const
 		{ return afun::rref()( der().template v<N>()[n]...); }
-
-	// TODO
-	INLINE bool operator!=(const D& o)
-		{ return term().more(der().template v<N>() != o.template v<N>()...); }
 };
 
 //-----------------------------------------------------------------------------

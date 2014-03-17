@@ -59,6 +59,10 @@ protected:
 	INLINE void add(d n) { der().v() += n; }
 	INLINE void sub(d n) { der().v() -= n; }
 
+	template <typename F, typename V>
+	INLINE constexpr bool
+	comp(F, V&& v) const { return F()(der().v(), v.v()); }
+
 //-----------------------------------------------------------------------------
 
 public:
@@ -67,11 +71,6 @@ public:
 
 	INLINE constexpr R operator[](d n) const
 		{ return der().cast( der().v()[n]); }
-
-//-----------------------------------------------------------------------------
-
-	// TODO
-	INLINE bool operator!=(const D& o) { return der().v() != o.v(); }
 };
 
 //-----------------------------------------------------------------------------
