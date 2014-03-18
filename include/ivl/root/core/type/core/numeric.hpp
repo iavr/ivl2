@@ -83,6 +83,27 @@ template <size_t N> using sz_dec = int_dec <size_t, N>;
 
 //-----------------------------------------------------------------------------
 
+template <typename... I> struct join_it;
+template <typename... I> using  join_i = type_of <join_it <I...> >;
+
+template <typename T, T... L, T... R, typename... I>
+struct join_it <integrals <T, L...>, integrals <T, R...>, I...> :
+	join_it <integrals <T, L..., R...>, I...> { };
+
+template <typename T, T... N>
+struct join_it <integrals <T, N...> > : integrals <T, N...> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename R, typename T, T B, typename S, S s>
+struct linear;
+
+template <typename U, U... N, typename T, T B, typename S, S s>
+struct linear <integrals <U, N...>, T, B, S, s> :
+	integrals <U, (B + s * N)...> { };
+
+//-----------------------------------------------------------------------------
+
 template <typename T, T B, T E, typename S = int, S s = 1>
 struct range { };
 
@@ -110,17 +131,31 @@ rng_len(T B, T E, S s)
 
 namespace details {
 
-template <typename T, typename S, S s, T E, T N, T... Nn>
-struct rng_t_ : _if <(s > 0 ? N + s <= E : N + s >= E),
-	rng_t_<T, S, s, E, N + s, Nn..., N>, integrals <T, Nn..., N>
-> { };
+template <typename T, T B, T L, typename = integral <T, L> > struct rng_t_;
+template <typename T, T B, T L> using  rng_ = type_of <rng_t_<T, B, L> >;
+
+template <typename T, T B, T L, typename>
+struct rng_t_: join_i <rng_<T, B, L/2>, rng_<T, B + L/2, (L+1)/2> > { };
+
+template <typename T, T B, T L>
+struct rng_t_<T, B, L, integral <T, 0> > : integrals <T> { };
+
+template <typename T, T B, T L>
+struct rng_t_<T, B, L, integral <T, 1> > : integrals <T, B> { };
+
+template <typename T, T B, T E, typename S, S s, bool = (s > 0)>
+struct rng_choose : linear <rng_<T, 0, (E - B + 1) / s>, T, B, S, s> { };
+
+template <typename T, T B, T E, typename S, S s>
+struct rng_choose <T, B, E, S, s, false> :
+	linear <rng_<T, 0, (B - E + 1) / (-s)>, T, B, S, s> { };
 
 }  // namespace details
 
-template <typename T, T B, T E, typename S = int, S s = 1>  // B: begin; s: step; E: end
-struct rng_t : _if <rng_empty(B, E, s),
-	integrals <T>, details::rng_t_<T, S, s, E, B>
-> { };
+template <typename T, T B, T E, typename S = int, S s = 1>
+using rng_t = _if <rng_empty(B, E, s),
+	integrals <T>, details::rng_choose <T, B, E, S, s>
+>;
 
 template <typename T, T B, T E, typename S = int, S s = 1>
 using rng = type_of <rng_t <T, B, E, S, s> >;
@@ -142,19 +177,21 @@ using sz_rng  = type_of <sz_rng_t <B, E, s> >;
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t L>
-struct rng_of_it : rng_t <T, 0, L - 1> { };
+struct rng_of_it : rng_t <T, T{0}, T{L - 1}> { };
 
 template <typename T>
 struct rng_of_it <T, 0> : integrals <T> { };
+
+template <typename T, size_t L>
+using rng_of_i = type_of <rng_of_it <T, L> >;
+
+//-----------------------------------------------------------------------------
 
 template <typename T, typename P>
 using rng_of_pt = rng_of_it <T, length <P>{}>;
 
 template <typename T, typename... E>
 using rng_of_t = rng_of_pt <T, pack <E...> >;
-
-template <typename T, size_t L>
-using rng_of_i = type_of <rng_of_it <T, L> >;
 
 template <typename T, typename P>
 using rng_of_p = type_of <rng_of_pt <T, P> >;
@@ -167,14 +204,16 @@ using rng_of = type_of <rng_of_t <T, E...> >;
 template <size_t L> using num_rng_of_it = rng_of_it <int, L>;
 template <size_t L> using sz_rng_of_it  = rng_of_it <size_t, L>;
 
+template <size_t L> using num_rng_of_i = type_of <num_rng_of_it <L> >;
+template <size_t L> using sz_rng_of_i  = type_of <sz_rng_of_it <L> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename P> using num_rng_of_pt = rng_of_pt <int, P>;
 template <typename P> using sz_rng_of_pt  = rng_of_pt <size_t, P>;
 
 template <typename... E> using num_rng_of_t = rng_of_t <int, E...>;
 template <typename... E> using sz_rng_of_t  = rng_of_t <size_t, E...>;
-
-template <size_t L> using num_rng_of_i = type_of <num_rng_of_it <L> >;
-template <size_t L> using sz_rng_of_i  = type_of <sz_rng_of_it <L> >;
 
 template <typename P> using num_rng_of_p = type_of <num_rng_of_pt <P> >;
 template <typename P> using sz_rng_of_p  = type_of <sz_rng_of_pt <P> >;
@@ -184,13 +223,14 @@ template <typename... E> using sz_rng_of  = type_of <sz_rng_of_t <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <size_t L, typename T, T N, T... Nn>
-struct rep_it : _if <(L > 0),
-	rep_it <L - 1, T, N, N, Nn...>, integrals <T, Nn...>
-> { };
+template <size_t L, typename T, T N> struct rep_it;
+template <size_t L, typename T, T N> using rep_i = type_of <rep_it <L, T, N> >;
 
-template <size_t L, typename T, T... N>
-using rep_i = type_of <rep_it <L, T, N...> >;
+template <size_t L, typename T, T N>
+struct rep_it : join_it <rep_i <L/2, T, N>, rep_i <(L+1)/2, T, N> > { };
+
+template <typename T, T N> struct rep_it <0, T, N> : integrals <T> { };
+template <typename T, T N> struct rep_it <1, T, N> : integrals <T, N> { };
 
 template <size_t L, int... N>    using num_rep_t = rep_it <L, int, N...>;
 template <size_t L, size_t... N> using sz_rep_t  = rep_it <L, size_t, N...>;

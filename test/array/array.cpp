@@ -75,12 +75,12 @@ void run()
 		cout << "flip" << endl;
 		using A = array <int, 11>;
 		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
-		cout << a << endl;
-		cout << "F " << flip(a) << endl;
-		cout << "F " << flip(mv(a)) << endl;
-		cout << "FF " << flip(flip(a)) << endl;
-		cout << "TF " << tail(flip(a)) << endl;
-		cout << "FT " << flip(tail(a)) << endl;
+		cout << "    " << a << endl;
+		cout << "  F " << flip(a) << endl;
+		cout << "  F " << flip(mv(a)) << endl;
+		cout << " FF " << flip(flip(a)) << endl;
+		cout << " TF " << tail(flip(a)) << endl;
+		cout << " FT " << flip(tail(a)) << endl;
 		cout << "TTF " << tail(tail(flip(a))) << endl;
 		cout << "TFT " << tail(flip(tail(a))) << endl;
 		cout << "FTT " << flip(tail(tail(a))) << endl;

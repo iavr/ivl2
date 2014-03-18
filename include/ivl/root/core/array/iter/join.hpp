@@ -275,10 +275,10 @@ protected:
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	INLINE void _(elem_l, size <K>) { v<K>() <<= E(); }
+	INLINE void _(elem_l, size <K>) { v<K>() <<= edge; }
 
 	template <size_t K>
-	INLINE void _(elem_r, size <K>) { v<K>() >>= E(); }
+	INLINE void _(elem_r, size <K>) { v<K>() >>= edge; }
 
 	INLINE void _(elem_l, SM) { }
 	INLINE void _(elem_l, SL) { }
@@ -288,10 +288,8 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-	using E = key::edge;
-
-	INLINE void shift_l(E) { op_ML <elem_l>()(k, der()); }
-	INLINE void shift_r(E) { op_ML <elem_r>()(k, der()); }
+	INLINE void shift_l(key::edge) { op_ML <elem_l>()(k, der()); }
+	INLINE void shift_r(key::edge) { op_ML <elem_r>()(k, der()); }
 
 	INLINE void _swap() { std::swap(k, e), elem_flip(); }
 

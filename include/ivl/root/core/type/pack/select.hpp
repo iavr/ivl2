@@ -123,14 +123,14 @@ template <typename... E> using snd = pick <1, E...>;
 
 //-----------------------------------------------------------------------------
 
-template <size_t N, typename T> struct rep_t;
-template <size_t N, typename T> using rep = type_of <rep_t <N, T> >;
+template <size_t L, typename T> struct rep_t;
+template <size_t L, typename T> using  rep = type_of <rep_t <L, T> >;
 
-template <size_t N, typename T>
-struct rep_t : cons_t <T, rep <N-1, T> > { };
+template <size_t L, typename T>
+struct rep_t : join_t <rep <L/2, T>, rep <(L+1)/2, T> > { };
 
-template <typename T>
-struct rep_t <0, T> : pack <> { };
+template <typename T> struct rep_t <0, T> : pack <> { };
+template <typename T> struct rep_t <1, T> : pack <T> { };
 
 //-----------------------------------------------------------------------------
 

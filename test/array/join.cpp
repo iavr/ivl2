@@ -79,12 +79,12 @@ void run()
 		{
 			cout << "join + flip/tail" << endl;
 			auto a = jj;
-			cout << a << endl;
-			cout << "F " << flip(a) << endl;
-			cout << "F " << flip(mv(a)) << endl;
-			cout << "FF " << flip(flip(a)) << endl;
-			cout << "TF " << tail(flip(a)) << endl;
-			cout << "FT " << flip(tail(a)) << endl;
+			cout << "    " << a << endl;
+			cout << "  F " << flip(a) << endl;
+			cout << "  F " << flip(mv(a)) << endl;
+			cout << " FF " << flip(flip(a)) << endl;
+			cout << " TF " << tail(flip(a)) << endl;
+			cout << " FT " << flip(tail(a)) << endl;
 			cout << "TTF " << tail(tail(flip(a))) << endl;
 			cout << "TFT " << tail(flip(tail(a))) << endl;
 			cout << "FTT " << flip(tail(tail(a))) << endl;
@@ -92,10 +92,10 @@ void run()
 		}
 
 		cout << "join loop" << endl;
-		traverse(j);
+		traverse(jj);
 
 		cout << "flip(join) loop" << endl;
-		traverse(flip(j));
+		traverse(flip(jj));
 
 	}
 

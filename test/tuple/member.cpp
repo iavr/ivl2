@@ -4,6 +4,12 @@
 
 namespace ivl {
 
+IVL_KEY_MEMBER(begin)
+IVL_KEY_MEMBER(empty)
+IVL_KEY_MEMBER(end)
+IVL_KEY_MEMBER(length)
+IVL_KEY_MEMBER(size)
+
 IVL_KEY_MEMBER(p)
 IVL_KEY_MEMBER(q)
 IVL_KEY_MEMBER(f)

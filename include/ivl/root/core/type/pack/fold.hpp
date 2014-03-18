@@ -143,6 +143,21 @@ template <typename... E> using any_null = any_null_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename P, bool = is_null <P>{}>
+struct all_eq_ : eq <P, rep <length <P>{}, car <P> > > { };
+
+template <typename P>
+struct all_eq_<P, true> : _true { };
+
+}  // namespace details
+
+template <typename P>    using all_eq_p = details::all_eq_<P>;
+template <typename... E> using all_eq   = all_eq_p <pack <E...> >;
+
+//-----------------------------------------------------------------------------
+
 template <template <typename...> class... C> struct all_cond;
 template <template <typename...> class... C> struct any_cond;
 

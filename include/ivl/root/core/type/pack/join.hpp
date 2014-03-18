@@ -69,18 +69,6 @@ struct join_t <E <T...> > : id_t <E <T...> > { };
 
 //-----------------------------------------------------------------------------
 
-template <typename... I> struct join_it;
-template <typename... I> using  join_i = type_of <join_it <I...> >;
-
-template <typename T, T... L, T... R, typename... I>
-struct join_it <integrals <T, L...>, integrals <T, R...>, I...> :
-	join_it <integrals <T, L..., R...>, I...> { };
-
-template <typename T, T... N>
-struct join_it <integrals <T, N...> > : integrals <T, N...> { };
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
 template <typename I, typename... E> struct major_t_;
@@ -102,14 +90,22 @@ template <typename... E> using minor = type_of <minor_t <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> struct flip_pt;
+namespace details {
+
+template <typename L, typename R = null_of <L> > struct flip_p_;
+
+template <template <typename...> class C,
+	typename L, typename... Ln, typename... R
+>
+struct flip_p_<C <L, Ln...>, C <R...> > : flip_p_<C <Ln...>, C <L, R...> > { };
+
+template <template <typename...> class C, typename... R>
+struct flip_p_<C <>, C <R...> > : id_t <C <R...> > { };
+
+}  // namespace details
+
+template <typename P> using flip_pt = details::flip_p_<P>;
 template <typename P> using flip_p = type_of <flip_pt <P> >;
-
-template <template <typename...> class C, typename E, typename... En>
-struct flip_pt <C <E, En...> > : join_t <flip_p <C <En...> >, C <E> > { };
-
-template <template <typename...> class C>
-struct flip_pt <C <> > : id_t <C <> > { };
 
 template <typename... E> using flip_t = flip_pt <pack <E...> >;
 template <typename... E> using flip   = type_of <flip_t <E...> >;
