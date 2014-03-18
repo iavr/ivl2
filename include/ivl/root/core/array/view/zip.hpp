@@ -116,7 +116,7 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 public:
 	using B::B;
 
-	INLINE constexpr S size() const { return M().size(u<N>()...); }
+	INLINE constexpr S size() const { return size_of <M>()(u<N>()...); }
 
 	INLINE           IR begin() &&     { return IR(u_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(u<N>().begin()...); }

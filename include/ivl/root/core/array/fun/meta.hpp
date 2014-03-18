@@ -42,54 +42,30 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <size_t B, typename F, typename... A>
-class lookup_fun_impl
+template <typename F>
+struct inv_fun
 {
-	using R = decltype(F().template _<0>(gen <A>()...));
-	using P = R(*)(A&&...);
-
-	template <size_t I>
-	struct stub
-	{
-		INLINE constexpr static R f(A&&... a)
-			{ return F().template _<I>(fwd <A>(a)...); }
-	};
-
-public:
-	template <size_t... I>
-	INLINE R operator()(sizes <I...>, size_t i, A&&... a) const
-	{
-		static const P table[] = {stub <I + B>::f...};
-		static const P *index = table - B;
-		return index[i](fwd <A>(a)...);
-	};
-};
-
-template <size_t B, size_t E, typename F>
-struct lookup_fun
-{
-	template <typename... A>
-	INLINE constexpr decltype(F().template _<0>(gen <A>()...))
-	operator()(size_t i, A&&... a) const
-	{
-		return lookup_fun_impl <B, F, A...>()
-			(sz_rng <0, E - B>(), i, fwd <A>(a)...);
-	};
+	template <typename A, typename B>
+	INLINE constexpr auto
+	operator()(A&& a, B&& b) const
+	-> decltype(F()(fwd <B>(b), fwd <A>(a)))
+		{ return F()(fwd <B>(b), fwd <A>(a)); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename OP>
-struct lookup_op_fun
+struct lex2_fun
 {
-	template <size_t K, typename C, typename... A>
-	INLINE constexpr auto _(C&& c, A&&... a) const
-	-> decltype(fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...))
-		{ return fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...); }
-};
+	INLINE constexpr bool
+	operator()(afun::op::eq, bool e, bool a, bool b) const { return a && b; }
 
-template <size_t B, size_t E, typename OP>
-struct lookup_op : lookup_fun <B, E, lookup_op_fun <OP> > { };
+	INLINE constexpr bool
+	operator()(afun::op::neq, bool e, bool a, bool b) const { return a || b; }
+
+	template <typename F>
+	INLINE constexpr bool
+	operator()(F, bool e, bool a, bool b) const { return a || (e && b); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -97,9 +73,8 @@ struct lookup_op : lookup_fun <B, E, lookup_op_fun <OP> > { };
 
 //-----------------------------------------------------------------------------
 
-using details::lookup_fun;
-using details::lookup_op_fun;
-using details::lookup_op;
+using details::inv_fun;
+using details::lex2_fun;
 
 //-----------------------------------------------------------------------------
 

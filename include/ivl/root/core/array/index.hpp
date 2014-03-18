@@ -39,8 +39,10 @@
 #include "fun/value.hpp"
 #include "fun/fold.hpp"
 #include "fun/meta.hpp"
-#include "fun/trav.hpp"
+#include "fun/lookup.hpp"
 #include "fun/term.hpp"
+#include "fun/trav.hpp"
+#include "fun/manip.hpp"
 #include "fun/loop.hpp"
 
 // // TODO
@@ -75,8 +77,6 @@
 #include "view/apply.hpp"
 #include "view/zip.hpp"
 #include "view/join.hpp"
-
-#include "fun/manip.hpp"
 
 //-----------------------------------------------------------------------------
 

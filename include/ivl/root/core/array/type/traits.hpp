@@ -125,6 +125,11 @@ template <typename... T> using prim_trav = first_b <fin_trav <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
+template <typename T> using size_of = typename T::size;
+template <typename T> using more_of = typename T::more;
+
+//-----------------------------------------------------------------------------
+
 template <typename... T> using cont_travers = _or <fin_cont <T>...>;
 template <typename... T> using seq_travers  = _or <fin_seq <T>...>;
 
@@ -155,12 +160,14 @@ using has_range = expr <has_begin <T>() && has_end <T>()>;
 
 namespace details {
 
+template <typename I> struct seq_iter_ : id_t <typename I::iterator_type> { };
 template <typename I> struct seq_iref_ : id_t <typename I::reference> { };
 template <typename I> struct seq_val_  : id_t <typename I::value_type> { };
 template <typename I> struct seq_size_ : id_t <typename I::size_type> { };
 template <typename I> struct seq_diff_ : id_t <typename I::difference_type> { };
 template <typename I> struct seq_iptr_ : id_t <typename I::pointer> { };
 
+template <typename T> struct seq_iter_<T*> : id_t <T*> { };
 template <typename T> struct seq_iref_<T*> : id_t <T&> { };
 template <typename T> struct seq_val_<T*>  : id_t <T> { };
 template <typename T> struct seq_size_<T*> : id_t <size_t> { };
@@ -171,12 +178,14 @@ template <typename T> struct seq_iptr_<T*> : id_t <T*> { };
 
 //-----------------------------------------------------------------------------
 
+template <typename I> struct seq_iter_t : details::seq_iter_<raw_type <I> > { };
 template <typename I> struct seq_iref_t : details::seq_iref_<raw_type <I> > { };
 template <typename I> struct seq_val_t  : details::seq_val_ <raw_type <I> > { };
 template <typename I> struct seq_size_t : details::seq_size_<raw_type <I> > { };
 template <typename I> struct seq_diff_t : details::seq_diff_<raw_type <I> > { };
 template <typename I> struct seq_iptr_t : details::seq_iptr_<raw_type <I> > { };
 
+template <typename I> using seq_iter = type_of <seq_iter_t <I> >;
 // template <typename I> using seq_iref = type_of <seq_iref_t <I> >;  // defined @begin
 // template <typename I> using seq_val  = type_of <seq_val_t <I> >;   // defined @begin
 template <typename I> using seq_size = type_of <seq_size_t <I> >;
@@ -476,21 +485,6 @@ using l_iter_pick = l_iter_ref <pick <N, E...> >;
 
 template <size_t N, typename... E>
 using c_iter_pick = c_iter_ref <pick <N, E...> >;
-
-//-----------------------------------------------------------------------------
-
-namespace details {
-
-template <typename D, typename V>
-struct iter_comp_ : _false { };
-
-template <typename D>
-struct iter_comp_<D, D> : _true { };
-
-}  // namespace details
-
-template <typename D, typename V>
-using iter_comp = details::iter_comp_<D, raw_type <V> >;
 
 //-----------------------------------------------------------------------------
 

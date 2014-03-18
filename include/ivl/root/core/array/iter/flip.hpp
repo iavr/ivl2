@@ -61,7 +61,7 @@ protected:
 
 	template <typename F, typename V>
 	INLINE constexpr bool
-	comp(F, V&& v) const { return F()(der().v(), v.v()); }
+	comp(F, V&& v) const { return afun::inv_fun <F>()(der().v(), v.v()); }
 
 //-----------------------------------------------------------------------------
 
@@ -81,11 +81,12 @@ class flip_iter_impl :
 	public flip_iter_base <D, TR>,
 	public iter_base <D, TR, I>
 {
-	using S = flip_iter_base <D, TR>;
 	using B = iter_base <D, TR, I>;
 
-	friend S;
 	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class flip_iter_base;
 
 //-----------------------------------------------------------------------------
 
@@ -111,12 +112,13 @@ class flip_trav_impl :
 	public flip_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
-	using S = flip_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
 
-	friend S;
 	friend B;
 	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class flip_iter_base;
 
 //-----------------------------------------------------------------------------
 

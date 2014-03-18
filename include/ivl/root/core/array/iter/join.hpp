@@ -138,14 +138,15 @@ protected:
 	INLINE void dec() { op_L <_dec>()(k, der()); }
 
 	template <typename F, typename V>
-	INLINE constexpr bool comp(F, V&& v) const
-		{ return F()(k, v.k) || op_ML <_comp>()(k, der(), F(), v); }
+	INLINE constexpr bool comp(F f, V&& v) const
+	{
+		return afun::lex2_fun()
+			(f, k == v.k, f(k, v.k), op_ML <_comp>()(k, der(), f, v));
+	}
 
 //-----------------------------------------------------------------------------
 
 public:
-	using base_impl = join_iter_base;
-
 	join_iter_base(size_t k) : k(k) { }
 
 	INLINE constexpr R operator*() const { return op <deref>()(k, der()); }
@@ -174,8 +175,10 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 	using S = join_iter_base <D, TR, sizes <N...> >;
 	using B = iter_base <D, TR, V...>;
 
-	friend S;
 	friend base_type_of <B>;
+
+	template <typename, typename, typename>
+	friend class join_iter_base;
 
 //-----------------------------------------------------------------------------
 
@@ -221,9 +224,11 @@ protected:
 	using S = join_iter_base <D, TR, sizes <N...> >;
 	using B = trav_base <D, TR, Q, V...>;
 
-	friend S;
 	friend base_type_of <B>;
 	friend base_trav_of <B>;
+
+	template <typename, typename, typename>
+	friend class join_iter_base;
 
 	using B::der_f;
 	using B::der;
@@ -311,9 +316,11 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 {
 	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>;
 
-	friend base_impl_of <B>;
 	friend base_type_of <B>;
 	friend base_trav_of <B>;
+
+	template <typename, typename, typename>
+	friend class join_iter_base;
 
 	using B::elem_flip;
 	using B::der_f;

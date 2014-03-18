@@ -61,7 +61,7 @@ protected:
 
 	template <typename F, typename V>
 	INLINE constexpr bool
-	comp(F, V&& v) const { return F()(der().v(), v.v()); }
+	comp(F f, V&& v) const { return f(der().v(), v.v()); }
 
 //-----------------------------------------------------------------------------
 
@@ -81,11 +81,12 @@ class indirect_iter_impl :
 	public indirect_iter_base <D, TR>,
 	public iter_base <D, TR, I, U>
 {
-	using S = indirect_iter_base <D, TR>;
 	using B = iter_base <D, TR, I, U>;
 
-	friend S;
 	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class indirect_iter_base;
 
 //-----------------------------------------------------------------------------
 
@@ -115,12 +116,13 @@ class indirect_trav_impl :
 	public indirect_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V, U>
 {
-	using S = indirect_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V, U>;
 
-	friend S;
 	friend B;
 	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class indirect_iter_base;
 
 //-----------------------------------------------------------------------------
 

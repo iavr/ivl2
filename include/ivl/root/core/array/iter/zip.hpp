@@ -54,7 +54,7 @@ class zip_iter_base <D, TR, sizes <N...>, M> :
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
 
-	using term = raw_type <M>;
+	using more = more_of <M>;
 
 //-----------------------------------------------------------------------------
 
@@ -66,9 +66,9 @@ protected:
 	INLINE void sub(d n) { thru{der().template v<N>() -= n...}; }
 
 	template <typename F, typename V>
-	INLINE constexpr bool
-	comp(F, V&& v) const
-		{ return term().more(F()(der().template v<N>(), v.template v<N>())...); }
+	INLINE constexpr bool   // TODO: for M = all_term, only works for
+	comp(F f, V&& v) const  //  (!=)-based termination, not comparison
+		{ return more()(f(der().template v<N>(), v.template v<N>())...); }
 
 //-----------------------------------------------------------------------------
 
@@ -103,8 +103,10 @@ class zip_iter_impl <pack <I...>, R, T, M, D, TR, sizes <N...> > :
 	using S = zip_iter_base <D, TR, sizes <N...>, M>;
 	using B = iter_base <D, TR, I...>;
 
-	friend S;
 	friend base_type_of <B>;
+
+	template <typename, typename, typename, typename>
+	friend class zip_iter_base;
 
 //-----------------------------------------------------------------------------
 
@@ -143,14 +145,15 @@ class zip_trav_impl <Q, pack <V...>, R, T, M, D, TR, sizes <N...> > :
 	public zip_iter_base <D, TR, sizes <N...>, M>,
 	public trav_base <D, TR, Q, V...>
 {
-	using S = zip_iter_base <D, TR, sizes <N...>, M>;
 	using B = trav_base <D, TR, Q, V...>;
 
-	friend S;
 	friend B;
 	friend base_type_of <B>;
 
-	using term = raw_type <M>;
+	template <typename, typename, typename, typename>
+	friend class zip_iter_base;
+
+	using more = more_of <M>;
 
 //-----------------------------------------------------------------------------
 
@@ -179,10 +182,10 @@ public:
 
 	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
 
-	INLINE constexpr operator bool() const { return term().more(v<N>()...); }
+	INLINE constexpr operator bool() const { return more()(v<N>()...); }
 
-	INLINE bool operator+() const { return term().more(+v<N>()...); }
-	INLINE bool operator-() const { return term().more(-v<N>()...); }
+	INLINE bool operator+() const { return more()(+v<N>()...); }
+	INLINE bool operator-() const { return more()(-v<N>()...); }
 };
 
 //-----------------------------------------------------------------------------

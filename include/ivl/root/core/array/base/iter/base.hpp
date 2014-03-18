@@ -79,27 +79,27 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator==(V&& v) const
 		{ return der().comp(afun::op::eq(), v); }
 
-	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator!=(V&& v) const
 		{ return der().comp(afun::op::neq(), v); }
 
-	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator<(V&& v) const
 		{ return der().comp(afun::op::lt(), v); }
 
-	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator<=(V&& v) const
 		{ return der().comp(afun::op::le(), v); }
 
-	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator>(V&& v) const
 		{ return der().comp(afun::op::gt(), v); }
 
-	template <typename V, only_if <iter_comp <D, V>{}> = 0>
+	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator>=(V&& v) const
 		{ return der().comp(afun::op::ge(), v); }
 };
@@ -186,7 +186,6 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename T> using base_trav_of = typename T::base_trav;
-template <typename T> using base_impl_of = typename T::base_impl;
 
 //-----------------------------------------------------------------------------
 

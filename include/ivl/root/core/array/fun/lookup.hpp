@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_TERM_HPP
-#define IVL_CORE_ARRAY_FUN_TERM_HPP
+#ifndef IVL_CORE_ARRAY_FUN_LOOKUP_HPP
+#define IVL_CORE_ARRAY_FUN_LOOKUP_HPP
 
 #include <ivl/ivl>
 
@@ -42,53 +42,64 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M>
-struct iter_term
+template <size_t B, typename F, typename... A>
+class lookup_fun_impl
 {
-	struct size
+	using R = decltype(F().template _<0>(gen <A>()...));
+	using P = R(*)(A&&...);
+
+	template <size_t I>
+	struct stub
 	{
-		template <typename... A>
-		INLINE constexpr auto
-		operator()(A&&... a) const
-		-> decltype(S()(fwd <A>(a).size()...))
-			{ return S()(fwd <A>(a).size()...); }
+		INLINE constexpr static R f(A&&... a)
+			{ return F().template _<I>(fwd <A>(a)...); }
 	};
-
-	using more = M;
-};
-
-//-----------------------------------------------------------------------------
-
-using all_term = iter_term <val_min, val_and>;
-
-//-----------------------------------------------------------------------------
-
-class prim_term
-{
-	template <typename... A> using S = get <prim_seq <A...>{}>;
-	template <typename... A> using V = get <prim_trav <A...>{}>;
 
 public:
-	struct size
+	template <size_t... I>
+	INLINE R operator()(sizes <I...>, size_t i, A&&... a) const
 	{
-		template <typename... A>
-		INLINE constexpr auto
-		operator()(A&&... a) const
-		-> decltype(S <A...>()(fwd <A>(a)...).size())
-			{ return S <A...>()(fwd <A>(a)...).size(); }
-	};
-
-	struct more
-	{
-		template <typename... A>
-		INLINE constexpr bool
-		operator()(A&&... a) const { return V <A...>()(fwd <A>(a)...); }
+		static const P table[] = {stub <I + B>::f...};
+		static const P *index = table - B;
+		return index[i](fwd <A>(a)...);
 	};
 };
+
+template <size_t B, size_t E, typename F>
+struct lookup_fun
+{
+	template <typename... A>
+	INLINE constexpr decltype(F().template _<0>(gen <A>()...))
+	operator()(size_t i, A&&... a) const
+	{
+		return lookup_fun_impl <B, F, A...>()
+			(sz_rng <0, E - B>(), i, fwd <A>(a)...);
+	};
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename OP>
+struct lookup_op_fun
+{
+	template <size_t K, typename C, typename... A>
+	INLINE constexpr auto _(C&& c, A&&... a) const
+	-> decltype(fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...))
+		{ return fwd <C>(c)._(OP(), size <K>(), fwd <A>(a)...); }
+};
+
+template <size_t B, size_t E, typename OP>
+struct lookup_op : lookup_fun <B, E, lookup_op_fun <OP> > { };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::lookup_fun;
+using details::lookup_op_fun;
+using details::lookup_op;
 
 //-----------------------------------------------------------------------------
 
@@ -100,4 +111,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_TERM_HPP
+#endif  // IVL_CORE_ARRAY_FUN_LOOKUP_HPP

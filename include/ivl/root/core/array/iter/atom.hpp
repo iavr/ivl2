@@ -59,8 +59,11 @@ protected:
 	INLINE void add(d n) { }
 	INLINE void sub(d n) { }
 
-	template <typename F, typename V>
-	INLINE constexpr bool comp(F, V&&) const { return true; }
+	template <typename V>
+	INLINE constexpr bool comp(afun::op::eq, V&&) const { return false; }
+
+	template <typename V>
+	INLINE constexpr bool comp(afun::op::neq, V&&) const { return true; }
 
 //-----------------------------------------------------------------------------
 
@@ -83,11 +86,12 @@ class atom_iter_impl :
 	public atom_iter_base <D, TR>,
 	public iter_base <D, TR, T>
 {
-	using S = atom_iter_base <D, TR>;
 	using B = iter_base <D, TR, T>;
 
-	friend S;
 	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class atom_iter_base;
 
 	using B::val;
 	using B::cast;
@@ -108,12 +112,13 @@ class atom_trav_impl :
 	public atom_iter_base <D, TR>,
 	public trav_base <D, TR, Q, T>
 {
-	using S = atom_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, T>;
 
-	friend S;
 	friend B;
 	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class atom_iter_base;
 
 	using B::val;
 	using B::cast;

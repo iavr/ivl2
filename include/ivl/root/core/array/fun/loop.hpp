@@ -86,7 +86,7 @@ struct iter_loop_by
 	template <typename F, typename... T>
 	INLINE F&& operator()(F&& f, T&&... t) const
 	{
-		for (; M().more(t...); thru{++t...})
+		for (; more_of <M>()(t...); thru{++t...})
 			fwd <F>(f)(*t...);
 		return fwd <F>(f);
 	}
@@ -110,7 +110,7 @@ struct iter_head_loop_by
 	template <typename F, typename G, typename... T>
 	INLINE void operator()(F&& f, G&& g, T&&... t) const
 	{
-		if (M().more(t...))
+		if (more_of <M>()(t...))
 			fwd <F>(f)(*t...),
 			seq_loop_by <M>()(fwd <G>(g), ++t...);
 	}
