@@ -52,7 +52,7 @@ struct apply_traits;
 template <typename M, typename F, typename... A, typename AP>
 struct apply_traits <M, F, pack <A...>, AP> : seq_traits <
 	F(pack <seq_type <A>...>), apply_length <A...>, AP,
-	apply_iter, apply_trav, id, seq_size <AP>, M, F
+	apply_iter, apply_trav, id, seq_size <AP>, term_seq <M, A...>, F
 > { };
 
 //-----------------------------------------------------------------------------
@@ -71,6 +71,7 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 	friend B;
 
 	using S = seq_size <TR>;
+	using G = term_seq <M, A...>;
 
 	using IR = r_seq_iter <TR>;
 	using IL = l_seq_iter <TR>;
@@ -129,7 +130,7 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 public:
 	using B::B;
 
-	INLINE constexpr S size() const { return size_of <M>()(a<N>()...); }
+	INLINE constexpr S size() const { return G()(a<N>()...).size; }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(f(), a<N>().begin()...); }

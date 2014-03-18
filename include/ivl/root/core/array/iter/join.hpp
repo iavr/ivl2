@@ -52,6 +52,7 @@ class join_iter_base <D, TR, sizes <N...> > :
 	using derived <D, _false>::der;
 
 	using R = seq_iref <TR>;
+	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
@@ -143,6 +144,10 @@ protected:
 		return afun::lex2_fun()
 			(f, k == v.k, f(k, v.k), op_ML <_comp>()(k, der(), f, v));
 	}
+
+	// TODO: define when random-access is available
+	template <typename V>
+	INLINE constexpr d comp(afun::op::sub, V&& v) const;
 
 //-----------------------------------------------------------------------------
 

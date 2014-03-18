@@ -42,48 +42,31 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename M>
-struct iter_term
+template <size_t I>
+struct fixed_term
 {
-	struct size
-	{
-		template <typename... A>
-		INLINE constexpr auto
-		operator()(A&&... a) const
-		-> decltype(S()(fwd <A>(a).size()...))
-			{ return S()(fwd <A>(a).size()...); }
-	};
+	template <typename... A> using seq  = get <I>;
+	template <typename... A> using trav = get <I>;
 
-	using more = M;
+	template <typename... A>
+	INLINE constexpr auto
+	operator()(A&&... a) const
+	-> decltype(get <I>()(fwd <A>(a)...))
+		{ return get <I>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
-using all_term = iter_term <val_min, val_and>;
-
-//-----------------------------------------------------------------------------
-
-class prim_term
+struct prim_term
 {
-	template <typename... A> using S = get <prim_seq <A...>{}>;
-	template <typename... A> using V = get <prim_trav <A...>{}>;
+	template <typename... A> using seq  = get <prim_seq <A...>{}>;
+	template <typename... A> using trav = get <prim_trav <A...>{}>;
 
-public:
-	struct size
-	{
-		template <typename... A>
-		INLINE constexpr auto
-		operator()(A&&... a) const
-		-> decltype(S <A...>()(fwd <A>(a)...).size())
-			{ return S <A...>()(fwd <A>(a)...).size(); }
-	};
-
-	struct more
-	{
-		template <typename... A>
-		INLINE constexpr bool
-		operator()(A&&... a) const { return V <A...>()(fwd <A>(a)...); }
-	};
+	template <typename... A>
+	INLINE constexpr auto
+	operator()(A&&... a) const
+	-> decltype(trav <A...>()(fwd <A>(a)...))
+		{ return trav <A...>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

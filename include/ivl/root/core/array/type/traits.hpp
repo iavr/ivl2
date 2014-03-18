@@ -125,8 +125,11 @@ template <typename... T> using prim_trav = first_b <fin_trav <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using size_of = typename T::size;
-template <typename T> using more_of = typename T::more;
+template <typename M, typename... A>
+using term_seq = typename M::template seq <A...>;
+
+template <typename M, typename... A>
+using term_trav = typename M::template trav <A...>;
 
 //-----------------------------------------------------------------------------
 

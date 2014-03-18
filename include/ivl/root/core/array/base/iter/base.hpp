@@ -102,6 +102,10 @@ public:
 	template <typename V, only_if <is_iter <V>{}> = 0>
 	INLINE constexpr bool operator>=(V&& v) const
 		{ return der().comp(afun::op::ge(), v); }
+
+	template <typename V, only_if <is_iter <V>{}> = 0>
+	INLINE constexpr d operator-(V&& v) const
+		{ return der().comp(afun::op::sub(), v); }
 };
 
 //-----------------------------------------------------------------------------

@@ -63,6 +63,10 @@ protected:
 	INLINE constexpr bool
 	comp(F, V&& v) const { return afun::inv_fun <F>()(der().v(), v.v()); }
 
+	template <typename V>
+	INLINE constexpr d
+	comp(afun::op::sub, V&& v) const { return v.v() - der().v(); }
+	
 //-----------------------------------------------------------------------------
 
 public:

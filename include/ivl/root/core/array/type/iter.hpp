@@ -92,20 +92,20 @@ using indirect_iter = iterator <tag::indirect, I, R, T, U>;
 template <typename Q, typename V, typename R, typename T, typename U>
 using indirect_trav = traversor <tag::indirect, Q, V, R, T, U>;
 
-template <typename I, typename R, typename T, typename M, typename F>
-using apply_iter = iterator <tag::apply, I, R, T, M, F>;
+template <typename I, typename R, typename T, typename G, typename F>
+using apply_iter = iterator <tag::apply, I, R, T, G, F>;
 
 template <
 	typename Q, typename V, typename R, typename T,
-	typename M, typename F
+	typename G, typename F
 >
-using apply_trav = traversor <tag::apply, Q, V, R, T, M, F>;
+using apply_trav = traversor <tag::apply, Q, V, R, T, G, F>;
 
-template <typename I, typename R, typename T, typename M>
-using zip_iter = iterator <tag::zip, I, R, T, M>;
+template <typename I, typename R, typename T, typename G>
+using zip_iter = iterator <tag::zip, I, R, T, G>;
 
-template <typename Q, typename V, typename R, typename T, typename M>
-using zip_trav = traversor <tag::zip, Q, V, R, T, M>;
+template <typename Q, typename V, typename R, typename T, typename G>
+using zip_trav = traversor <tag::zip, Q, V, R, T, G>;
 
 template <typename V, typename R, typename T>
 using join_iter = iterator <tag::join, V, R, T>;
