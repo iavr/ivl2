@@ -157,13 +157,10 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
-	using P = arrays::iter;
-	using E = arrays::edge;
-
-	INLINE void shift_l(P) {               i() = f(); }
-	INLINE void shift_r(P) { if (!empty()) i() = l(); }
-	INLINE void shift_l(E) { if (!empty()) l() = i(); }
-	INLINE void shift_r(E) {               f() = i(); }
+	INLINE void shift_l(key::iter) {               i() = f(); }
+	INLINE void shift_r(key::iter) { if (!empty()) i() = l(); }
+	INLINE void shift_l(key::edge) { if (!empty()) l() = i(); }
+	INLINE void shift_r(key::edge) {               f() = i(); }
 
 	INLINE void _swap() { if (!empty()) i() = i() == f() ? l() : f(); }
 

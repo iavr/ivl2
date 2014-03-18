@@ -42,11 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct iter { };
-struct edge { };
-
-//-----------------------------------------------------------------------------
-
 template <typename C, typename... A> class iterator;
 template <typename C, typename... A> class traversor;
 
@@ -116,9 +111,6 @@ using join_trav = traversor <tag::join, Q, V, R, T>;
 //-----------------------------------------------------------------------------
 
 }  // namespace details
-
-using details::iter;
-using details::edge;
 
 using details::iterator;
 using details::traversor;

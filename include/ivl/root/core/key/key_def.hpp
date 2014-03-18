@@ -128,11 +128,17 @@ IVL_MEMBER(KEY)                           \
 
 //-----------------------------------------------------------------------------
 
+// TODO: remove (just examples)
 IVL_KEY_MEMBER(begin)
 IVL_KEY_MEMBER(empty)
 IVL_KEY_MEMBER(end)
 IVL_KEY_MEMBER(length)
 IVL_KEY_MEMBER(size)
+
+//-----------------------------------------------------------------------------
+
+IVL_KEY(edge)
+IVL_KEY(iter)
 
 //-----------------------------------------------------------------------------
 

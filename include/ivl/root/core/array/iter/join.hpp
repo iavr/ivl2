@@ -288,7 +288,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-	using E = arrays::edge;
+	using E = key::edge;
 
 	INLINE void shift_l(E) { op_ML <elem_l>()(k, der()); }
 	INLINE void shift_r(E) { op_ML <elem_r>()(k, der()); }
@@ -364,8 +364,8 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
 
 //-----------------------------------------------------------------------------
 
-	using P = arrays::iter;
-	using E = arrays::edge;
+	using P = key::iter;
+	using E = key::edge;
 
 	INLINE void shift_l(P) {               k = f,   elem_l(); }
 	INLINE void shift_r(P) { if (!empty()) k = l(), elem_r(); }

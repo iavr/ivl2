@@ -88,9 +88,7 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 //-----------------------------------------------------------------------------
 
-	using E  = edge;
 	using JP = join_path <>;
-
 	using FF = afun::val_first;
 	using FL = afun::val_last;
 
@@ -122,7 +120,7 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 	template <typename IT, typename... V>
 	static INLINE constexpr IT
-	e(V&&... v) { return IT(L, v >>= E()...); }
+	e(V&&... v) { return IT(L, v >>= key::iter()...); }
 
 	template <template <typename> class VT, typename Q, typename... V>
 	static INLINE constexpr VT <Q>
