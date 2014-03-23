@@ -54,8 +54,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename R = rref_opt <T> >
-using atom_traits = seq_traits <R, no_size, _type <R>, atom_iter, atom_trav>;
+template <typename T>
+using atom_traits = seq_traits <T, no_size, _type <T>, atom_iter, atom_trav>;
 
 //-----------------------------------------------------------------------------
 

@@ -116,15 +116,15 @@ class join_seq_impl <pack <U...>, sizes <N...>, TR> :
 
 	template <typename IT, typename... V>
 	static INLINE constexpr IT
-	b(V&&... v) { return IT(FF()(v...), v...); }
+	b(V&&... v) { return IT(FF()(v...), fwd <V>(v)...); }
 
 	template <typename IT, typename... V>
 	static INLINE constexpr IT
-	e(V&&... v) { return IT(L, v >>= key::iter()...); }
+	e(V&&... v) { return IT(L, fwd <V>(v) >>= key::iter()...); }
 
 	template <template <typename> class VT, typename Q, typename... V>
 	static INLINE constexpr VT <Q>
-	t(V&&... v) { return VT <Q>(FF()(v...), FL()(v...), L, v...); }
+	t(V&&... v) { return VT <Q>(FF()(v...), FL()(v...), L, fwd <V>(v)...); }
 
 //-----------------------------------------------------------------------------
 

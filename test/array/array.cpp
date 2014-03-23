@@ -8,6 +8,7 @@ using namespace ivl;
 using namespace types;
 using ivl::flip;
 using ivl::join;
+using ivl::seq;
 
 //-----------------------------------------------------------------------------
 
@@ -59,6 +60,21 @@ void run()
 		cout << "i = " << i << endl;
 		cout << endl;
 	}
+
+// 	{
+// 		cout << "array by seq" << endl;
+// 		int k = 8;
+// 		const int n = 14;
+// 		double x = 4.5;
+// 		const double y = 3.14;
+// 		auto i = seq(5, 9, 7, -2, 0);
+// 		auto d = seq(5.28, 8.79, -0.84, -4.18);
+// 		auto a = seq(k, n, x, y, 5, 0);
+// 		cout << "i = " << i << endl;
+// 		cout << "d = " << d << endl;
+// 		cout << "a = " << a << endl;
+// 		cout << endl;
+// 	}
 
 	{
 		cout << "head/tail" << endl;
@@ -125,9 +141,20 @@ void run()
 		cout << join(a, b) << endl;
 		*join(a, c).begin() = 20;
 		cout << a << endl;
-		cout << flip(join(a, c, E, A <2>{0, 1})) << endl;  // TODO
+		cout << flip(join(a, c, E, A <2>{0, 1})) << endl;
 		cout << endl;
 	}
+
+// 	{
+// 		cout << "arr" << endl;
+// 		A <> E;
+// 		A <4> a = {0, 1, 2, 3};
+// 		B <3> b = {-3.14, 12.71, -8e3};
+// 		cout << arr(5, a, 14, 0, 0, b, E, A <2>{0, 1}) << endl;
+// 		auto j = arr(5, a, 14, 0, 0, b, E, A <2>{0, 1});
+// 		cout << j << endl;
+// 		cout << endl;
+// 	}
 
 	{
 		cout << "apply" << endl;

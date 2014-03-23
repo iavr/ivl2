@@ -41,20 +41,35 @@ class foo_
 	using R = types::raw_type <T>;
 	R val;
 
+	template <typename U>
+	friend class foo_;
+
 public:
-	foo_() : val() { cout << "foo()" << endl; }
+	foo_() : val{} { cout << "foo()" << endl; }
 
-	foo_(R&& v) : val(mv(v)) { cout << "foo(&&" << val << ")" << endl; }
+	foo_(R&& v) : val{mv(v)} { cout << "foo(&&" << val << ")" << endl; }
 
-	foo_(const R& v) : val(v) { cout << "foo(&" << val << ")" << endl; }
+	foo_(const R& v) : val{v} { cout << "foo(&" << val << ")" << endl; }
 
-	foo_(F&& f) : val(mv(f.val))
+	foo_(F&& f) : val{mv(f).val}
 		{ cout << "&&foo(" << val << ")" << endl; }
 
-	foo_(const F& f) : val(f.val)
+	foo_(const F& f) : val{f.val}
 		{ cout << "&foo(" << val << ")" << endl; }
 
+	template <typename U>
+	explicit foo_(foo_<U>&& f) : val(mv(f).val)
+		{ cout << "&&foo<>(" << val << ")" << endl; }
+
+	template <typename U>
+	explicit foo_(const foo_<U>& f) : val(f.val)
+		{ cout << "&foo<>(" << val << ")" << endl; }
+
+//-----------------------------------------------------------------------------
+
 	~foo_() { cout << "~foo(" << val << ")" << endl; }
+
+//-----------------------------------------------------------------------------
 
 	F& operator=(F&& f)
 	{
@@ -66,13 +81,6 @@ public:
 	{
 		cout << "=&foo(" << f.val << ")" << endl;
 		return val = f.val, *this;
-	}
-
-//-----------------------------------------------------------------------------
-
-	friend std::ostream& operator<<(std::ostream& os, const F& f)
-	{
-		return os << "<<foo(" << f.val << ")";
 	}
 
 //-----------------------------------------------------------------------------
@@ -97,6 +105,14 @@ public:
 			<< (val < f.val) << ")" << endl;
 		return val < f.val;
 	}
+
+//-----------------------------------------------------------------------------
+
+	friend std::ostream& operator<<(std::ostream& os, const F& f)
+	{
+		return os << "<<foo(" << f.val << ")";
+	}
+
 };
 
 using foo = foo_<>;

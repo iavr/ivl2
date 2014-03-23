@@ -123,31 +123,31 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-	template <size_t K, typename F, typename V>
-	INLINE bool _(_comp, size <K>, F, V&& v) const
-		{ return F()(der().template v<K>(), v.template v<K>()); }
+	template <size_t K, typename F, typename O>
+	INLINE bool _(_comp, size <K>, F, O&& o) const
+		{ return F()(der().template v<K>(), o.template v<K>()); }
 
-	template <typename F, typename V>
-	INLINE bool _(_comp, SM, F, V&&) const { return false; }
+	template <typename F, typename O>
+	INLINE bool _(_comp, SM, F, O&&) const { return false; }
 
-	template <typename F, typename V>
-	INLINE bool _(_comp, SL, F, V&&) const { return false; }
+	template <typename F, typename O>
+	INLINE bool _(_comp, SL, F, O&&) const { return false; }
 
 //-----------------------------------------------------------------------------
 
 	INLINE void inc() { op_M <_inc>()(k, der()); }
 	INLINE void dec() { op_L <_dec>()(k, der()); }
 
-	template <typename F, typename V>
-	INLINE constexpr bool comp(F f, V&& v) const
+	template <typename F, typename O>
+	INLINE constexpr bool comp(F f, O&& o) const
 	{
 		return afun::lex2_fun()
-			(f, k == v.k, f(k, v.k), op_ML <_comp>()(k, der(), f, v));
+			(f, k == o.k, f(k, o.k), op_ML <_comp>()(k, der(), f, o));
 	}
 
 	// TODO: define when random-access is available
-	template <typename V>
-	INLINE constexpr d comp(afun::op::sub, V&& v) const;
+	template <typename O>
+	INLINE constexpr d comp(afun::op::sub, O&& o) const;
 
 //-----------------------------------------------------------------------------
 

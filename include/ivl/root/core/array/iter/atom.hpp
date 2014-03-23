@@ -59,11 +59,11 @@ protected:
 	INLINE void add(d n) { }
 	INLINE void sub(d n) { }
 
-	template <typename V>
-	INLINE constexpr bool comp(afun::op::eq, V&&) const { return false; }
+	template <typename O>
+	INLINE constexpr bool comp(afun::op::eq, O&&) const { return false; }
 
-	template <typename V>
-	INLINE constexpr bool comp(afun::op::neq, V&&) const { return true; }
+	template <typename O>
+	INLINE constexpr bool comp(afun::op::neq, O&&) const { return true; }
 
 //-----------------------------------------------------------------------------
 
@@ -84,9 +84,9 @@ template <
 >
 class atom_iter_impl :
 	public atom_iter_base <D, TR>,
-	public iter_base <D, TR, T>
+	public iter_base <D, TR, I>
 {
-	using B = iter_base <D, TR, T>;
+	using B = iter_base <D, TR, I>;
 
 	friend base_type_of <B>;
 
@@ -98,21 +98,21 @@ class atom_iter_impl :
 
 public:
 	using B::B;
-
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T,
-	typename D = atom_trav <Q, I, R, T>,
-	typename TR = iter_traits <I, R, T, size_t>
+	typename Q, typename V, typename R, typename T,
+	typename D = atom_trav <Q, V, R, T>,
+	typename TR = iter_traits <V, R, T, size_t>,
+	bool = path_fin <Q>()
 >
 class atom_trav_impl :
 	public atom_iter_base <D, TR>,
-	public trav_base <D, TR, Q, T>
+	public trav_base <D, TR, Q, V>
 {
-	using B = trav_base <D, TR, Q, T>;
+	using B = trav_base <D, TR, Q, V>;
 
 	friend B;
 	friend base_type_of <B>;
@@ -134,6 +134,62 @@ public:
 
 	INLINE bool operator+() const { return true; }
 	INLINE bool operator-() const { return true; }
+};
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename Q, typename V, typename R, typename T,
+	typename D, typename TR
+>
+struct atom_trav_impl <Q, V, R, T, D, TR, true> :
+	public atom_iter_base <D, TR>,
+	public trav_base <D, TR, Q, V>
+{
+	using B = trav_base <D, TR, Q, V>;
+
+	friend B;
+	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class atom_iter_base;
+
+	using d = seq_diff <TR>;
+
+	using B::val;
+	using B::cast;
+
+//-----------------------------------------------------------------------------
+
+	size_t k = 0;
+
+//-----------------------------------------------------------------------------
+
+	INLINE void inc() { ++k; }
+	INLINE void dec() { --k; }
+
+	INLINE void add(d n) { k += n; }
+	INLINE void sub(d n) { k -= n; }
+
+	template <typename F, typename O>
+	INLINE constexpr bool
+	comp(F f, O&& o) const { return f(k, o.k); }
+
+	template <typename O>
+	INLINE constexpr d
+	comp(afun::op::sub, O&& o) const { return k - o.k; }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+	static constexpr bool finite = true;
+
+	INLINE constexpr operator bool() const { return k != 1; }
+
+	INLINE bool operator+() const { return k != 0; }
+	INLINE bool operator-() const { return k != 0; }
 };
 
 //-----------------------------------------------------------------------------

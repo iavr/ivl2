@@ -398,10 +398,10 @@ template <typename C, typename T, typename Q>
 using trav = type_of <trav_t <C, T, Q> >;
 
 template <typename C, typename T>
-struct iter_t <C, _type <T> > : id_t <T> { };
+struct iter_t <C, _type <T> > : add_ref_t <C, T> { };
 
 template <typename C, typename T, typename Q>
-struct trav_t <C, _type <T>, Q> : id_t <T> { };
+struct trav_t <C, _type <T>, Q> : add_ref_t <C, T> { };
 
 template <typename C, typename... A>
 struct iter_t <C, pack <A...> > : pack <iter <C, id_t <A> >...> { };

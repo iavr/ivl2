@@ -111,6 +111,32 @@ template <typename S, typename D> using is_conv = is_conv_ <S, D>;
 
 //-----------------------------------------------------------------------------
 
+template <typename T, typename A>
+using static_casts_test = decltype(static_cast <T>(gen <A>()));
+
+template <typename T, typename A>
+using dynamic_casts_test = decltype(dynamic_cast <T>(gen <A>()));
+
+template <typename T, typename A>
+using const_casts_test = decltype(const_cast <T>(gen <A>()));
+
+template <typename T, typename A>
+using reinterpret_casts_test = decltype(reinterpret_cast <T>(gen <A>()));
+
+template <typename T, typename A>
+using static_casts = sfinae <static_casts_test, T, A>;
+
+template <typename T, typename A>
+using dynamic_casts = sfinae <dynamic_casts_test, T, A>;
+
+template <typename T, typename A>
+using const_casts = sfinae <const_casts_test, T, A>;
+
+template <typename T, typename A>
+using reinterpret_casts = sfinae <reinterpret_casts_test, T, A>;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 //-----------------------------------------------------------------------------
@@ -197,6 +223,11 @@ template <typename D, typename... T>
 using common_or = type_of <common_or_t <D, T...> >;
 
 //-----------------------------------------------------------------------------
+
+using details::static_casts;
+using details::dynamic_casts;
+using details::const_casts;
+using details::reinterpret_casts;
 
 using details::is_base_eq;
 using details::is_base;

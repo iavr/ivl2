@@ -82,7 +82,7 @@ class tail_seq_impl :
 
 	template <template <typename> class VT, typename Q, typename V>
 	static INLINE constexpr VT <Q>
-	t(V&& v) { return VT <Q>(++v >>= edge); }
+	t(V&& v) { return VT <Q>(++fwd <V>(v) >>= edge); }
 
 //-----------------------------------------------------------------------------
 

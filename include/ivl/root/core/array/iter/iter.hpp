@@ -59,13 +59,13 @@ protected:
 	INLINE void add(d n) { der().v() += n; }
 	INLINE void sub(d n) { der().v() -= n; }
 
-	template <typename F, typename V>
+	template <typename F, typename O>
 	INLINE constexpr bool
-	comp(F f, V&& v) const { return f(der().v(), v.v()); }
+	comp(F f, O&& o) const { return f(der().v(), o.v()); }
 
-	template <typename V>
+	template <typename O>
 	INLINE constexpr d
-	comp(afun::op::sub, V&& v) const { return der().v() - v.v(); }
+	comp(afun::op::sub, O&& o) const { return der().v() - o.v(); }
 
 //-----------------------------------------------------------------------------
 

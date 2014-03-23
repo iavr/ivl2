@@ -59,14 +59,14 @@ protected:
 	INLINE void add(d n) { der().v() -= n; }
 	INLINE void sub(d n) { der().v() += n; }
 
-	template <typename F, typename V>
+	template <typename F, typename O>
 	INLINE constexpr bool
-	comp(F, V&& v) const { return afun::inv_fun <F>()(der().v(), v.v()); }
+	comp(F, O&& o) const { return afun::inv_fun <F>()(der().v(), o.v()); }
 
-	template <typename V>
+	template <typename O>
 	INLINE constexpr d
-	comp(afun::op::sub, V&& v) const { return v.v() - der().v(); }
-	
+	comp(afun::op::sub, O&& o) const { return o.v() - der().v(); }
+
 //-----------------------------------------------------------------------------
 
 public:

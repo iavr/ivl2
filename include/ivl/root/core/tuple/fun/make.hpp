@@ -78,6 +78,12 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
+	template <typename...> class T,
+	template <typename...> class... E
+>
+using id_of = make_as <id, T, E...>;
+
+template <
 	template <typename...> class T = pre_tuple,
 	template <typename...> class... E
 >
@@ -138,6 +144,7 @@ using cref = cref_of <>;
 
 using details::make;
 
+using details::id_of;
 using details::val_of;
 using details::uref_of;
 using details::rref_of;
