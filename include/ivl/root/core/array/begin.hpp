@@ -71,18 +71,35 @@ using namespace arrays;
 
 //-----------------------------------------------------------------------------
 
+namespace atoms {
+
+namespace details { struct uscore; }
+
+using details::uscore;
+
+}  // namespace atoms
+
+//-----------------------------------------------------------------------------
+
 namespace types {
 namespace traits {
+namespace details {
+
+using namespace arrays;
+using namespace atoms;
+
+template <typename T> struct is_uscore_         : _false { };
+template <>           struct is_uscore_<uscore> : _true { };
+
+}  // namespace details
+
+template <typename T>
+struct is_uscore : details::is_uscore_<raw_type <T> > { };
 
 template <typename T> struct as_seq;
 template <typename T> struct seq_atom_of_t;
 template <typename T> using  seq_atom_of = type_of <seq_atom_of_t <T> >;
 
-namespace details {
-
-using namespace arrays;
-
-}  // namespace details
 }  // namespace traits
 }  // namespace types
 

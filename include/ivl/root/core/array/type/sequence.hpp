@@ -61,6 +61,9 @@ using heap_array = sequence <tag::heap, T>;
 //-----------------------------------------------------------------------------
 
 template <typename U>
+using each_seq = sequence <tag::each, U>;
+
+template <typename U>
 using tail_seq = sequence <tag::tail, U>;
 
 template <typename U>
@@ -68,6 +71,8 @@ using flip_seq = sequence <tag::flip, U>;
 
 template <typename K, typename U>
 using indirect_seq = sequence <tag::indirect, K, U>;
+
+//-----------------------------------------------------------------------------
 
 template <typename M, typename F, typename... A>
 using apply_seq = sequence <tag::apply, M, F, A...>;
@@ -122,6 +127,7 @@ using details::pre_fixed_array;
 using details::fixed_array;
 using details::heap_array;
 
+using details::each_seq;
 using details::tail_seq;
 using details::flip_seq;
 using details::indirect_seq;

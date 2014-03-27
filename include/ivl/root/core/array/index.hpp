@@ -71,12 +71,14 @@
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
 
+#include "view/each.hpp"
 #include "view/tail.hpp"
 #include "view/flip.hpp"
 #include "view/indirect.hpp"
 #include "view/apply.hpp"
 #include "view/zip.hpp"
 #include "view/join.hpp"
+#include "view/each.hpp"
 
 //-----------------------------------------------------------------------------
 

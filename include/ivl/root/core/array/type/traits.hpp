@@ -519,16 +519,36 @@ struct seq_void : is_void <seq_ret <F, A...> > { };
 
 namespace details {
 
-template <typename A, typename T = seq_ref <A>, bool F = fix_seq <A>()>
-struct seq_copy_ : id_t <heap_array <copy <T> > > { };
+template <typename A, typename T = copy <seq_ref <A> >, bool F = fix_seq <A>()>
+struct seq_copy_ : id_t <fixed_array <T, seq_len <A>{}> > { };
 
 template <typename A, typename T>
-struct seq_copy_<A, T, true> :
-	id_t <fixed_array <copy <T>, seq_len <A>{}> > { };
+struct seq_copy_<A, T, false> : id_t <heap_array <T> > { };
 
 // extending definition @type/traits/transform
 template <typename C, typename... A>
 struct copy_rec <sequence <C, A...> > : seq_copy_<sequence <C, A...> > { };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <
+	typename A, typename B,
+	typename T = common2 <seq_ref <A>, seq_ref <B> >,
+	bool F = all <fix_seq, A, B>()
+>
+struct seq_common : id_t <fixed_array <T, sz_min <seq_len, A, B>{}> > { };
+
+template <typename A, typename B, typename T>
+struct seq_common <A, B, T, false> : id_t <heap_array <T> > { };
+
+// extending definition @type/traits/relation
+template <typename CA, typename... A, typename CB, typename... B>
+struct common2_rec <sequence <CA, A...>, sequence <CB, B...> > :
+	seq_common <copy <sequence <CA, A...> >, copy <sequence <CB, B...> > > { };
 
 }  // namespace details
 

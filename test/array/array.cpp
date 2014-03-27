@@ -61,25 +61,24 @@ void run()
 		cout << endl;
 	}
 
-// 	{
-// 		cout << "array by seq" << endl;
-// 		int k = 8;
-// 		const int n = 14;
-// 		double x = 4.5;
-// 		const double y = 3.14;
-// 		auto i = seq(5, 9, 7, -2, 0);
-// 		auto d = seq(5.28, 8.79, -0.84, -4.18);
-// 		auto a = seq(k, n, x, y, 5, 0);
-// 		cout << "i = " << i << endl;
-// 		cout << "d = " << d << endl;
-// 		cout << "a = " << a << endl;
-// 		cout << endl;
-// 	}
+	{
+		cout << "array by seq" << endl;
+		int k = 8, j = 0;
+		const int n = 14;
+		double x = 4.5, z = 0;
+		const double y = 3.14;
+		cout << seq(5, 9, 7, -2, 0) << endl;
+		cout << seq(5.28, 8.79, -0.84, -4.18) << endl;
+		cout << seq(k, n, x, y, 5, 0) << endl;
+		auto a = seq(_(k, x), _(j, z));  // TODO: _(k, x, 2)
+		a[0] = _(5, -2.3);
+		cout << a << ": (k, x) = " << k << " " << x << endl;
+		cout << endl;
+	}
 
 	{
 		cout << "head/tail" << endl;
-		using A = array <int, 11>;
-		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
+		auto a = seq(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
 		cout << a << endl;
 		cout << head(a) << endl;
 		cout << tail(a) << endl;
@@ -89,8 +88,7 @@ void run()
 
 	{
 		cout << "flip" << endl;
-		using A = array <int, 11>;
-		A a{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
+		auto a = seq(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
 		cout << "    " << a << endl;
 		cout << "  F " << flip(a) << endl;
 		cout << "  F " << flip(mv(a)) << endl;
@@ -105,14 +103,14 @@ void run()
 
 	{
 		cout << "indirect" << endl;
-		array <int, 11> x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
-		array <int, 4>  i{5, 8, 0, 8};
+		auto x = seq(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
+		auto i = seq(5, 8, 0, 8);
 		cout << "x = " << x << endl;
 		cout << "i = " << i << endl;
 		cout << "x[i] = " << x[i] << endl;
 
 		using A = array <int, 4>;
-		array <A, 2> j(i, A{7, 2, 10., 5});
+		array <A, 2> j(i, A{7, 2, 10., 5});  // TODO: seq._<int>(...)
 		cout << "j = " << j << endl;
 		cout << "x[j] = " << x[j] << endl;
 
@@ -121,8 +119,8 @@ void run()
 
 	{
 		cout << "zip/inner" << endl;
-		array <char, 4> c = {'a', 'b', 'c', 'd'};
-		array <int, 4>  i = {3, 2, -4, 0};
+		auto c = seq('a', 'b', 'c', 'd');
+		auto i = seq(3, 2, -4, 0);
 		cout << zip(c, i) << endl;
 		zip(c, i)[1] = _('e', 18);
 		cout << c << endl << i << endl;
@@ -133,9 +131,9 @@ void run()
 	{
 		cout << "join" << endl;
 		A <> E;
-		A <4> a = {0, 1, 2, 3};
-		B <3> b = {-3.14, 12.71, -8e3};
-		A <3> c = {-3.14, 12.71, -8e3};
+		auto a = seq(0, 1, 2, 3);
+		auto b = seq(-3.14, 12.71, -8e3);
+		A <3> c = {-3.14, 12.71, -8e3};  // TODO: seq._<int>(...)
 		cout << join(a, b, E, A <2>{0, 1}) << endl;
 		cout << join(E, a, b, E, A <2>{0, 1}, E) << endl;
 		cout << join(a, b) << endl;
@@ -145,22 +143,21 @@ void run()
 		cout << endl;
 	}
 
-// 	{
-// 		cout << "arr" << endl;
-// 		A <> E;
-// 		A <4> a = {0, 1, 2, 3};
-// 		B <3> b = {-3.14, 12.71, -8e3};
-// 		cout << arr(5, a, 14, 0, 0, b, E, A <2>{0, 1}) << endl;
-// 		auto j = arr(5, a, 14, 0, 0, b, E, A <2>{0, 1});
-// 		cout << j << endl;
-// 		cout << endl;
-// 	}
+	{
+		cout << "arr" << endl;
+		A <> E;
+		auto a = seq(0, 1, 2, 3);
+		auto b = seq(-3.14, 12.71, -8e3);
+		cout << arr(5, a, 14, 0, 0, b, E, A <2>{0, 1}) << endl;
+		auto j = arr(5, a, 14, 0, 0, b, E, A <2>{0, 1});
+		cout << j << endl;
+		cout << endl;
+	}
 
 	{
 		cout << "apply" << endl;
-		using A = array <int, 11>;
-		A x{5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0};
-		A y{7, -8, 0, 13, 128, 0, -2, 7, 6, 14, -9};
+		auto x = seq(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
+		auto y = seq(7, -8, 0, 13, 128, 0, -2, 7, 6, 14, -9);
 		cout << "x = " << x << endl;
 		cout << "y = " << y << endl;
 		cout << "x + y = " << apply(op::add, x, y) << endl;
@@ -170,8 +167,7 @@ void run()
 
 	{
 		cout << "loop" << endl;
-		array <int, 6> x{14, 7, 3, -8, 9, 0};
-
+		auto x = seq(14, 7, 3, -8, 9, 0);
 		cout << "x = " << x << endl;
 		cout << "x = ", loop(op::left, cout, mv(x)), cout << endl;
 		cout << endl;

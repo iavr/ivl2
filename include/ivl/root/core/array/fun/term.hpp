@@ -73,6 +73,8 @@ struct prim_term
 
 }  // namespace details
 
+using details::prim_term;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace afun

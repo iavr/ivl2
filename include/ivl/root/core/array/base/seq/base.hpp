@@ -118,11 +118,13 @@ public:
 private:
 	using data = seq_data_tuple <D, E...>;
 
+protected:
 	template <typename T, typename R = raw_type <T> >
 	using opt = base_opt <T, R, _if <eq <R, D>{}, data, R> >;
 
-	template <typename... A>
-	using indir = subs <indirect_seq, opt <A>...>;
+private:
+	template <typename... A> using indir = subs <indirect_seq, opt <A>...>;
+	template <typename A>    using each  = subs <each_seq,     opt <A> >;
 
 //-----------------------------------------------------------------------------
 
@@ -138,6 +140,20 @@ public:
 	template <typename A, only_if <is_seq <A>{}> = 0>
 	INLINE constexpr indir <A, const D&>
 	operator[](A&& a) const& { return make <indir>()(fwd <A>(a), der()); }
+
+//-----------------------------------------------------------------------------
+
+	template <typename A, only_if <is_uscore <A>{}> = 0>
+	INLINE each <D>
+	operator[](A&& a) && { return make <each>()(der_f()); }
+
+	template <typename A, only_if <is_uscore <A>{}> = 0>
+	INLINE each <D&>
+	operator[](A&& a) & { return make <each>()(der()); }
+
+	template <typename A, only_if <is_uscore <A>{}> = 0>
+	INLINE each <const D&>
+	operator[](A&& a) const& { return make <each>()(der()); }
 
 };
 

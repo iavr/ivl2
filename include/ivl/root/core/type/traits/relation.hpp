@@ -144,16 +144,29 @@ using reinterpret_casts = sfinae <reinterpret_casts_test, T, A>;
 namespace details {
 
 template <typename A, typename B>
-using common_test = decltype(true ? gen <A>() : gen <B>());
+using ternary_test = decltype(true ? gen <A>() : gen <B>());
 
-template <
-	typename A, typename B, typename T = common_test <A, B>,
-	bool = is_rref <A>() && is_rref <B>()
->
-struct common_ : id_t <T> { };
+template <typename A, typename B>
+using ternary = try_subs <ternary_test, A, B>;
+
+// extended elsewhere
+template <typename A, typename B>
+struct common2_rec : id_t <nat> { };
+
+template <typename A, typename B, typename T, bool = all <is_rref, A, B>()>
+struct common2_result : id_t <T> { };
 
 template <typename A, typename B, typename T>
-struct common_<A, B, T, false> : remove_rref_t <T> { };
+struct common2_result <A, B, T, false> : remove_rref_t <T> { };
+
+template <typename A, typename B, typename T = ternary <A, B> >
+struct common2_t : common2_result <A, B, T> { };
+
+template <typename A, typename B>
+struct common2_t <A, B, nat> : common2_rec <raw_type <A>, raw_type <B> > { };
+
+template <typename A, typename B>
+using common2 = type_of <common2_t <A, B> >;
 
 }  // namespace details
 
@@ -168,42 +181,17 @@ template <typename... T> using common = type_of <common_t <T...> >;
 template <template <typename...> class C, typename E>
 struct common_pt <C <E> > : id_t <E> { };
 
-template <template <typename...> class C, typename E, typename F>
-struct common_pt <C <E, F> > : details::common_<E, F> { };
-
 template <
 	template <typename...> class C,
 	typename E, typename F, typename... G
 >
-struct common_pt <C <E, F, G...> > : common_pt <C <common <E, F>, G...> > { };
+struct common_pt <C <E, F, G...> > : common_pt <C <details::common2 <E, F>, G...> > { };
 
-//-----------------------------------------------------------------------------
+template <template <typename...> class C>
+struct common_pt <C <nat> > : nat { };
 
-template <typename P>    struct has_common_p;
-template <typename... T> using  has_common = has_common_p <pack <T...> >;
-
-namespace details {
-
-template <bool C, typename E, typename F, typename... G>
-struct has_common_ : has_common <common <E, F>, G...> { };
-
-template <typename E, typename F, typename... G>
-struct has_common_<false, E, F, G...> : _false { };
-
-}  // namespace details
-
-template <template <typename...> class C, typename E>
-struct has_common_p <C <E> > : _true { };
-
-template <template <typename...> class C, typename E, typename F>
-struct has_common_p <C <E, F> > : sfinae <details::common_test, E, F> { };
-
-template <
-	template <typename...> class C,
-	typename E, typename F, typename... G
->
-struct has_common_p <C <E, F, G...> > :
-	details::has_common_<has_common <E, F>{}, E, F, G...> { };
+template <template <typename...> class C, typename F, typename... G>
+struct common_pt <C <nat, F, G...> > : nat { };
 
 //-----------------------------------------------------------------------------
 

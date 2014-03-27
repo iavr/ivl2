@@ -316,6 +316,33 @@ struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename A, typename B>
+struct tup_common;
+
+template <typename... A, typename... B>
+struct tup_common <tuple <A...>, tuple <B...> > :
+	id_t <tuple <common2 <A, B>...> > { };
+
+// extending definition @type/traits/relation
+template <typename CA, typename... A, typename CB, typename... B>
+struct common2_rec <collection <CA, A...>, collection <CB, B...> > :
+	tup_common <copy <collection <CA, A...> >, copy <collection <CB, B...> > > { };
+
+template <typename... A, typename... B>
+struct common2_rec <tuple <A...>, tuple <B...> > :
+	tup_common <tuple <A...>, tuple <B...> > { };
+
+// TODO
+template <typename... A, typename... B>
+struct common2_rec <pre_tuple <A...>, pre_tuple <B...> > :
+	id_t <tuple <common2 <A, B>...> > { };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
 }  // namespace traits
 
 //-----------------------------------------------------------------------------

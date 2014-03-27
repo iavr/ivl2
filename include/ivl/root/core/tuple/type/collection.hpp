@@ -66,6 +66,8 @@ using flip_tup = collection <tag::flip, U>;
 template <typename K, typename U>
 using indirect_tup = collection <tag::indirect, K, U>;
 
+//-----------------------------------------------------------------------------
+
 template <typename F, typename... A>
 using apply_tup = collection <tag::apply, F, A...>;
 

@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename... A>
-using auto_seq = array <copy <common <A...> >, sizeof...(A)>;
+using auto_seq = fixed_array <raw_type <common <A...> >, sizeof...(A)>;
 
 using seq = id_of <auto_seq>;
 
