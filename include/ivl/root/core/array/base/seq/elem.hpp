@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_MANIP_HPP
-#define IVL_CORE_ARRAY_FUN_MANIP_HPP
+#ifndef IVL_CORE_ARRAY_STORE_ELEM_HPP
+#define IVL_CORE_ARRAY_STORE_ELEM_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,44 +42,42 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename... A>
-using auto_seq = fixed_array <common <A...>, sizeof...(A)>;
+template <typename T>
+class ref_elem;
 
-using seq = id_of <auto_seq>;
-
-//-----------------------------------------------------------------------------
-
-using seq_join = uref_of <join_seq, all_seq>;
-using arr      = uref_of <join_sequence>;
-
-// no alias: entry point
-template <typename M = prim_term>
-struct seq_zip_by : uref_map <zip_seq_by <M>, all_seq> { };
-
-template <typename M = prim_term>
-struct seq_inner_by : uref_map <zip_sequence_by <M>, any_seq> { };
-
-using seq_zip   = seq_zip_by <>;
-using seq_inner = seq_inner_by <>;
-
-//-----------------------------------------------------------------------------
-
-struct seq_head
+template <typename T>
+class ref_elem <T&>
 {
-	template <typename A>
-	INLINE constexpr auto operator()(A&& a) const
-	-> decltype(fwd <A>(a)[0])
-		{ return fwd <A>(a)[0]; }
+	T& r;
+
+public:
+	ref_elem(T& r) : r(r) { }
+
+	operator T&()       { return r; }
+	operator T&() const { return r; }
 };
 
-template <template <typename...> class F = base_opt>
-using seq_tail_as = make_as <F, tail_seq>;
+//-----------------------------------------------------------------------------
 
-template <template <typename...> class F = base_opt>
-using seq_flip_as = make_as <F, flip_seq>;
+template <typename T>
+class ref_elem <T&&>
+{
+	T&& r;
 
-using seq_tail = seq_tail_as <>;
-using seq_flip = seq_flip_as <>;
+public:
+	ref_elem(T&& r) : r(mv(r)) { }
+
+	operator T&&()       { return mv(r); }
+	operator T&&() const { return mv(r); }
+
+	operator T&()       { return r; }
+	operator T&() const { return r; }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename T>
+using seq_elem = _if <is_ref <T>{}, ref_elem <T>, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -87,17 +85,7 @@ using seq_flip = seq_flip_as <>;
 
 //-----------------------------------------------------------------------------
 
-using details::seq;
-using details::arr;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
-
-//-----------------------------------------------------------------------------
-
-static __attribute__ ((unused)) afun::seq  seq;
-static __attribute__ ((unused)) afun::arr  arr;
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -105,4 +93,4 @@ static __attribute__ ((unused)) afun::arr  arr;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_MANIP_HPP
+#endif  // IVL_CORE_ARRAY_STORE_ELEM_HPP

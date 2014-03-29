@@ -63,16 +63,26 @@ void run()
 
 	{
 		cout << "array by seq" << endl;
-		int k = 8, j = 0;
+		int k = 8;
 		const int n = 14;
-		double x = 4.5, z = 0;
+		double x = 4.5;
 		const double y = 3.14;
 		cout << seq(5, 9, 7, -2, 0) << endl;
 		cout << seq(5.28, 8.79, -0.84, -4.18) << endl;
 		cout << seq(k, n, x, y, 5, 0) << endl;
-		auto a = seq(_(k, x), _(j, z));  // TODO: _(k, x, 2)
-		a[0] = _(5, -2.3);
-		cout << a << ": (k, x) = " << k << " " << x << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "array of ref/tuple" << endl;
+		int j = 8, k = 0;
+		double x = 4.5, z = 0;
+		auto a = seq(j, k);
+		cout << ++a;
+		cout << ": (j, k) = " << j << " " << k << endl;
+		auto b = seq(_(k, x), _(j, z));  // TODO: _(k, x, 2)
+		b[0] = _(5, -2.3);
+		cout << b << ": (k, x) = " << k << " " << x << endl;
 		cout << endl;
 	}
 

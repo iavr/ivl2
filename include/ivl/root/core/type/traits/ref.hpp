@@ -80,7 +80,7 @@ template <typename C, typename T>
 struct ref_t : base_opt_t <add_ref <C, T>, T> { };
 
 template <typename C, typename T>
-using ref  = type_of <ref_t <C, T> >;
+using ref = type_of <ref_t <C, T> >;
 
 //-----------------------------------------------------------------------------
 

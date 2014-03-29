@@ -519,36 +519,47 @@ struct seq_void : is_void <seq_ret <F, A...> > { };
 
 namespace details {
 
-template <typename A, typename T = copy <seq_ref <A> >, bool F = fix_seq <A>()>
-struct seq_copy_ : id_t <fixed_array <T, seq_len <A>{}> > { };
+//-----------------------------------------------------------------------------
 
-template <typename A, typename T>
-struct seq_copy_<A, T, false> : id_t <heap_array <T> > { };
+template <typename T, bool F, size_t N>
+struct new_seq_ : id_t <fixed_array <T, N> > { };
 
-// extending definition @type/traits/transform
-template <typename C, typename... A>
-struct copy_rec <sequence <C, A...> > : seq_copy_<sequence <C, A...> > { };
+template <typename T, size_t N>
+struct new_seq_ <T, false, N> : id_t <heap_array <T> > { };
 
-}  // namespace details
+template <typename T, typename... A>
+struct new_seq :
+	new_seq_<T, all <fix_seq, A...>{}, sz_min <seq_len, A...>{}> { };
 
 //-----------------------------------------------------------------------------
 
-namespace details {
+template <typename A>
+using seq_flat = new_seq <flat <seq_ref <A> >, A>;
 
-template <
-	typename A, typename B,
-	typename T = common2 <seq_ref <A>, seq_ref <B> >,
-	bool F = all <fix_seq, A, B>()
->
-struct seq_common : id_t <fixed_array <T, sz_min <seq_len, A, B>{}> > { };
+// extending definition @tuple/type/traits
+template <typename C, typename... A>
+struct flat_rec <sequence <C, A...> > : seq_flat <sequence <C, A...> > { };
 
-template <typename A, typename B, typename T>
-struct seq_common <A, B, T, false> : id_t <heap_array <T> > { };
+//-----------------------------------------------------------------------------
+
+template <typename A>
+using seq_copy = new_seq <copy <seq_ref <A> >, A>;
+
+// extending definition @type/traits/transform
+template <typename C, typename... A>
+struct copy_rec <sequence <C, A...> > : seq_copy <sequence <C, A...> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename A, typename B>
+using seq_common = new_seq <common2 <seq_ref <A>, seq_ref <B> >, A, B>;
 
 // extending definition @type/traits/relation
 template <typename CA, typename... A, typename CB, typename... B>
-struct common2_rec <sequence <CA, A...>, sequence <CB, B...> > :
-	seq_common <copy <sequence <CA, A...> >, copy <sequence <CB, B...> > > { };
+struct common_rec <sequence <CA, A...>, sequence <CB, B...> > :
+	seq_common <flat <sequence <CA, A...> >, flat <sequence <CB, B...> > > { };
+
+//-----------------------------------------------------------------------------
 
 }  // namespace details
 

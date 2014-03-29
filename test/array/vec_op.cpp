@@ -81,17 +81,20 @@ void run()
 
 	{
 		cout << "op []" << endl;
-		auto a = seq(  0,    4,   8);
-		auto b = seq(  1,    5, 9.1);
-		auto c = seq(  2,  6.1,  10);
-		auto d = seq(3.1,    7,  11);
+		auto a = seq(0,  4,   8);
+		auto b = seq(1,  5,   9.);
+		auto c = seq(2,  6., 10);
+		auto d = seq(3., 7,  11);
 		auto v = seq(a, b, c, d);
-// 		auto i = seq(2, 0, 1, 0);
-// 		cout << v[2] << endl;
-// 		cout << v[_][2] << endl;
-// 		cout <<   v[_] [  i ] << endl; // TODO: test assignment
-// 		cout << _[v[_]][  i ] << endl;
-// 		cout <<   v[_] [_[i]] << endl;
+		auto i = seq(2, 0, 1, 0);
+		cout << v[2] << endl;
+		cout << v[_][2] << endl;
+		cout <<   v[_] [  i ] << endl;
+		cout << _[v[_]][  i ] << endl;
+		cout <<   v[_] [_[i]] << endl;
+		cout << v << endl;
+		++v[_][  i ];
+		cout << v << endl;
 		cout << endl;
 	}
 
@@ -99,7 +102,7 @@ void run()
 		cout << "op ()" << endl;
 		array <func <double>, 3> fn = {1, 2, 3};
 		auto f = fn[_];
-		auto y = seq(4, -2, 16.1);
+		auto y = seq(4, -2, 16.);
 		cout << f(8, 4) << endl;
 		cout << f(8, y) << endl;
 		cout << f(8, _[y]) << endl;

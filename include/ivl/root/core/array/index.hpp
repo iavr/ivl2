@@ -53,6 +53,7 @@
 
 #include "base/iter/store.hpp"
 #include "base/iter/base.hpp"
+#include "base/seq/elem.hpp"
 #include "base/seq/store.hpp"
 #include "base/seq/base.hpp"
 

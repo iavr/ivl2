@@ -302,7 +302,41 @@ struct tup_void : any_p <is_void, tup_ret <F, T...> > { };
 
 //-----------------------------------------------------------------------------
 
+namespace details { template <typename T> struct flat_rec; }
+
+template <typename T> struct flat_t : details::flat_rec <T> { };
+template <typename T> using  flat   = type_of <flat_t <T> >;
+
+template <typename T> struct flat_t <T&>  : id_t <flat <T>&> { };
+template <typename T> struct flat_t <T&&> : id_t <flat <T>&&> { };
+
+template <typename T>
+struct flat_t <T const> : id_t <flat <T> const> { };
+
+template <typename T>
+struct flat_t <T volatile> : id_t <flat <T> volatile> { };
+
+template <typename T>
+struct flat_t <T const volatile> : id_t <flat <T> const volatile> { };
+
+//-----------------------------------------------------------------------------
+
 namespace details {
+
+//-----------------------------------------------------------------------------
+
+// extended elsewhere
+template <typename T>
+struct flat_rec : id_t <T> { };
+
+template <typename C, typename... A>
+struct flat_rec <collection <C, A...> > :
+	flat_rec <tup_ref <collection <C, A...> > > { };
+
+template <typename... E>
+struct flat_rec <pack <E...> > : id_t <tuple <flat <E>...> > { };
+
+//-----------------------------------------------------------------------------
 
 // extending definition @type/traits/transform
 template <typename C, typename... A>
@@ -312,32 +346,18 @@ struct copy_rec <collection <C, A...> > :
 template <typename... E>
 struct copy_rec <pack <E...> > : id_t <tuple <copy <E>...> > { };
 
-}  // namespace details
-
 //-----------------------------------------------------------------------------
-
-namespace details {
-
-template <typename A, typename B>
-struct tup_common;
-
-template <typename... A, typename... B>
-struct tup_common <tuple <A...>, tuple <B...> > :
-	id_t <tuple <common2 <A, B>...> > { };
 
 // extending definition @type/traits/relation
 template <typename CA, typename... A, typename CB, typename... B>
-struct common2_rec <collection <CA, A...>, collection <CB, B...> > :
-	tup_common <copy <collection <CA, A...> >, copy <collection <CB, B...> > > { };
+struct common_rec <collection <CA, A...>, collection <CB, B...> > :
+	common_rec <flat <collection <CA, A...> >, flat <collection <CB, B...> > > { };
 
 template <typename... A, typename... B>
-struct common2_rec <tuple <A...>, tuple <B...> > :
-	tup_common <tuple <A...>, tuple <B...> > { };
-
-// TODO
-template <typename... A, typename... B>
-struct common2_rec <pre_tuple <A...>, pre_tuple <B...> > :
+struct common_rec <tuple <A...>, tuple <B...> > :
 	id_t <tuple <common2 <A, B>...> > { };
+
+//-----------------------------------------------------------------------------
 
 }  // namespace details
 

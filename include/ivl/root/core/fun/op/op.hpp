@@ -53,72 +53,78 @@ namespace op {                                               \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP1(NAME, OP)                  \
-                                               \
-IVL_VEC_OP(NAME)                               \
-                                               \
-namespace op {                                 \
-namespace details {                            \
-                                               \
-template <                                     \
-	typename A,                                 \
-	only_if <is_group <A>{}>                    \
-= 0>                                           \
-INLINE constexpr auto                          \
-operator OP(A&& a)                             \
--> decltype(NAME(fwd <A>(a)))                  \
-	{ return NAME(fwd <A>(a)); }                \
-                                               \
-}                                              \
-}                                              \
-                                               \
-using op::details::operator OP;                \
+#define IVL_VEC_OP1(NAME, OP)                      \
+                                                   \
+IVL_VEC_OP(NAME)                                   \
+                                                   \
+namespace op {                                     \
+namespace details {                                \
+                                                   \
+template <                                         \
+	typename A,                                     \
+	only_if <is_group <A>{}>                        \
+= 0>                                               \
+INLINE constexpr auto                              \
+operator OP(A&& a)                                 \
+-> decltype(NAME(fwd <A>(a)))                      \
+	{ return NAME(fwd <A>(a)); }                    \
+                                                   \
+}                                                  \
+}                                                  \
+                                                   \
+using op::details::operator OP;                    \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP1_PRE(NAME, OP)              \
-                                               \
-IVL_VEC_OP_BY(vec_mut, NAME)                   \
-                                               \
-namespace op {                                 \
-namespace details {                            \
-                                               \
-template <                                     \
-	typename A,                                 \
-	only_if <is_group <A>{}>                    \
-= 0>                                           \
-INLINE auto                                    \
-operator OP(A&& a)                             \
--> decltype(NAME(fwd <A>(a)))                  \
-	{ return NAME(fwd <A>(a)); }                \
-                                               \
-}                                              \
-}                                              \
-                                               \
-using op::details::operator OP;                \
+#define IVL_VEC_OP1_PRE(NAME, OP)                  \
+                                                   \
+IVL_VEC_OP_BY(vec_mut, NAME)                       \
+                                                   \
+namespace op {                                     \
+namespace details {                                \
+                                                   \
+template <                                         \
+	typename A,                                     \
+	only_if <                                       \
+		is_group <A>() &&                            \
+		!is_const <remove_ref <A> >()                \
+	>                                               \
+= 0>                                               \
+INLINE auto                                        \
+operator OP(A&& a)                                 \
+-> decltype(NAME(fwd <A>(a)))                      \
+	{ return NAME(fwd <A>(a)); }                    \
+                                                   \
+}                                                  \
+}                                                  \
+                                                   \
+using op::details::operator OP;                    \
 
 //-----------------------------------------------------------------------------
 
-#define IVL_VEC_OP1_POST(NAME, OP)             \
-                                               \
-IVL_VEC_OP_BY(vec_copy, NAME)                  \
-                                               \
-namespace op {                                 \
-namespace details {                            \
-                                               \
-template <                                     \
-	typename A,                                 \
-	only_if <is_group <A>{}>                    \
-= 0>                                           \
-INLINE auto                                    \
-operator OP(A&& a, int)                        \
--> decltype(NAME(fwd <A>(a)))                  \
-	{ return NAME(fwd <A>(a)); }                \
-                                               \
-}                                              \
-}                                              \
-                                               \
-using op::details::operator OP;                \
+#define IVL_VEC_OP1_POST(NAME, OP)                 \
+                                                   \
+IVL_VEC_OP_BY(vec_copy, NAME)                      \
+                                                   \
+namespace op {                                     \
+namespace details {                                \
+                                                   \
+template <                                         \
+	typename A,                                     \
+	only_if <                                       \
+		is_group <A>() &&                            \
+		!is_const <remove_ref <A> >()                \
+	>                                               \
+= 0>                                               \
+INLINE auto                                        \
+operator OP(A&& a, int)                            \
+-> decltype(NAME(fwd <A>(a)))                      \
+	{ return NAME(fwd <A>(a)); }                    \
+                                                   \
+}                                                  \
+}                                                  \
+                                                   \
+using op::details::operator OP;                    \
 
 //-----------------------------------------------------------------------------
 
@@ -154,7 +160,10 @@ namespace details {                                        \
                                                            \
 template <                                                 \
 	typename A, typename B,                                 \
-	only_if <any_group <A, B>{}>                            \
+	only_if <                                               \
+		any_group <A, B>() &&                                \
+		!is_const <remove_ref <A> >()                        \
+	>                                                       \
 = 0>                                                       \
 INLINE auto                                                \
 operator OP(A&& a, B&& b)                                  \

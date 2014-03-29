@@ -143,30 +143,45 @@ using reinterpret_casts = sfinae <reinterpret_casts_test, T, A>;
 
 namespace details {
 
-template <typename A, typename B>
-using ternary_test = decltype(true ? gen <A>() : gen <B>());
+//-----------------------------------------------------------------------------
 
 template <typename A, typename B>
-using ternary = try_subs <ternary_test, A, B>;
+using ternary = decltype(true ? gen <A>() : gen <B>());
+
+template <
+	typename A, typename B,
+	typename T = ternary <A, B>, bool = all <is_rref, A, B>()
+>
+struct common_ternary : id_t <T> { };
+
+template <typename A, typename B, typename T>
+struct common_ternary <A, B, T, false> : remove_rref_t <T> { };
+
+//-----------------------------------------------------------------------------
 
 // extended elsewhere
 template <typename A, typename B>
-struct common2_rec : id_t <nat> { };
+struct common_rec : id_t <nat> { };
 
-template <typename A, typename B, typename T, bool = all <is_rref, A, B>()>
-struct common2_result : id_t <T> { };
+template <
+	typename A, typename B,
+	typename a = raw_type <A>, typename b = raw_type <B>
+>
+struct common_user : common_rec <a, b> { };
 
-template <typename A, typename B, typename T>
-struct common2_result <A, B, T, false> : remove_rref_t <T> { };
+template <typename A, typename B, typename a>
+struct common_user <A, B, a, a> : common_ternary <A, B> { };
 
-template <typename A, typename B, typename T = ternary <A, B> >
-struct common2_t : common2_result <A, B, T> { };
+template <typename A, typename B, typename T = type_of <common_user <A, B> > >
+struct common2_t : id_t <T> { };
 
 template <typename A, typename B>
-struct common2_t <A, B, nat> : common2_rec <raw_type <A>, raw_type <B> > { };
+struct common2_t <A, B, nat> : common_ternary <A, B> { };
 
 template <typename A, typename B>
 using common2 = type_of <common2_t <A, B> >;
+
+//-----------------------------------------------------------------------------
 
 }  // namespace details
 
@@ -185,13 +200,8 @@ template <
 	template <typename...> class C,
 	typename E, typename F, typename... G
 >
-struct common_pt <C <E, F, G...> > : common_pt <C <details::common2 <E, F>, G...> > { };
-
-template <template <typename...> class C>
-struct common_pt <C <nat> > : nat { };
-
-template <template <typename...> class C, typename F, typename... G>
-struct common_pt <C <nat, F, G...> > : nat { };
+struct common_pt <C <E, F, G...> > :
+	common_pt <C <details::common2 <E, F>, G...> > { };
 
 //-----------------------------------------------------------------------------
 

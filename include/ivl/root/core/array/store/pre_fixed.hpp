@@ -45,11 +45,13 @@ namespace details {
 template <typename T, size_t N, bool C = is_cons <T>()>
 class fixed_store
 {
-	T a[N];
+	using E = seq_elem <T>;
+
+	E a[N];
 
 protected:
-	INLINE T*       data()       { return a; }
-	INLINE const T* data() const { return a; }
+	INLINE E*       data()       { return a; }
+	INLINE const E* data() const { return a; }
 
 public:
 	template <typename A = int, only_if <C, A> = 0>
@@ -66,9 +68,11 @@ public:
 template <typename T, bool C>
 struct fixed_store <T, 0, C>
 {
+	using E = seq_elem <T>;
+
 protected:
-	INLINE T*       data()       { return nullptr; }
-	INLINE const T* data() const { return nullptr; }
+	INLINE E*       data()       { return nullptr; }
+	INLINE const E* data() const { return nullptr; }
 };
 
 //-----------------------------------------------------------------------------
@@ -77,14 +81,17 @@ protected:
 template <typename T, size_t N>
 struct seq_data_t <pre_fixed_array <T, N> > : pack <fixed_store <T, N> > { };
 
+template <typename T, size_t N>
+using fixed_traits = seq_traits <T, size <N> >;
+
 //-----------------------------------------------------------------------------
 
 template <typename T, size_t N>
 class sequence <tag::pre_fixed, T, sizes <N> > :
-	public seq_base <pre_fixed_array <T, N>, seq_traits <T, size <N> > >,
+	public seq_base <pre_fixed_array <T, N>, fixed_traits <T, N> >,
 	fixed_store <T, N>
 {
-	using TR = seq_traits <T, types::size <N> >;
+	using TR = fixed_traits <T, N>;
 	using B = seq_base <pre_fixed_array <T, N>, TR>;
 	using S = fixed_store <T, N>;
 	friend B;
@@ -99,10 +106,12 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 
 //-----------------------------------------------------------------------------
 
-	INLINE T*       b()       { return S::data(); }
-	INLINE const T* b() const { return S::data(); }
-	INLINE T*       e()       { return S::data() + N; }
-	INLINE const T* e() const { return S::data() + N; }
+	using E = seq_elem <T>;
+
+	INLINE E*       b()       { return S::data(); }
+	INLINE const E* b() const { return S::data(); }
+	INLINE E*       e()       { return S::data() + N; }
+	INLINE const E* e() const { return S::data() + N; }
 
 //-----------------------------------------------------------------------------
 

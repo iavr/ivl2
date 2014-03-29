@@ -79,7 +79,7 @@ class sequence <tag::fixed, T, sizes <N> > :
 
 public:
 	template <typename A = int, only_if <is_cons <T>{}, A> = 0>
-	explicit INLINE constexpr sequence() : B(yes) { }
+	INLINE constexpr sequence() : B(yes) { }
 
 	template <typename... A, only_if <is_conv <common <A...>, T>{}> = 0>
 	INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
