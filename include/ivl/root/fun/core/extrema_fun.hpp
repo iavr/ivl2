@@ -67,7 +67,7 @@ struct min_off_fun : lim::inf_max
 	INLINE void operator()(A&& a, P&& p, E&& e) const
 	{
 		if (L()(fwd <E>(e), fwd <A>(a).fst()))
-			a = uref()(fwd <E>(e), fwd <P>(p));
+			a = u_tup()(fwd <E>(e), fwd <P>(p));
 	}
 };
 
@@ -78,7 +78,7 @@ struct max_off_fun : lim::inf_min
 	INLINE void operator()(A&& a, P&& p, E&& e) const
 	{
 		if (L()(fwd <A>(a).fst(), fwd <E>(e)))
-			a = uref()(fwd <E>(e), fwd <P>(p));
+			a = u_tup()(fwd <E>(e), fwd <P>(p));
 	}
 };
 

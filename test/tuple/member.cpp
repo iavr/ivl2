@@ -116,7 +116,7 @@ void run()
 		cout << ((t ->* H)(), t ->* m) << endl;
 		cout << endl;
 
-// TODO: option for val_of <member_fun> for GCC?
+// TODO: option for copy_of <member_fun> for GCC?
 #if defined(__clang__)
 		cout << "op ->* (custom, atom member ptr)" << endl;
 		auto af = a ->* &A::f;

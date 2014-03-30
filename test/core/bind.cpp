@@ -13,7 +13,7 @@ struct
 f;
 
 // TODO: bind[val]
-afun::val_of <afun::details::bind_> vbind;
+afun::copy_of <afun::details::bind_> vbind;
 
 auto b()
 -> decltype(bind(f, 4, 'A'))

@@ -42,13 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename... A>
-using auto_seq = fixed_array <common <A...>, sizeof...(A)>;
-
-using seq = id_of <auto_seq>;
-
-//-----------------------------------------------------------------------------
-
 using seq_join = uref_of <join_seq, all_seq>;
 using arr      = uref_of <join_sequence>;
 
@@ -87,7 +80,6 @@ using seq_flip = seq_flip_as <>;
 
 //-----------------------------------------------------------------------------
 
-using details::seq;
 using details::arr;
 
 //-----------------------------------------------------------------------------
@@ -96,7 +88,6 @@ using details::arr;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::seq  seq;
 static __attribute__ ((unused)) afun::arr  arr;
 
 //-----------------------------------------------------------------------------

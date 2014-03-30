@@ -42,6 +42,7 @@
 #include "fun/lookup.hpp"
 #include "fun/term.hpp"
 #include "fun/trav.hpp"
+#include "fun/make.hpp"
 #include "fun/manip.hpp"
 #include "fun/loop.hpp"
 

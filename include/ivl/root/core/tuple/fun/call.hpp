@@ -46,8 +46,8 @@ struct arg_call
 {
 	template <typename F, typename... A>
 	INLINE constexpr auto operator()(F&& f, A&&... a) const
-	-> decltype(fwd <F>(f)(uref()(fwd <A>(a)...)))
-		{ return fwd <F>(f)(uref()(fwd <A>(a)...)); }
+	-> decltype(fwd <F>(f)(u_tup()(fwd <A>(a)...)))
+		{ return fwd <F>(f)(u_tup()(fwd <A>(a)...)); }
 };
 
 //-----------------------------------------------------------------------------

@@ -70,7 +70,8 @@ class make_as <F, T, E>
 	template <typename... A> using R = subs <T, F <A>...>;
 
 public:
-	template <typename... A, only_if <E <A...>{}()> = 0>  // TODO: {}() -> {} (needed by GCC)
+	// TODO: {}() -> {} (needed by GCC)
+	template <typename... A, only_if <E <A...>{}()> = 0>
 	INLINE constexpr R <A...>
 	operator()(A&&... a) const { return R <A...>(fwd <A>(a)...); }
 };
@@ -81,34 +82,28 @@ template <
 	template <typename...> class T,
 	template <typename...> class... E
 >
-using id_of = make_as <id, T, E...>;
+using copy_of = make_as <copy, T, E...>;
 
 template <
-	template <typename...> class T = pre_tuple,
-	template <typename...> class... E
->
-using val_of = make_as <decay, T, E...>;
-
-template <
-	template <typename...> class T = pre_tuple,
+	template <typename...> class T,
 	template <typename...> class... E
 >
 using uref_of = make_as <uref_opt, T, E...>;
 
 template <
-	template <typename...> class T = pre_tuple,
+	template <typename...> class T,
 	template <typename...> class... E
 >
 using rref_of = make_as <rref_opt, T, E...>;
 
 template <
-	template <typename...> class T = pre_tuple,
+	template <typename...> class T,
 	template <typename...> class... E
 >
 using lref_of = make_as <base_opt, T, all_lref, E...>;
 
 template <
-	template <typename...> class T = pre_tuple,
+	template <typename...> class T,
 	template <typename...> class... E
 >
 using cref_of = make_as <base_opt, T, all_cref, E...>;
@@ -116,7 +111,7 @@ using cref_of = make_as <base_opt, T, all_cref, E...>;
 //-----------------------------------------------------------------------------
 
 template <typename T, template <typename...> class... E>
-using val_map = val_of <T::template map, E...>;
+using copy_map = copy_of <T::template map, E...>;
 
 template <typename T, template <typename...> class... E>
 using uref_map = uref_of <T::template map, E...>;
@@ -130,11 +125,12 @@ using lref_map = lref_of <T::template map, E...>;
 template <typename T, template <typename...> class... E>
 using cref_map = cref_of <T::template map, E...>;
 
-using val  = val_of <>;
-using uref = uref_of <>;
-using rref = rref_of <>;
-using lref = lref_of <>;
-using cref = cref_of <>;
+using val   = copy_of <pre_tuple>;
+using v_tup = copy_of <pre_tuple>;
+using u_tup = uref_of <pre_tuple>;
+using r_tup = rref_of <pre_tuple>;
+using l_tup = lref_of <pre_tuple>;
+using c_tup = cref_of <pre_tuple>;
 
 //-----------------------------------------------------------------------------
 
@@ -144,18 +140,18 @@ using cref = cref_of <>;
 
 using details::make;
 
-using details::id_of;
-using details::val_of;
+using details::copy_of;
 using details::uref_of;
 using details::rref_of;
 using details::lref_of;
 using details::cref_of;
 
 using details::val;
-using details::uref;
-using details::rref;
-using details::lref;
-using details::cref;
+using details::v_tup;
+using details::u_tup;
+using details::r_tup;
+using details::l_tup;
+using details::c_tup;
 
 //-----------------------------------------------------------------------------
 
@@ -163,11 +159,12 @@ using details::cref;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::val   val;
-static __attribute__ ((unused)) afun::uref  uref;
-static __attribute__ ((unused)) afun::rref  rref;
-static __attribute__ ((unused)) afun::lref  lref;
-static __attribute__ ((unused)) afun::cref  cref;
+static __attribute__ ((unused)) afun::val    val;
+static __attribute__ ((unused)) afun::v_tup  v_tup;
+static __attribute__ ((unused)) afun::u_tup  u_tup;
+static __attribute__ ((unused)) afun::r_tup  r_tup;
+static __attribute__ ((unused)) afun::l_tup  l_tup;
+static __attribute__ ((unused)) afun::c_tup  c_tup;
 
 //-----------------------------------------------------------------------------
 

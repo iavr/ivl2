@@ -48,7 +48,7 @@ struct min_of : afun::vec_fold <afun::min_of <L> >, afun::lim::min
 {
 	template <typename M, typename P, typename A>
 	void io(M& m, P& p, sep, A&& a)
-		{ lref(m, p) = afun::min_off_of <L>()(fwd <A>(a)); }
+		{ l_tup(m, p) = afun::min_off_of <L>()(fwd <A>(a)); }
 };
 
 template <typename L = op::lt>
@@ -56,7 +56,7 @@ struct max_of : afun::vec_fold <afun::max_of <L> >, afun::lim::max
 {
 	template <typename M, typename P, typename A>
 	void io(M& m, P& p, sep, A&& a)
-		{ lref(m, p) = afun::max_off_of <L>()(fwd <A>(a)); }
+		{ l_tup(m, p) = afun::max_off_of <L>()(fwd <A>(a)); }
 };
 
 using min = min_of <>;

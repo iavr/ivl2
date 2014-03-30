@@ -12,11 +12,6 @@ using ivl::seq;
 
 //-----------------------------------------------------------------------------
 
-template <size_t N = 0> using A = array <int, N>;
-template <size_t N = 0> using B = array <double, N>;
-
-//-----------------------------------------------------------------------------
-
 void run()
 {
 
@@ -118,12 +113,9 @@ void run()
 		cout << "x = " << x << endl;
 		cout << "i = " << i << endl;
 		cout << "x[i] = " << x[i] << endl;
-
-		using A = array <int, 4>;
-		array <A, 2> j(i, A{7, 2, 10., 5});  // TODO: seq._<int>(...)
+		auto j = seq(i, seq._<int>(7, 2, 10., 5));
 		cout << "j = " << j << endl;
 		cout << "x[j] = " << x[j] << endl;
-
 		cout << endl;
 	}
 
@@ -140,26 +132,26 @@ void run()
 
 	{
 		cout << "join" << endl;
-		A <> E;
+		auto E = seq();
 		auto a = seq(0, 1, 2, 3);
 		auto b = seq(-3.14, 12.71, -8e3);
-		A <3> c = {-3.14, 12.71, -8e3};  // TODO: seq._<int>(...)
-		cout << join(a, b, E, A <2>{0, 1}) << endl;
-		cout << join(E, a, b, E, A <2>{0, 1}, E) << endl;
+		auto c = seq._<int>(-3.14, 12.71, -8e3);
+		cout << join(a, b, E, seq(0, 1)) << endl;
+		cout << join(E, a, b, E, seq(0, 1), E) << endl;
 		cout << join(a, b) << endl;
 		*join(a, c).begin() = 20;
 		cout << a << endl;
-		cout << flip(join(a, c, E, A <2>{0, 1})) << endl;
+		cout << flip(join(a, c, E, seq(0, 1))) << endl;
 		cout << endl;
 	}
 
 	{
 		cout << "arr" << endl;
-		A <> E;
+		auto E = seq();
 		auto a = seq(0, 1, 2, 3);
 		auto b = seq(-3.14, 12.71, -8e3);
-		cout << arr(5, a, 14, 0, 0, b, E, A <2>{0, 1}) << endl;
-		auto j = arr(5, a, 14, 0, 0, b, E, A <2>{0, 1});
+		cout << arr(5, a, 14, 0, 0, b, E, seq(0, 1)) << endl;
+		auto j = arr(5, a, 14, 0, 0, b, E, seq(0, 1));
 		cout << j << endl;
 		cout << endl;
 	}

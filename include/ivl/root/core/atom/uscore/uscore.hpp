@@ -40,7 +40,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-class uscore : public afun::uref
+class uscore : public afun::u_tup
 {
 	template <typename A> using R = ext_atom <uref_opt <A> >;
 

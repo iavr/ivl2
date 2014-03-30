@@ -151,7 +151,7 @@ using foo_tuple = pre_tuple <types::foo_of <A>...>;
 
 namespace afun {
 
-using foos = afun::val_of <tuples::foo_tuple>;
+using foos = afun::copy_of <tuples::foo_tuple>;
 
 }  // namespace afun
 
