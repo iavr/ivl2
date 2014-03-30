@@ -73,7 +73,7 @@ public:
 	using B::base_type::operator=;
 
 	template <typename A = int, only_if <_and <is_cons <E>...>{}, A> = 0>
-	explicit INLINE constexpr collection() : B(yes) { }
+	INLINE constexpr collection() : B(yes) { }
 
 	template <typename... A, only_if <tup_conv <pack <A...>, P>{}> = 0>
 	INLINE constexpr collection(A&&... a) : B(yes, fwd <A>(a)...) { }

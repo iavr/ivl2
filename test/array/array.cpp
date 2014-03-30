@@ -75,7 +75,7 @@ void run()
 		auto a = seq(j, k);
 		cout << ++a;
 		cout << ": (j, k) = " << j << " " << k << endl;
-		auto b = seq(_(k, x), _(j, z));  // TODO: _(k, x, 2)
+		auto b = seq(_(k, x), _(j, z));
 		b[0] = _(5, -2.3);
 		cout << b << ": (k, x) = " << k << " " << x << endl;
 		cout << endl;

@@ -57,9 +57,6 @@ public:
 	template <typename A>
 	explicit INLINE constexpr elem(A&& a) : e(ivl::fwd <A>(a)) { }
 
-	template <typename A>
-	INLINE elem& operator=(A&& a) { return e = ivl::fwd <A>(a), *this; }
-
 	INLINE           E&&      fwd()         { return ivl::fwd <E>(e); }
 	INLINE           E&&      get() &&      { return ivl::fwd <E>(e); }
 	INLINE           E&       get() &       { return e; }
@@ -73,10 +70,6 @@ struct elem <I, E, true, false> : private E
 {
 	template <typename A>
 	explicit INLINE constexpr elem(A&& a) : E(ivl::fwd <A>(a)) { }
-
-	template <typename A>
-	INLINE elem& operator=(A&& a)
-		{ return E::operator=(ivl::fwd <A>(a)), *this; }
 
 	INLINE           E fwd()        { return mv(*this); }
 	INLINE           E get() &&     { return mv(*this); }
@@ -93,9 +86,6 @@ struct elem <I, E, true, true>
 
 	template <typename A>
 	explicit INLINE constexpr elem(A&& a) { }
-
-	template <typename A>
-	INLINE elem& operator=(A&& a) { return *this; }
 
 	INLINE           E fwd()        { return E(); }
 	INLINE           E get() &&     { return E(); }
