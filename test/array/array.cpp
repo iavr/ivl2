@@ -74,10 +74,10 @@ void run()
 		double x = 4.5, z = 0;
 		auto a = seq(j, k);
 		cout << ++a;
-		cout << ": (j, k) = " << j << " " << k << endl;
+		cout << ": (j, k) = " << _(j, k) << endl;
 		auto b = seq(_(k, x), _(j, z));
 		b[0] = _(5, -2.3);
-		cout << b << ": (k, x) = " << k << " " << x << endl;
+		cout << b << ": (k, x) = " << _(k, x) << endl;
 		cout << endl;
 	}
 

@@ -40,6 +40,7 @@ struct P
 };
 
 afun::vec <P> print;
+afun::vec_apply <P> lazy;
 
 template <typename T>
 T dist(int a, const T& x, const T& y) { return a * abs(x - y); }
@@ -145,6 +146,16 @@ void run()
 		cout << _[([](int a, double x, double y) { return a * abs(x - y); })]
 			(seq(1, 2, 4, 8), 6, v) << endl;
 		_[fprint](seq(1, 2, 3, 4));
+		cout << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "lazy call" << endl;
+		auto x = seq(1, 2, 3);
+		auto v = lazy(x);
+		v[2], v[0], v[1], v[0];
+		// v[seq(2, 0, 1, 0)].loop();  // TODO
 		cout << endl;
 		cout << endl;
 	}

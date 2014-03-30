@@ -153,29 +153,29 @@ public:
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
-	INLINE ret <F(r_ref <E>..., A...)>
+	INLINE v_ret <F, r_ref <E>..., A...>
 	call(F&& f, A&&... a) && { return fwd <F>(f)(at_f <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE ret <F(l_ref <E>..., A...)>
+	INLINE v_ret <F, l_ref <E>..., A...>
 	call(F&& f, A&&... a) & { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr res <F(c_ref <E>..., A...)>
+	INLINE constexpr v_res <F, c_ref <E>..., A...>
 	call(F&& f, A&&... a) const& { return fwd <F>(f)(at <I>()..., fwd <A>(a)...); }
 
 //-----------------------------------------------------------------------------
 
 	template <typename F, typename... A>
-	INLINE ret <F(A..., r_ref <E>...)>
+	INLINE v_ret <F, A..., r_ref <E>...>
 	rcall(F&& f, A&&... a) && { return fwd <F>(f)(fwd <A>(a)..., at_f <I>()...); }
 
 	template <typename F, typename... A>
-	INLINE ret <F(A..., l_ref <E>...)>
+	INLINE v_ret <F, A..., l_ref <E>...>
 	rcall(F&& f, A&&... a) & { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 	template <typename F, typename... A>
-	INLINE constexpr res <F(A..., c_ref <E>...)>
+	INLINE constexpr v_res <F, A..., c_ref <E>...>
 	rcall(F&& f, A&&... a) const& { return fwd <F>(f)(fwd <A>(a)..., at <I>()...); }
 
 //-----------------------------------------------------------------------------
@@ -194,12 +194,12 @@ public:
 //-----------------------------------------------------------------------------
 
 protected:
-	INLINE void loop_f()      { thru{at_f <I>()...}; }
+	INLINE void loop_f()      { thru{(at_f <I>(), 0)...}; }
 
 public:
-	INLINE void loop() &&     { thru{at_f <I>()...}; }
-	INLINE void loop() &      { thru{at <I>()...}; }
-	INLINE void loop() const& { thru{at <I>()...}; }
+	INLINE void loop() &&     { thru{(at_f <I>(), 0)...}; }
+	INLINE void loop() &      { thru{(at <I>(), 0)...}; }
+	INLINE void loop() const& { thru{(at <I>(), 0)...}; }
 
 //-----------------------------------------------------------------------------
 

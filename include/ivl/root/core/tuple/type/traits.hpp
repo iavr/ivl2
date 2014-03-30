@@ -118,7 +118,7 @@ template <typename C, typename... E>
 struct ref_t <C, pack <E...> > : id_t <pre_tuple <ref <C, E>...> > { };
 
 template <typename C, typename F, typename... E>
-struct ref_t <C, F(pack <E...>)> : ret_t <ref <C, F>(ref <C, E>...)> { };
+struct ref_t <C, F(pack <E...>)> : v_ret_t <ref <C, F>, ref <C, E>...> { };
 
 //-----------------------------------------------------------------------------
 

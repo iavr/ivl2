@@ -104,30 +104,52 @@ template <typename F, typename... A>
 struct result_t <F(A...)> :
 	details::res_complete <remove_ref <F>, F(A...)> { };
 
-template <typename... S>
-using result = type_of <result_t <S...> >;
+template <typename F, typename... A>
+using result = type_of <result_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-struct ret_t : ret_t <F(A...)> { };
+template <typename F, typename... A> struct ret_t : ret_t <F(A...)> { };
+template <typename F, typename... A> struct res_t : res_t <F(A...)> { };
 
 template <typename F, typename... A>
 struct ret_t <F(A...)> : id_t <details::fun_test <F, A...> > { };
 
 template <typename F, typename... A>
-using ret = type_of <ret_t <F, A...> >;
+struct res_t <F(A...)> : ret_sfinae <details::fun_test, F, A...> { };
+
+template <typename F, typename... A> using ret = type_of <ret_t <F, A...> >;
+template <typename F, typename... A> using res = type_of <res_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-struct res_t : res_t <F(A...)> { };
+namespace details {
+
+template <typename F, typename A, bool = any_p <is_void, A>()> struct v_ret_;
+template <typename F, typename A, bool = any_p <is_void, A>()> struct v_res_;
 
 template <typename F, typename... A>
-struct res_t <F(A...)> : ret_sfinae <details::fun_test, F, A...> { };
+struct v_ret_<F, pack <A...>, false> : ret_t <F(A...)> { };
 
 template <typename F, typename... A>
-using res = type_of <res_t <F, A...> >;
+struct v_res_<F, pack <A...>, false> : res_t <F(A...)> { };
+
+template <typename F, typename... A> struct v_ret_<F, pack <A...>, true> { };
+template <typename F, typename... A> struct v_res_<F, pack <A...>, true> { };
+
+}  // namespace details
+
+template <typename F, typename... A>
+struct v_ret_t : details:: v_ret_<F, pack <A...> > { };
+
+template <typename F, typename... A>
+struct v_res_t : details:: v_res_<F, pack <A...> > { };
+
+template <typename F, typename... A>
+using v_ret = type_of <v_ret_t <F, A...> >;
+
+template <typename F, typename... A>
+using v_res = type_of <v_res_t <F, A...> >;
 
 //-----------------------------------------------------------------------------
 
