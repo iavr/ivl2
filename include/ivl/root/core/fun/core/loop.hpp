@@ -46,21 +46,34 @@ template <
 	template <typename...> class CS, typename S,
 	template <typename...> class CT, typename T
 >
-using op_sw = fun_switch <t_case <CS, S>, t_case <CT, T> >;
+using arg_sw = fun_switch <t_case <CS, S>, t_case <CT, T> >;
+
+//-----------------------------------------------------------------------------
 
 template <typename S, typename T>
-using apply_sw = op_sw <any_seq, S, any_tuple, T>;
+using apply_sw = arg_sw <any_seq, S, any_tuple, T>;
 
 template <typename S, typename T>
-using loop_sw = op_sw <travers, S, any_tuple, T>;
+using loop_sw = arg_sw <travers, S, any_tuple, T>;
 
 template <typename S, typename T>
-using raw_loop_sw = op_sw <raw_travers, S, any_tuple, T>;
+using raw_loop_sw = arg_sw <raw_travers, S, any_tuple, T>;
 
 //-----------------------------------------------------------------------------
 
 // no alias: entry point
-struct apply : switch_fun_of <apply_sw <seq_apply, tup_apply> > { };
+template <typename M = prim_term>
+struct apply_by : switch_fun_of <apply_sw <seq_apply_by <M>, tup_apply> > { };
+
+//-----------------------------------------------------------------------------
+
+using eval_sw = t_switch <
+	t_case <travers, seq_eval>,
+	t_case <is_tuple, tup_eval>
+>;
+
+// no alias: entry point
+struct eval : switch_fun_of <eval_sw> { };
 
 //-----------------------------------------------------------------------------
 
@@ -101,11 +114,11 @@ struct loop_by : sep_loop_opt,
 	switch_fun_of <loop_sw <seq_loop_by <M>, tup_loop> > { };
 
 template <typename M = prim_term>
-struct raw_loop_by : sep_loop_opt,
-	switch_fun_of <raw_loop_sw <seq_loop_by <M>, tup_loop> > { };
+using raw_loop_by = switch_fun_of <raw_loop_sw <seq_loop_by <M>, tup_loop> >;
 
 //-----------------------------------------------------------------------------
 
+using apply     = apply_by <>;
 using loop      = loop_by <>;
 using raw_loop  = raw_loop_by <>;
 using head_loop = head_loop_by <>;
@@ -117,6 +130,8 @@ using head_loop = head_loop_by <>;
 //-----------------------------------------------------------------------------
 
 using details::apply;
+using details::apply_by;
+using details::eval;
 using details::loop;
 using details::loop_by;
 using details::raw_loop;
@@ -132,6 +147,7 @@ using details::sep_loop;
 //-----------------------------------------------------------------------------
 
 static __attribute__ ((unused)) afun::apply  apply;
+static __attribute__ ((unused)) afun::eval   eval;
 static __attribute__ ((unused)) afun::loop   loop;
 
 //-----------------------------------------------------------------------------

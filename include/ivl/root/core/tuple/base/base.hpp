@@ -194,12 +194,12 @@ public:
 //-----------------------------------------------------------------------------
 
 protected:
-	INLINE void loop_f()      { thru{(at_f <I>(), 0)...}; }
+	INLINE void eval_f()      { thru{(at_f <I>(), 0)...}; }
 
 public:
-	INLINE void loop() &&     { thru{(at_f <I>(), 0)...}; }
-	INLINE void loop() &      { thru{(at <I>(), 0)...}; }
-	INLINE void loop() const& { thru{(at <I>(), 0)...}; }
+	INLINE void eval() &&     { thru{(at_f <I>(), 0)...}; }
+	INLINE void eval() &      { thru{(at <I>(), 0)...}; }
+	INLINE void eval() const& { thru{(at <I>(), 0)...}; }
 
 //-----------------------------------------------------------------------------
 

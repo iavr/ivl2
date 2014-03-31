@@ -48,19 +48,32 @@ struct seq_apply_by : uref_map <apply_sequence_by <M> > { };
 
 //-----------------------------------------------------------------------------
 
-template <template <typename...> class C, typename I, typename... T>
-using iter_sw = fun_switch <
-	t_case <seq_travers, C <I, T...> >,
-	t_case <trav_travers, I>
->;
+struct iter_eval
+{
+	template <typename V>
+	INLINE void operator()(V&& v) const { for (; v; ++v) *v; }
+};
 
-template <template <typename...> class C, typename I, typename... T>
-using raw_iter_sw = fun_switch <
-	t_case <cont_travers, C <I, T...> >,
-	t_case <iter_travers, I>
->;
+template <typename M>
+struct iter_loop_by
+{
+	template <typename F, typename... V>
+	INLINE F&& operator()(F&& f, V&&... v) const
+	{
+		for (; M()(v...); thru{++v...})
+			fwd <F>(f)(*v...);
+		return fwd <F>(f);
+	}
+};
 
 //-----------------------------------------------------------------------------
+
+struct cont_eval
+{
+	template <typename A>
+	INLINE void operator()(A&& a) const
+		{ return iter_eval()(trav()(fwd <A>(a))); }
+};
 
 template <typename L, typename T>
 struct cont_loop
@@ -80,17 +93,26 @@ struct cont_head_loop
 
 //-----------------------------------------------------------------------------
 
-template <typename M>
-struct iter_loop_by
-{
-	template <typename F, typename... T>
-	INLINE F&& operator()(F&& f, T&&... t) const
-	{
-		for (; M()(t...); thru{++t...})
-			fwd <F>(f)(*t...);
-		return fwd <F>(f);
-	}
-};
+using seq_eval_sw = t_switch <
+	t_case <seq_travers, cont_eval>,
+	t_case <trav_travers, iter_eval>
+>;
+
+template <template <typename...> class C, typename L, typename... T>
+using iter_sw = fun_switch <
+	t_case <seq_travers, C <L, T...> >,
+	t_case <trav_travers, L>
+>;
+
+template <template <typename...> class C, typename L>
+using raw_iter_sw = fun_switch <
+	t_case <cont_travers, C <L, raw_trav> >,
+	t_case <iter_travers, L>
+>;
+
+//-----------------------------------------------------------------------------
+
+using seq_eval = switch_fun_of <seq_eval_sw>;
 
 template <typename M = prim_term>
 using seq_loop_by = switch_fun_of <
@@ -99,7 +121,7 @@ using seq_loop_by = switch_fun_of <
 
 template <typename M = prim_term>
 using seq_raw_loop_by = switch_fun_of <
-	raw_iter_sw <cont_loop, iter_loop_by <M>, raw_trav>
+	raw_iter_sw <cont_loop, iter_loop_by <M> >
 >;
 
 //-----------------------------------------------------------------------------
@@ -107,12 +129,12 @@ using seq_raw_loop_by = switch_fun_of <
 template <typename M>
 struct iter_head_loop_by
 {
-	template <typename F, typename G, typename... T>
-	INLINE void operator()(F&& f, G&& g, T&&... t) const
+	template <typename F, typename G, typename... V>
+	INLINE void operator()(F&& f, G&& g, V&&... v) const
 	{
-		if (M()(t...))
-			fwd <F>(f)(*t...),
-			seq_loop_by <M>()(fwd <G>(g), ++t...);
+		if (M()(v...))
+			fwd <F>(f)(*v...),
+			seq_loop_by <M>()(fwd <G>(g), ++v...);
 	}
 };
 
@@ -136,6 +158,7 @@ using seq_head_loop = seq_head_loop_by <>;
 
 using details::seq_apply;
 using details::seq_apply_by;
+using details::seq_eval;
 using details::seq_loop;
 using details::seq_loop_by;
 using details::seq_raw_loop;

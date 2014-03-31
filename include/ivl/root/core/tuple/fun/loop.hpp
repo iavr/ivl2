@@ -45,6 +45,12 @@ namespace details {
 // no alias: entry point
 struct tup_apply : uref_of <apply_tuple> { };
 
+struct tup_eval
+{
+	template <typename T>
+	INLINE void operator()(T&& t) const { fwd <T>(t).eval(); }
+};
+
 //-----------------------------------------------------------------------------
 
 struct off_skip_call
@@ -55,6 +61,7 @@ struct off_skip_call
 		{ return fwd <F>(f)(fwd <A>(a)...); }
 };
 
+// TODO: remove
 template <template <size_t...> class M>
 struct off_map_call
 {

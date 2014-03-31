@@ -30,13 +30,13 @@ afun::op::add add;
 
 afun::vec <afun::op::add> Add;
 
-struct P
+struct show
 {
 	template <typename T>
 	void operator()(const T& x) { cout << x << " "; }
 };
 
-afun::vec <P> print;
+afun::vec <show> print;
 
 template <typename T>
 T dist(int a, const T& x, const T& y) { return a * abs(x - y); }
@@ -142,6 +142,19 @@ void run()
 		cout << endl;
 		cout << endl;
 	}
+
+// ignore to preserve test timing
+#if 0
+	{
+		cout << "lazy call" << endl;
+		auto x = _(1, 2, 3);
+		auto v = apply(show(), x);
+		v.at<2>(), v.at<0>(), v.at<1>(), v.at<0>(), cout << endl;
+		eval(v.at <sizes <2, 0, 1, 0> >()),  cout << endl;
+		eval(v), cout << endl;
+		cout << endl;
+	}
+# endif
 
 }
 //-----------------------------------------------------------------------------

@@ -43,16 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <size_t I>
-struct fixed_term
+struct get_term : get <I>
 {
 	template <typename... A> using seq  = get <I>;
 	template <typename... A> using trav = get <I>;
-
-	template <typename... A>
-	INLINE constexpr auto
-	operator()(A&&... a) const
-	-> decltype(get <I>()(fwd <A>(a)...))
-		{ return get <I>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------

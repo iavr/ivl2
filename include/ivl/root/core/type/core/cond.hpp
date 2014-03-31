@@ -83,7 +83,7 @@ using t_else = t_case <always, T>;
 namespace details {
 
 template <typename... A>
-struct arg_switch
+struct t_switch_
 {
 	template <typename... C> struct map_t;
 	template <typename... C> using map = type_of <map_t <C...> >;
@@ -99,7 +99,7 @@ template <typename... C>
 struct t_switch
 {
 	template <typename... A>
-	using map = typename details::arg_switch <A...>::template map <C...>;
+	using map = typename details::t_switch_<A...>::template map <C...>;
 };
 
 //-----------------------------------------------------------------------------
