@@ -52,6 +52,7 @@ using vec_sw = map_if <any_group, R, atom_call <C> >;
 template <typename F, typename R, typename B = none>
 using vec_f = vec_fun_of <val_gen <F, B>, vec_sw <R> >;
 
+// no alias: entry point
 // no alias: fwd-declared
 template <typename F, typename B = none>
 struct vec_apply : vec_f <F, apply, B> { };
@@ -67,11 +68,13 @@ using vec = vec_atom_of <atom_gen <B>, vec_sw <_auto> >;
 
 //-----------------------------------------------------------------------------
 
+// no alias: entry point
 template <typename F, size_t I = 0>
-using vec_mut = vec_f <F, mut_call <loop, I> >;
+struct vec_mut : vec_f <F, mut_call <loop, I> > { };
 
+// no alias: entry point
 template <typename F, size_t I = 0>
-using vec_copy = vec_f <F, copy_call <apply, I> >;
+struct vec_copy : vec_f <F, copy_call <apply, I> > { };
 
 //-----------------------------------------------------------------------------
 

@@ -59,7 +59,8 @@ using raw_loop_sw = op_sw <raw_travers, S, any_tuple, T>;
 
 //-----------------------------------------------------------------------------
 
-using apply = switch_fun_of <apply_sw <seq_apply, tup_apply> >;
+// no alias: entry point
+struct apply : switch_fun_of <apply_sw <seq_apply, tup_apply> > { };
 
 //-----------------------------------------------------------------------------
 

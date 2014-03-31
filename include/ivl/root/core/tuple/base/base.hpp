@@ -54,7 +54,7 @@ template <
 class tup_base <D, C <E...>, sizes <I...> > : public access <D, E...>
 {
 	using P = C <E...>;
-	using Q = pack <E...>;
+	using Q = pack <r_ref <E>...>;
 	using B = access <D, E...>;
 
 	template <typename T, typename R = raw_type <T> >
