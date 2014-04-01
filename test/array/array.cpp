@@ -80,6 +80,17 @@ void run()
 	}
 
 	{
+		cout << "empty array:" << endl;
+		using E = array <int, 0>;
+		E e;
+		const E ec;
+		E e2 = e;
+		E e3 = ec;
+		E e4 = seq();
+		cout << endl;
+	}
+
+	{
 		cout << "array of ref/tuple" << endl;
 		int j = 8, k = 0;
 		double x = 4.5, z = 0;
