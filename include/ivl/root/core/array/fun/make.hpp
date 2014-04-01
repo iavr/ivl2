@@ -146,18 +146,12 @@ using t_cref_of = t_make_as <base_opt, T, S, all_cref, E...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename U, typename... A>
-using new_seq_of = pre_fixed_array <U, sizeof...(A)>;
-
-template <typename... A>
-using new_seq = new_seq_of <common_or <int, A...>, A...>;
-
-using v_seq = t_copy_of <new_seq, new_seq_of>;
-using   seq = t_uref_of <new_seq, new_seq_of>;
-using u_seq = t_uref_of <new_seq, new_seq_of>;
-using r_seq = t_rref_of <new_seq, new_seq_of>;
-using l_seq = t_lref_of <new_seq, new_seq_of>;
-using c_seq = t_cref_of <new_seq, new_seq_of>;
+using v_seq = t_copy_of <make_seq, make_seq_of>;
+using   seq = t_uref_of <make_seq, make_seq_of>;
+using u_seq = t_uref_of <make_seq, make_seq_of>;
+using r_seq = t_rref_of <make_seq, make_seq_of>;
+using l_seq = t_lref_of <make_seq, make_seq_of>;
+using c_seq = t_cref_of <make_seq, make_seq_of>;
 
 //-----------------------------------------------------------------------------
 

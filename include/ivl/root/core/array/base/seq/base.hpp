@@ -48,7 +48,7 @@ class seq_base : public derived <D>, public seq_store <TR, E...>
 	using B = seq_store <TR, E...>;
 	using S = seq_size <TR>;
 	using T = seq_val <TR>;
-	using R = r_ref <T>;
+	using R = l_ref <T>;
 
 	using RR = r_seq_ref <TR>;
 	using RL = l_seq_ref <TR>;

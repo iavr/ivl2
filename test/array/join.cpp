@@ -88,12 +88,14 @@ void run()
 	}
 
 	{
-		array <int, 2> a;
-		array <int, 4> b;
+		cout << "join assignment" << endl;
+		array <int, 4> a;
+		array <int, 6> b;
 		auto c = seq(3, 4, 5);
 		auto d = seq(6, 7, 8);
-		join(a, b) = join(c, d);
-		cout << c << " " << d << endl;
+		auto e = seq(9, 0, 1, 2);
+		join(a, b) = join(c, join(d, e));
+		cout << c << " " << d << " " << e << endl;
 		cout << a << " " << b << endl;
 	}
 

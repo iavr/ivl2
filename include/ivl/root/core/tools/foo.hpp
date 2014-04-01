@@ -34,6 +34,10 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+namespace tools {
+
+//-----------------------------------------------------------------------------
+
 template <typename T = int>
 class foo_
 {
@@ -119,21 +123,43 @@ using foo = foo_<>;
 
 //-----------------------------------------------------------------------------
 
+}  // namespace tools
+
+using tools::foo_;
+using tools::foo;
+
+//-----------------------------------------------------------------------------
+
 namespace types {
 namespace traits {
 
+//-----------------------------------------------------------------------------
+
 namespace details {
 
-template <typename T, bool = is_tuple <T>()>
-struct foo_of_ : id_t <foo_<T> > { };
+// extending definition @type/traits/relation
+template <typename A, typename B>
+struct common_rec <tools::foo_<A>, tools::foo_<B> > :
+	id_t <tools::foo_<common2 <A, B> > > { };
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T, bool = is_tuple <T>() || is_seq <T>()>
+struct foo_of_ : id_t <T> { };
 
 template <typename T>
-struct foo_of_<T, true> : id_t <T> { };
+struct foo_of_<T, false> : id_t <tools::foo_<T> > { };
 
 }  // namespace details
 
 template <typename T> using foo_of_t = details::foo_of_<T>;
 template <typename T> using foo_of = type_of <foo_of_t <T> >;
+
+//-----------------------------------------------------------------------------
 
 }  // namespace traits
 }  // namespace types
@@ -149,15 +175,26 @@ using foo_tuple = pre_tuple <types::foo_of <A>...>;
 
 //-----------------------------------------------------------------------------
 
+namespace arrays {
+
+template <typename... A>
+using foo_seq = types::make_seq <types::foo_of <A>...>;
+
+}  // namespace arrays
+
+//-----------------------------------------------------------------------------
+
 namespace afun {
 
 using foos = afun::copy_of <tuples::foo_tuple>;
+using foo_seq = afun::copy_of <arrays::foo_seq>;
 
 }  // namespace afun
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) afun::foos foos;
+static __attribute__ ((unused)) afun::foos    foos;
+static __attribute__ ((unused)) afun::foo_seq foo_seq;
 
 //-----------------------------------------------------------------------------
 

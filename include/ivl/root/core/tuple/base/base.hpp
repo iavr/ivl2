@@ -55,7 +55,7 @@ class tup_base <D, C <E...>, sizes <I...> > : public access <D, E...>
 {
 	using P = C <E...>;
 	using B = access <D, E...>;
-	using Q = pack <r_ref <E>...>;
+	using R = pack <l_ref <E>...>;
 
 //-----------------------------------------------------------------------------
 
@@ -77,11 +77,11 @@ public:
 
 	using B::B;
 
-	template <typename A, only_if <tup_atom_assign <Q, A>{}> = 0>
+	template <typename A, only_if <tup_atom_assign <R, A>{}> = 0>
 	INLINE D& operator=(A&& a)
 		{ return thru{at <I>() = fwd <A>(a)...}, der(); }
 
-	template <typename T, only_if <tup_assign <Q, T>{}> = 0>
+	template <typename T, only_if <tup_assign <R, T>{}> = 0>
 	INLINE D& operator=(T&& t)
 		{ return thru{at <I>() = _at._<I>(fwd <T>(t))...}, der(); }
 

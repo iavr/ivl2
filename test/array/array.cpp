@@ -82,6 +82,17 @@ void run()
 	}
 
 	{
+		cout << "assignment" << endl;
+		auto a = seq(5, 9, 7, -2, 0);
+		auto b = seq(3.14, 3, -2, 4., 8);
+		cout << a << endl << b << endl;
+		a = 2 * flip(b);
+		cout << a << endl;
+		cout << (a = 2) << endl;
+		cout << endl;
+	}
+
+	{
 		cout << "head/tail" << endl;
 		auto a = seq(5, 9, 7, -2, 0, -8, 45, -1, 10, -3, 0);
 		cout << a << endl;

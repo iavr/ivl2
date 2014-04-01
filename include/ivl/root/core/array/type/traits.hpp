@@ -543,6 +543,14 @@ struct seq_void : is_void <seq_ret <F, A...> > { };
 
 //-----------------------------------------------------------------------------
 
+template <typename U, typename... A>
+using make_seq_of = arrays::pre_fixed_array <U, sizeof...(A)>;
+
+template <typename... A>
+using make_seq = make_seq_of <common_or <int, A...>, A...>;
+
+//-----------------------------------------------------------------------------
+
 namespace details {
 
 //-----------------------------------------------------------------------------
