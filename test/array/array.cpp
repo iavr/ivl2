@@ -12,6 +12,17 @@ using ivl::seq;
 
 //-----------------------------------------------------------------------------
 
+struct B
+{
+	char c;
+	operator char() const { return c; }
+	B& operator++() { return ++++c, *this; }
+};
+
+void swap(B& a, B& b) { std::swap(++a, ++b); }
+
+//-----------------------------------------------------------------------------
+
 void run()
 {
 
@@ -89,6 +100,16 @@ void run()
 		a = 2 * flip(b);
 		cout << a << endl;
 		cout << (a = 2) << endl;
+		cout << endl;
+	}
+
+	{
+		cout << "array swap:" << endl;
+		double x = 3.14, y = 2.17;
+		B c{'c'}, d{'d'};
+		cout << seq(_(x, c)) << " " << seq(_(y, d)) << endl;
+		swap(seq(_(x, c)), seq(_(y, d)));
+		cout << seq(_(x, c)) << " " << seq(_(y, d)) << endl;
 		cout << endl;
 	}
 

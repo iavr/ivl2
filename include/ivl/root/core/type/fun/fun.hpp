@@ -30,16 +30,6 @@
 
 //-----------------------------------------------------------------------------
 
-namespace ivl_fun {
-namespace details {
-
-using ::ivl::fwd;
-
-}  // namespace details
-}  // namespace ivl_fun
-
-//-----------------------------------------------------------------------------
-
 // capture function NS::FUN, calling unqualified FUN
 // to allow for custom ADL-based overloads on NS::FUN
 
@@ -47,17 +37,17 @@ using ::ivl::fwd;
                                                            \
 namespace ivl_fun {                                        \
 namespace details {                                        \
-namespace FUN##__ns {                                      \
+namespace IVL_##FUN {                                      \
                                                            \
 using NS::FUN;                                             \
                                                            \
-struct FUN##__fun                                          \
+struct IVL_##FUN                                           \
 {                                                          \
 	template <typename... A>                                \
 	INLINE constexpr auto                                   \
 	operator()(A&&... a) const                              \
-	-> decltype(FUN(fwd <A>(a)...))                         \
-		{ return FUN(fwd <A>(a)...); }                       \
+	-> decltype(FUN(::ivl::fwd <A>(a)...))                  \
+		{ return FUN(::ivl::fwd <A>(a)...); }                \
 };                                                         \
                                                            \
 }                                                          \
@@ -67,7 +57,7 @@ struct FUN##__fun                                          \
 namespace ivl {                                            \
 namespace afun {                                           \
                                                            \
-using FUN = ::ivl_fun::details::FUN##__ns::FUN##__fun;     \
+using FUN = ::ivl_fun::details::IVL_##FUN::IVL_##FUN;      \
                                                            \
 }                                                          \
 }                                                          \
