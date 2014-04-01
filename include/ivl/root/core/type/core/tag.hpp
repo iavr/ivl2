@@ -38,12 +38,14 @@ namespace tag {
 
 //-----------------------------------------------------------------------------
 
+template <typename... D> struct val_ { };
 template <typename... D> struct rref_ { };
 template <typename... D> struct lref_ { };
 template <typename... D> struct cref_ { };
 
 //-----------------------------------------------------------------------------
 
+using val  = val_<>;
 using rref = rref_<>;
 using lref = lref_<>;
 using cref = cref_<>;

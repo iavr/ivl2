@@ -67,6 +67,7 @@ struct prim_term
 
 }  // namespace details
 
+using details::get_term;
 using details::prim_term;
 
 //-----------------------------------------------------------------------------

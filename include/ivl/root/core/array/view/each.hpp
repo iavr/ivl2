@@ -163,9 +163,13 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename U>
-struct sequence <tag::each, U> : each_seq_impl <U>
+class sequence <tag::each, U> : public each_seq_impl <U>
 {
-	using each_seq_impl <U>::each_seq_impl;
+	using B = each_seq_impl <U>;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

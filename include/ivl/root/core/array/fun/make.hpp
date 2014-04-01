@@ -147,7 +147,7 @@ using t_cref_of = t_make_as <base_opt, T, S, all_cref, E...>;
 //-----------------------------------------------------------------------------
 
 template <typename U, typename... A>
-using new_seq_of = fixed_array <U, sizeof...(A)>;
+using new_seq_of = pre_fixed_array <U, sizeof...(A)>;
 
 template <typename... A>
 using new_seq = new_seq_of <common_or <int, A...>, A...>;

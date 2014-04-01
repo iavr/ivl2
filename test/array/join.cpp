@@ -85,7 +85,16 @@ void run()
 
 		cout << "flip(join) loop" << endl;
 		traverse(flip(jj));
+	}
 
+	{
+		array <int, 2> a;
+		array <int, 4> b;
+		auto c = seq(3, 4, 5);
+		auto d = seq(6, 7, 8);
+		join(a, b) = join(c, d);
+		cout << c << " " << d << endl;
+		cout << a << " " << b << endl;
 	}
 
 }

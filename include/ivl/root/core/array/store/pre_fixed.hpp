@@ -128,6 +128,7 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 
 public:
 	using S::S;
+	using B::base_type::operator=;
 
 	INLINE constexpr size_t size() const { return N; }
 

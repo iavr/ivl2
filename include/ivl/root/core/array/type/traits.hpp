@@ -236,25 +236,51 @@ template <typename T> using seq_ref   = type_of <seq_ref_t <T> >;
 
 namespace details {
 
-template <typename A, typename T, typename R = seq_ref <A> >
-using seq_conv_ = expr <is_conv <R, T>() && !is_conv <A, T>()>;
+template <typename A, typename T, bool = is_seq <A>()>
+struct seq_conv_ : is_conv <seq_ref <A>, T> { };
 
-template <typename T, typename A, typename R = seq_ref <A> >
-using seq_explicit_ = expr <is_explicit <T, R>() && !is_explicit <T, A>()>;
+template <typename T, typename A, bool = is_seq <A>()>
+struct seq_cons_ : is_cons <T, seq_ref <A> > { };
+
+template <typename T, typename A, bool = is_seq <A>()>
+struct seq_assign_ : is_assign <T, seq_ref <A> > { };
+
+template <typename... A, typename T>
+struct seq_conv_<pack <A...>, T, false> : _and <is_conv <A, T>...> { };
+
+template <typename T, typename... A>
+struct seq_cons_<T, pack <A...>, false> : _and <is_cons <T, A>...> { };
+
+template <typename A, typename T> struct seq_conv_ <A, T, false> : _false { };
+template <typename T, typename A> struct seq_cons_ <T, A, false> : _false { };
+template <typename T, typename A> struct seq_assign_<T, A, false> : _false { };
 
 }  // namespace details
 
-template <typename A, typename T, bool = is_seq <A>()>
-struct seq_conv : details::seq_conv_<A, T> { };
+//-----------------------------------------------------------------------------
 
-template <typename A, typename T>
-struct seq_conv <A, T, false> : _false { };
-
-template <typename T, typename A, bool = is_seq <A>()>
-struct seq_explicit : details::seq_explicit_<T, A> { };
+template <typename T, typename A> using seq_cons = details::seq_cons_<T, A>;
+template <typename A, typename T> using seq_conv = details::seq_conv_<A, T>;
 
 template <typename T, typename A>
-struct seq_explicit <T, A, false> : _false { };
+using seq_explicit = expr <seq_cons <T, A>() && !seq_conv <A, T>()>;
+
+template <typename A, typename T>
+using seq_seq_conv = expr <seq_conv <A, T>() && !is_conv <A, T>()>;
+
+template <typename T, typename A>
+using seq_seq_explicit = expr <seq_explicit <T, A>() && !is_explicit <T, A>()>;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, typename A>
+using seq_assign = details::seq_assign_<T, A>;
+
+template <typename T, typename A, bool = seq_assign <T, A>()>
+struct seq_atom_assign : is_assign <T, A> { };
+
+template <typename T, typename A>
+struct seq_atom_assign <T, A, true> : _false { };
 
 //-----------------------------------------------------------------------------
 

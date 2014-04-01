@@ -145,10 +145,14 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename M, typename F, typename... A>
-struct sequence <tag::apply, M, F, A...> :
-	apply_seq_impl <M, F, pack <A...> >
+class sequence <tag::apply, M, F, A...> :
+	public apply_seq_impl <M, F, pack <A...> >
 {
-	using apply_seq_impl <M, F, pack <A...> >::apply_seq_impl;
+	using B = apply_seq_impl <M, F, pack <A...> >;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

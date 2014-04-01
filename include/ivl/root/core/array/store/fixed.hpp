@@ -78,19 +78,21 @@ class sequence <tag::fixed, T, sizes <N> > :
 //-----------------------------------------------------------------------------
 
 public:
+	using B::base_type::operator=;
+
 	template <typename A = int, only_if <is_cons <T>{}, A> = 0>
 	INLINE constexpr sequence() : B(yes) { }
 
-	template <typename... A, only_if <is_conv <common <A...>, T>{}> = 0>
+	template <typename... A, only_if <seq_conv <pack <A...>, T>{}> = 0>
 	INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-	template <typename... A, only_if <is_explicit <T, common <A...> >{}> = 0>
+	template <typename... A, only_if <seq_explicit <T, pack <A...> >{}> = 0>
 	explicit INLINE constexpr sequence(A&&... a) : B(yes, fwd <A>(a)...) { }
 
-	template <typename A, only_if <seq_conv <A, T>{}> = 0>
+	template <typename A, only_if <seq_seq_conv <A, T>{}> = 0>
 	INLINE constexpr sequence(A&& a) : B(fwd <A>(a)) { }
 
-	template <typename A, only_if <seq_explicit <T, A>{}> = 0>
+	template <typename A, only_if <seq_seq_explicit <T, A>{}> = 0>
 	explicit INLINE constexpr sequence(A&& a) : B(fwd <A>(a)) { }
 };
 

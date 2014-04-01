@@ -160,10 +160,13 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... U>
-struct sequence <tag::join, U...> :
-	join_seq_impl <pack <U...> >
+class sequence <tag::join, U...> : public join_seq_impl <pack <U...> >
 {
-	using join_seq_impl <pack <U...> >::join_seq_impl;
+	using B = join_seq_impl <pack <U...> >;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

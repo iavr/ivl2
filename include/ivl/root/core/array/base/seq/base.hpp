@@ -47,6 +47,8 @@ class seq_base : public derived <D>, public seq_store <TR, E...>
 {
 	using B = seq_store <TR, E...>;
 	using S = seq_size <TR>;
+	using T = seq_val <TR>;
+	using R = r_ref <T>;
 
 	using RR = r_seq_ref <TR>;
 	using RL = l_seq_ref <TR>;
@@ -62,6 +64,13 @@ class seq_base : public derived <D>, public seq_store <TR, E...>
 
 //-----------------------------------------------------------------------------
 
+protected:
+	using derived <D>::der_f;
+	using derived <D>::der;
+
+//-----------------------------------------------------------------------------
+
+private:
 	INLINE           IR b_f()      { return der_f().begin(); }
 	INLINE           IR b() &&     { return der_f().begin(); }
 	INLINE           IL b() &      { return der().begin(); }
@@ -74,14 +83,24 @@ class seq_base : public derived <D>, public seq_store <TR, E...>
 
 //-----------------------------------------------------------------------------
 
-protected:
-	using derived <D>::der_f;
-	using derived <D>::der;
+	using loop = afun::seq_loop;
+	using assign = afun::op::assign;
 
 //-----------------------------------------------------------------------------
 
 public:
+	using base_type = seq_base;
 	using B::B;
+
+	template <typename A, only_if <seq_atom_assign <R, A>{}> = 0>
+	INLINE D& operator=(A&& a)
+		{ return loop()(assign(), der(), seq_atom_of <A>(fwd <A>(a))), der(); }
+
+	template <typename A, only_if <seq_assign <R, A>{}> = 0>
+	INLINE D& operator=(A&& a)
+		{ return loop()(assign(), der(), fwd <A>(a)), der(); }
+
+//-----------------------------------------------------------------------------
 
 	INLINE constexpr bool empty() const { return der().size() == 0; }
 

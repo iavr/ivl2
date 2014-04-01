@@ -54,13 +54,8 @@ template <
 class tup_base <D, C <E...>, sizes <I...> > : public access <D, E...>
 {
 	using P = C <E...>;
-	using Q = pack <r_ref <E>...>;
 	using B = access <D, E...>;
-
-	template <typename T, typename R = raw_type <T> >
-	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
-
-	template <typename T> using uopt = opt <add_uref <T> >;
+	using Q = pack <r_ref <E>...>;
 
 //-----------------------------------------------------------------------------
 
@@ -97,6 +92,11 @@ public:
 //-----------------------------------------------------------------------------
 
 private:
+	template <typename T, typename R = raw_type <T> >
+	using opt = base_opt <T, R, _if <eq <R, D>{}, B, R> >;
+
+	template <typename T> using uopt = opt <add_uref <T> >;
+
 	template <size_t... J>
 	using sz_if = only_if <sizeof...(J) != 1, sizes <J...> >;
 

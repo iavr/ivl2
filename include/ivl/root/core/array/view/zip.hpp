@@ -132,10 +132,13 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename M, typename... U>
-struct sequence <tag::zip, M, U...> :
-	zip_seq_impl <M, pack <U...> >
+class sequence <tag::zip, M, U...> : public zip_seq_impl <M, pack <U...> >
 {
-	using zip_seq_impl <M, pack <U...> >::zip_seq_impl;
+	using B = zip_seq_impl <M, pack <U...> >;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

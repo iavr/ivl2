@@ -65,6 +65,7 @@ template <typename T> using rref_opt = type_of <rref_opt_t <T> >;
 template <typename C, typename T> struct add_ref_t;
 template <typename C, typename T> using  add_ref = type_of <add_ref_t <C, T> >;
 
+template <typename T> struct add_ref_t <tag::val, T>  : id_t <T> { };
 template <typename T> struct add_ref_t <tag::rref, T> : id_t <T&&> { };
 template <typename T> struct add_ref_t <tag::lref, T> : id_t <T&> { };
 template <typename T> struct add_ref_t <tag::cref, T> : id_t <const T&> { };
@@ -93,6 +94,9 @@ template <typename T> using l_type = type_of <l_type_t <T> >;
 template <typename T> using c_type = type_of <c_type_t <T> >;
 
 //-----------------------------------------------------------------------------
+
+template <typename T> using val_t = ref_t <tag::val, T>;
+template <typename T> using val   = type_of <val_t <T> >;
 
 template <typename T> using r_ref_t = ref_t <tag::rref, T>;
 template <typename T> using l_ref_t = ref_t <tag::lref, T>;
@@ -128,7 +132,7 @@ struct tx_type_t <const S&, D> : c_type_t <D> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename D> struct tx_ref_t : r_ref_t <D> { };
+template <typename S, typename D> struct tx_ref_t : val_t <D> { };
 template <typename S, typename D> using  tx_ref = type_of <tx_ref_t <S, D> >;
 
 template <typename S, typename D>

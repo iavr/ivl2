@@ -115,9 +115,13 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename U>
-struct sequence <tag::tail, U> : tail_seq_impl <U>
+class sequence <tag::tail, U> : public tail_seq_impl <U>
 {
-	using tail_seq_impl <U>::tail_seq_impl;
+	using B = tail_seq_impl <U>;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

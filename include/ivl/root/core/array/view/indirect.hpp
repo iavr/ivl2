@@ -116,9 +116,13 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename K, typename U>
-struct sequence <tag::indirect, K, U> : indirect_seq_impl <K, U>
+class sequence <tag::indirect, K, U> : public indirect_seq_impl <K, U>
 {
-	using indirect_seq_impl <K, U>::indirect_seq_impl;
+	using B = indirect_seq_impl <K, U>;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

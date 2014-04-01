@@ -112,9 +112,13 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename U>
-struct sequence <tag::flip, U> : flip_seq_impl <U>
+class sequence <tag::flip, U> : public flip_seq_impl <U>
 {
-	using flip_seq_impl <U>::flip_seq_impl;
+	using B = flip_seq_impl <U>;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------
