@@ -82,11 +82,11 @@ as(A&& a) { return static_cast <const remove_ref <T>&>(a); }
 
 //-----------------------------------------------------------------------------
 
-template <size_t I, typename A, typename... An, only_if <!I> = 0>
+template <size_t I, typename A, typename... An, only_if <I == 0> = 0>
 INLINE constexpr A&&
 get(A&& a, An&&... an) { return fwd <A>(a); }
 
-template <size_t I, typename A, typename... An, only_if <I> = 0>
+template <size_t I, typename A, typename... An, only_if <I != 0> = 0>
 INLINE constexpr pick <I - 1, An...>&&
 get(A&& a, An&&... an) { return get <I - 1>(fwd <An>(an)...); }
 

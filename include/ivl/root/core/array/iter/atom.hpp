@@ -86,6 +86,7 @@ class atom_iter_impl :
 	public atom_iter_base <D, TR>,
 	public iter_base <D, TR, I>
 {
+	using S = atom_iter_base <D, TR>;
 	using B = iter_base <D, TR, I>;
 
 	friend base_type_of <B>;
@@ -96,8 +97,20 @@ class atom_iter_impl :
 	using B::val;
 	using B::cast;
 
+//-----------------------------------------------------------------------------
+
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 };
 
 //-----------------------------------------------------------------------------
@@ -112,6 +125,7 @@ class atom_trav_impl :
 	public atom_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
+	using S = atom_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
 
 	friend B;
@@ -125,8 +139,18 @@ class atom_trav_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = false;
 
@@ -146,6 +170,7 @@ struct atom_trav_impl <Q, V, R, T, D, TR, true> :
 	public atom_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
+	using S = atom_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
 
 	friend B;
@@ -183,6 +208,8 @@ struct atom_trav_impl <Q, V, R, T, D, TR, true> :
 
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = true;
 

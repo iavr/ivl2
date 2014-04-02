@@ -124,8 +124,18 @@ class zip_iter_impl <pack <I...>, R, T, G, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 };
 
 //-----------------------------------------------------------------------------
@@ -146,6 +156,7 @@ class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...> > :
 	public zip_iter_base <D, TR, sizes <N...>, G>,
 	public trav_base <D, TR, Q, V...>
 {
+	using S = zip_iter_base <D, TR, sizes <N...>, G>;
 	using B = trav_base <D, TR, Q, V...>;
 
 	friend B;
@@ -176,8 +187,18 @@ class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
 

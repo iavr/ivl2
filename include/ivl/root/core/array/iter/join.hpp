@@ -200,7 +200,15 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
+	using S::operator*;
+	
 	template <typename... A>
 	INLINE constexpr join_iter_impl(size_t k, A&&... a) :
 		S(k), B(fwd <A>(a)...) { }
@@ -297,7 +305,15 @@ protected:
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
+	using S::operator*;
+
 	template <typename... A>
 	INLINE constexpr join_trav_impl(size_t k, size_t, size_t e, A&&... a) :
 		S(k), e(e), B(fwd <A>(a)...) { }

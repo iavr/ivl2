@@ -42,7 +42,7 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-using _auto = switch_fun_of <apply_sw <seq_auto, tup_auto> >;
+struct _auto : switch_fun_of <apply_sw <seq_auto, tup_auto> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -52,13 +52,12 @@ using vec_sw = map_if <any_group, R, atom_call <C> >;
 template <typename F, typename R, typename B = none>
 using vec_f = vec_fun_of <val_gen <F, B>, vec_sw <R> >;
 
-// no alias: entry point
 // no alias: fwd-declared
 template <typename F, typename B = none>
 struct vec_apply : vec_f <F, apply, B> { };
 
 template <typename F, typename B = none>
-using vec_loop = vec_f <F, loop, B>;
+struct vec_loop : vec_f <F, loop, B> { };
 
 template <typename F, typename B = none>
 using vec_auto = vec_f <F, _auto, B>;

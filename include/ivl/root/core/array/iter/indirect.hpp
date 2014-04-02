@@ -85,6 +85,7 @@ class indirect_iter_impl :
 	public indirect_iter_base <D, TR>,
 	public iter_base <D, TR, I, U>
 {
+	using S = indirect_iter_base <D, TR>;
 	using B = iter_base <D, TR, I, U>;
 
 	friend base_type_of <B>;
@@ -105,8 +106,18 @@ class indirect_iter_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 };
 
 //-----------------------------------------------------------------------------
@@ -120,6 +131,7 @@ class indirect_trav_impl :
 	public indirect_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V, U>
 {
+	using S = indirect_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V, U>;
 
 	friend B;
@@ -148,8 +160,18 @@ class indirect_trav_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
 

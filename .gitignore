@@ -6,6 +6,7 @@ doc/licenses/lgpl-3.0.txt
 test/array/array
 test/array/expr
 test/array/join
+test/array/member
 test/array/test
 test/array/vec
 test/array/vec_op

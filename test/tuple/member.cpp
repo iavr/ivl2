@@ -50,6 +50,7 @@ struct B
 };
 
 int pow(const A& a, int e) { return std::pow(a.p, e); }
+int pow(const B& b, int e) { return std::pow(b.p, e); }
 
 //-----------------------------------------------------------------------------
 
@@ -116,18 +117,15 @@ void run()
 		cout << ((t ->* H)(), t ->* m) << endl;
 		cout << endl;
 
-// TODO: option for copy_of <member_fun> for GCC?
-#if defined(__clang__)
 		cout << "op ->* (custom, atom member ptr)" << endl;
 		auto af = a ->* &A::f;
 		cout << a.p << endl;
 		cout << a ->* &A::p << endl;
 		cout << a.f(5, 'c') << endl;
-		cout << af(5, 'c') << endl;  // not in GCC
+		cout << af(5, 'c') << endl;
 		cout << _(a.f(5, 'c'), a.f(7, 'c')) << endl;
-		cout << af(_(5, 7), 'c') << endl;  // not in GCC
+		cout << af(_(5, 7), 'c') << endl;
 		cout << endl;
-#endif
 
 		cout << "op ->* (pow)" << endl;
 		using P = afun::pow;
@@ -136,8 +134,8 @@ void run()
 		cout << _[2] ->* 3 << endl;
 		cout << VP()(2, _(3, 2, 1, 0)) << endl;
 		cout << 2 ->* _(3, 2, 1, 0) << endl;
-		cout << pow(a, 2) << endl;
-		cout << a ->* 2 << endl;
+		cout << _(pow(a, 2), pow(b, 2)) << endl;
+		cout << t ->* 2 << endl;
 		cout << endl;
 	}
 

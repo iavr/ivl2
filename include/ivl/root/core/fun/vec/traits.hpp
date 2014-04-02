@@ -134,14 +134,19 @@ namespace details {
 template <template <typename...> class F>
 struct vec_all_
 {
-	template <typename P, bool = any_tuple_p <P>()> struct map_;
+	template <typename P, bool = any_tuple_p <P>(), bool = any_seq_p <P>()>
+	struct map_;
+
 	template <typename P> using map = map_<P>;
 
 	template <typename... A>
-	struct map_<pack <A...>, false> : F <A...> { };
+	struct map_<pack <A...>, false, false> : F <A...> { };
 
 	template <typename... A>
-	struct map_<pack <A...>, true> : all_p <map, tup_args <A...> > { };
+	struct map_<pack <A...>, true, false> : all_p <map, tup_args <A...> > { };
+
+	template <typename... A, bool T>
+	struct map_<pack <A...>, T, true> : map_<seq_args <A...> > { };
 };
 
 }  // namespace details

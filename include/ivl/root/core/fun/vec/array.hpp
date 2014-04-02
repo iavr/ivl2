@@ -45,7 +45,7 @@ namespace details {
 template <typename F, typename... A>
 using seq_auto_sw = _if <seq_vec_void <F(A...)>{}, seq_loop, seq_apply>;
 
-using seq_auto = switch_fun <seq_auto_sw>;
+struct seq_auto : switch_fun <seq_auto_sw> { };
 
 //-----------------------------------------------------------------------------
 
@@ -56,13 +56,13 @@ template <typename F, typename R, typename B = none>
 using seq_vec_f = vec_fun_of <val_gen <F, B>, seq_vec_sw <R> >;
 
 template <typename F, typename B = none>
-using seq_vec_apply = seq_vec_f <F, seq_apply, B>;
+struct seq_vec_apply : seq_vec_f <F, seq_apply, B> { };
 
 template <typename F, typename B = none>
-using seq_vec_loop = seq_vec_f <F, seq_loop, B>;
+struct seq_vec_loop : seq_vec_f <F, seq_loop, B> { };
 
 template <typename F, typename B = none>
-using seq_vec_auto = seq_vec_f <F, seq_auto, B>;
+struct seq_vec_auto : seq_vec_f <F, seq_auto, B> { };
 
 template <typename F, typename B = atom <F> >
 using seq_vec = vec_atom_of <atom_gen <B>, seq_vec_sw <seq_auto> >;
@@ -70,10 +70,10 @@ using seq_vec = vec_atom_of <atom_gen <B>, seq_vec_sw <seq_auto> >;
 //-----------------------------------------------------------------------------
 
 template <typename F, size_t I = 0>
-using seq_vec_mut = seq_vec_f <F, mut_call <seq_loop, I> >;
+struct seq_vec_mut : seq_vec_f <F, mut_call <seq_loop, I> > { };
 
 template <typename F, size_t I = 0>
-using seq_vec_copy = seq_vec_f <F, copy_call <seq_apply, I> >;
+struct seq_vec_copy : seq_vec_f <F, copy_call <seq_apply, I> > { };
 
 //-----------------------------------------------------------------------------
 

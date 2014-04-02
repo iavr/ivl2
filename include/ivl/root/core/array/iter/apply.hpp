@@ -101,6 +101,7 @@ class apply_iter_impl <pack <I...>, R, T, G, F, D, TR, sizes <N...> > :
 	public apply_iter_base <D, TR, sizes <N...>, G>,
 	public iter_base <D, TR, F, I...>
 {
+	using S = apply_iter_base <D, TR, sizes <N...>, G>;
 	using B = iter_base <D, TR, F, I...>;
 
 	friend base_type_of <B>;
@@ -128,8 +129,18 @@ class apply_iter_impl <pack <I...>, R, T, G, F, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 };
 
 //-----------------------------------------------------------------------------
@@ -150,6 +161,7 @@ class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...> > :
 	public apply_iter_base <D, TR, sizes <N...>, G>,
 	public trav_base <D, TR, Q, F, V...>
 {
+	using S = apply_iter_base <D, TR, sizes <N...>, G>;
 	using B = trav_base <D, TR, Q, F, V...>;
 
 	friend B;
@@ -185,8 +197,18 @@ class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...> > :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
 

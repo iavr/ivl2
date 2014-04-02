@@ -72,10 +72,10 @@ struct op_ref_call
 //-----------------------------------------------------------------------------
 
 // c .* &C::m VS p ->* &C::m
-using op_member = try_fun <op::ref_member, op::ptr_member>;
+struct op_member : try_fun <op::ref_member, op::ptr_member> { };
 
 // c .* &C::m(a...) VS p ->* &C::m(a...)
-using op_call   = try_fun <op::ref_call,   op::ptr_call>;
+struct op_call : try_fun <op::ref_call, op::ptr_call> { };
 
 // c ->* k VS c ->* &C::m OR pow(b, e)
 template <typename C, typename M>
@@ -89,11 +89,12 @@ using op_key_member_sw = type_of <_if <
 template <typename C, typename M, typename... A>
 using op_key_call_sw = _if <is_key <M>{}, key_call_call, op_call>;
 
-using op_key_member = switch_fun <op_key_member_sw>;
-using op_key_call   = switch_fun <op_key_call_sw>;
+struct op_key_member : switch_fun <op_key_member_sw> { };
+struct op_key_call   : switch_fun <op_key_call_sw> { };
 
-using vec_op_key_member = vec_apply <op_key_member>;  // cannot be void (pow assumed so)
-using vec_op_key_call   = vec_auto  <op_key_call>;    // can be void
+// alias only: should be a `vec_apply` to work with `can_call`
+using  vec_op_key_member = vec_apply <op_key_member>;  // cannot be void (pow assumed so)
+struct vec_op_key_call   : vec_auto  <op_key_call> { };    // can be void
 
 // c ->* m._(a...) VS c ->* m OR (c ->* m)(a...)
 template <typename C, typename M>
@@ -103,7 +104,7 @@ using op_ref_member_sw = _if <
 	try_fun <vec_op_key_member, bind_of <vec_op_key_call> >
 >;
 
-using op_ref_member = switch_fun <op_ref_member_sw>;
+struct op_ref_member : switch_fun <op_ref_member_sw> { };
 
 // _[b] ->* e VS c ->* m
 template <typename A, typename B>
@@ -113,7 +114,7 @@ using member_sw = _if <
 	op_ref_member
 >;
 
-using member = switch_fun <member_sw>;
+struct member : switch_fun <member_sw> { };
 
 //-----------------------------------------------------------------------------
 

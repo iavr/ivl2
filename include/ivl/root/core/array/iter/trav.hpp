@@ -91,6 +91,7 @@ class iter_trav_impl :
 	public iter_trav_base <D, TR>,
 	public trav_base <D, TR, Q, I, I>
 {
+	using S = iter_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, I, I>;
 
 	friend base_type_of <B>;
@@ -116,8 +117,18 @@ class iter_trav_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	INLINE constexpr operator bool() const { return i() != e(); }
 };
@@ -132,6 +143,7 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 	public iter_trav_base <D, TR>,
 	public trav_base <D, TR, Q, I, I, I>
 {
+	using S = iter_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, I, I, I>;
 
 	friend base_type_of <B>;
@@ -168,7 +180,18 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
+	using S::operator*;
+	using S::operator[];
+	
 	template <typename J, typename E>
 	INLINE iter_trav_impl(J&& i, E&& e) : B(i, i, e) { --l(); }
 

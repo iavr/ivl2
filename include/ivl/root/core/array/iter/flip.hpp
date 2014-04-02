@@ -85,6 +85,7 @@ class flip_iter_impl :
 	public flip_iter_base <D, TR>,
 	public iter_base <D, TR, I>
 {
+	using S = flip_iter_base <D, TR>;
 	using B = iter_base <D, TR, I>;
 
 	friend base_type_of <B>;
@@ -101,8 +102,18 @@ class flip_iter_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 };
 
 //-----------------------------------------------------------------------------
@@ -116,6 +127,7 @@ class flip_trav_impl :
 	public flip_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
+	using S = flip_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
 
 	friend B;
@@ -140,8 +152,18 @@ class flip_trav_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
 

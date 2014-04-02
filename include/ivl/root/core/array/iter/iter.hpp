@@ -88,6 +88,7 @@ class iter_iter_impl :
 	public iter_iter_base <D, TR>,
 	public iter_base <D, TR, I>
 {
+	using S = iter_iter_base <D, TR>;
 	using B = iter_base <D, TR, I>;
 
 	friend base_type_of <B>;
@@ -104,8 +105,18 @@ class iter_iter_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 };
 
 //-----------------------------------------------------------------------------
@@ -119,8 +130,8 @@ class trav_trav_impl :
 	public iter_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
+	using S = iter_iter_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
-	using d = seq_diff <B>;
 
 	friend B;
 	friend base_type_of <B>;
@@ -144,8 +155,18 @@ class trav_trav_impl :
 
 //-----------------------------------------------------------------------------
 
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
 public:
 	using B::B;
+	using S::operator*;
+	using S::operator[];
 
 	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
 
