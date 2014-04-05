@@ -94,19 +94,19 @@ template <typename T> struct fin_trav;
 
 namespace details {
 
-template <typename T, bool = is_seq <T>{}>  struct fix_seq_    : _false { };
+template <typename T, bool = is_seq_<T>{}>  struct fin_seq_  : _false { };
+template <typename T, bool = is_trav <T>{}> struct fin_trav_ : _false { };
+
+template <typename T, bool = fin_seq_<T>{}> struct fix_seq_    : _false { };
 template <typename T, bool = fix_seq_<T>{}> struct seq_len_    : size <> { };
 template <typename T, bool = fix_seq_<T>{}> struct seq_length_ : no_size { };
 
-template <typename T, bool = is_seq <T>{}>  struct fin_seq_  : _false { };
-template <typename T, bool = is_trav <T>{}> struct fin_trav_ : _false { };
+template <typename T> struct fin_seq_<T, true>  : expr <T::finite> { };
+template <typename T> struct fin_trav_<T, true> : expr <T::finite> { };
 
 template <typename T> struct fix_seq_<T, true>    : expr <T::fixed> { };
 template <typename T> struct seq_len_<T, true>    : size <T::length> { };
 template <typename T> struct seq_length_<T, true> : T::length_type { };
-
-template <typename T> struct fin_seq_<T, true>  : expr <T::finite> { };
-template <typename T> struct fin_trav_<T, true> : expr <T::finite> { };
 
 }  // namespace details
 
@@ -197,9 +197,6 @@ template <typename I> using seq_iptr = type_of <seq_iptr_t <I> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct seq_size_t <_type <T> > : id_t <size_t> { };
-template <typename T> struct seq_diff_t <_type <T> > : id_t <ptrdiff_t> { };
-
 template <typename... I>
 struct seq_size_t <pack <I...> > : common_t <seq_size <I>...> { };
 
@@ -209,6 +206,9 @@ struct seq_diff_t <pack <I...> > : common_t <seq_diff <I>...> { };
 //-----------------------------------------------------------------------------
 
 // extending definition @type/traits/ref
+template <typename C, typename T>
+struct type_t <C, id_t <T> > : id_t <id_t <T> > { };
+
 template <typename C, typename... T>
 struct type_t <C, _type <T...> > : _type <type <C, T>...> { };
 
@@ -218,6 +218,9 @@ struct type_t <C, F(_type <T>)> : id_t <type <C, F>(_type <type <C, T> >)> { };
 //-----------------------------------------------------------------------------
 
 // extending definition @type/traits/ref
+template <typename C, typename T>
+struct ref_t <C, id_t <T> > : id_t <T> { };
+
 template <typename C, typename... T>
 struct ref_t <C, _type <T...> > : common_t <ref <C, T>...> { };
 
@@ -424,10 +427,10 @@ template <typename C, typename T, typename Q>
 using trav = type_of <trav_t <C, T, Q> >;
 
 template <typename C, typename T>
-struct iter_t <C, _type <T> > : add_ref_t <C, T> { };
+struct iter_t <C, _type <T> > : _type <T> { };
 
 template <typename C, typename T, typename Q>
-struct trav_t <C, _type <T>, Q> : add_ref_t <C, T> { };
+struct trav_t <C, _type <T>, Q> : _type <T> { };
 
 template <typename C, typename... A>
 struct iter_t <C, pack <A...> > : pack <iter <C, id_t <A> >...> { };
@@ -486,10 +489,13 @@ using c_trav = type_of <c_trav_t <T, Q> >;
 //-----------------------------------------------------------------------------
 
 template <typename T, bool = is_iter <T>()>
-struct iter_opt_ : rref_opt_t <T> { };
+struct iter_opt_ : base_opt_t <T> { };
 
 template <typename T>
-struct iter_opt_<T, true> : base_opt_t <T> { };
+struct iter_opt_<T, false> : rref_opt_t <T> { };
+
+template <typename T>
+struct iter_opt_<_type <T>, false> : base_opt_t <T> { };
 
 template <typename T> using iter_opt_t = iter_opt_<T>;
 template <typename T> using iter_opt = type_of <iter_opt_t <T> >;

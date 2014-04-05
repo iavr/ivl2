@@ -49,6 +49,16 @@ using arrays::details::seq_store;
 
 //-----------------------------------------------------------------------------
 
+namespace arrays {
+namespace details {
+
+using namespace atoms;
+
+}  // namespace details
+}  // namespace arrays
+
+//-----------------------------------------------------------------------------
+
 namespace afun {
 namespace details {
 

@@ -124,6 +124,7 @@ struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
 
 //-----------------------------------------------------------------------------
 
+	// for std only
 	using iterator        = l_iterator;
 	using const_iterator  = c_iterator;
 	using reference       = l_reference;

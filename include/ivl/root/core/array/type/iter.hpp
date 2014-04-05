@@ -75,6 +75,14 @@ using inf_trav = atom_trav <path, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
+template <typename I, typename R, typename T, typename U>
+using range_iter = iterator <tag::range, I, R, T, U>;
+
+template <typename Q, typename I, typename R, typename T, typename U>
+using range_trav = traversor <tag::range, Q, I, R, T, U>;
+
+//-----------------------------------------------------------------------------
+
 template <typename I, typename R, typename T>
 using flip_iter = iterator <tag::flip, I, R, T>;
 
@@ -86,6 +94,8 @@ using indirect_iter = iterator <tag::indirect, I, R, T, U>;
 
 template <typename Q, typename V, typename R, typename T, typename U>
 using indirect_trav = traversor <tag::indirect, Q, V, R, T, U>;
+
+//-----------------------------------------------------------------------------
 
 template <typename I, typename R, typename T, typename G, typename F>
 using apply_iter = iterator <tag::apply, I, R, T, G, F>;
@@ -122,6 +132,9 @@ using details::trav_trav;
 using details::atom_iter;
 using details::atom_trav;
 using details::inf_trav;
+
+using details::range_iter;
+using details::range_trav;
 
 using details::flip_iter;
 using details::flip_trav;

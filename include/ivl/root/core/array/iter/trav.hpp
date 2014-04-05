@@ -191,9 +191,9 @@ class iter_trav_impl <Q, I, R, T, D, TR, true> :
 public:
 	using S::operator*;
 	using S::operator[];
-	
-	template <typename J, typename E>
-	INLINE iter_trav_impl(J&& i, E&& e) : B(i, i, e) { --l(); }
+
+	template <typename _I, typename E>
+	INLINE constexpr iter_trav_impl(_I&& i, E e) : B(i, i, --e) { }
 
 	INLINE constexpr operator bool() const { return i() != l() + 1; }
 

@@ -80,14 +80,14 @@ public:
 template <
 	typename I, typename R, typename T,
 	typename D = atom_iter <I, R, T>,
-	typename TR = iter_traits <I, R, T, size_t>
+	typename TR = iter_traits <I, R, T, ptrdiff_t>
 >
 class atom_iter_impl :
 	public atom_iter_base <D, TR>,
-	public iter_base <D, TR, I>
+	public iter_base <D, TR, R>
 {
 	using S = atom_iter_base <D, TR>;
-	using B = iter_base <D, TR, I>;
+	using B = iter_base <D, TR, R>;
 
 	friend base_type_of <B>;
 
@@ -118,15 +118,15 @@ public:
 template <
 	typename Q, typename V, typename R, typename T,
 	typename D = atom_trav <Q, V, R, T>,
-	typename TR = iter_traits <V, R, T, size_t>,
+	typename TR = iter_traits <V, R, T, ptrdiff_t>,
 	bool = path_fin <Q>()
 >
 class atom_trav_impl :
 	public atom_iter_base <D, TR>,
-	public trav_base <D, TR, Q, V>
+	public trav_base <D, TR, Q, R>
 {
 	using S = atom_iter_base <D, TR>;
-	using B = trav_base <D, TR, Q, V>;
+	using B = trav_base <D, TR, Q, R>;
 
 	friend B;
 	friend base_type_of <B>;
@@ -168,10 +168,10 @@ template <
 >
 struct atom_trav_impl <Q, V, R, T, D, TR, true> :
 	public atom_iter_base <D, TR>,
-	public trav_base <D, TR, Q, V>
+	public trav_base <D, TR, Q, R>
 {
 	using S = atom_iter_base <D, TR>;
-	using B = trav_base <D, TR, Q, V>;
+	using B = trav_base <D, TR, Q, R>;
 
 	friend B;
 	friend base_type_of <B>;

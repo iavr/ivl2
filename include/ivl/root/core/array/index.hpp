@@ -46,12 +46,6 @@
 #include "fun/manip.hpp"
 #include "fun/loop.hpp"
 
-// // TODO
-// #include "mem/cast.hpp"
-// #include "mem/alloc.hpp"
-// #include "fun/mem.hpp"
-// #include "fun/math.hpp"
-
 #include "base/iter/store.hpp"
 #include "base/iter/base.hpp"
 #include "base/seq/elem.hpp"
@@ -62,6 +56,7 @@
 #include "iter/iter.hpp"
 #include "iter/trav.hpp"
 #include "iter/atom.hpp"
+#include "iter/range.hpp"
 
 #include "iter/flip.hpp"
 #include "iter/indirect.hpp"
@@ -72,6 +67,9 @@
 #include "store/aggr.hpp"
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
+#include "store/range.hpp"
+
+#include "view/range.hpp"
 
 #include "view/each.hpp"
 #include "view/tail.hpp"
@@ -80,7 +78,6 @@
 #include "view/apply.hpp"
 #include "view/zip.hpp"
 #include "view/join.hpp"
-#include "view/each.hpp"
 
 //-----------------------------------------------------------------------------
 

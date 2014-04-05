@@ -39,7 +39,7 @@ namespace details {
 
 // extending definition @array/base/base
 template <typename T, typename C>
-struct seq_data_t <atoms::atom <T, C> > : pack <T> { };
+struct seq_data_t <atom <T, C> > : pack <T> { };
 
 }  // namespace details
 }  // namespace arrays
@@ -55,7 +55,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T>
-using atom_traits = seq_traits <T, no_size, _type <T>, atom_iter, atom_trav>;
+using atom_traits = seq_traits <T, no_size, void*, atom_iter, atom_trav>;
 
 //-----------------------------------------------------------------------------
 

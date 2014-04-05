@@ -152,7 +152,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	join_iter_base(size_t k) : k(k) { }
+	INLINE constexpr join_iter_base(size_t k) : k(k) { }
 
 	INLINE constexpr R operator*() const { return op <deref>()(k, der()); }
 };
@@ -208,7 +208,7 @@ class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
 
 public:
 	using S::operator*;
-	
+
 	template <typename... A>
 	INLINE constexpr join_iter_impl(size_t k, A&&... a) :
 		S(k), B(fwd <A>(a)...) { }
@@ -318,7 +318,6 @@ public:
 	INLINE constexpr join_trav_impl(size_t k, size_t, size_t e, A&&... a) :
 		S(k), e(e), B(fwd <A>(a)...) { }
 
-	// TODO: finite atom (unit)
 	static constexpr bool finite = _and <fin_trav <V>...>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return k != e; }

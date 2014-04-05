@@ -30,15 +30,16 @@
 
 //-----------------------------------------------------------------------------
 
-// TODO: keep built-in features disabled for testing; enable for speed
-#define IVL_NO_FEATURES
+// keep built-in features disabled for testing by default;
+// manually enable for speed by externally defining USE_FEATURES
+// TODO: default-enable features eventaully
 
 //-----------------------------------------------------------------------------
 
 #if defined(__clang__)
 
 	#define IVL_HAS_FEATURE(X)        \
-		!defined(IVL_NO_FEATURES) &&   \
+		defined(USE_FEATURES) &&       \
 		__has_feature(X)               \
 
 #else  // defined(__clang__)
@@ -49,7 +50,7 @@
 	#define IVL_GCC_NO_cxx_reference_qualified_functions
 
 	#define IVL_HAS_FEATURE(X)        \
-		!defined(IVL_NO_FEATURES) &&   \
+		defined(USE_FEATURES) &&       \
 		!defined(IVL_GCC_NO_##X)       \
 
 #endif  // defined(__clang__)

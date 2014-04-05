@@ -38,15 +38,16 @@ namespace tag {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct atom_ { };
-template <typename... D> struct iter_ { };
-template <typename... D> struct trav_ { };
+template <typename... D> struct atom_  { };
+template <typename... D> struct iter_  { };
+template <typename... D> struct trav_  { };
 
-template <typename... D> struct aggr_ { };
+template <typename... D> struct aggr_  { };
 template <typename... D> struct fixed_ { };
-template <typename... D> struct heap_ { };
+template <typename... D> struct heap_  { };
 
-template <typename... D> struct each_ { };
+template <typename... D> struct each_  { };
+template <typename... D> struct range_ { };
 
 template <typename... D> using pre_fixed_ = pre_<fixed_<D...> >;
 
@@ -60,7 +61,8 @@ using aggr  = aggr_<>;
 using fixed = fixed_<>;
 using heap  = heap_<>;
 
-using each = each_<>;
+using each  = each_<>;
+using range = range_<>;
 
 using pre_fixed = pre_fixed_<>;
 

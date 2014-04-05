@@ -64,10 +64,10 @@ struct mut_call
 template <typename C, size_t I = 0>
 struct copy_call
 {
-	template <typename F, typename... A>
-	INLINE constexpr copy <pick <I, A...> >
+	template <typename F, typename... A, typename P = copy <pick <I, A...> > >
+	INLINE constexpr P
 	operator()(F&& f, A&&... a) const
-		{ return copy <pick <I, A...> >(C()(fwd <F>(f), fwd <A>(a)...)); }
+		{ return P(C()(fwd <F>(f), fwd <A>(a)...)); }
 };
 
 //-----------------------------------------------------------------------------

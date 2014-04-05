@@ -43,27 +43,27 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator++(I&& i, int) { copy <I> c(i); return ++i, c; }
+template <typename I, typename C = raw_type <I>, only_if <is_iter <I>{}> = 0>
+INLINE C operator++(I&& i, int) { C c(i); return ++i, c; }
 
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator--(I&& i, int) { copy <I> c(i); return --i, c; }
-
-//-----------------------------------------------------------------------------
-
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator+(I&& i, seq_diff <I> n) { return copy <I>(i) += n; }
-
-template <typename I, only_if <is_iter <I>{}> = 0>
-INLINE copy <I> operator-(I&& i, seq_diff <I> n) { return copy <I>(i) -= n; }
+template <typename I, typename C = raw_type <I>, only_if <is_iter <I>{}> = 0>
+INLINE C operator--(I&& i, int) { C c(i); return --i, c; }
 
 //-----------------------------------------------------------------------------
 
-template <typename V, typename A, only_if <is_trav <V>{}> = 0>
-INLINE copy <V> operator<<(V&& v, A&& a) { return copy <V>(v) <<= fwd <A>(a); }
+template <typename I, only_if <is_iter <I>{}> = 0>
+INLINE I operator+(I i, seq_diff <I> n) { return i += n; }
 
-template <typename V, typename A, only_if <is_trav <V>{}> = 0>
-INLINE copy <V> operator>>(V&& v, A&& a) { return copy <V>(v) >>= fwd <A>(a); }
+template <typename I, only_if <is_iter <I>{}> = 0>
+INLINE I operator-(I i, seq_diff <I> n) { return i -= n; }
+
+//-----------------------------------------------------------------------------
+
+template <typename V, typename P, only_if <is_trav <V>{}> = 0>
+INLINE V operator<<(V v, P) { return v <<= P(); }
+
+template <typename V, typename P, only_if <is_trav <V>{}> = 0>
+INLINE V operator>>(V v, P) { return v >>= P(); }
 
 //-----------------------------------------------------------------------------
 

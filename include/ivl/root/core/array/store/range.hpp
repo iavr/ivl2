@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ATOM_USCORE_OP_HPP
-#define IVL_CORE_ATOM_USCORE_OP_HPP
+#ifndef IVL_CORE_ARRAY_STORE_RANGE_HPP
+#define IVL_CORE_ARRAY_STORE_RANGE_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace atoms {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,42 +42,49 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename V, only_if <is_trav <V>{}> = 0>
-INLINE constexpr V&&
-operator<<=(V&& v, uscore) { return fwd <V>(v) <<= key::iter(); }
+template <typename D>
+class step_base : public derived <D>
+{
+	using derived <D>::der;
 
-template <typename V, only_if <is_trav <V>{}> = 0>
-INLINE constexpr V&&
-operator>>=(V&& v, uscore) { return fwd <V>(v) >>= key::iter(); }
+public:
+	template <typename I> INLINE I next(I i) const { der().inc(i); return i; }
+	template <typename I> INLINE I prev(I i) const { der().dec(i); return i; }
 
-//-----------------------------------------------------------------------------
-
-INLINE constexpr inc_step
-operator++(uscore) { return inc_step(); }
-
-//-----------------------------------------------------------------------------
-
-// TODO: elsewhere
-template <typename T> struct is_range : _false { };
-
-template <typename T> struct is_update            : _false { };
-template <>           struct is_update <inc_step> : _true { };
+	template <typename I, typename d>
+	INLINE I rel(I i, d n) const { der().add(i, n); return i; }
+};
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename B, typename U,
-	typename R = range_seq <raw_type <B>, base_opt <U> >,
-	only_if <!is_range <B>() && is_update <U>()>
-= 0>
-INLINE constexpr R
-operator,(B b, U&& u) { return R(b, fwd <U>(u)); }
+class inc_step : public step_base <inc_step>
+{
+	template <typename I>
+	INLINE I _size(_false, I b, I e) { return e > b ? e - b : I(0); }
 
-template <typename B, only_if <!is_range <B>()> = 0>
-INLINE constexpr auto
-operator,(B b, uscore)
--> decltype(b, ++uscore())
-	{ return b, ++uscore(); }
+// 	// TODO
+// 	template <typename I>
+// 	INLINE I _size(_true, I b, I e) { }
+
+public:
+	template <typename I> INLINE void inc(I& i) const { ++i; }
+	template <typename I> INLINE void dec(I& i) const { --i; }
+
+	template <typename I, typename d>
+	INLINE void add(I& i, d n) const { i += n; }
+
+	template <typename I, typename d>
+	INLINE void sub(I& i, d n) const { i -= n; }
+
+	template <typename F, typename I, typename O>
+	INLINE constexpr bool comp(F f, I i, O o) const { return f(i, o); }
+
+	template <typename I, typename F = is_floating <I> >
+	INLINE constexpr I size(I b, I e) const { return _size(F(), b, e); }
+
+	template <typename I>
+	INLINE constexpr I end(I b, I e) const { return b + size(b, e); }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -85,7 +92,11 @@ operator,(B b, uscore)
 
 //-----------------------------------------------------------------------------
 
-}  // namespace atoms
+using details::inc_step;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -93,4 +104,4 @@ operator,(B b, uscore)
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ATOM_USCORE_OP_HPP
+#endif  // IVL_CORE_ARRAY_STORE_RANGE_HPP

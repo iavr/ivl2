@@ -60,14 +60,14 @@ using heap_array = sequence <tag::heap, T>;
 
 //-----------------------------------------------------------------------------
 
-template <typename U>
-using each_seq = sequence <tag::each, U>;
+template <typename B, typename U, typename... E>
+using range_seq = sequence <tag::range, B, U, E...>;
 
-template <typename U>
-using tail_seq = sequence <tag::tail, U>;
+//-----------------------------------------------------------------------------
 
-template <typename U>
-using flip_seq = sequence <tag::flip, U>;
+template <typename U> using each_seq = sequence <tag::each, U>;
+template <typename U> using tail_seq = sequence <tag::tail, U>;
+template <typename U> using flip_seq = sequence <tag::flip, U>;
 
 template <typename K, typename U>
 using indirect_seq = sequence <tag::indirect, K, U>;
@@ -121,11 +121,15 @@ template <typename A> using  seq_data = type_of <seq_data_t <A> >;
 
 }  // namespace details
 
+//-----------------------------------------------------------------------------
+
 using details::sequence;
 
 using details::pre_fixed_array;
 using details::fixed_array;
 using details::heap_array;
+
+using details::range_seq;
 
 using details::each_seq;
 using details::tail_seq;
@@ -147,6 +151,8 @@ using details::join_sequence;
 //-----------------------------------------------------------------------------
 
 }  // namespace arrays
+
+//-----------------------------------------------------------------------------
 
 using arrays::details::array;
 using arrays::details::aggr_array;

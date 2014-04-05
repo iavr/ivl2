@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_STORE_ELEM_HPP
-#define IVL_CORE_ARRAY_STORE_ELEM_HPP
+#ifndef IVL_CORE_ARRAY_BASE_ELEM_HPP
+#define IVL_CORE_ARRAY_BASE_ELEM_HPP
 
 #include <ivl/ivl>
 
@@ -93,4 +93,4 @@ using seq_elem = _if <is_ref <T>{}, ref_elem <T>, T>;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_STORE_ELEM_HPP
+#endif  // IVL_CORE_ARRAY_BASE_ELEM_HPP

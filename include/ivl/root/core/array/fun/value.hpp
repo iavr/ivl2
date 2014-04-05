@@ -42,20 +42,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct cp
-{
-	template <typename A>
-	INLINE constexpr copy <A>
-	operator()(A&& a) const { return fwd <A>(a); }
-};
-
-//-----------------------------------------------------------------------------
-
 template <size_t I>
 struct get
 {
 	template <typename... A>
-	INLINE constexpr pick <I, A...>&&
+	INLINE constexpr pick <I, A&&...>
 	operator()(A&&... a) const { return ivl::get <I>(fwd <A>(a)...); }
 };
 
@@ -65,6 +56,13 @@ struct get_cp
 	template <typename... A>
 	INLINE constexpr copy <pick <I, A...> >
 	operator()(A&&... a) const { return ivl::get <I>(fwd <A>(a)...); }
+};
+
+struct cp
+{
+	template <typename A>
+	INLINE constexpr copy <A>
+	operator()(A&& a) const { return fwd <A>(a); }
 };
 
 //-----------------------------------------------------------------------------

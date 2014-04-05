@@ -60,9 +60,9 @@ template <size_t... N> using sizes   = integrals <size_t, N...>;
 template <typename T> struct is_size             : _false { };
 template <size_t N>   struct is_size <size <N> > : _true { };
 
-template <typename T> struct to_size_t : id_t <size <> > { };
+template <typename T> struct to_size_t : size <> { };
 template <typename T> using  to_size = type_of <to_size_t <T> >;
-template <size_t N>   struct to_size_t <size <N> > : id_t <size <N> > { };
+template <size_t N>   struct to_size_t <size <N> > : size <N> { };
 
 struct no_size : id_t <no_size> { };
 

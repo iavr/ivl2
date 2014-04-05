@@ -97,6 +97,7 @@ void run()
 		join(a, b) = join(c, join(d, e));
 		cout << c << " " << d << " " << e << endl;
 		cout << a << " " << b << endl;
+		cout << endl;
 	}
 
 }
