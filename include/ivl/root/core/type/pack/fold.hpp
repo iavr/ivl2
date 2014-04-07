@@ -285,6 +285,9 @@ INLINE constexpr A max_(A a, A b) { return a > b ? a : b; }
 template <typename A>
 INLINE constexpr A sum_(A a, A b) { return a + b; }
 
+template <typename A>
+INLINE constexpr A prod_(A a, A b) { return a * b; }
+
 template <
 	typename T, template <typename...> class F,
 	typename P, bool = is_null <P>{}
@@ -306,6 +309,13 @@ template <
 struct int_sum_ :
 	integral <T, sum_(F <car <P> >{}(), int_sum_<T, F, cdr <P> >{}())> {};
 
+template <
+	typename T, template <typename...> class F,
+	typename P, bool = is_null <P>{}
+>
+struct int_prod_ :
+	integral <T, prod_(F <car <P> >{}(), int_prod_<T, F, cdr <P> >{}())> {};
+
 template <typename T, template <typename...> class F, typename P>
 struct int_min_<T, F, P, true> :
 	integral <T, std::numeric_limits <T>::max()> {};
@@ -316,6 +326,9 @@ struct int_max_<T, F, P, true> :
 
 template <typename T, template <typename...> class F, typename P>
 struct int_sum_<T, F, P, true> : integral <T, 0> {};
+
+template <typename T, template <typename...> class F, typename P>
+struct int_prod_<T, F, P, true> : integral <T, 1> {};
 
 }  // namespace details
 
@@ -330,6 +343,9 @@ using integral_max_p = details::int_max_<T, F, P>;
 template <typename T, template <typename...> class F, typename P>
 using integral_sum_p = details::int_sum_<T, F, P>;
 
+template <typename T, template <typename...> class F, typename P>
+using integral_prod_p = details::int_prod_<T, F, P>;
+
 template <typename T, template <typename...> class F, typename... E>
 using integral_min = integral_min_p <T, F, pack <E...> >;
 
@@ -338,6 +354,9 @@ using integral_max = integral_max_p <T, F, pack <E...> >;
 
 template <typename T, template <typename...> class F, typename... E>
 using integral_sum = integral_sum_p <T, F, pack <E...> >;
+
+template <typename T, template <typename...> class F, typename... E>
+using integral_prod = integral_prod_p <T, F, pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
@@ -350,6 +369,9 @@ using num_max_p = integral_max_p <int, F, P>;
 template <template <typename...> class F, typename P>
 using num_sum_p = integral_sum_p <int, F, P>;
 
+template <template <typename...> class F, typename P>
+using num_prod_p = integral_prod_p <int, F, P>;
+
 template <template <typename...> class F, typename... E>
 using num_min = integral_min <int, F, E...>;
 
@@ -358,6 +380,9 @@ using num_max = integral_max <int, F, E...>;
 
 template <template <typename...> class F, typename... E>
 using num_sum = integral_sum <int, F, E...>;
+
+template <template <typename...> class F, typename... E>
+using num_prod = integral_prod <int, F, E...>;
 
 //-----------------------------------------------------------------------------
 
@@ -378,6 +403,9 @@ using sz_max = integral_max <size_t, F, E...>;
 
 template <template <typename...> class F, typename... E>
 using sz_sum = integral_sum <size_t, F, E...>;
+
+template <template <typename...> class F, typename... E>
+using sz_prod = integral_prod <size_t, F, E...>;
 
 //-----------------------------------------------------------------------------
 

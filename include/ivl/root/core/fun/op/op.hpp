@@ -342,23 +342,23 @@ using op::_reinterpret_cast;
 // {
 // 	template <typename C>
 // 	INLINE auto _() const
-// 	-> decltype(new (std::nothrow) C)
-// 		{ return new (std::nothrow) C; }
+// 	-> decltype(new (nothrow) C)
+// 		{ return new (nothrow) C; }
 //
 // 	template <typename C>
 // 	INLINE auto _(size_t n0) const
-// 	-> decltype(new (std::nothrow) C[n0])
-// 		{ return new (std::nothrow) C[n0]; }
+// 	-> decltype(new (nothrow) C[n0])
+// 		{ return new (nothrow) C[n0]; }
 //
 // 	template <typename C, size_t n1>
 // 	INLINE auto _(size_t n0) const
-// 	-> decltype(new (std::nothrow) C[n0][n1])
-// 		{ return new (std::nothrow) C[n0][n1]; }
+// 	-> decltype(new (nothrow) C[n0][n1])
+// 		{ return new (nothrow) C[n0][n1]; }
 //
 // 	template <typename C, size_t n1, size_t n2>
 // 	INLINE auto _(size_t n0) const
-// 	-> decltype(new (std::nothrow) C[n0][n1][n2])
-// 		{ return new (std::nothrow) C[n0][n1][n2]; }
+// 	-> decltype(new (nothrow) C[n0][n1][n2])
+// 		{ return new (nothrow) C[n0][n1][n2]; }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -413,23 +413,23 @@ using op::_reinterpret_cast;
 // {
 // 	template <typename C>
 // 	INLINE auto _() const
-// 	-> decltype(new (std::nothrow) C())
-// 		{ return new (std::nothrow) C(); }
+// 	-> decltype(new (nothrow) C())
+// 		{ return new (nothrow) C(); }
 //
 // 	template <typename C>
 // 	INLINE auto _(size_t n0) const
-// 	-> decltype(new (std::nothrow) C[n0]())
-// 		{ return new (std::nothrow) C[n0](); }
+// 	-> decltype(new (nothrow) C[n0]())
+// 		{ return new (nothrow) C[n0](); }
 //
 // 	template <typename C, size_t n1>
 // 	INLINE auto _(size_t n0) const
-// 	-> decltype(new (std::nothrow) C[n0][n1]())
-// 		{ return new (std::nothrow) C[n0][n1](); }
+// 	-> decltype(new (nothrow) C[n0][n1]())
+// 		{ return new (nothrow) C[n0][n1](); }
 //
 // 	template <typename C, size_t n1, size_t n2>
 // 	INLINE auto _(size_t n0) const
-// 	-> decltype(new (std::nothrow) C[n0][n1][n2]())
-// 		{ return new (std::nothrow) C[n0][n1][n2](); }
+// 	-> decltype(new (nothrow) C[n0][n1][n2]())
+// 		{ return new (nothrow) C[n0][n1][n2](); }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -469,8 +469,8 @@ using op::_reinterpret_cast;
 // {
 // 	template <typename C, typename... A>
 // 	INLINE auto _(A&&... a) const
-// 	-> decltype(new (std::nothrow) C ( fwd <A>(a)... ) )
-// 		{ return new (std::nothrow) C ( fwd <A>(a)... ) ; }
+// 	-> decltype(new (nothrow) C ( fwd <A>(a)... ) )
+// 		{ return new (nothrow) C ( fwd <A>(a)... ) ; }
 // };
 //
 // //-----------------------------------------------------------------------------
@@ -498,8 +498,8 @@ using op::_reinterpret_cast;
 // {
 // 	template <typename C, typename... A>
 // 	INLINE auto _(A&&... a) const
-// 	-> decltype(new (std::nothrow) C { fwd <A>(a)... } )
-// 		{ return new (std::nothrow) C { fwd <A>(a)... } ; }
+// 	-> decltype(new (nothrow) C { fwd <A>(a)... } )
+// 		{ return new (nothrow) C { fwd <A>(a)... } ; }
 // };
 //
 // //-----------------------------------------------------------------------------

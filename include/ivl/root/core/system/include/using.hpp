@@ -32,6 +32,8 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
+using std::nothrow;
+using std::nullptr_t;
 using std::initializer_list;
 using std::string;
 using std::cout;

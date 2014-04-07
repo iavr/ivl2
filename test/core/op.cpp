@@ -2,24 +2,23 @@
 
 //-----------------------------------------------------------------------------
 
+namespace test {
+
+using namespace ivl;
+namespace op = afun::op;
+
+//-----------------------------------------------------------------------------
+
 struct A { int x; };
 struct B { float f(int x) { return sqrt(x); } };
 struct C { C(int x) { } };
 struct D
 {
-	void f(int x)        { std::cout << "void: " << x << std::endl; }
-	int  g(int x)        { std::cout << "int: " << x << std::endl; return 0; }
-	void fc(int x) const { std::cout << "void const: " << x << std::endl; }
-	int  gc(int x) const { std::cout << "int const: " << x << std::endl; return 0; }
+	void f(int x)        { cout << "void: " << x << endl; }
+	int  g(int x)        { cout << "int: " << x << endl; return 0; }
+	void fc(int x) const { cout << "void const: " << x << endl; }
+	int  gc(int x) const { cout << "int const: " << x << endl; return 0; }
 };
-
-//-----------------------------------------------------------------------------
-
-namespace operators {
-
-using namespace std;
-using namespace ivl;
-using namespace ivl::scalar_fun;
 
 //-----------------------------------------------------------------------------
 
@@ -65,11 +64,11 @@ void run()
 
 //-----------------------------------------------------------------------------
 
-}  // namespace operators
+}  // namespace test
 
 //-----------------------------------------------------------------------------
 
 int main()
 {
-	operators::run();
+	test::run();
 }

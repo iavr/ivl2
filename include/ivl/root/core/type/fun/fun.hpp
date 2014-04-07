@@ -73,4 +73,12 @@ IVL_FUN_STD(swap)
 
 //-----------------------------------------------------------------------------
 
+namespace ivl {
+
+static __attribute__ ((unused)) afun::swap  swap;
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
 #endif  // IVL_CORE_TYPE_FUN_FUN_HPP

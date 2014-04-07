@@ -299,7 +299,7 @@ protected:
 	INLINE void shift_l(key::edge) { op_ML <elem_l>()(k, der()); }
 	INLINE void shift_r(key::edge) { op_ML <elem_r>()(k, der()); }
 
-	INLINE void _swap() { std::swap(k, e), elem_flip(); }
+	INLINE void _swap() { ivl::swap(k, e), elem_flip(); }
 
 	INLINE void elem_flip() { thru{v<N>().flip()...}; }
 
