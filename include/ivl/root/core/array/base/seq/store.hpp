@@ -69,13 +69,13 @@ using seq_data_tuple = type_of <seq_data_tuple_<A, pack <E...> > >;
 template <typename TR, typename... E> struct seq_store;
 
 template <
-	typename T, typename L = no_size, typename B = seq_elem <T>*,
+	typename T, typename O = none, typename B = seq_elem <T>*,
 	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
 	template <typename...> class F = id,
 	typename S = seq_size <B>, typename... U
 >
-struct seq_traits : seq_store <seq_traits <T, L, B, I, V, F, S, U...> >
+struct seq_traits : seq_store <seq_traits <T, O, B, I, V, F, S, U...> >
 {
 	using traits = seq_traits;
 };
@@ -83,15 +83,15 @@ struct seq_traits : seq_store <seq_traits <T, L, B, I, V, F, S, U...> >
 //-----------------------------------------------------------------------------
 
 template <
-	typename T, typename L, typename B, template <typename...> class I,
+	typename T, typename O, typename B, template <typename...> class I,
 	template <typename...> class V, template <typename...> class F,
 	typename S, typename... U, typename... E
 >
-struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
+struct seq_store <seq_traits <T, O, B, I, V, F, S, U...>, E...> :
 	seq_tuple <E...>
 {
 	using value_type = T;
-	using length_type = L;
+	using order_type = O;
 	using size_type = S;
 
 	using r_iterator = I <r_iter <B, F <path> >, r_ref <T>, T, r_ref <U>...>;
@@ -117,8 +117,7 @@ struct seq_store <seq_traits <T, L, B, I, V, F, S, U...>, E...> :
 	using difference_type = seq_diff <l_iterator>;
 
 	static constexpr bool   finite = l_traversor <>::finite;
-	static constexpr bool   fixed  = is_size <L>();
-	static constexpr size_t length = to_size <L>();
+	static constexpr size_t length = to_size <O>();
 
 	using seq_tuple <E...>::seq_tuple;
 

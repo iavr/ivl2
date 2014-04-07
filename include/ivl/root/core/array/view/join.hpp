@@ -47,7 +47,7 @@ using join_path = edge_path <fin_path <> >;
 
 template <typename... U>
 using join_length =
-	if_size <_and <fix_seq <U>...>{}, sz_sum <id, seq_len <U>...> >;
+	if_size <_and <seq_fixed <U>...>{}, sz_sum <id, seq_len <U>...> >;
 
 template <typename U, typename UP = U>
 struct join_traits;

@@ -65,7 +65,10 @@ class range <B, U> : raw_tuple <B, U>
 	using update = elem <1, U>;
 
 protected:
-	INLINE constexpr B b() const { return begin::get(); }
+	INLINE           r_ref <B> b_f()      { return begin::fwd(); }
+	INLINE           r_ref <B> b() &&     { return begin::fwd(); }
+	INLINE           l_ref <B> b() &      { return begin::get(); }
+	INLINE constexpr c_ref <B> b() const& { return begin::get(); }
 
 	INLINE           r_ref <U> u_f()      { return update::fwd(); }
 	INLINE           r_ref <U> u() &&     { return update::fwd(); }
@@ -73,7 +76,8 @@ protected:
 	INLINE constexpr c_ref <U> u() const& { return update::get(); }
 
 	template <typename V, typename R>
-	INLINE constexpr V t(R&& r) const& { return V(fwd <R>(r).u(), b()); }
+	INLINE constexpr V t(R&& r) const&
+		{ return V(fwd <R>(r).u(), fwd <R>(r).b()); }
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +85,7 @@ public:
 	using derived = range_seq <B, U>;  // TODO: remove
 	static constexpr bool finite = false;
 
-	using traits = range_traits <B, no_size, _unsigned <B>, U>;
+	using traits = range_traits <B, none, size_t, U>;
 
 	using T::T;
 };
@@ -101,36 +105,43 @@ class finite_range : raw_tuple <I, U, I>
 	using end    = elem <2, I>;
 
 protected:
-	INLINE constexpr I b() const { return begin::get(); }
-	INLINE constexpr I e() const { return end::get(); }
+	INLINE           r_ref <I> b_f()      { return begin::fwd(); }
+	INLINE           r_ref <I> b() &&     { return begin::fwd(); }
+	INLINE           l_ref <I> b() &      { return begin::get(); }
+	INLINE constexpr c_ref <I> b() const& { return begin::get(); }
 
-	INLINE           r_ref <U> u_f()      { return update::get_f(); }
-	INLINE           r_ref <U> u() &&     { return update::get(); }
+	INLINE           r_ref <U> u_f()      { return update::fwd(); }
+	INLINE           r_ref <U> u() &&     { return update::fwd(); }
 	INLINE           l_ref <U> u() &      { return update::get(); }
 	INLINE constexpr c_ref <U> u() const& { return update::get(); }
 
+	INLINE           r_ref <I> e_f()      { return end::fwd(); }
+	INLINE           r_ref <I> e() &&     { return end::fwd(); }
+	INLINE           l_ref <I> e() &      { return end::get(); }
+	INLINE constexpr c_ref <I> e() const& { return end::get(); }
+
 	template <typename V, typename R>
 	INLINE constexpr V
-	t(R&& r) const& { return V(fwd <R>(r).u(), b(), e()); }
+	t(R&& r) const&
+		{ return V(fwd <R>(r).u(), fwd <R>(r).b(), fwd <R>(r).e()); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using derived = range_seq <B, U, E>;  // TODO: remove
-	static constexpr bool finite = true;
-	static constexpr bool fixed  = false; // TODO: typename U::template fixed <B, E>{};
+	static constexpr bool finite = true;  // TODO: remove
 	// TODO: static constexpr size_t length = typename U::template length <B, E>{};
-	// TODO: using length_type = if_size <fixed, size <length> >;;
+	// TODO: using order_type = if_size <fixed, size <length> >;
 
-	using traits = range_traits <I, no_size, S, U>;  // TODO: use fixed/length
+	using traits = range_traits <I, none, S, U>;  // TODO: use fixed/length
 
 //-----------------------------------------------------------------------------
 
 	template <typename _B, typename _U, typename _E>
-	INLINE constexpr finite_range(_B b, _U&& u, _E e) :
-		T(b, fwd <_U>(u), u.end(b, e)) { }
+	INLINE constexpr finite_range(_B&& _b, _U&& _u, _E&& e) :
+		T(fwd <_B>(_b), fwd <_U>(_u), u().end(b(), fwd <_E>(e))) { }
 
-	INLINE constexpr S size() const { return u().size(b(), e()); }
+	INLINE constexpr S size() const { return u().template size <S>(b(), e()); }
 };
 
 //-----------------------------------------------------------------------------
@@ -154,9 +165,10 @@ template <
 	typename TR = traits_of <R>
 >
 class range_seq_impl :
-	public R,
+	public based <R>,
 	public seq_base <D, TR>
 {
+	using S = based <R>;
 	using B = seq_base <D, TR>;
 	friend B;
 
@@ -171,27 +183,35 @@ class range_seq_impl :
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VR <Q> _trav() && { return R::template t <VR <Q> >(mv(*this)); }
+	INLINE VR <Q> _trav() && { return R::template t <VR <Q> >(base_f()); }
 
 	template <typename Q>
-	INLINE VL <Q> _trav() & { return R::template t <VL <Q> >(*this); }
+	INLINE VL <Q> _trav() & { return R::template t <VL <Q> >(base()); }
 
 	template <typename Q>
 	INLINE constexpr VC <Q>
-	_trav() const& { return R::template t <VC <Q> >(*this); }
+	_trav() const& { return R::template t <VC <Q> >(base()); }
+
+//-----------------------------------------------------------------------------
+
+	using S::base_f;
+	using S::base;
+
+protected:
+	using base_type = base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 public:
 	using traits = TR;
-	using R::finite;  // TODO: remove
-	using R::R;
+	using S::finite;  // TODO: remove
+	using S::S;
 
-	INLINE           IR begin() &&     { return IR(R::u_f(), R::b()); }
+	INLINE           IR begin() &&     { return IR(R::u_f(), R::b_f()); }
 	INLINE           IL begin() &      { return IL(R::u(),   R::b()); }
 	INLINE constexpr IC begin() const& { return IC(R::u(),   R::b()); }
 
-	INLINE           IR end() &&     { return IR(R::u_f(), R::e()); }
+	INLINE           IR end() &&     { return IR(R::u_f(), R::e_f()); }
 	INLINE           IL end() &      { return IL(R::u(),   R::e()); }
 	INLINE constexpr IC end() const& { return IC(R::u(),   R::e()); }
 };

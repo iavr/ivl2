@@ -90,38 +90,36 @@ template <typename... E> using any_seq = any_seq_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct fin_trav;
+template <typename T> struct trav_finite;
 
 namespace details {
 
-template <typename T, bool = is_seq_<T>{}>  struct fin_seq_  : _false { };
-template <typename T, bool = is_trav <T>{}> struct fin_trav_ : _false { };
+template <typename T, bool = is_seq_<T>{}>  struct seq_finite_  : _false { };
+template <typename T, bool = is_trav <T>{}> struct trav_finite_ : _false { };
 
-template <typename T, bool = fin_seq_<T>{}> struct fix_seq_    : _false { };
-template <typename T, bool = fix_seq_<T>{}> struct seq_len_    : size <> { };
-template <typename T, bool = fix_seq_<T>{}> struct seq_length_ : no_size { };
+template <typename T, bool = seq_finite_<T>{}>  struct seq_order_ : none { };
+template <typename T, bool = seq_finite_<T>{}>  struct seq_len_   : size <> { };
 
-template <typename T> struct fin_seq_<T, true>  : expr <T::finite> { };
-template <typename T> struct fin_trav_<T, true> : expr <T::finite> { };
+template <typename T> struct seq_finite_<T, true>  : expr <T::finite> { };
+template <typename T> struct trav_finite_<T, true> : expr <T::finite> { };
 
-template <typename T> struct fix_seq_<T, true>    : expr <T::fixed> { };
 template <typename T> struct seq_len_<T, true>    : size <T::length> { };
-template <typename T> struct seq_length_<T, true> : T::length_type { };
+template <typename T> struct seq_order_<T, true> : T::order_type { };
 
 }  // namespace details
 
-template <typename T> using fix_seq = details::fix_seq_<raw_type <T> >;
-template <typename T> using seq_len = details::seq_len_<raw_type <T> >;
+template <typename T> using  seq_finite  = details::seq_finite_<raw_type <T> >;
+template <typename T> struct trav_finite : details::trav_finite_<raw_type <T> > { };
+template <typename T> using  cont_finite = expr <is_cont <T>() || seq_finite <T>()>;
 
-template <typename T> using seq_length_t = details::seq_length_<raw_type <T> >;
-template <typename T> using seq_length   = type_of <seq_length_t <T> >;
+template <typename T> using seq_order_t = details::seq_order_<raw_type <T> >;
+template <typename T> using seq_order   = type_of <seq_order_t <T> >;
 
-template <typename T> using  fin_seq  = details::fin_seq_<raw_type <T> >;
-template <typename T> struct fin_trav : details::fin_trav_<raw_type <T> > { };
-template <typename T> using  fin_cont = expr <is_cont <T>() || fin_seq <T>()>;
+template <typename T> using seq_fixed = is_size <seq_order <T> >;
+template <typename T> using seq_len   = details::seq_len_<raw_type <T> >;
 
-template <typename... T> using prim_seq  = first_b <fin_seq <T>{}...>;
-template <typename... T> using prim_trav = first_b <fin_trav <T>{}...>;
+template <typename... T> using prim_seq  = first_b <seq_finite <T>{}...>;
+template <typename... T> using prim_trav = first_b <trav_finite <T>{}...>;
 
 //-----------------------------------------------------------------------------
 
@@ -133,14 +131,14 @@ using term_trav = typename M::template trav <A...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename... T> using cont_travers = _or <fin_cont <T>...>;
-template <typename... T> using seq_travers  = _or <fin_seq <T>...>;
+template <typename... T> using cont_travers = _or <cont_finite <T>...>;
+template <typename... T> using seq_travers  = _or <seq_finite <T>...>;
 
 template <typename... T>
-using iter_travers = expr <_and <is_iter <T>...>() && _or <fin_trav <T>...>()>;
+using iter_travers = expr <_and <is_iter <T>...>() && _or <trav_finite <T>...>()>;
 
 template <typename... T>
-using trav_travers = expr <_and <is_trav <T>...>() && _or <fin_trav <T>...>()>;
+using trav_travers = expr <_and <is_trav <T>...>() && _or <trav_finite <T>...>()>;
 
 template <typename... T>
 using raw_travers = expr <cont_travers <T...>() || iter_travers <T...>()>;
@@ -569,7 +567,7 @@ struct new_seq_ <T, false, N> : id_t <heap_array <T> > { };
 
 template <typename T, typename... A>
 struct new_seq :
-	new_seq_<T, all <fix_seq, A...>{}, sz_min <seq_len, A...>{}> { };
+	new_seq_<T, all <seq_fixed, A...>{}, sz_min <seq_len, A...>{}> { };
 
 //-----------------------------------------------------------------------------
 

@@ -75,7 +75,7 @@ public:
 template <
 	typename I, typename R, typename T, typename U,
 	typename D = range_iter <I, R, T, U>,
-	typename TR = iter_traits <I, R, T, _signed <R> >
+	typename TR = iter_traits <I, R, T, ptrdiff_t>
 >
 class range_iter_impl :
 	public range_iter_base <D, TR>,
@@ -121,8 +121,8 @@ public:
 template <
 	typename Q, typename I, typename R, typename T, typename U,
 	typename D = range_trav <Q, I, R, T, U>,
-	typename TR = iter_traits <I, R, T, _signed <R> >,
-	bool = fin_seq <U>(), bool = path_edge <Q>()
+	typename TR = iter_traits <I, R, T, ptrdiff_t>,
+	bool = seq_finite <U>(), bool = path_edge <Q>()  // TODO: xtra param to check for finite
 >
 class range_trav_impl :
 	public range_iter_base <D, TR>,
@@ -300,7 +300,8 @@ public:
 
 	template <typename _U, typename _I, typename E>
 	INLINE constexpr
-	range_trav_impl(_U&& u, _I i, E e) : B(fwd <_U>(u), i, i, u.prev(e)) { }
+	range_trav_impl(_U&& _u, _I&& i, E&& e) :
+		B(fwd <_U>(_u), i, fwd <_I>(i), u().prev(fwd <E>(e))) { }
 
 	static constexpr bool finite = true;
 

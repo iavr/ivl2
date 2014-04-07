@@ -64,9 +64,7 @@ template <typename T> struct to_size_t : size <> { };
 template <typename T> using  to_size = type_of <to_size_t <T> >;
 template <size_t N>   struct to_size_t <size <N> > : size <N> { };
 
-struct no_size : id_t <no_size> { };
-
-template <bool F, typename L> struct if_size_t : no_size { };
+template <bool F, typename L> struct if_size_t : none { };
 template <bool F, typename L> using  if_size = type_of <if_size_t <F, L> >;
 template <size_t N> struct if_size_t <true, size <N> > : size <N> { };
 

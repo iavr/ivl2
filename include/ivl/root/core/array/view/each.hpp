@@ -44,7 +44,7 @@ namespace details {
 
 template <typename U>
 using each_traits = seq_traits <
-	seq_type <U>, seq_length <U>, U, iter_iter, trav_trav
+	seq_type <U>, seq_order <U>, U, iter_iter, trav_trav
 >;
 
 //-----------------------------------------------------------------------------

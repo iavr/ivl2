@@ -44,7 +44,7 @@ namespace details {
 
 template <typename... A>
 using apply_length =
-	if_size <_and <fix_seq <A>...>{}, sz_min <id, seq_len <A>...> >;
+	if_size <_and <seq_fixed <A>...>{}, sz_min <id, seq_len <A>...> >;
 
 template <typename M, typename F, typename A, typename AP = A>
 struct apply_traits;

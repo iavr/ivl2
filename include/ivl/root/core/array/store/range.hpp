@@ -48,42 +48,50 @@ class step_base : public derived <D>
 	using derived <D>::der;
 
 public:
-	template <typename I> INLINE I next(I i) const { der().inc(i); return i; }
-	template <typename I> INLINE I prev(I i) const { der().dec(i); return i; }
+	template <typename I> INLINE I next(I i) const { return der().inc(i), i; }
+	template <typename I> INLINE I prev(I i) const { return der().dec(i), i; }
 
 	template <typename I, typename d>
-	INLINE I rel(I i, d n) const { der().add(i, n); return i; }
+	INLINE I rel(I i, d n) const { return der().add(i, n), i; }
 };
 
 //-----------------------------------------------------------------------------
 
 class inc_step : public step_base <inc_step>
 {
-	template <typename I>
-	INLINE I _size(_false, I b, I e) { return e > b ? e - b : I(0); }
+	// TODO: _true (floating) versions
+	template <typename S, typename I, typename E>
+	INLINE S _size(_false, I&& b, E&& e)
+		{ return e >= b ? static_cast <S>(fwd <E>(e) - fwd <I>(b)) : S(); }
 
-// 	// TODO
-// 	template <typename I>
-// 	INLINE I _size(_true, I b, I e) { }
+	template <typename I, typename E>
+	INLINE copy <I> _end(_false, I&& b, E&& e)
+		{ return e >= b ? fwd <E>(e) : fwd <B>(b); }
 
 public:
-	template <typename I> INLINE void inc(I& i) const { ++i; }
-	template <typename I> INLINE void dec(I& i) const { --i; }
+	template <typename I> INLINE void inc(I&& i) const { ++fwd <I>(i); }
+	template <typename I> INLINE void dec(I&& i) const { --fwd <I>(i); }
 
 	template <typename I, typename d>
-	INLINE void add(I& i, d n) const { i += n; }
+	INLINE void add(I&& i, d n) const { fwd <I>(i) += n; }
 
 	template <typename I, typename d>
-	INLINE void sub(I& i, d n) const { i -= n; }
+	INLINE void sub(I&& i, d n) const { fwd <I>(i) -= n; }
 
 	template <typename F, typename I, typename O>
-	INLINE constexpr bool comp(F f, I i, O o) const { return f(i, o); }
+	INLINE constexpr bool
+	comp(F f, I&& i, O&& o) const { return f(fwd <I>(i), fwd <O>(o)); }
 
-	template <typename I, typename F = is_floating <I> >
-	INLINE constexpr I size(I b, I e) const { return _size(F(), b, e); }
+	template <
+		typename S, typename I, typename E,
+		typename F = is_floating <raw_type <I> >
+	>
+	INLINE constexpr S
+	size(I&& b, E&& e) const { return _size <S>(F(), fwd <I>(b), fwd <E>(e)); }
 
-	template <typename I>
-	INLINE constexpr I end(I b, I e) const { return b + size(b, e); }
+	template <typename I, typename E, typename F = is_floating <raw_type <I> > >
+	INLINE constexpr I
+	end(I&& b, E&& e) const { return _end(F(), fwd <I>(b), fwd <E>(e)); }
 };
 
 //-----------------------------------------------------------------------------

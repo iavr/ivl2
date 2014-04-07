@@ -210,7 +210,7 @@ public:
 	using S::operator*;
 	using S::operator[];
 
-	static constexpr bool finite = _or <fin_trav <V>...>{}();  // TODO: () needed by GCC
+	static constexpr bool finite = _or <trav_finite <V>...>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return G()(v<N>()...); }
 

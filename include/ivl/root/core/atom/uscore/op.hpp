@@ -65,6 +65,7 @@ template <>           struct is_update <inc_step> : _true { };
 
 //-----------------------------------------------------------------------------
 
+// TODO: make & use afun::range
 template <
 	typename B, typename U,
 	typename R = range_seq <raw_type <B>, base_opt <U> >,
@@ -73,11 +74,13 @@ template <
 INLINE constexpr R
 operator,(B b, U&& u) { return R(b, fwd <U>(u)); }
 
-template <typename B, only_if <!is_range <B>()> = 0>
-INLINE constexpr auto
-operator,(B b, uscore)
--> decltype(b, ++uscore())
-	{ return b, ++uscore(); }
+template <
+	typename B,
+	typename R = range_seq <raw_type <B>, inc_step>,
+	only_if <!is_range <B>()>
+= 0>
+INLINE constexpr R
+operator,(B b, uscore) { return b, ++uscore(); }
 
 //-----------------------------------------------------------------------------
 

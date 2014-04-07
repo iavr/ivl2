@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename U>
-using tail_length = if_size <fix_seq <U>{}, size <seq_len <U>{} - 1> >;
+using tail_length = if_size <seq_fixed <U>{}, size <seq_len <U>{} - 1> >;
 
 template <typename U>
 using tail_traits = seq_traits <

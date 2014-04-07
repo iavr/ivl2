@@ -165,7 +165,7 @@ public:
 	using S::operator*;
 	using S::operator[];
 
-	static constexpr bool finite = fin_trav <V>{}();  // TODO: () needed by GCC
+	static constexpr bool finite = trav_finite <V>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return v(); }
 

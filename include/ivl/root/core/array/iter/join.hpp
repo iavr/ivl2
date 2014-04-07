@@ -318,7 +318,7 @@ public:
 	INLINE constexpr join_trav_impl(size_t k, size_t, size_t e, A&&... a) :
 		S(k), e(e), B(fwd <A>(a)...) { }
 
-	static constexpr bool finite = _and <fin_trav <V>...>{}();  // TODO: () needed by GCC
+	static constexpr bool finite = _and <trav_finite <V>...>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return k != e; }
 };

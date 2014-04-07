@@ -97,7 +97,7 @@ public:
 	aggr_store <T, N> a;
 
 	using value_type = T;
-	using length_type = types::size <N>;
+	using order_type = types::size <N>;
 	using size_type = size_t;
 	using difference_type = ptrdiff_t;
 
@@ -117,7 +117,6 @@ public:
 	template <typename Q = path> using c_traversor = VC <Q>;
 
 	static constexpr bool   finite = true;
-	static constexpr bool   fixed  = true;
 	static constexpr size_t length = N;
 
 //-----------------------------------------------------------------------------
