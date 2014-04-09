@@ -95,6 +95,12 @@ struct c_fun_call : c_fun_call <C(A...)> { };
 template <typename C, typename... A>
 struct c_fun_call <C(A...)> : c_call <c_cons <C>(A...)> { };
 
+template <typename C, typename... A>
+struct c_tmp_call : c_tmp_call <C(A...)> { };
+
+template <typename C, typename... A>
+struct c_tmp_call <C(A...)> : c_fun_call <C(c_cons <tmp <A...> >)> { };
+
 template <typename C, C &O, typename... A>
 struct c_ref_call : c_ref_call <C(A...), O> { };
 

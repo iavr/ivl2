@@ -115,8 +115,6 @@ using c_unsigned_long_long = c_integral <unsigned long long, N>;
 template <size_t    N = 0> using c_size_t    = c_integral <size_t,    N>;
 template <ptrdiff_t N = 0> using c_ptrdiff_t = c_integral <ptrdiff_t, N>;
 
-using c_no_sz = c_size_t <std::numeric_limits <size_t>::max()>;
-
 //-----------------------------------------------------------------------------
 
 template <typename M, typename E>

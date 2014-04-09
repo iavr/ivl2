@@ -32,7 +32,6 @@
 
 //-----------------------------------------------------------------------------
 
-#include "core/limits.hpp"
 #include "core/extrema_fun.hpp"
 #include "core/extrema.hpp"
 

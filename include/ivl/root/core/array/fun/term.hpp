@@ -42,32 +42,22 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <size_t I>
-struct get_term : get <I>
-{
-	template <typename... A> using seq  = get <I>;
-	template <typename... A> using trav = get <I>;
-};
-
-//-----------------------------------------------------------------------------
-
 struct prim_term
 {
-	template <typename... A> using seq  = get <prim_seq <A...>{}>;
-	template <typename... A> using trav = get <prim_trav <A...>{}>;
+	template <typename... A> using map = seq_prim <A...>;
+	template <typename... A> using get = afun::get <map <A...>{}>;
 
 	template <typename... A>
 	INLINE constexpr auto
 	operator()(A&&... a) const
-	-> decltype(trav <A...>()(fwd <A>(a)...))
-		{ return trav <A...>()(fwd <A>(a)...); }
+	-> decltype(get <A...>()(fwd <A>(a)...))
+		{ return get <A...>()(fwd <A>(a)...); }
 };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::get_term;
 using details::prim_term;
 
 //-----------------------------------------------------------------------------

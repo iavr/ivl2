@@ -42,17 +42,16 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename... A>
-using apply_length =
-	if_size <_and <seq_fixed <A>...>{}, sz_min <id, seq_len <A>...> >;
+template <typename M, typename... A>
+using apply_order = seq_order <term_pick <M, A...> >;
 
 template <typename M, typename F, typename A, typename AP = A>
 struct apply_traits;
 
 template <typename M, typename F, typename... A, typename AP>
 struct apply_traits <M, F, pack <A...>, AP> : seq_traits <
-	F(pack <seq_type <A>...>), apply_length <A...>, AP,
-	apply_iter, apply_trav, id, seq_size <AP>, term_seq <M, A...>, F
+	F(pack <seq_type <A>...>), apply_order <M, A...>, AP,
+	apply_iter, apply_trav, id, seq_size <AP>, term_get <M, A...>, F
 > { };
 
 //-----------------------------------------------------------------------------
@@ -71,7 +70,7 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 	friend B;
 
 	using S = seq_size <TR>;
-	using G = term_seq <M, A...>;
+	using G = term_get <M, A...>;
 
 	using IR = r_seq_iter <TR>;
 	using IL = l_seq_iter <TR>;

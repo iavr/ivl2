@@ -72,6 +72,7 @@
 #include "fun/op.hpp"
 #include "fun/fun.hpp"
 #include "fun/call.hpp"
+#include "fun/limits.hpp"
 
 #include "const/array.hpp"
 #include "const/call.hpp"

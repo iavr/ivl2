@@ -96,7 +96,7 @@ template <typename B, typename U, typename E, typename I = common <B, E> >
 class finite_range : raw_tuple <I, U, I>
 {
 	using T = raw_tuple <I, U, I>;
-	using S = _unsigned <B>;
+	using S = size_t;
 
 //-----------------------------------------------------------------------------
 
@@ -130,10 +130,8 @@ protected:
 public:
 	using derived = range_seq <B, U, E>;  // TODO: remove
 	static constexpr bool finite = true;  // TODO: remove
-	// TODO: static constexpr size_t length = typename U::template length <B, E>{};
-	// TODO: using order_type = if_size <fixed, size <length> >;
 
-	using traits = range_traits <I, none, S, U>;  // TODO: use fixed/length
+	using traits = range_traits <I, none, S, U>;  // TODO: find order_type
 
 //-----------------------------------------------------------------------------
 

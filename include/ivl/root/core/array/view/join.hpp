@@ -46,15 +46,16 @@ template <typename P = path>
 using join_path = edge_path <fin_path <> >;
 
 template <typename... U>
-using join_length =
-	if_size <_and <seq_fixed <U>...>{}, sz_sum <id, seq_len <U>...> >;
+using join_order = fixed_order <
+	_and <seq_fixed <U>...>{}, sizes <sz_sum <seq_len <U>{}...>{}>
+>;
 
 template <typename U, typename UP = U>
 struct join_traits;
 
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
-	_type <seq_type <U>...>, join_length <U...>, UP,
+	_type <seq_type <U>...>, join_order <U...>, UP,
 	join_iter, join_trav, join_path
 > { };
 

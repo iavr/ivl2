@@ -90,44 +90,73 @@ template <typename... E> using any_seq = any_seq_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct trav_finite;
+template <bool F, typename S>
+struct fixed_order_t : none { };
+
+template <bool F, typename S>
+using fixed_order = type_of <fixed_order_t <F, S> >;
+
+template <size_t... N>
+struct fixed_order_t <true, sizes <N...> > : sizes <N...> { };
+
+//-----------------------------------------------------------------------------
 
 namespace details {
+
+template <typename T> struct is_finite_ : expr <T::finite> { };
 
 template <typename T, bool = is_seq_<T>{}>  struct seq_finite_  : _false { };
 template <typename T, bool = is_trav <T>{}> struct trav_finite_ : _false { };
 
-template <typename T, bool = seq_finite_<T>{}>  struct seq_order_ : none { };
-template <typename T, bool = seq_finite_<T>{}>  struct seq_len_   : size <> { };
+template <typename T> struct seq_finite_<T, true>  : is_finite_<T> { };
+template <typename T> struct trav_finite_<T, true> : is_finite_<T> { };
 
-template <typename T> struct seq_finite_<T, true>  : expr <T::finite> { };
-template <typename T> struct trav_finite_<T, true> : expr <T::finite> { };
+template <typename T, bool = seq_finite_<T>{}>
+struct seq_order_ : none { };
 
-template <typename T> struct seq_len_<T, true>    : size <T::length> { };
-template <typename T> struct seq_order_<T, true> : T::order_type { };
+template <typename T>
+struct seq_order_<T, true> : id_t <typename T::order_type> { };
 
 }  // namespace details
 
-template <typename T> using  seq_finite  = details::seq_finite_<raw_type <T> >;
-template <typename T> struct trav_finite : details::trav_finite_<raw_type <T> > { };
-template <typename T> using  cont_finite = expr <is_cont <T>() || seq_finite <T>()>;
+template <typename T> using is_finite   = details::is_finite_<raw_type <T> >;
+template <typename T> using seq_finite  = details::seq_finite_<raw_type <T> >;
+template <typename T> using trav_finite = details::trav_finite_<raw_type <T> >;
+template <typename T> using cont_finite = expr <is_cont <T>() || seq_finite <T>()>;
 
 template <typename T> using seq_order_t = details::seq_order_<raw_type <T> >;
 template <typename T> using seq_order   = type_of <seq_order_t <T> >;
 
-template <typename T> using seq_fixed = is_size <seq_order <T> >;
-template <typename T> using seq_len   = details::seq_len_<raw_type <T> >;
+//-----------------------------------------------------------------------------
 
-template <typename... T> using prim_seq  = first_b <seq_finite <T>{}...>;
-template <typename... T> using prim_trav = first_b <trav_finite <T>{}...>;
+namespace details {
+
+template <typename T, typename = seq_order <T> >
+struct seq_fixed_ : _false { };
+
+template <typename T, size_t... N>
+struct seq_fixed_<T, sizes <N...> > : _true { };
+
+template <typename T, bool = seq_fixed_<T>{}>
+struct seq_len_ : size <> { };
+
+template <typename T>
+struct seq_len_<T, true> : int_prod <seq_order <T> > { };
+
+}  // namespace details
+
+template <typename T> using seq_fixed = details::seq_fixed_<raw_type <T> >;
+template <typename T> using seq_len   = details::seq_len_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename M, typename... A>
-using term_seq = typename M::template seq <A...>;
+template <typename... T> using seq_prim = first_b <is_finite <T>{}...>;
 
 template <typename M, typename... A>
-using term_trav = typename M::template trav <A...>;
+using term_pick = pick <typename M::template map <A...>{}, A...>;
+
+template <typename M, typename... A>
+using term_get = typename M::template get <A...>;
 
 //-----------------------------------------------------------------------------
 
@@ -567,7 +596,7 @@ struct new_seq_ <T, false, N> : id_t <heap_array <T> > { };
 
 template <typename T, typename... A>
 struct new_seq :
-	new_seq_<T, all <seq_fixed, A...>{}, sz_min <seq_len, A...>{}> { };
+	new_seq_<T, all <seq_fixed, A...>{}, sz_min <seq_len <A>{}...>{}> { };
 
 //-----------------------------------------------------------------------------
 

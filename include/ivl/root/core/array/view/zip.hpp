@@ -47,8 +47,8 @@ struct zip_traits;
 
 template <typename M, typename... U, typename UP>
 struct zip_traits <M, pack <U...>, UP> : seq_traits <
-	pack <seq_type <U>...>, apply_length <U...>, UP,
-	zip_iter, zip_trav, id, seq_size <UP>, term_seq <M, U...>
+	pack <seq_type <U>...>, apply_order <M, U...>, UP,
+	zip_iter, zip_trav, id, seq_size <UP>, term_get <M, U...>
 > { };
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ class zip_seq_impl <M, pack <U...>, sizes <N...>, TR> :
 	friend B;
 
 	using S = seq_size <TR>;
-	using G = term_seq <M, U...>;
+	using G = term_get <M, U...>;
 
 	using IR = r_seq_iter <TR>;
 	using IL = l_seq_iter <TR>;

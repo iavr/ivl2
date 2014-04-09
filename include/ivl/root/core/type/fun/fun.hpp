@@ -68,8 +68,10 @@ using FUN = ::ivl_fun::details::IVL_##FUN::IVL_##FUN;      \
 
 //-----------------------------------------------------------------------------
 
-IVL_FUN_STD(pow)
 IVL_FUN_STD(swap)
+IVL_FUN_STD(pow)
+IVL_FUN_STD(exp)
+IVL_FUN_STD(atan)
 
 //-----------------------------------------------------------------------------
 

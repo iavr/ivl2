@@ -112,9 +112,10 @@ public:
 
 //-----------------------------------------------------------------------------
 
-	friend std::ostream& operator<<(std::ostream& os, const F& f)
+	template <typename S, only_if <types::is_stream <S>{}> = 0>
+	friend S& operator<<(S& s, const F& f)
 	{
-		return os << "<<foo(" << f.val << ")";
+		return s << "<<foo(" << f.val << ")";
 	}
 
 };

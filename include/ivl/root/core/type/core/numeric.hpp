@@ -57,19 +57,6 @@ template <size_t... N> using sizes   = integrals <size_t, N...>;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct is_size             : _false { };
-template <size_t N>   struct is_size <size <N> > : _true { };
-
-template <typename T> struct to_size_t : size <> { };
-template <typename T> using  to_size = type_of <to_size_t <T> >;
-template <size_t N>   struct to_size_t <size <N> > : size <N> { };
-
-template <bool F, typename L> struct if_size_t : none { };
-template <bool F, typename L> using  if_size = type_of <if_size_t <F, L> >;
-template <size_t N> struct if_size_t <true, size <N> > : size <N> { };
-
-//-----------------------------------------------------------------------------
-
 template <typename T, T N> using int_inc = integral <T, N + 1>;
 template <typename T, T N> using int_dec = integral <T, N - 1>;
 
@@ -78,6 +65,26 @@ template <int N> using num_dec = int_dec <int, N>;
 
 template <size_t N> using sz_inc = int_inc <size_t, N>;
 template <size_t N> using sz_dec = int_dec <size_t, N>;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, template <typename...> class F, typename P>
+struct map_it;
+
+template <
+	typename T,
+	template <typename...> class F,
+	template <typename...> class C, typename... E
+> struct map_it <T, F, C <E...> > : integrals <T, F <E>{}...> { };
+
+template <typename T, template <typename...> class F, typename P>
+using map_i = type_of <map_it <T, F, P> >;
+
+template <template <typename...> class F, typename P>
+using num_map = map_i <int, F, P>;
+
+template <template <typename...> class F, typename P>
+using sz_map = map_i <size_t, F, P>;
 
 //-----------------------------------------------------------------------------
 
@@ -235,6 +242,65 @@ template <size_t L, size_t... N> using sz_rep_t  = rep_it <L, size_t, N...>;
 
 template <size_t L, int... N>    using num_rep = type_of <num_rep_t <L, N...> >;
 template <size_t L, size_t... N> using sz_rep  = type_of <sz_rep_t <L, N...> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename A>
+INLINE constexpr A min_(A a, A b) { return a < b ? a : b; }
+
+template <typename A>
+INLINE constexpr A max_(A a, A b) { return a > b ? a : b; }
+
+}  // namespace details
+
+template <typename I> struct int_min;
+template <typename I> struct int_max;
+template <typename I> struct int_sum;
+template <typename I> struct int_prod;
+
+template <typename T, T N, T... R>
+struct int_min <integrals <T, N, R...> > :
+	integral <T, details::min_(N, int_min <integrals <T, R...> >{}())> {};
+
+template <typename T, T N, T... R>
+struct int_max <integrals <T, N, R...> > :
+	integral <T, details::max_(N, int_max <integrals <T, R...> >{}())> {};
+
+template <typename T, T N, T... R>
+struct int_sum <integrals <T, N, R...> > :
+	integral <T, N + int_sum <integrals <T, R...> >{}> {};
+
+template <typename T, T N, T... R>
+struct int_prod <integrals <T, N, R...> > :
+	integral <T, N + int_prod <integrals <T, R...> >{}> {};
+
+template <typename T>
+struct int_min <integrals <T> > :
+	integral <T, std::numeric_limits <T>::max()> {};
+
+template <typename T>
+struct int_max <integrals <T> > :
+	integral <T, std::numeric_limits <T>::min()> {};
+
+template <typename T>
+struct int_sum <integrals <T> > : integral <T, 0> {};
+
+template <typename T>
+struct int_prod <integrals <T> > : integral <T, 1> {};
+
+//-----------------------------------------------------------------------------
+
+template <int... N> using num_min  = int_min  <integrals <int, N...> >;
+template <int... N> using num_max  = int_max  <integrals <int, N...> >;
+template <int... N> using num_sum  = int_sum  <integrals <int, N...> >;
+template <int... N> using num_prod = int_prod <integrals <int, N...> >;
+
+template <size_t... N> using sz_min  = int_min  <integrals <size_t, N...> >;
+template <size_t... N> using sz_max  = int_max  <integrals <size_t, N...> >;
+template <size_t... N> using sz_sum  = int_sum  <integrals <size_t, N...> >;
+template <size_t... N> using sz_prod = int_prod <integrals <size_t, N...> >;
 
 //-----------------------------------------------------------------------------
 

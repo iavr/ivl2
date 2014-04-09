@@ -17,6 +17,7 @@ test/core/op
 test/core/traits
 test/core/traits.clang
 test/core/traits.gcc
+test/sfinae
 test/test
 test/tuple/expr
 test/tuple/fold

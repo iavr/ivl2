@@ -112,15 +112,6 @@ template <typename T> using is_unsigned = details::is_un_signed <T, true>;
 
 //-----------------------------------------------------------------------------
 
-// TODO
-template <typename T> using _signed_t   = std::make_signed <T>;
-template <typename T> using _unsigned_t = std::make_signed <T>;
-
-template <typename T> using _signed   = type_of <_signed_t <T> >;
-template <typename T> using _unsigned = type_of <_unsigned_t <T> >;
-
-//-----------------------------------------------------------------------------
-
 #if IVL_HAS_FEATURE(is_enum)
 
 template <typename T> struct is_enum : expr <__is_enum(T)> { };

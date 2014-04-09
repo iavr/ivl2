@@ -116,8 +116,7 @@ struct seq_store <seq_traits <T, O, B, I, V, F, S, U...>, E...> :
 
 	using difference_type = seq_diff <l_iterator>;
 
-	static constexpr bool   finite = l_traversor <>::finite;
-	static constexpr size_t length = to_size <O>();
+	static constexpr bool finite = l_traversor <>::finite;
 
 	using seq_tuple <E...>::seq_tuple;
 

@@ -97,7 +97,7 @@ public:
 	aggr_store <T, N> a;
 
 	using value_type = T;
-	using order_type = types::size <N>;
+	using order_type = sizes <N>;
 	using size_type = size_t;
 	using difference_type = ptrdiff_t;
 

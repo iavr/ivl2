@@ -81,18 +81,18 @@ protected:
 template <typename T, size_t N>
 struct seq_data_t <pre_fixed_array <T, N> > : pack <fixed_store <T, N> > { };
 
-template <typename T, size_t N>
-using fixed_traits = seq_traits <T, size <N> >;
-
 //-----------------------------------------------------------------------------
 
-template <typename T, size_t N>
-class sequence <tag::pre_fixed, T, sizes <N> > :
-	public seq_base <pre_fixed_array <T, N>, fixed_traits <T, N> >,
+template <
+	typename T, size_t N,
+	typename D = pre_fixed_array <T, N>,
+	typename TR = seq_traits <T, sizes <N> >
+>
+class pre_fixed_seq_impl :
+	public seq_base <D, TR>,
 	fixed_store <T, N>
 {
-	using TR = fixed_traits <T, N>;
-	using B = seq_base <pre_fixed_array <T, N>, TR>;
+	using B = seq_base <D, TR>;
 	using S = fixed_store <T, N>;
 	friend B;
 
@@ -128,7 +128,6 @@ class sequence <tag::pre_fixed, T, sizes <N> > :
 
 public:
 	using S::S;
-	using B::base_type::operator=;
 
 	INLINE constexpr size_t size() const { return N; }
 
@@ -144,6 +143,19 @@ public:
 	INLINE           IL data() &      { return IL(b()); }
 	INLINE constexpr IC data() const& { return IC(b()); }
 
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename T, size_t N>
+class sequence <tag::pre_fixed, T, sizes <N> > :
+	public pre_fixed_seq_impl <T, N>
+{
+	using B = pre_fixed_seq_impl <T, N>;
+
+public:
+	using B::B;
+	using B::base_type::operator=;
 };
 
 //-----------------------------------------------------------------------------

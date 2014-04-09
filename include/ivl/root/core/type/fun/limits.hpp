@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_FUN_CORE_LIMITS_HPP
-#define IVL_FUN_CORE_LIMITS_HPP
+#ifndef IVL_FUN_CORE_TYPE_FUN_LIMITS_HPP
+#define IVL_FUN_CORE_TYPE_FUN_LIMITS_HPP
 
 #include <ivl/ivl>
 
@@ -157,4 +157,4 @@ using lim::nan;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_FUN_CORE_LIMITS_HPP
+#endif  // IVL_FUN_CORE_TYPE_FUN_LIMITS_HPP

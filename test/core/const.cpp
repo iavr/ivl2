@@ -215,6 +215,8 @@ void run()
 		cout << endl;
 
 		cout << "fun:" << endl;
+		cout << "min(size_t) = " << c_min <size_t>() << endl;
+		cout << "min(int) = " << c_min <int>() << endl;
 		cout << "inf = " << c_inf <>() << endl;
 		cout << "-inf = " << c_minus <c_inf <> >() << endl;
 		cout << "nan = " << c_nan <>() << endl;
