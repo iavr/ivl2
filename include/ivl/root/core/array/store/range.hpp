@@ -90,7 +90,7 @@ public:
 	size(I&& b, E&& e) const { return _size <S>(F(), fwd <I>(b), fwd <E>(e)); }
 
 	template <typename I, typename E, typename F = is_floating <raw_type <I> > >
-	INLINE constexpr I
+	INLINE constexpr copy <I>
 	end(I&& b, E&& e) const { return _end(F(), fwd <I>(b), fwd <E>(e)); }
 };
 

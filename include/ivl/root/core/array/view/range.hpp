@@ -42,15 +42,33 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename L, typename S, typename U>
+template <typename T, typename O, typename U, bool finite>
 using range_traits = seq_traits <
-	id_t <T>, L, _type <T>,
-	range_iter, range_trav, id, S, U
+	id_t <T>, O, _type <T>,
+	range_iter, range_trav, id, size_t, U, expr <finite>
 >;
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U, typename...> class range;
+template <typename B, typename U, typename... E> class range;
+
+template <typename R> struct range_attr;
+
+template <typename B, typename U>
+struct range_attr <range <B, U> >
+{
+	using type = B;
+	using derived_type = range_seq <B, U>;
+	using traits = range_traits <type, none, U, false>;
+};
+
+template <typename B, typename U, typename E>
+struct range_attr <range <B, U, E> >
+{
+	using type = common <B, E>;
+	using derived_type = range_seq <B, U, E>;
+	using traits = range_traits <type, none, U, true>;  // TODO: find order_type
+};
 
 //-----------------------------------------------------------------------------
 
@@ -82,21 +100,21 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	using derived = range_seq <B, U>;  // TODO: remove
-	static constexpr bool finite = false;
-
-	using traits = range_traits <B, none, size_t, U>;
-
 	using T::T;
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U, typename E, typename I = common <B, E> >
+template <
+	typename B, typename U, typename E,
+	typename A = range_attr <range <B, U, E> >,
+	typename I = type_of <A>,
+	typename TR = traits_of <A>
+>
 class finite_range : raw_tuple <I, U, I>
 {
 	using T = raw_tuple <I, U, I>;
-	using S = size_t;
+	using S = seq_size <TR>;
 
 //-----------------------------------------------------------------------------
 
@@ -128,13 +146,6 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	using derived = range_seq <B, U, E>;  // TODO: remove
-	static constexpr bool finite = true;  // TODO: remove
-
-	using traits = range_traits <I, none, S, U>;  // TODO: find order_type
-
-//-----------------------------------------------------------------------------
-
 	template <typename _B, typename _U, typename _E>
 	INLINE constexpr finite_range(_B&& _b, _U&& _u, _E&& e) :
 		T(fwd <_B>(_b), fwd <_U>(_u), u().end(b(), fwd <_E>(e))) { }
@@ -159,8 +170,10 @@ struct seq_data_t <range_seq <B, U, E...> > : pack <range <B, U, E...> > { };
 //-----------------------------------------------------------------------------
 
 template <
-	typename R, typename D = typename R::derived,  // TODO: remove
-	typename TR = traits_of <R>
+	typename R,
+	typename A = range_attr <R>,
+	typename D = derived_type_of <A>,
+	typename TR = traits_of <A>
 >
 class range_seq_impl :
 	public based <R>,
@@ -178,6 +191,9 @@ class range_seq_impl :
 	template <typename Q> using VL = l_seq_trav <TR, Q>;
 	template <typename Q> using VC = c_seq_trav <TR, Q>;
 
+	using S::base_f;
+	using S::base;
+
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
@@ -192,17 +208,12 @@ class range_seq_impl :
 
 //-----------------------------------------------------------------------------
 
-	using S::base_f;
-	using S::base;
-
 protected:
 	using base_type = base_type_of <B>;
 
 //-----------------------------------------------------------------------------
 
 public:
-	using traits = TR;
-	using S::finite;  // TODO: remove
 	using S::S;
 
 	INLINE           IR begin() &&     { return IR(R::u_f(), R::b_f()); }

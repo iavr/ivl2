@@ -75,11 +75,11 @@ using inf_trav = atom_trav <path, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
-template <typename I, typename R, typename T, typename U>
-using range_iter = iterator <tag::range, I, R, T, U>;
+template <typename I, typename R, typename T, typename U, typename F>
+using range_iter = iterator <tag::range, I, R, T, U, F>;
 
-template <typename Q, typename I, typename R, typename T, typename U>
-using range_trav = traversor <tag::range, Q, I, R, T, U>;
+template <typename Q, typename I, typename R, typename T, typename U, typename F>
+using range_trav = traversor <tag::range, Q, I, R, T, U, F>;
 
 //-----------------------------------------------------------------------------
 
