@@ -274,7 +274,7 @@ struct int_sum <integrals <T, N, R...> > :
 
 template <typename T, T N, T... R>
 struct int_prod <integrals <T, N, R...> > :
-	integral <T, N + int_prod <integrals <T, R...> >{}> {};
+	integral <T, N * int_prod <integrals <T, R...> >{}> {};
 
 template <typename T>
 struct int_min <integrals <T> > :

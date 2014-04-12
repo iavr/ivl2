@@ -43,6 +43,7 @@
 #include "fun/term.hpp"
 #include "fun/trav.hpp"
 #include "fun/make.hpp"
+#include "fun/range.hpp"
 #include "fun/manip.hpp"
 #include "fun/loop.hpp"
 
@@ -56,6 +57,7 @@
 #include "iter/iter.hpp"
 #include "iter/trav.hpp"
 #include "iter/atom.hpp"
+#include "iter/delta.hpp"
 #include "iter/range.hpp"
 
 #include "iter/flip.hpp"
@@ -67,7 +69,6 @@
 #include "store/aggr.hpp"
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
-#include "store/range.hpp"
 
 #include "view/range.hpp"
 

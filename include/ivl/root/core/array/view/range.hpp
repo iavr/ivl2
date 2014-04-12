@@ -57,7 +57,7 @@ template <typename R> struct range_attr;
 template <typename B, typename U>
 struct range_attr <range <B, U> >
 {
-	using type = B;
+	using type = copy <B>;
 	using derived_type = range_seq <B, U>;
 	using traits = range_traits <type, none, U, false>;
 };
@@ -65,33 +65,37 @@ struct range_attr <range <B, U> >
 template <typename B, typename U, typename E>
 struct range_attr <range <B, U, E> >
 {
-	using type = common <B, E>;
+	using type = copy <common <B, E> >;
 	using derived_type = range_seq <B, U, E>;
 	using traits = range_traits <type, none, U, true>;  // TODO: find order_type
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U>
-class range <B, U> : raw_tuple <B, U>
+template <
+	typename B, typename U,
+	typename A = range_attr <range <B, U> >,
+	typename I = type_of <A>
+>
+class unbounded_range : raw_tuple <I, U>
 {
-	using T = raw_tuple <B, U>;
+	using T = raw_tuple <I, U>;
 
 //-----------------------------------------------------------------------------
 
-	using begin  = elem <0, B>;
-	using update = elem <1, U>;
+	using begin = elem <0, I>;
+	using delta = elem <1, U>;
 
 protected:
-	INLINE           r_ref <B> b_f()      { return begin::fwd(); }
-	INLINE           r_ref <B> b() &&     { return begin::fwd(); }
-	INLINE           l_ref <B> b() &      { return begin::get(); }
-	INLINE constexpr c_ref <B> b() const& { return begin::get(); }
+	INLINE           r_ref <I> b_f()      { return begin::fwd(); }
+	INLINE           r_ref <I> b() &&     { return begin::fwd(); }
+	INLINE           l_ref <I> b() &      { return begin::get(); }
+	INLINE constexpr c_ref <I> b() const& { return begin::get(); }
 
-	INLINE           r_ref <U> u_f()      { return update::fwd(); }
-	INLINE           r_ref <U> u() &&     { return update::fwd(); }
-	INLINE           l_ref <U> u() &      { return update::get(); }
-	INLINE constexpr c_ref <U> u() const& { return update::get(); }
+	INLINE           r_ref <U> u_f()      { return delta::fwd(); }
+	INLINE           r_ref <U> u() &&     { return delta::fwd(); }
+	INLINE           l_ref <U> u() &      { return delta::get(); }
+	INLINE constexpr c_ref <U> u() const& { return delta::get(); }
 
 	template <typename V, typename R>
 	INLINE constexpr V t(R&& r) const&
@@ -101,6 +105,15 @@ protected:
 
 public:
 	using T::T;
+
+	template <typename E, typename R = range_seq <B, U, E> >
+	INLINE R bound(E&& e) && { return R(b_f(), u_f(), fwd <E>(e)); }
+
+	template <typename E, typename R = range_seq <B, U, E> >
+	INLINE R bound(E&& e) & { return R(b(), u(), fwd <E>(e)); }
+
+	template <typename E, typename R = range_seq <B, U, E> >
+	INLINE constexpr R bound(E&& e) const& { return R(b(), u(), fwd <E>(e)); }
 };
 
 //-----------------------------------------------------------------------------
@@ -111,16 +124,17 @@ template <
 	typename I = type_of <A>,
 	typename TR = traits_of <A>
 >
-class finite_range : raw_tuple <I, U, I>
+class bounded_range : raw_tuple <I, U, I>
 {
 	using T = raw_tuple <I, U, I>;
 	using S = seq_size <TR>;
+	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
-	using begin  = elem <0, I>;
-	using update = elem <1, U>;
-	using end    = elem <2, I>;
+	using begin = elem <0, I>;
+	using delta = elem <1, U>;
+	using end   = elem <2, I>;
 
 protected:
 	INLINE           r_ref <I> b_f()      { return begin::fwd(); }
@@ -128,10 +142,10 @@ protected:
 	INLINE           l_ref <I> b() &      { return begin::get(); }
 	INLINE constexpr c_ref <I> b() const& { return begin::get(); }
 
-	INLINE           r_ref <U> u_f()      { return update::fwd(); }
-	INLINE           r_ref <U> u() &&     { return update::fwd(); }
-	INLINE           l_ref <U> u() &      { return update::get(); }
-	INLINE constexpr c_ref <U> u() const& { return update::get(); }
+	INLINE           r_ref <U> u_f()      { return delta::fwd(); }
+	INLINE           r_ref <U> u() &&     { return delta::fwd(); }
+	INLINE           l_ref <U> u() &      { return delta::get(); }
+	INLINE constexpr c_ref <U> u() const& { return delta::get(); }
 
 	INLINE           r_ref <I> e_f()      { return end::fwd(); }
 	INLINE           r_ref <I> e() &&     { return end::fwd(); }
@@ -147,18 +161,25 @@ protected:
 
 public:
 	template <typename _B, typename _U, typename _E>
-	INLINE constexpr finite_range(_B&& _b, _U&& _u, _E&& e) :
-		T(fwd <_B>(_b), fwd <_U>(_u), u().end(b(), fwd <_E>(e))) { }
+	INLINE bounded_range(_B&& _b, _U&& _u, _E&& _e) :
+		T(fwd <_B>(_b), fwd <_U>(_u), fwd <_E>(_e))
+			{ u().template trunc <d>(b(), e()); }
 
-	INLINE constexpr S size() const { return u().template size <S>(b(), e()); }
+	INLINE constexpr S size() const { return u().template diff <S>(e(), b()); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U, typename E>
-struct range <B, U, E> : finite_range <B, U, E>
+template <typename B, typename U>
+struct range <B, U> : unbounded_range <B, U>
 {
-	using finite_range <B, U, E>::finite_range;
+	using unbounded_range <B, U>::unbounded_range;
+};
+
+template <typename B, typename U, typename E>
+struct range <B, U, E> : bounded_range <B, U, E>
+{
+	using bounded_range <B, U, E>::bounded_range;
 };
 
 //-----------------------------------------------------------------------------

@@ -48,6 +48,9 @@ template <typename T> struct is_seq_   : _false { };
 template <typename T> struct is_cont_  : is_seq_<T> { };
 template <typename T> struct is_trav_  : _false { };
 template <typename T> struct is_iter_  : is_trav_<T> { };
+template <typename T> struct is_delta_ : _false { };
+template <typename T> struct is_range_ : _false { };
+template <typename T> struct is_urange_ : _false { };
 
 // extending definition @tuple/type/traits
 template <typename C, typename... A>
@@ -71,14 +74,29 @@ struct is_cont_<T[N]> : _true { };
 template <typename T>
 struct is_cont_<initializer_list <T> > : _true { };
 
+template <typename F, typename... A>
+struct is_delta_<delta <F, A...> > : _true { };
+
+template <>
+struct is_delta_<uscore> : _true { };
+
+template <typename B, typename U, typename... E>
+struct is_range_<range_seq <B, U, E...> > : _true { };
+
+template <typename B, typename U>
+struct is_urange_<range_seq <B, U> > : _true { };
+
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using is_cont  = details::is_cont_<raw_type <T> >;
-template <typename T> using is_seq   = details::is_seq_<raw_type <T> >;
-template <typename T> using is_iter  = details::is_iter_<raw_type <T> >;
-template <typename T> using is_trav  = details::is_trav_<raw_type <T> >;
+template <typename T> using is_cont   = details::is_cont_<raw_type <T> >;
+template <typename T> using is_seq    = details::is_seq_<raw_type <T> >;
+template <typename T> using is_iter   = details::is_iter_<raw_type <T> >;
+template <typename T> using is_trav   = details::is_trav_<raw_type <T> >;
+template <typename T> using is_delta  = details::is_delta_<raw_type <T> >;
+template <typename T> using is_range  = details::is_range_<raw_type <T> >;
+template <typename T> using is_urange = details::is_urange_<raw_type <T> >;
 
 //-----------------------------------------------------------------------------
 

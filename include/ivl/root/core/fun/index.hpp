@@ -39,6 +39,7 @@
 #include "vec/array.hpp"
 #include "vec/vec.hpp"
 #include "vec/tmp.hpp"
+#include "vec/range.hpp"
 
 #include "fold/tuple.hpp"
 #include "fold/array.hpp"

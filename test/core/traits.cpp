@@ -130,19 +130,6 @@ void run()
 //
 // //-----------------------------------------------------------------------------
 //
-// 	report_map <reuse, int>();
-// 	report_map <reuse, int&>();
-// 	report_map <reuse, int&&>();
-// 	report_map <reuse, int*>();
-// 	report_map <reuse, int* const>();
-// 	report_map <reuse, int[]>();
-// 	report_map <reuse, const int>();
-// 	report_map <reuse, const int&>();
-// 	report_map <reuse, const int&&>();
-// 	report_map <reuse, const int*>();
-// 	report_map <reuse, const int* const>();
-// 	report_map <reuse, const int[]>();
-//
 // 	report_map <check_t, int>();
 // 	report_map <check_t, nat>();
 // 	report_map <check_t, tup <int, double> >();

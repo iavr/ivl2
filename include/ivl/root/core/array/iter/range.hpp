@@ -63,6 +63,11 @@ protected:
 	INLINE constexpr bool
 	comp(F f, O&& o) const { return der().u().comp(f, der().i(), o.i()); }
 
+	template <typename O>
+	INLINE constexpr d
+	comp(afun::op::sub, O&& o) const
+		{ return der().u().template diff <d>(der().i(), o.i()); }
+
 //-----------------------------------------------------------------------------
 
 public:
@@ -91,11 +96,11 @@ class range_iter_impl :
 
 //-----------------------------------------------------------------------------
 
-	using update = iter_elem <0, U>;
-	using iter   = iter_elem <1, I>;
+	using delta = iter_elem <0, U>;
+	using iter  = iter_elem <1, I>;
 
-	INLINE           l_iter_ref <U> u()       { return update::get(); }
-	INLINE constexpr c_iter_ref <U> u() const { return update::get(); }
+	INLINE           l_iter_ref <U> u()       { return delta::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
 	INLINE           l_iter_ref <I> i()       { return iter::get(); }
 	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
@@ -139,11 +144,11 @@ class range_trav_impl :
 
 //-----------------------------------------------------------------------------
 
-	using update = iter_elem <0, U>;
-	using iter   = iter_elem <1, I>;
+	using delta = iter_elem <0, U>;
+	using iter  = iter_elem <1, I>;
 
-	INLINE           l_iter_ref <U> u()       { return update::get(); }
-	INLINE constexpr c_iter_ref <U> u() const { return update::get(); }
+	INLINE           l_iter_ref <U> u()       { return delta::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
 	INLINE           l_iter_ref <I> i()       { return iter::get(); }
 	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
@@ -189,12 +194,12 @@ class range_trav_impl <Q, I, R, T, U, F, D, TR, true, false> :
 
 //-----------------------------------------------------------------------------
 
-	using update = iter_elem <0, U>;
-	using iter   = iter_elem <1, I>;
-	using end    = iter_elem <2, I>;
+	using delta = iter_elem <0, U>;
+	using iter  = iter_elem <1, I>;
+	using end   = iter_elem <2, I>;
 
-	INLINE           l_iter_ref <U> u()       { return update::get(); }
-	INLINE constexpr c_iter_ref <U> u() const { return update::get(); }
+	INLINE           l_iter_ref <U> u()       { return delta::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
 	INLINE           l_iter_ref <I> i()       { return iter::get(); }
 	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
@@ -248,13 +253,13 @@ class range_trav_impl <Q, I, R, T, U, F, D, TR, true, true> :
 
 //-----------------------------------------------------------------------------
 
-	using update = iter_elem <0, U>;
-	using first  = iter_elem <1, I>;
-	using iter   = iter_elem <2, I>;
-	using last   = iter_elem <3, I>;
+	using delta = iter_elem <0, U>;
+	using first = iter_elem <1, I>;
+	using iter  = iter_elem <2, I>;
+	using last  = iter_elem <3, I>;
 
-	INLINE           l_iter_ref <U> u()       { return update::get(); }
-	INLINE constexpr c_iter_ref <U> u() const { return update::get(); }
+	INLINE           l_iter_ref <U> u()       { return delta::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
 	INLINE           l_iter_ref <I> f()       { return first::get(); }
 	INLINE constexpr c_iter_ref <I> f() const { return first::get(); }
@@ -291,9 +296,8 @@ public:
 	using S::operator[];
 
 	template <typename _U, typename _I, typename E>
-	INLINE constexpr
-	range_trav_impl(_U&& _u, _I&& i, E&& e) :
-		B(fwd <_U>(_u), i, fwd <_I>(i), u().prev(fwd <E>(e))) { }
+	INLINE range_trav_impl(_U&& _u, _I&& i, E e) :
+		B(fwd <_U>(_u), i, fwd <_I>(i), fwd <E>(e)) { u().dec(l()); }
 
 	static constexpr bool finite = true;
 

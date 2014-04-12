@@ -193,7 +193,8 @@ public:
 	using S::operator[];
 
 	template <typename _I, typename E>
-	INLINE constexpr iter_trav_impl(_I&& i, E e) : B(i, fwd <_I>(i), --e) { }
+	INLINE iter_trav_impl(_I&& i, E&& e) :
+		B(i, fwd <_I>(i), fwd <E>(e)) { --l(); }
 
 	INLINE constexpr operator bool() const { return i() != l() + 1; }
 

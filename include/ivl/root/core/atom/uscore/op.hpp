@@ -52,35 +52,33 @@ operator>>=(V&& v, uscore) { return fwd <V>(v) >>= key::iter(); }
 
 //-----------------------------------------------------------------------------
 
-INLINE constexpr inc_step
-operator++(uscore) { return inc_step(); }
+INLINE constexpr inc_delta operator++(uscore) { return inc_delta(); }
+INLINE constexpr dec_delta operator--(uscore) { return dec_delta(); }
+
+template <typename A, typename U = add_delta <base_opt <A> > >
+INLINE constexpr U
+operator+=(uscore, A&& a) { return U(fwd <A>(a)); }
+
+template <typename A, typename U = sub_delta <base_opt <A> > >
+INLINE constexpr U
+operator-=(uscore, A&& a) { return U(fwd <A>(a)); }
 
 //-----------------------------------------------------------------------------
 
-// TODO: elsewhere
-template <typename T> struct is_range : _false { };
-
-template <typename T> struct is_update            : _false { };
-template <>           struct is_update <inc_step> : _true { };
-
-//-----------------------------------------------------------------------------
-
-// TODO: make & use afun::range
 template <
 	typename B, typename U,
-	typename R = range_seq <raw_type <B>, base_opt <U> >,
-	only_if <!is_range <B>() && is_update <U>()>
+	only_if <!is_range <B>() && is_delta <U>()>
 = 0>
-INLINE constexpr R
-operator,(B b, U&& u) { return R(b, fwd <U>(u)); }
+INLINE constexpr auto
+operator,(B&& b, U&& u)
+-> decltype(ivl::range(fwd <B>(b), fwd <U>(u)))
+	{ return ivl::range(fwd <B>(b), fwd <U>(u)); }
 
-template <
-	typename B,
-	typename R = range_seq <raw_type <B>, inc_step>,
-	only_if <!is_range <B>()>
-= 0>
-INLINE constexpr R
-operator,(B b, uscore) { return b, ++uscore(); }
+template <typename R, typename E, only_if <is_urange <R>{}> = 0>
+INLINE constexpr auto
+operator,(R&& r, E&& e)
+-> decltype(fwd <R>(r).bound(fwd <E>(e)))
+	{ return fwd <R>(r).bound(fwd <E>(e)); }
 
 //-----------------------------------------------------------------------------
 
@@ -89,6 +87,8 @@ operator,(B b, uscore) { return b, ++uscore(); }
 //-----------------------------------------------------------------------------
 
 }  // namespace atoms
+
+using atoms::details::operator,;
 
 //-----------------------------------------------------------------------------
 

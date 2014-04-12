@@ -44,6 +44,7 @@ namespace details {
 
 template <typename C, typename... A> class iterator;
 template <typename C, typename... A> class traversor;
+template <typename F, typename... A> class delta;
 
 //-----------------------------------------------------------------------------
 
@@ -120,10 +121,19 @@ using join_trav = traversor <tag::join, Q, V, R, T>;
 
 //-----------------------------------------------------------------------------
 
+using inc_delta = delta <afun::op::inc_>;
+using dec_delta = delta <afun::op::dec_>;
+
+template <typename U> using add_delta = delta <afun::op::add, U>;
+template <typename U> using sub_delta = delta <afun::op::sub, U>;
+
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 using details::iterator;
 using details::traversor;
+using details::delta;
 
 using details::iter_iter;
 using details::iter_trav;
@@ -147,6 +157,11 @@ using details::zip_iter;
 using details::zip_trav;
 using details::join_iter;
 using details::join_trav;
+
+using details::inc_delta;
+using details::dec_delta;
+using details::add_delta;
+using details::sub_delta;
 
 //-----------------------------------------------------------------------------
 

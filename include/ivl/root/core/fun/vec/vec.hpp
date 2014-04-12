@@ -90,6 +90,8 @@ using bra_vec = bra_vec_atom_of <atom_gen <B>, vec_sw <vec_apply <C>, C> >;
 
 //-----------------------------------------------------------------------------
 
+namespace vecs {
+
 using details::vec_apply;
 using details::vec_loop;
 using details::vec_auto;
@@ -99,9 +101,17 @@ using details::vec_copy;
 using details::bra_vec_apply;
 using details::bra_vec;
 
+};  // namespace vecs
+
+using namespace vecs;
+
 //-----------------------------------------------------------------------------
 
 }  // namespace afun
+
+//-----------------------------------------------------------------------------
+
+namespace fun { using namespace afun::vecs; };
 
 //-----------------------------------------------------------------------------
 

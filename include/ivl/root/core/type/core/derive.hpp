@@ -56,9 +56,8 @@ constexpr const T& c_cast(A&& a) { return static_cast <const T&>(a); }
 template <typename B, typename...>
 struct based : B
 {
-	using base_type = B;
-
 protected:
+	using base_type = B;
 	using B::B;
 
 	INLINE           B&&       base_f()      { return r_cast <B>(*this); }
@@ -72,9 +71,9 @@ protected:
 template <typename D, typename...>
 struct derived
 {
+protected:
 	using derived_type = D;
 
-protected:
 	INLINE           D&&       der_f()      { return r_cast <D>(*this); }
 	INLINE           D&&       der() &&     { return r_cast <D>(*this); }
 	INLINE           D&        der() &      { return l_cast <D>(*this); }

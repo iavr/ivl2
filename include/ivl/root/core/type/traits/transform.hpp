@@ -264,13 +264,6 @@ template <typename T> using decay = type_of <decay_t <T> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename T> struct reuse_t       : id_t <T> { };
-template <typename T> struct reuse_t <T&&> : id_t <add_const <T>&> { };
-
-template <typename T> using reuse = type_of <reuse_t <T> >;
-
-//-----------------------------------------------------------------------------
-
 }  // namespace traits
 
 //-----------------------------------------------------------------------------
