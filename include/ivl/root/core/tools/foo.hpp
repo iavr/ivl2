@@ -78,13 +78,15 @@ public:
 	F& operator=(F&& f)
 	{
 		cout << "=&&foo(" << f.val << ")" << endl;
-		return val = mv(f.val), *this;
+		val = mv(f.val);
+		return *this;
 	}
 
 	F& operator=(const F& f)
 	{
 		cout << "=&foo(" << f.val << ")" << endl;
-		return val = f.val, *this;
+		val = f.val;
+		return *this;
 	}
 
 //-----------------------------------------------------------------------------

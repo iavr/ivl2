@@ -30,6 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
+class B;
 namespace ivl {
 
 //-----------------------------------------------------------------------------
@@ -50,6 +51,17 @@ using range_traits = seq_traits <
 
 //-----------------------------------------------------------------------------
 
+template <typename A, typename... B>
+struct int_common_t : common_t <A, B...> { };
+
+template <typename T, T N, typename... B>
+struct int_common_t <integral <T, N>, B...> : common_t <B...> { };
+
+template <typename A, typename... B>
+using int_common = type_of <int_common_t <A, B...> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename B, typename U, typename... E> class range;
 
 template <typename R> struct range_attr;
@@ -57,7 +69,7 @@ template <typename R> struct range_attr;
 template <typename B, typename U>
 struct range_attr <range <B, U> >
 {
-	using type = copy <B>;
+	using type = copy <int_type <B> >;
 	using derived_type = range_seq <B, U>;
 	using traits = range_traits <type, none, U, false>;
 };
@@ -65,32 +77,28 @@ struct range_attr <range <B, U> >
 template <typename B, typename U, typename E>
 struct range_attr <range <B, U, E> >
 {
-	using type = copy <common <B, E> >;
+	using type = copy <int_common <B, E> >;
 	using derived_type = range_seq <B, U, E>;
 	using traits = range_traits <type, none, U, true>;  // TODO: find order_type
 };
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename B, typename U,
-	typename A = range_attr <range <B, U> >,
-	typename I = type_of <A>
->
-class unbounded_range : raw_tuple <I, U>
+template <typename B, typename U>
+class unbounded_range : raw_tuple <B, U>
 {
-	using T = raw_tuple <I, U>;
+	using T = raw_tuple <B, U>;
 
 //-----------------------------------------------------------------------------
 
-	using begin = elem <0, I>;
+	using begin = elem <0, B>;
 	using delta = elem <1, U>;
 
 protected:
-	INLINE           r_ref <I> b_f()      { return begin::fwd(); }
-	INLINE           r_ref <I> b() &&     { return begin::fwd(); }
-	INLINE           l_ref <I> b() &      { return begin::get(); }
-	INLINE constexpr c_ref <I> b() const& { return begin::get(); }
+	INLINE           r_ref <B> b_f()      { return begin::fwd(); }
+	INLINE           r_ref <B> b() &&     { return begin::fwd(); }
+	INLINE           l_ref <B> b() &      { return begin::get(); }
+	INLINE constexpr c_ref <B> b() const& { return begin::get(); }
 
 	INLINE           r_ref <U> u_f()      { return delta::fwd(); }
 	INLINE           r_ref <U> u() &&     { return delta::fwd(); }
@@ -124,23 +132,23 @@ template <
 	typename I = type_of <A>,
 	typename TR = traits_of <A>
 >
-class bounded_range : raw_tuple <I, U, I>
+class bounded_range : raw_tuple <B, U, I>
 {
-	using T = raw_tuple <I, U, I>;
+	using T = raw_tuple <B, U, I>;
 	using S = seq_size <TR>;
 	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
-	using begin = elem <0, I>;
+	using begin = elem <0, B>;
 	using delta = elem <1, U>;
 	using end   = elem <2, I>;
 
 protected:
-	INLINE           r_ref <I> b_f()      { return begin::fwd(); }
-	INLINE           r_ref <I> b() &&     { return begin::fwd(); }
-	INLINE           l_ref <I> b() &      { return begin::get(); }
-	INLINE constexpr c_ref <I> b() const& { return begin::get(); }
+	INLINE           r_ref <B> b_f()      { return begin::fwd(); }
+	INLINE           r_ref <B> b() &&     { return begin::fwd(); }
+	INLINE           l_ref <B> b() &      { return begin::get(); }
+	INLINE constexpr c_ref <B> b() const& { return begin::get(); }
 
 	INLINE           r_ref <U> u_f()      { return delta::fwd(); }
 	INLINE           r_ref <U> u() &&     { return delta::fwd(); }

@@ -75,10 +75,10 @@ protected:
 
 public:
 	INLINE constexpr R operator*() const
-		{ return afun::r_tup()(*der().template v<N>()...); }
+		{ return R(*der().template v<N>()...); }
 
 	INLINE constexpr R operator[](d n) const
-		{ return afun::r_tup()( der().template v<N>()[n]...); }
+		{ return R( der().template v<N>()[n]...); }
 };
 
 //-----------------------------------------------------------------------------

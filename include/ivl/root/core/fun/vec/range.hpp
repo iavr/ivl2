@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TUPLE_VIEW_ZIP_HPP
-#define IVL_CORE_TUPLE_VIEW_ZIP_HPP
+#ifndef IVL_CORE_FUN_VEC_RANGE_HPP
+#define IVL_CORE_FUN_VEC_RANGE_HPP
 
 #include <ivl/ivl>
 
@@ -34,68 +34,25 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace tuples {
+namespace fun {
 
 //-----------------------------------------------------------------------------
 
 namespace details {
 
-//-----------------------------------------------------------------------------
-
-template <typename P, typename I = sz_rng_of_p <P> >
-struct zip_impl;
-
-template <typename... U, size_t... I>
-class zip_impl <pack <U...>, sizes <I...> > :
-	public tup_base <zip_tup <U...>, tup_tran <tup_type <U>...> >
-{
-	using P = tup_tran <tup_type <U>...>;
-	using B = tup_base <zip_tup <U...>, P>;
-
-	template <size_t J> using under = elem_at <J, U...>;
-
-	friend base_type_of <B>;
-
-//-----------------------------------------------------------------------------
-
-	template <size_t J>
-	INLINE r_pick_p <J, P>
-	call_at() && { return r_pick_p <J, P>(_at._<J>(under <I>::fwd())...); }
-
-	template <size_t J>
-	INLINE l_pick_p <J, P>
-	call_at() & { return l_pick_p <J, P>(_at._<J>(under <I>::get())...); }
-
-	template <size_t J>
-	INLINE constexpr c_pick_p <J, P>
-	call_at() const& { return c_pick_p <J, P>(_at._<J>(under <I>::get())...); }
-
-//-----------------------------------------------------------------------------
-
-public:
-	using B::B;
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename... U>
-class collection <tag::zip, U...> :
-	public zip_impl <pack <U...> >
-{
-	using B = zip_impl <pack <U...> >;
-
-public:
-	using B::B;
-	using B::base_type::operator=;
-};
-
-//-----------------------------------------------------------------------------
+struct range : vec_apply <afun::range> { };
 
 }  // namespace details
 
+using details::range;
+
 //-----------------------------------------------------------------------------
 
-}  // namespace tuples
+}  // namespace fun
+
+//-----------------------------------------------------------------------------
+
+static __attribute__ ((unused)) fun::range   range;
 
 //-----------------------------------------------------------------------------
 
@@ -103,4 +60,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TUPLE_VIEW_ZIP_HPP
+#endif  // IVL_CORE_FUN_VEC_RANGE_HPP

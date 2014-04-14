@@ -57,6 +57,14 @@ template <size_t... N> using sizes   = integrals <size_t, N...>;
 
 //-----------------------------------------------------------------------------
 
+template <typename T> struct int_type_t : id_t <T> { };
+template <typename T> using  int_type   = type_of <int_type_t <T> >;
+
+template <typename T, T N>
+struct int_type_t <integral <T, N> > : id_t <T> { };
+
+//-----------------------------------------------------------------------------
+
 template <typename T, T N> using int_inc = integral <T, N + 1>;
 template <typename T, T N> using int_dec = integral <T, N - 1>;
 

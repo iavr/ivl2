@@ -20,7 +20,7 @@ struct B
 {
 	char c;
 	operator char() const { return c; }
-	B& operator++() { return ++++c, *this; }
+	B& operator++() { ++++c; return *this; }
 };
 
 void swap(B& a, B& b) { std::swap(++a, ++b); }

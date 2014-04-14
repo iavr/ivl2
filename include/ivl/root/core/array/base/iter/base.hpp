@@ -67,15 +67,15 @@ public:
 
 	INLINE P operator->() const { return &(der().operator*()); }
 
-	INLINE D&& operator++() && { return der_f().inc(), der_f(); }
-	INLINE D&  operator++() &  { return der().  inc(), der(); }
-	INLINE D&& operator--() && { return der_f().dec(), der_f(); }
-	INLINE D&  operator--() &  { return der().  dec(), der(); }
+	INLINE D&& operator++() && { der_f().inc(); return der_f(); }
+	INLINE D&  operator++() &  { der().  inc(); return der(); }
+	INLINE D&& operator--() && { der_f().dec(); return der_f(); }
+	INLINE D&  operator--() &  { der().  dec(); return der(); }
 
-	INLINE D&& operator+=(d n) && { return der_f().add(n), der_f(); }
-	INLINE D&  operator+=(d n) &  { return der().  add(n), der(); }
-	INLINE D&& operator-=(d n) && { return der_f().sub(n), der_f(); }
-	INLINE D&  operator-=(d n) &  { return der().  sub(n), der(); }
+	INLINE D&& operator+=(d n) && { der_f().add(n); return der_f(); }
+	INLINE D&  operator+=(d n) &  { der().  add(n); return der(); }
+	INLINE D&& operator-=(d n) && { der_f().sub(n); return der_f(); }
+	INLINE D&  operator-=(d n) &  { der().  sub(n); return der(); }
 
 //-----------------------------------------------------------------------------
 
@@ -169,22 +169,22 @@ public:
 	using base_trav = trav_base;
 
 	template <typename P>
-	INLINE D&& operator<<=(P) && { return der_f().shift_l(P()), der_f(); }
+	INLINE D&& operator<<=(P) && { der_f().shift_l(P()); return der_f(); }
 
 	template <typename P>
-	INLINE D&  operator<<=(P) & { return der().shift_l(P()), der(); }
+	INLINE D&  operator<<=(P) & { der().shift_l(P()); return der(); }
 
 	template <typename P>
-	INLINE D&& operator>>=(P) && { return der_f().shift_r(P()), der_f(); }
+	INLINE D&& operator>>=(P) && { der_f().shift_r(P()); return der_f(); }
 
 	template <typename P>
-	INLINE D&  operator>>=(P) & { return der().shift_r(P()), der(); }
+	INLINE D&  operator>>=(P) & { der().shift_r(P()); return der(); }
 
-	INLINE D&& flip() && { return B::flip(), der_f(); }
-	INLINE D&  flip() &  { return B::flip(), der(); }
+	INLINE D&& flip() && { B::flip(); return der_f(); }
+	INLINE D&  flip() &  { B::flip(); return der(); }
 
-	INLINE D&& swap() && { return der_f()._swap(), der_f(); }  // TODO: should be private?
-	INLINE D&  swap() &  { return der().  _swap(), der(); }
+	INLINE D&& swap() && { der_f()._swap(); return der_f(); }  // TODO: should be private?
+	INLINE D&  swap() &  { der().  _swap(); return der(); }
 };
 
 //-----------------------------------------------------------------------------

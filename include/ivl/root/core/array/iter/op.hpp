@@ -44,10 +44,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename I, typename C = raw_type <I>, only_if <is_iter <I>{}> = 0>
-INLINE C operator++(I&& i, int) { C c(i); return ++i, c; }
+INLINE C operator++(I&& i, int) { C c(i); ++i; return c; }
 
 template <typename I, typename C = raw_type <I>, only_if <is_iter <I>{}> = 0>
-INLINE C operator--(I&& i, int) { C c(i); return --i, c; }
+INLINE C operator--(I&& i, int) { C c(i); --i; return c; }
 
 //-----------------------------------------------------------------------------
 
