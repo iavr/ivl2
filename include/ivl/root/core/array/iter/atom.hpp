@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class atom_iter_base : public derived <D, _false>
+class atom_trav_base : public derived <D, _false>
 {
 	using derived <D, _false>::der;
 
@@ -84,16 +84,16 @@ template <
 	bool = path_iter <Q>(), bool = path_finite <Q>()
 >
 class atom_trav_impl :
-	public atom_iter_base <D, TR>,
+	public atom_trav_base <D, TR>,
 	public iter_base <D, TR, R>
 {
-	using S = atom_iter_base <D, TR>;
+	using S = atom_trav_base <D, TR>;
 	using B = iter_base <D, TR, R>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class atom_iter_base;
+	friend class atom_trav_base;
 
 	using B::val;
 	using B::cast;
@@ -121,17 +121,17 @@ template <
 	typename D, typename TR
 >
 class atom_trav_impl <Q, V, R, T, D, TR, false, false> :
-	public atom_iter_base <D, TR>,
+	public atom_trav_base <D, TR>,
 	public trav_base <D, TR, Q, R>
 {
-	using S = atom_iter_base <D, TR>;
+	using S = atom_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, R>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class atom_iter_base;
+	friend class atom_trav_base;
 
 	using B::val;
 	using B::cast;
@@ -166,17 +166,17 @@ template <
 	typename D, typename TR
 >
 struct atom_trav_impl <Q, V, R, T, D, TR, false, true> :
-	public atom_iter_base <D, TR>,
+	public atom_trav_base <D, TR>,
 	public trav_base <D, TR, Q, R>
 {
-	using S = atom_iter_base <D, TR>;
+	using S = atom_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, R>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class atom_iter_base;
+	friend class atom_trav_base;
 
 	using d = seq_diff <TR>;
 

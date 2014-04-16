@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR, typename N, typename G>
-class apply_iter_base;
+class apply_trav_base;
 
 template <typename D, typename TR, size_t... N, typename G>
-class apply_iter_base <D, TR, sizes <N...>, G> :
+class apply_trav_base <D, TR, sizes <N...>, G> :
 	public derived <D, _false>
 {
 	using derived <D, _false>::der;
@@ -99,16 +99,16 @@ template <
 	typename D, typename TR, size_t... N
 >
 class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...>, true> :
-	public apply_iter_base <D, TR, sizes <N...>, G>,
+	public apply_trav_base <D, TR, sizes <N...>, G>,
 	public iter_base <D, TR, F, V...>
 {
-	using S = apply_iter_base <D, TR, sizes <N...>, G>;
+	using S = apply_trav_base <D, TR, sizes <N...>, G>;
 	using B = iter_base <D, TR, F, V...>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename, typename, typename>
-	friend class apply_iter_base;
+	friend class apply_trav_base;
 
 //-----------------------------------------------------------------------------
 
@@ -151,17 +151,17 @@ template <
 	typename D, typename TR, size_t... N
 >
 class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...>, false> :
-	public apply_iter_base <D, TR, sizes <N...>, G>,
+	public apply_trav_base <D, TR, sizes <N...>, G>,
 	public trav_base <D, TR, Q, F, V...>
 {
-	using S = apply_iter_base <D, TR, sizes <N...>, G>;
+	using S = apply_trav_base <D, TR, sizes <N...>, G>;
 	using B = trav_base <D, TR, Q, F, V...>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename, typename, typename>
-	friend class apply_iter_base;
+	friend class apply_trav_base;
 
 //-----------------------------------------------------------------------------
 

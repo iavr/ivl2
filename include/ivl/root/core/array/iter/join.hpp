@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR, typename N>
-class join_iter_base;
+class join_trav_base;
 
 template <typename D, typename TR, size_t... N>
-class join_iter_base <D, TR, sizes <N...> > :
+class join_trav_base <D, TR, sizes <N...> > :
 	public derived <D, _false>
 {
 	using derived <D, _false>::der;
@@ -152,7 +152,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	INLINE constexpr join_iter_base(size_t k) : k(k) { }
+	INLINE constexpr join_trav_base(size_t k) : k(k) { }
 
 	INLINE constexpr R operator*() const { return op <deref>()(k, der()); }
 };
@@ -175,16 +175,16 @@ template <
 	typename D, typename TR, size_t... N
 >
 class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true, false> :
-	public join_iter_base <D, TR, sizes <N...> >,
+	public join_trav_base <D, TR, sizes <N...> >,
 	public iter_base <D, TR, V...>
 {
-	using S = join_iter_base <D, TR, sizes <N...> >;
+	using S = join_trav_base <D, TR, sizes <N...> >;
 	using B = iter_base <D, TR, V...>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename, typename>
-	friend class join_iter_base;
+	friend class join_trav_base;
 
 //-----------------------------------------------------------------------------
 
@@ -222,18 +222,18 @@ template <
 	typename D, typename TR, size_t... N
 >
 class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false, false> :
-	public join_iter_base <D, TR, sizes <N...> >,
+	public join_trav_base <D, TR, sizes <N...> >,
 	public trav_base <D, TR, Q, V...>
 {
 protected:
-	using S = join_iter_base <D, TR, sizes <N...> >;
+	using S = join_trav_base <D, TR, sizes <N...> >;
 	using B = trav_base <D, TR, Q, V...>;
 
 	friend base_type_of <B>;
 	friend base_trav_of <B>;
 
 	template <typename, typename, typename>
-	friend class join_iter_base;
+	friend class join_trav_base;
 
 	using B::der_f;
 	using B::der;
@@ -330,7 +330,7 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, ITER, true> :
 	friend base_trav_of <B>;
 
 	template <typename, typename, typename>
-	friend class join_iter_base;
+	friend class join_trav_base;
 
 	using B::elem_flip;
 	using B::der_f;

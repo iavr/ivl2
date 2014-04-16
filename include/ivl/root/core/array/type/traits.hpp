@@ -474,6 +474,7 @@ using iter_elem = tuples::elem <N, iter_opt <T> >;
 template <size_t N, typename... E>
 using iter_elem_at = iter_elem <N, pick <N, E...> >;
 
+template <typename T> using   iter_val =   val <iter_opt <T> >;
 template <typename T> using r_iter_ref = r_ref <iter_opt <T> >;
 template <typename T> using l_iter_ref = l_ref <iter_opt <T> >;
 template <typename T> using c_iter_ref = c_ref <iter_opt <T> >;

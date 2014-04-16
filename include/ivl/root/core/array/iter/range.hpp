@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class range_iter_base : public derived <D, _false>
+class range_trav_base : public derived <D, _false>
 {
 	using derived <D, _false>::der;
 
@@ -53,58 +53,58 @@ class range_iter_base : public derived <D, _false>
 //-----------------------------------------------------------------------------
 
 protected:
-	INLINE void inc() { der().u().inc(der().i()); }
-	INLINE void dec() { der().u().dec(der().i()); }
+	INLINE void inc() { der().u().inc(der().v()); }
+	INLINE void dec() { der().u().dec(der().v()); }
 
-	INLINE void add(d n) { der().u().add(der().i(), n); }
-	INLINE void sub(d n) { der().u().sub(der().i(), n); }
+	INLINE void add(d n) { der().u().add(der().v(), n); }
+	INLINE void sub(d n) { der().u().sub(der().v(), n); }
 
 	template <typename F, typename O>
 	INLINE constexpr bool
-	comp(F f, O&& o) const { return der().u().comp(f, der().i(), o.i()); }
+	comp(F f, O&& o) const { return der().u().comp(f, der().v(), o.v()); }
 
 	template <typename O>
 	INLINE constexpr d
 	comp(afun::op::sub, O&& o) const
-		{ return der().u().template diff <d>(der().i(), o.i()); }
+		{ return der().u().template diff <d>(der().v(), o.v()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	INLINE R operator*()     const { return der().i(); }
-	INLINE R operator[](d n) const { return der().u().rel(der().i(), n); }
+	INLINE R operator*()     const { return der().v(); }
+	INLINE R operator[](d n) const { return der().u().rel(der().v(), n); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T, typename U, typename F,
-	typename D = range_trav <Q, I, R, T, U, F>,
-	typename TR = iter_traits <I, R, T, ptrdiff_t>,
+	typename Q, typename V, typename R, typename T, typename U, typename F,
+	typename D = range_trav <Q, V, R, T, U, F>,
+	typename TR = iter_traits <V, R, T, ptrdiff_t>,
 	bool = path_iter <Q>(), bool = path_edge <Q>()  // default: true, false
 >
 class range_trav_impl :
-	public range_iter_base <D, TR>,
-	public iter_base <D, TR, U, I>
+	public range_trav_base <D, TR>,
+	public iter_base <D, TR, U, V>
 {
-	using S = range_iter_base <D, TR>;
-	using B = iter_base <D, TR, U, I>;
+	using S = range_trav_base <D, TR>;
+	using B = iter_base <D, TR, U, V>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class range_iter_base;
+	friend class range_trav_base;
 
 //-----------------------------------------------------------------------------
 
 	using delta = iter_elem <0, U>;
-	using iter  = iter_elem <1, I>;
+	using iter  = iter_elem <1, V>;
 
 	INLINE           l_iter_ref <U> u()       { return delta::get(); }
 	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
-	INLINE           l_iter_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
 
 //-----------------------------------------------------------------------------
 
@@ -125,32 +125,32 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T, typename U,
+	typename Q, typename V, typename R, typename T, typename U,
 	typename D, typename TR
 >
-class range_trav_impl <Q, I, R, T, U, _false, D, TR, false, false> :
-	public range_iter_base <D, TR>,
-	public trav_base <D, TR, Q, U, I>
+class range_trav_impl <Q, V, R, T, U, _false, D, TR, false, false> :
+	public range_trav_base <D, TR>,
+	public trav_base <D, TR, Q, U, V>
 {
-	using S = range_iter_base <D, TR>;
-	using B = trav_base <D, TR, Q, U, I>;
+	using S = range_trav_base <D, TR>;
+	using B = trav_base <D, TR, Q, U, V>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class range_iter_base;
+	friend class range_trav_base;
 
 //-----------------------------------------------------------------------------
 
 	using delta = iter_elem <0, U>;
-	using iter  = iter_elem <1, I>;
+	using iter  = iter_elem <1, V>;
 
 	INLINE           l_iter_ref <U> u()       { return delta::get(); }
 	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
-	INLINE           l_iter_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
 
 //-----------------------------------------------------------------------------
 
@@ -175,40 +175,40 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T, typename U,
+	typename Q, typename V, typename R, typename T, typename U,
 	typename D, typename TR
 >
-class range_trav_impl <Q, I, R, T, U, _true, D, TR, false, false> :
-	public range_iter_base <D, TR>,
-	public trav_base <D, TR, Q, U, I, I>
+class range_trav_impl <Q, V, R, T, U, _true, D, TR, false, false> :
+	public range_trav_base <D, TR>,
+	public trav_base <D, TR, Q, U, V, V>
 {
-	using S = range_iter_base <D, TR>;
-	using B = trav_base <D, TR, Q, U, I, I>;
+	using S = range_trav_base <D, TR>;
+	using B = trav_base <D, TR, Q, U, V, V>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class range_iter_base;
+	friend class range_trav_base;
 
 //-----------------------------------------------------------------------------
 
 	using delta = iter_elem <0, U>;
-	using iter  = iter_elem <1, I>;
-	using end   = iter_elem <2, I>;
+	using iter  = iter_elem <1, V>;
+	using end   = iter_elem <2, V>;
 
 	INLINE           l_iter_ref <U> u()       { return delta::get(); }
 	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
-	INLINE           l_iter_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
 
-	INLINE           l_iter_ref <I> e()       { return end::get(); }
-	INLINE constexpr c_iter_ref <I> e() const { return end::get(); }
+	INLINE           l_iter_ref <V> e()       { return end::get(); }
+	INLINE constexpr c_iter_ref <V> e() const { return end::get(); }
 
 //-----------------------------------------------------------------------------
 
-	INLINE void _swap() { ivl::swap(i(), e()); }
+	INLINE void _swap() { ivl::swap(v(), e()); }
 
 //-----------------------------------------------------------------------------
 
@@ -227,66 +227,59 @@ public:
 
 	static constexpr bool finite = true;
 
-	INLINE constexpr operator bool() const { return i() != e(); }
+	INLINE constexpr operator bool() const { return v() != e(); }
 };
 
 //-----------------------------------------------------------------------------
 
 // edge traversor can only be finite
 template <
-	typename Q, typename I, typename R, typename T, typename U,
+	typename Q, typename V, typename R, typename T, typename U,
 	typename D, typename TR, bool ITER
 >
-class range_trav_impl <Q, I, R, T, U, _false, D, TR, ITER, true>;
+class range_trav_impl <Q, V, R, T, U, _false, D, TR, ITER, true>;
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T, typename U,
+	typename Q, typename V, typename R, typename T, typename U,
 	typename D, typename TR, bool ITER
 >
-class range_trav_impl <Q, I, R, T, U, _true, D, TR, ITER, true> :
-	public range_iter_base <D, TR>,
-	public trav_base <D, TR, Q, U, I, I, I>
+class range_trav_impl <Q, V, R, T, U, _true, D, TR, ITER, true> :
+	public edge_trav_base <D, TR>,
+	public range_trav_base <D, TR>,
+	public trav_base <D, TR, Q, U, V, V, V>
 {
-	using S = range_iter_base <D, TR>;
-	using B = trav_base <D, TR, Q, U, I, I, I>;
+	using E = edge_trav_base <D, TR>;
+	using S = range_trav_base <D, TR>;
+	using B = trav_base <D, TR, Q, U, V, V, V>;
 
 	friend B;
 	friend base_type_of <B>;
 
-	template <typename, typename>
-	friend class range_iter_base;
+	template <typename, typename> friend class edge_trav_base;
+	template <typename, typename> friend class range_trav_base;
 
 //-----------------------------------------------------------------------------
 
 	using delta = iter_elem <0, U>;
-	using first = iter_elem <1, I>;
-	using iter  = iter_elem <2, I>;
-	using last  = iter_elem <3, I>;
+	using first = iter_elem <1, V>;
+	using iter  = iter_elem <2, V>;
+	using last  = iter_elem <3, V>;
 
 	INLINE           l_iter_ref <U> u()       { return delta::get(); }
 	INLINE constexpr c_iter_ref <U> u() const { return delta::get(); }
 
-	INLINE           l_iter_ref <I> f()       { return first::get(); }
-	INLINE constexpr c_iter_ref <I> f() const { return first::get(); }
+	INLINE           l_iter_ref <V> f()       { return first::get(); }
+	INLINE constexpr c_iter_ref <V> f() const { return first::get(); }
 
-	INLINE           l_iter_ref <I> i()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> i() const { return iter::get(); }
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
 
-	INLINE           l_iter_ref <I> l()       { return last::get(); }
-	INLINE constexpr c_iter_ref <I> l() const { return last::get(); }
+	INLINE           l_iter_ref <V> l()       { return last::get(); }
+	INLINE constexpr c_iter_ref <V> l() const { return last::get(); }
 
-//-----------------------------------------------------------------------------
-
-	INLINE void shift_l(key::iter) {               i() = f(); }
-	INLINE void shift_r(key::iter) { if (!empty()) i() = l(); }
-	INLINE void shift_l(key::edge) { if (!empty()) l() = i(); }
-	INLINE void shift_r(key::edge) {               f() = i(); }
-
-	INLINE void _swap() { if (!empty()) i() = i() == f() ? l() : f(); }
-
-	INLINE constexpr bool empty() const { return f() == u().next(l()); }
+	INLINE constexpr iter_val <V> end() const { return u().next(l()); }
 
 //-----------------------------------------------------------------------------
 
@@ -295,32 +288,33 @@ class range_trav_impl <Q, I, R, T, U, _true, D, TR, ITER, true> :
 	using S::add;
 	using S::sub;
 	using S::comp;
+	using E::shift_l;
+	using E::shift_r;
+	using E::_swap;
 
 //-----------------------------------------------------------------------------
 
 public:
 	using S::operator*;
 	using S::operator[];
+	using E::operator bool;
+	using E::operator+;
+	using E::operator-;
 
-	template <typename _U, typename _I, typename E>
-	INLINE range_trav_impl(_U&& _u, _I&& i, E e) :
-		B(fwd <_U>(_u), i, fwd <_I>(i), fwd <E>(e)) { u().dec(l()); }
+	template <typename _U, typename _V, typename E>
+	INLINE range_trav_impl(_U&& _u, _V&& v, E e) :
+		B(fwd <_U>(_u), v, fwd <_V>(v), fwd <E>(e)) { u().dec(l()); }
 
 	static constexpr bool finite = true;
-
-	INLINE constexpr operator bool() const { return i() != u().next(l()); }
-
-	INLINE bool operator+() const { return i() != l(); }
-	INLINE bool operator-() const { return i() != f(); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename Q, typename I, typename R, typename T, typename U, typename F>
-struct traversor <tag::range, Q, I, R, T, U, F> :
-	range_trav_impl <Q, I, R, T, U, F>
+template <typename Q, typename V, typename R, typename T, typename U, typename F>
+struct traversor <tag::range, Q, V, R, T, U, F> :
+	range_trav_impl <Q, V, R, T, U, F>
 {
-	using range_trav_impl <Q, I, R, T, U, F>::range_trav_impl;
+	using range_trav_impl <Q, V, R, T, U, F>::range_trav_impl;
 };
 
 //-----------------------------------------------------------------------------

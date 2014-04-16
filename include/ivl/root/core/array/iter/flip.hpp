@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class flip_iter_base : public derived <D, _false>
+class flip_trav_base : public derived <D, _false>
 {
 	using derived <D, _false>::der;
 
@@ -83,16 +83,16 @@ template <
 	bool = path_iter <Q>()
 >
 class flip_trav_impl :
-	public flip_iter_base <D, TR>,
+	public flip_trav_base <D, TR>,
 	public iter_base <D, TR, V>
 {
-	using S = flip_iter_base <D, TR>;
+	using S = flip_trav_base <D, TR>;
 	using B = iter_base <D, TR, V>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class flip_iter_base;
+	friend class flip_trav_base;
 
 //-----------------------------------------------------------------------------
 
@@ -124,17 +124,17 @@ template <
 	typename D, typename TR
 >
 class flip_trav_impl <Q, V, R, T, D, TR, false> :
-	public flip_iter_base <D, TR>,
+	public flip_trav_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
-	using S = flip_iter_base <D, TR>;
+	using S = flip_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, V>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class flip_iter_base;
+	friend class flip_trav_base;
 
 //-----------------------------------------------------------------------------
 

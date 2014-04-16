@@ -43,10 +43,10 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR, typename N, typename G>
-class zip_iter_base;
+class zip_trav_base;
 
 template <typename D, typename TR, size_t... N, typename G>
-class zip_iter_base <D, TR, sizes <N...>, G> :
+class zip_trav_base <D, TR, sizes <N...>, G> :
 	public derived <D, _false>
 {
 	using derived <D, _false>::der;
@@ -99,16 +99,16 @@ template <
 	typename D, typename TR, size_t... N
 >
 class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...>, true> :
-	public zip_iter_base <D, TR, sizes <N...>, G>,
+	public zip_trav_base <D, TR, sizes <N...>, G>,
 	public iter_base <D, TR, V...>
 {
-	using S = zip_iter_base <D, TR, sizes <N...>, G>;
+	using S = zip_trav_base <D, TR, sizes <N...>, G>;
 	using B = iter_base <D, TR, V...>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename, typename, typename>
-	friend class zip_iter_base;
+	friend class zip_trav_base;
 
 //-----------------------------------------------------------------------------
 
@@ -146,17 +146,17 @@ template <
 	typename D, typename TR, size_t... N
 >
 class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...>, false> :
-	public zip_iter_base <D, TR, sizes <N...>, G>,
+	public zip_trav_base <D, TR, sizes <N...>, G>,
 	public trav_base <D, TR, Q, V...>
 {
-	using S = zip_iter_base <D, TR, sizes <N...>, G>;
+	using S = zip_trav_base <D, TR, sizes <N...>, G>;
 	using B = trav_base <D, TR, Q, V...>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename, typename, typename>
-	friend class zip_iter_base;
+	friend class zip_trav_base;
 
 //-----------------------------------------------------------------------------
 

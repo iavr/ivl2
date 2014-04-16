@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class indirect_iter_base : public derived <D, _false>
+class indirect_trav_base : public derived <D, _false>
 {
 	using derived <D, _false>::der;
 
@@ -83,16 +83,16 @@ template <
 	bool = path_iter <Q>()
 >
 class indirect_trav_impl :
-	public indirect_iter_base <D, TR>,
+	public indirect_trav_base <D, TR>,
 	public iter_base <D, TR, V, U>
 {
-	using S = indirect_iter_base <D, TR>;
+	using S = indirect_trav_base <D, TR>;
 	using B = iter_base <D, TR, V, U>;
 
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class indirect_iter_base;
+	friend class indirect_trav_base;
 
 //-----------------------------------------------------------------------------
 
@@ -128,17 +128,17 @@ template <
 	typename D, typename TR
 >
 class indirect_trav_impl <Q, V, R, T, U, D, TR, false> :
-	public indirect_iter_base <D, TR>,
+	public indirect_trav_base <D, TR>,
 	public trav_base <D, TR, Q, V, U>
 {
-	using S = indirect_iter_base <D, TR>;
+	using S = indirect_trav_base <D, TR>;
 	using B = trav_base <D, TR, Q, V, U>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class indirect_iter_base;
+	friend class indirect_trav_base;
 
 //-----------------------------------------------------------------------------
 
