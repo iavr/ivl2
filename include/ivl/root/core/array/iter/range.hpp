@@ -78,11 +78,12 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename U, typename F,
-	typename D = range_iter <I, R, T, U, F>,
-	typename TR = iter_traits <I, R, T, ptrdiff_t>
+	typename Q, typename I, typename R, typename T, typename U, typename F,
+	typename D = range_trav <Q, I, R, T, U, F>,
+	typename TR = iter_traits <I, R, T, ptrdiff_t>,
+	bool = path_iter <Q>(), bool = path_edge <Q>()  // default: true, false
 >
-class range_iter_impl :
+class range_trav_impl :
 	public range_iter_base <D, TR>,
 	public iter_base <D, TR, U, I>
 {
@@ -124,12 +125,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T, typename U, typename F,
-	typename D = range_trav <Q, I, R, T, U, F>,
-	typename TR = iter_traits <I, R, T, ptrdiff_t>,
-	bool = F(), bool = path_edge <Q>()
+	typename Q, typename I, typename R, typename T, typename U,
+	typename D, typename TR
 >
-class range_trav_impl :
+class range_trav_impl <Q, I, R, T, U, _false, D, TR, false, false> :
 	public range_iter_base <D, TR>,
 	public trav_base <D, TR, Q, U, I>
 {
@@ -176,10 +175,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename I, typename R, typename T, typename U, typename F,
+	typename Q, typename I, typename R, typename T, typename U,
 	typename D, typename TR
 >
-class range_trav_impl <Q, I, R, T, U, F, D, TR, true, false> :
+class range_trav_impl <Q, I, R, T, U, _true, D, TR, false, false> :
 	public range_iter_base <D, TR>,
 	public trav_base <D, TR, Q, U, I, I>
 {
@@ -235,10 +234,18 @@ public:
 
 // edge traversor can only be finite
 template <
-	typename Q, typename I, typename R, typename T, typename U, typename F,
-	typename D, typename TR
+	typename Q, typename I, typename R, typename T, typename U,
+	typename D, typename TR, bool ITER
 >
-class range_trav_impl <Q, I, R, T, U, F, D, TR, true, true> :
+class range_trav_impl <Q, I, R, T, U, _false, D, TR, ITER, true>;
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename Q, typename I, typename R, typename T, typename U,
+	typename D, typename TR, bool ITER
+>
+class range_trav_impl <Q, I, R, T, U, _true, D, TR, ITER, true> :
 	public range_iter_base <D, TR>,
 	public trav_base <D, TR, Q, U, I, I, I>
 {
@@ -305,15 +312,6 @@ public:
 
 	INLINE bool operator+() const { return i() != l(); }
 	INLINE bool operator-() const { return i() != f(); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename R, typename T, typename U, typename F>
-struct iterator <tag::range, I, R, T, U, F> :
-	range_iter_impl <I, R, T, U, F>
-{
-	using range_iter_impl <I, R, T, U, F>::range_iter_impl;
 };
 
 //-----------------------------------------------------------------------------

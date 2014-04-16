@@ -46,9 +46,7 @@ template <typename U>
 using tail_order = fixed_order <seq_fixed <U>{}, sizes <seq_len <U>{} - 1> >;
 
 template <typename U>
-using tail_traits = seq_traits <
-	seq_type <U>, tail_order <U>, U, iter_iter, trav_trav
->;
+using tail_traits = seq_traits <seq_type <U>, tail_order <U>, U, trav_trav>;
 
 //-----------------------------------------------------------------------------
 

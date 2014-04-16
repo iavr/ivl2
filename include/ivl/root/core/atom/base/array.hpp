@@ -55,7 +55,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T>
-using atom_traits = seq_traits <T, none, void*, atom_iter, atom_trav>;
+using atom_traits = seq_traits <T, none, void*, atom_trav>;
 
 //-----------------------------------------------------------------------------
 

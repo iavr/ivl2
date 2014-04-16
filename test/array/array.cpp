@@ -25,7 +25,6 @@ void swap(B& a, B& b) { std::swap(++a, ++b); }
 
 void run()
 {
-
 	{
 		cout << "aggr array" << endl;
 		aggr_array <int, 0> x = {};

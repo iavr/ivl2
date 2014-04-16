@@ -77,16 +77,17 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T,
-	typename D = flip_iter <I, R, T>,
-	typename TR = iter_traits <I, R, T>
+	typename Q, typename V, typename R, typename T,
+	typename D = flip_trav <Q, V, R, T>,
+	typename TR = iter_traits <V, R, T>,
+	bool = path_iter <Q>()
 >
-class flip_iter_impl :
+class flip_trav_impl :
 	public flip_iter_base <D, TR>,
-	public iter_base <D, TR, I>
+	public iter_base <D, TR, V>
 {
 	using S = flip_iter_base <D, TR>;
-	using B = iter_base <D, TR, I>;
+	using B = iter_base <D, TR, V>;
 
 	friend base_type_of <B>;
 
@@ -95,10 +96,10 @@ class flip_iter_impl :
 
 //-----------------------------------------------------------------------------
 
-	using iter = iter_elem <0, I>;
+	using iter = iter_elem <0, V>;
 
-	INLINE           l_iter_ref <I> v()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> v() const { return iter::get(); }
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
 
 //-----------------------------------------------------------------------------
 
@@ -120,10 +121,9 @@ public:
 
 template <
 	typename Q, typename V, typename R, typename T,
-	typename D = flip_trav <Q, V, R, T>,
-	typename TR = iter_traits <V, R, T>
+	typename D, typename TR
 >
-class flip_trav_impl :
+class flip_trav_impl <Q, V, R, T, D, TR, false> :
 	public flip_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
@@ -171,15 +171,6 @@ public:
 
 	INLINE bool operator+() const { return -v(); }
 	INLINE bool operator-() const { return +v(); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename R, typename T>
-struct iterator <tag::flip, I, R, T> :
-	flip_iter_impl <I, R, T>
-{
-	using flip_iter_impl <I, R, T>::flip_iter_impl;
 };
 
 //-----------------------------------------------------------------------------

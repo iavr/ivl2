@@ -42,33 +42,42 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <bool E = false, bool I = false>
-struct path_ : id_t <path_<E, I> >
+template <bool I = false, bool E = false, bool F = false>
+struct path_ : id_t <path_<I, E, F> >
 {
+	static constexpr bool iter    = I;
 	static constexpr bool edge    = E;
-	static constexpr bool finite  = I;
+	static constexpr bool finite  = F;
 };
 
 using path = path_<>;
 
 //-----------------------------------------------------------------------------
 
-template <typename P> using path_edge = expr <P::edge>;
-template <typename P> using path_fin  = expr <P::finite>;
+template <typename P> using path_iter   = expr <P::iter>;
+template <typename P> using path_edge   = expr <P::edge>;
+template <typename P> using path_finite = expr <P::finite>;
 
 //-----------------------------------------------------------------------------
 
+template <typename P = path> struct iter_path_t { };
 template <typename P = path> struct edge_path_t { };
-template <typename P = path> struct fin_path_t  { };
+template <typename P = path> struct finite_path_t { };
 
-template <typename P = path> using edge_path = type_of <edge_path_t <P> >;
-template <typename P = path> using fin_path  = type_of <fin_path_t <P> >;
+template <typename P = path> using iter_path   = type_of <iter_path_t <P> >;
+template <typename P = path> using edge_path   = type_of <edge_path_t <P> >;
+template <typename P = path> using finite_path = type_of <finite_path_t <P> >;
 
-template <bool E, bool I>
-struct edge_path_t <path_<E, I> > : path_<true, I> { };
+template <bool I, bool E, bool F>
+struct iter_path_t <path_<I, E, F> > : path_<true, E, F> { };
 
-template <bool E, bool I>
-struct fin_path_t <path_<E, I> > : path_<E, true> { };
+template <bool I, bool E, bool F>
+struct edge_path_t <path_<I, E, F> > : path_<I, true, F> { };
+
+template <bool I, bool E, bool F>
+struct finite_path_t <path_<I, E, F> > : path_<I, E, true> { };
+
+using iter = iter_path <>;
 
 //-----------------------------------------------------------------------------
 
@@ -77,12 +86,15 @@ struct fin_path_t <path_<E, I> > : path_<E, true> { };
 //-----------------------------------------------------------------------------
 
 using details::path;
+using details::iter;
 
+using details::path_iter;
 using details::path_edge;
-using details::path_fin;
+using details::path_finite;
 
+using details::iter_path;
 using details::edge_path;
-using details::fin_path;
+using details::finite_path;
 
 //-----------------------------------------------------------------------------
 

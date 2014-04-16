@@ -160,20 +160,21 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename V, typename R, typename T,
-	typename D = join_iter <V, R, T>,
+	typename Q, typename V, typename R, typename T,
+	typename D = join_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>,
-	typename N = sz_rng_of_p <V>
+	typename N = sz_rng_of_p <V>,
+	bool = path_iter <Q>(), bool = path_edge <Q>()
 >
-struct join_iter_impl;
+struct join_trav_impl;
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename... V, typename R, typename T,
+	typename Q, typename... V, typename R, typename T,
 	typename D, typename TR, size_t... N
 >
-class join_iter_impl <pack <V...>, R, T, D, TR, sizes <N...> > :
+class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true, false> :
 	public join_iter_base <D, TR, sizes <N...> >,
 	public iter_base <D, TR, V...>
 {
@@ -210,26 +211,17 @@ public:
 	using S::operator*;
 
 	template <typename... A>
-	INLINE constexpr join_iter_impl(size_t k, A&&... a) :
+	INLINE constexpr join_trav_impl(size_t k, A&&... a) :
 		S(k), B(fwd <A>(a)...) { }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename V, typename R, typename T,
-	typename D = join_trav <Q, V, R, T>,
-	typename TR = iter_traits <V, R, T>,
-	typename N = sz_rng_of_p <V>,
-	bool = path_edge <Q>()
->
-struct join_trav_impl;
-
-template <
 	typename Q, typename... V, typename R, typename T,
 	typename D, typename TR, size_t... N
 >
-class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false> :
+class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false, false> :
 	public join_iter_base <D, TR, sizes <N...> >,
 	public trav_base <D, TR, Q, V...>
 {
@@ -327,12 +319,12 @@ public:
 
 template <
 	typename Q, typename... V, typename R, typename T,
-	typename D, typename TR, size_t... N
+	typename D, typename TR, size_t... N, bool ITER
 >
-class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, true> :
-	public join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>
+class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, ITER, true> :
+	public join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false, false>
 {
-	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false>;
+	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false, false>;
 
 	friend base_type_of <B>;
 	friend base_trav_of <B>;
@@ -404,15 +396,6 @@ public:
 	INLINE bool operator+() const { return k != l() || op <plus> ()(k, der()); }
 	INLINE bool operator-() const { return k != f   || op <minus>()(k, der()); }
 
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename V, typename R, typename T>
-struct iterator <tag::join, V, R, T> :
-	join_iter_impl <V, R, T>
-{
-	using join_iter_impl <V, R, T>::join_iter_impl;
 };
 
 //-----------------------------------------------------------------------------

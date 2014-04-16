@@ -84,25 +84,26 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename G, typename F,
-	typename D = apply_iter <I, R, T, G, F>,
-	typename TR = iter_traits <I, R, T>,
-	typename N = sz_rng_of_p <I>
+	typename Q, typename V, typename R, typename T, typename G, typename F,
+	typename D = apply_trav <Q, V, R, T, G, F>,
+	typename TR = iter_traits <V, R, T>,
+	typename N = sz_rng_of_p <V>,
+	bool = path_iter <Q>()
 >
-struct apply_iter_impl;
+struct apply_trav_impl;
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename... I, typename R, typename T, typename G, typename F,
+	typename Q, typename... V, typename R, typename T, typename G, typename F,
 	typename D, typename TR, size_t... N
 >
-class apply_iter_impl <pack <I...>, R, T, G, F, D, TR, sizes <N...> > :
+class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...>, true> :
 	public apply_iter_base <D, TR, sizes <N...>, G>,
-	public iter_base <D, TR, F, I...>
+	public iter_base <D, TR, F, V...>
 {
 	using S = apply_iter_base <D, TR, sizes <N...>, G>;
-	using B = iter_base <D, TR, F, I...>;
+	using B = iter_base <D, TR, F, V...>;
 
 	friend base_type_of <B>;
 
@@ -114,17 +115,17 @@ class apply_iter_impl <pack <I...>, R, T, G, F, D, TR, sizes <N...> > :
 	using fun = iter_elem <0, F>;
 
 	template <size_t K>
-	using iter = iter_elem_at <K + 1, F, I...>;
+	using iter = iter_elem_at <K + 1, F, V...>;
 
 	INLINE           l_iter_ref <F> f()       { return fun::get(); }
 	INLINE constexpr c_iter_ref <F> f() const { return fun::get(); }
 
 	template <size_t K>
-	INLINE l_iter_pick <K, I...>
+	INLINE l_iter_pick <K, V...>
 	v() { return iter <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr c_iter_pick <K, I...>
+	INLINE constexpr c_iter_pick <K, V...>
 	v() const { return iter <K>::get(); }
 
 //-----------------------------------------------------------------------------
@@ -146,18 +147,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename V, typename R, typename T, typename G, typename F,
-	typename D = apply_trav <Q, V, R, T, G, F>,
-	typename TR = iter_traits <V, R, T>,
-	typename N = sz_rng_of_p <V>
->
-struct apply_trav_impl;
-
-template <
 	typename Q, typename... V, typename R, typename T, typename G, typename F,
 	typename D, typename TR, size_t... N
 >
-class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...> > :
+class apply_trav_impl <Q, pack <V...>, R, T, G, F, D, TR, sizes <N...>, false> :
 	public apply_iter_base <D, TR, sizes <N...>, G>,
 	public trav_base <D, TR, Q, F, V...>
 {
@@ -216,15 +209,6 @@ public:
 
 	INLINE bool operator+() const { return +G()(v<N>()...); }
 	INLINE bool operator-() const { return -G()(v<N>()...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename R, typename T, typename G, typename F>
-struct iterator <tag::apply, I, R, T, G, F> :
-	apply_iter_impl <I, R, T, G, F>
-{
-	using apply_iter_impl <I, R, T, G, F>::apply_iter_impl;
 };
 
 //-----------------------------------------------------------------------------

@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename P = path>
-using join_path = edge_path <fin_path <> >;
+using join_path = edge_path <finite_path <> >;
 
 template <typename... U>
 using join_order = fixed_order <
@@ -56,7 +56,7 @@ struct join_traits;
 template <typename... U, typename UP>
 struct join_traits <pack <U...>, UP> : seq_traits <
 	_type <seq_type <U>...>, join_order <U...>, UP,
-	join_iter, join_trav, join_path
+	join_trav, join_path
 > { };
 
 //-----------------------------------------------------------------------------

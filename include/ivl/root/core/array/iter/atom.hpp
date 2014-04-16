@@ -78,11 +78,12 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T,
-	typename D = atom_iter <I, R, T>,
-	typename TR = iter_traits <I, R, T, ptrdiff_t>
+	typename Q, typename V, typename R, typename T,
+	typename D = atom_trav <Q, V, R, T>,
+	typename TR = iter_traits <V, R, T, ptrdiff_t>,
+	bool = path_iter <Q>(), bool = path_finite <Q>()
 >
-class atom_iter_impl :
+class atom_trav_impl :
 	public atom_iter_base <D, TR>,
 	public iter_base <D, TR, R>
 {
@@ -117,11 +118,9 @@ public:
 
 template <
 	typename Q, typename V, typename R, typename T,
-	typename D = atom_trav <Q, V, R, T>,
-	typename TR = iter_traits <V, R, T, ptrdiff_t>,
-	bool = path_fin <Q>()
+	typename D, typename TR
 >
-class atom_trav_impl :
+class atom_trav_impl <Q, V, R, T, D, TR, false, false> :
 	public atom_iter_base <D, TR>,
 	public trav_base <D, TR, Q, R>
 {
@@ -166,7 +165,7 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D, typename TR
 >
-struct atom_trav_impl <Q, V, R, T, D, TR, true> :
+struct atom_trav_impl <Q, V, R, T, D, TR, false, true> :
 	public atom_iter_base <D, TR>,
 	public trav_base <D, TR, Q, R>
 {
@@ -217,15 +216,6 @@ public:
 
 	INLINE bool operator+() const { return k != 0; }
 	INLINE bool operator-() const { return k != 0; }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename R, typename T>
-struct iterator <tag::atom, I, R, T> :
-	atom_iter_impl <I, R, T>
-{
-	using atom_iter_impl <I, R, T>::atom_iter_impl;
 };
 
 //-----------------------------------------------------------------------------

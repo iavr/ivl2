@@ -70,12 +70,11 @@ template <typename TR, typename... E> struct seq_store;
 
 template <
 	typename T, typename O = none, typename B = seq_elem <T>*,
-	template <typename...> class I = iter_iter,
 	template <typename...> class V = iter_trav,
 	template <typename...> class F = id,
 	typename S = seq_size <B>, typename... U
 >
-struct seq_traits : seq_store <seq_traits <T, O, B, I, V, F, S, U...> >
+struct seq_traits : seq_store <seq_traits <T, O, B, V, F, S, U...> >
 {
 	using traits = seq_traits;
 };
@@ -83,20 +82,17 @@ struct seq_traits : seq_store <seq_traits <T, O, B, I, V, F, S, U...> >
 //-----------------------------------------------------------------------------
 
 template <
-	typename T, typename O, typename B, template <typename...> class I,
-	template <typename...> class V, template <typename...> class F,
+	typename T, typename O, typename B,
+	template <typename...> class V,
+	template <typename...> class F,
 	typename S, typename... U, typename... E
 >
-struct seq_store <seq_traits <T, O, B, I, V, F, S, U...>, E...> :
+struct seq_store <seq_traits <T, O, B, V, F, S, U...>, E...> :
 	seq_tuple <E...>
 {
 	using value_type = T;
 	using order_type = O;
 	using size_type = S;
-
-	using r_iterator = I <r_iter <B, F <path> >, r_ref <T>, T, r_ref <U>...>;
-	using l_iterator = I <l_iter <B, F <path> >, l_ref <T>, T, l_ref <U>...>;
-	using c_iterator = I <c_iter <B, F <path> >, c_ref <T>, T, c_ref <U>...>;
 
 	template <typename Q = path>
 	using r_traversor = V <Q, r_trav <B, F <Q> >, r_ref <T>, T, r_ref <U>...>;
@@ -106,6 +102,10 @@ struct seq_store <seq_traits <T, O, B, I, V, F, S, U...>, E...> :
 
 	template <typename Q = path>
 	using c_traversor = V <Q, c_trav <B, F <Q> >, c_ref <T>, T, c_ref <U>...>;
+
+	using r_iterator = r_traversor <iter>;
+	using l_iterator = l_traversor <iter>;
+	using c_iterator = c_traversor <iter>;
 
 	using r_reference = seq_iref <r_iterator>;
 	using l_reference = seq_iref <l_iterator>;

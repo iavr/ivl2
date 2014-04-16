@@ -77,16 +77,17 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename U,
-	typename D = indirect_iter <I, R, T, U>,
-	typename TR = iter_traits <I, R, T>
+	typename Q, typename V, typename R, typename T, typename U,
+	typename D = indirect_trav <Q, V, R, T, U>,
+	typename TR = iter_traits <V, R, T>,
+	bool = path_iter <Q>()
 >
-class indirect_iter_impl :
+class indirect_trav_impl :
 	public indirect_iter_base <D, TR>,
-	public iter_base <D, TR, I, U>
+	public iter_base <D, TR, V, U>
 {
 	using S = indirect_iter_base <D, TR>;
-	using B = iter_base <D, TR, I, U>;
+	using B = iter_base <D, TR, V, U>;
 
 	friend base_type_of <B>;
 
@@ -95,11 +96,11 @@ class indirect_iter_impl :
 
 //-----------------------------------------------------------------------------
 
-	using iter  = iter_elem <0, I>;
+	using iter  = iter_elem <0, V>;
 	using under = iter_elem <1, U>;
 
-	INLINE           l_iter_ref <I> v()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <I> v() const { return iter::get(); }
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
 
 	INLINE           l_iter_ref <U> u()       { return under::get(); }
 	INLINE constexpr c_iter_ref <U> u() const { return under::get(); }
@@ -124,10 +125,9 @@ public:
 
 template <
 	typename Q, typename V, typename R, typename T, typename U,
-	typename D = indirect_trav <Q, V, R, T, U>,
-	typename TR = iter_traits <V, R, T>
+	typename D, typename TR
 >
-class indirect_trav_impl :
+class indirect_trav_impl <Q, V, R, T, U, D, TR, false> :
 	public indirect_iter_base <D, TR>,
 	public trav_base <D, TR, Q, V, U>
 {
@@ -179,15 +179,6 @@ public:
 
 	INLINE bool operator+() const { return v(); }
 	INLINE bool operator-() const { return v(); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename R, typename T, typename U>
-struct iterator <tag::indirect, I, R, T, U> :
-	indirect_iter_impl <I, R, T, U>
-{
-	using indirect_iter_impl <I, R, T, U>::indirect_iter_impl;
 };
 
 //-----------------------------------------------------------------------------

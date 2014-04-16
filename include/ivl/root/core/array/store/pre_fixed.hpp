@@ -96,22 +96,25 @@ class pre_fixed_seq_impl :
 	using S = fixed_store <T, N>;
 	friend B;
 
-	using IR = r_seq_iter <TR>;
-	using IL = l_seq_iter <TR>;
-	using IC = c_seq_iter <TR>;
+	using E = seq_elem <T>;
+
+	using PL = E*;
+	using PC = const E*;
 
 	template <typename Q> using VR = r_seq_trav <TR, Q>;
 	template <typename Q> using VL = l_seq_trav <TR, Q>;
 	template <typename Q> using VC = c_seq_trav <TR, Q>;
 
+	using IR = r_seq_iter <TR>;
+	using IL = l_seq_iter <TR>;
+	using IC = c_seq_iter <TR>;
+
 //-----------------------------------------------------------------------------
 
-	using E = seq_elem <T>;
-
-	INLINE E*       b()       { return S::data(); }
-	INLINE const E* b() const { return S::data(); }
-	INLINE E*       e()       { return S::data() + N; }
-	INLINE const E* e() const { return S::data() + N; }
+	INLINE PL b()       { return S::data(); }
+	INLINE PC b() const { return S::data(); }
+	INLINE PL e()       { return S::data() + N; }
+	INLINE PC e() const { return S::data() + N; }
 
 //-----------------------------------------------------------------------------
 

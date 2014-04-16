@@ -54,8 +54,8 @@
 #include "base/seq/base.hpp"
 
 #include "iter/op.hpp"
-#include "iter/iter.hpp"
 #include "iter/trav.hpp"
+#include "iter/iter.hpp"
 #include "iter/atom.hpp"
 #include "iter/delta.hpp"
 #include "iter/range.hpp"

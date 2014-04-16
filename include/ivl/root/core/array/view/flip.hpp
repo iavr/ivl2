@@ -43,9 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename U>
-using flip_traits = seq_traits <
-	seq_type <U>, seq_order <U>, U, flip_iter, flip_trav
->;
+using flip_traits = seq_traits <seq_type <U>, seq_order <U>, U, flip_trav>;
 
 //-----------------------------------------------------------------------------
 

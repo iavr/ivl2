@@ -48,7 +48,7 @@ struct zip_traits;
 template <typename M, typename... U, typename UP>
 struct zip_traits <M, pack <U...>, UP> : seq_traits <
 	pack <seq_type <U>...>, apply_order <M, U...>, UP,
-	zip_iter, zip_trav, id, seq_size <UP>, term_get <M, U...>
+	zip_trav, id, seq_size <UP>, term_get <M, U...>
 > { };
 
 //-----------------------------------------------------------------------------

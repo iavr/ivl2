@@ -43,10 +43,11 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename O, typename U, bool finite>
+template <typename T, typename O, typename U, bool F>
 using range_traits = seq_traits <
 	id_t <T>, O, _type <T>,
-	range_iter, range_trav, id, size_t, U, expr <finite>
+// 	range_iter,
+	range_trav, id, size_t, U, expr <F>
 >;
 
 //-----------------------------------------------------------------------------

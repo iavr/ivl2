@@ -72,13 +72,13 @@ class sequence <tag::aggr, T, sizes <N> >
 	using PL = T*;
 	using PC = const T*;
 
-	using IR = iter_iter <PL, RR, T>;
-	using IL = iter_iter <PL, RL, T>;
-	using IC = iter_iter <PC, RC, T>;
-
 	template <typename Q> using VR = iter_trav <Q, PL, RR, T>;
 	template <typename Q> using VL = iter_trav <Q, PL, RL, T>;
 	template <typename Q> using VC = iter_trav <Q, PC, RC, T>;
+
+	using IR = iter_trav <iter, PL, RR, T>;
+	using IL = iter_trav <iter, PL, RL, T>;
+	using IC = iter_trav <iter, PC, RC, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -108,13 +108,13 @@ public:
 	using l_pointer = PL;
 	using c_pointer = PC;
 
-	using r_iterator = IR;
-	using l_iterator = IL;
-	using c_iterator = IC;
-
 	template <typename Q = path> using r_traversor = VR <Q>;
 	template <typename Q = path> using l_traversor = VL <Q>;
 	template <typename Q = path> using c_traversor = VC <Q>;
+
+	using r_iterator = IR;
+	using l_iterator = IL;
+	using c_iterator = IC;
 
 	static constexpr bool   finite = true;
 	static constexpr size_t length = N;

@@ -84,25 +84,26 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename I, typename R, typename T, typename G,
-	typename D = zip_iter <I, R, T, G>,
-	typename TR = iter_traits <I, R, T>,
-	typename N = sz_rng_of_p <I>
+	typename Q, typename V, typename R, typename T, typename G,
+	typename D = zip_trav <Q, V, R, T, G>,
+	typename TR = iter_traits <V, R, T>,
+	typename N = sz_rng_of_p <V>,
+	bool = path_iter <Q>()
 >
-struct zip_iter_impl;
+struct zip_trav_impl;
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename... I, typename R, typename T, typename G,
+	typename Q, typename... V, typename R, typename T, typename G,
 	typename D, typename TR, size_t... N
 >
-class zip_iter_impl <pack <I...>, R, T, G, D, TR, sizes <N...> > :
+class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...>, true> :
 	public zip_iter_base <D, TR, sizes <N...>, G>,
-	public iter_base <D, TR, I...>
+	public iter_base <D, TR, V...>
 {
 	using S = zip_iter_base <D, TR, sizes <N...>, G>;
-	using B = iter_base <D, TR, I...>;
+	using B = iter_base <D, TR, V...>;
 
 	friend base_type_of <B>;
 
@@ -112,14 +113,14 @@ class zip_iter_impl <pack <I...>, R, T, G, D, TR, sizes <N...> > :
 //-----------------------------------------------------------------------------
 
 	template <size_t K>
-	using iter = iter_elem_at <K, I...>;
+	using iter = iter_elem_at <K, V...>;
 
 	template <size_t K>
-	INLINE l_iter_pick <K, I...>
+	INLINE l_iter_pick <K, V...>
 	v() { return iter <K>::get(); }
 
 	template <size_t K>
-	INLINE constexpr c_iter_pick <K, I...>
+	INLINE constexpr c_iter_pick <K, V...>
 	v() const { return iter <K>::get(); }
 
 //-----------------------------------------------------------------------------
@@ -141,18 +142,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename V, typename R, typename T, typename G,
-	typename D = zip_trav <Q, V, R, T, G>,
-	typename TR = iter_traits <V, R, T>,
-	typename N = sz_rng_of_p <V>
->
-struct zip_trav_impl;
-
-template <
 	typename Q, typename... V, typename R, typename T, typename G,
 	typename D, typename TR, size_t... N
 >
-class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...> > :
+class zip_trav_impl <Q, pack <V...>, R, T, G, D, TR, sizes <N...>, false> :
 	public zip_iter_base <D, TR, sizes <N...>, G>,
 	public trav_base <D, TR, Q, V...>
 {
@@ -206,15 +199,6 @@ public:
 
 	INLINE bool operator+() const { return +G()(v<N>()...); }
 	INLINE bool operator-() const { return -G()(v<N>()...); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename I, typename R, typename T, typename G>
-struct iterator <tag::zip, I, R, T, G> :
-	zip_iter_impl <I, R, T, G>
-{
-	using zip_iter_impl <I, R, T, G>::zip_iter_impl;
 };
 
 //-----------------------------------------------------------------------------
