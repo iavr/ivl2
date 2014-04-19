@@ -47,9 +47,9 @@ class apply_trav_base;
 
 template <typename D, typename TR, size_t... N, typename G>
 class apply_trav_base <D, TR, sizes <N...>, G> :
-	public derived <D, _false>
+	public derived <D, tag::apply>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::apply>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;

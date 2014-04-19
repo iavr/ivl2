@@ -47,7 +47,9 @@ template <typename... D> struct fixed_ { };
 template <typename... D> struct heap_  { };
 
 template <typename... D> struct each_  { };
+template <typename... D> struct index_ { };
 template <typename... D> struct range_ { };
+template <typename... D> struct slice_ { };
 
 template <typename... D> using pre_fixed_ = pre_<fixed_<D...> >;
 
@@ -62,7 +64,9 @@ using fixed = fixed_<>;
 using heap  = heap_<>;
 
 using each  = each_<>;
+using index = index_<>;
 using range = range_<>;
+using slice = slice_<>;
 
 using pre_fixed = pre_fixed_<>;
 

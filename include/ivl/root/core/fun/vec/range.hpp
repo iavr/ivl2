@@ -40,11 +40,15 @@ namespace fun {
 
 namespace details {
 
+struct index : vec_apply <afun::index> { };
 struct range : vec_apply <afun::range> { };
+struct slice : vec_apply <afun::slice> { };
 
 }  // namespace details
 
+using details::index;
 using details::range;
+using details::slice;
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +56,9 @@ using details::range;
 
 //-----------------------------------------------------------------------------
 
+static __attribute__ ((unused)) fun::index   index;
 static __attribute__ ((unused)) fun::range   range;
+static __attribute__ ((unused)) fun::slice   slice;
 
 //-----------------------------------------------------------------------------
 

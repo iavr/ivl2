@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class range_trav_base : public derived <D, _false>
+class range_trav_base : public derived <D, tag::range>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::range>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
@@ -81,7 +81,7 @@ template <
 	typename Q, typename V, typename R, typename T, typename U, typename F,
 	typename D = range_trav <Q, V, R, T, U, F>,
 	typename TR = iter_traits <V, R, T, ptrdiff_t>,
-	bool = path_iter <Q>(), bool = path_edge <Q>()  // default: true, false
+	bool = path_iter <Q>(), bool = path_edge <Q>()  // default: F = any, true, false
 >
 class range_trav_impl :
 	public range_trav_base <D, TR>,
@@ -237,7 +237,12 @@ template <
 	typename Q, typename V, typename R, typename T, typename U,
 	typename D, typename TR, bool ITER
 >
-class range_trav_impl <Q, V, R, T, U, _false, D, TR, ITER, true>;
+struct range_trav_impl <Q, V, R, T, U, _false, D, TR, ITER, true> :  // TODO: undefine
+	range_trav_impl <Q, V, R, T, U, _false, D, TR, ITER, false>
+{
+	using range_trav_impl <Q, V, R, T, U, _false, D, TR, ITER, false>
+		::range_trav_impl;
+};
 
 //-----------------------------------------------------------------------------
 
@@ -302,7 +307,7 @@ public:
 	using E::operator-;
 
 	template <typename _U, typename _V, typename E>
-	INLINE range_trav_impl(_U&& _u, _V&& v, E e) :
+	INLINE range_trav_impl(_U&& _u, _V&& v, E&& e) :
 		B(fwd <_U>(_u), v, fwd <_V>(v), fwd <E>(e)) { u().dec(l()); }
 
 	static constexpr bool finite = true;

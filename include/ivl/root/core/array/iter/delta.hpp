@@ -71,8 +71,8 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <>  // TODO: implicitly private inheritance in clang without `public`
-struct delta <afun::op::inc_> : public delta_base <inc_delta>
+template <>
+struct delta <afun::op::inc_> : delta_base <inc_delta>
 {
 	template <typename I> INLINE void inc(I&& i) const { ++i; }
 	template <typename I> INLINE void dec(I&& i) const { --i; }
@@ -99,7 +99,7 @@ struct delta <afun::op::inc_> : public delta_base <inc_delta>
 //-----------------------------------------------------------------------------
 
 template <>
-struct delta <afun::op::dec_> : public delta_base <dec_delta>
+struct delta <afun::op::dec_> : delta_base <dec_delta>
 {
 	template <typename I> INLINE void inc(I&& i) const { --i; }
 	template <typename I> INLINE void dec(I&& i) const { ++i; }

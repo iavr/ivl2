@@ -42,8 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename C, typename... A> class traversor;
-template <typename F, typename... A> class delta;
+template <typename C, typename... A> struct traversor;
+template <typename F, typename... A> struct delta;
 
 //-----------------------------------------------------------------------------
 
@@ -69,8 +69,14 @@ using inf_trav = atom_trav <path, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
+template <typename Q, typename I, typename R, typename T, typename F>
+using index_trav = traversor <tag::index, Q, I, R, T, F>;
+
 template <typename Q, typename I, typename R, typename T, typename U, typename F>
 using range_trav = traversor <tag::range, Q, I, R, T, U, F>;
+
+template <typename Q, typename I, typename R, typename T>
+using slice_trav = traversor <tag::slice, Q, I, R, T>;
 
 //-----------------------------------------------------------------------------
 
@@ -112,7 +118,9 @@ using details::trav_trav;
 using details::atom_trav;
 using details::inf_trav;
 
+using details::index_trav;
 using details::range_trav;
+using details::slice_trav;
 
 using details::flip_trav;
 using details::indirect_trav;

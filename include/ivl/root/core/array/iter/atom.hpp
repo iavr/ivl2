@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class atom_trav_base : public derived <D, _false>
+class atom_trav_base : public derived <D, tag::atom>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::atom>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
@@ -81,7 +81,7 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D = atom_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T, ptrdiff_t>,
-	bool = path_iter <Q>(), bool = path_finite <Q>()
+	bool = path_iter <Q>(), bool = path_finite <Q>()  // true, any
 >
 class atom_trav_impl :
 	public atom_trav_base <D, TR>,

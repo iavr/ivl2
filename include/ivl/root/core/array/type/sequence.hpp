@@ -60,8 +60,14 @@ using heap_array = sequence <tag::heap, T>;
 
 //-----------------------------------------------------------------------------
 
+template <typename... N>
+using index_seq = sequence <tag::index, N...>;
+
 template <typename B, typename U, typename... E>
 using range_seq = sequence <tag::range, B, U, E...>;
+
+template <typename B, typename U, typename... N>
+using slice_seq = sequence <tag::slice, B, U, N...>;
 
 //-----------------------------------------------------------------------------
 
@@ -129,7 +135,9 @@ using details::pre_fixed_array;
 using details::fixed_array;
 using details::heap_array;
 
+using details::index_seq;
 using details::range_seq;
+using details::slice_seq;
 
 using details::each_seq;
 using details::tail_seq;

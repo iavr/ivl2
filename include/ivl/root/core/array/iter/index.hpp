@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_FUN_RANGE_HPP
-#define IVL_CORE_ARRAY_FUN_RANGE_HPP
+#ifndef IVL_CORE_ARRAY_ITER_INDEX_HPP
+#define IVL_CORE_ARRAY_ITER_INDEX_HPP
 
 #include <ivl/ivl>
 
@@ -34,7 +34,7 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace afun {
+namespace arrays {
 
 //-----------------------------------------------------------------------------
 
@@ -42,46 +42,90 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename U, only_if <!is_uscore <U>{}> = 0>
-INLINE constexpr U&&
-delta(U&& u) { return fwd <U>(u); }
-
-template <typename U, only_if <is_uscore <U>{}> = 0>
-INLINE constexpr auto
-delta(U&& u)
--> decltype(++u)
-	{ return ++u; }
-
-//-----------------------------------------------------------------------------
-
-using index = uref_of <index_seq>;
-
-//-----------------------------------------------------------------------------
-
-class range
+template <
+	typename Q, typename V, typename R, typename T, typename F,
+	typename D = index_trav <Q, V, R, T, F>,
+	typename TR = iter_traits <V, R, T, ptrdiff_t>,
+	bool = path_iter <Q>(), bool = path_edge <Q>()
+>
+class index_trav_impl :
+	public iter_trav_impl <Q, V, R, T, D, TR>
 {
-	using F = uref_of <range_seq>;
+	using B = iter_trav_impl <Q, V, R, T, D, TR>;
 
 public:
-	template <typename B, typename U, typename... E>
-	INLINE constexpr auto
-	operator()(B&& b, U&& u, E&&... e) const
-	-> decltype(F()(fwd <B>(b), delta(fwd <U>(u)), fwd <E>(e)...))
-		{ return F()(fwd <B>(b), delta(fwd <U>(u)), fwd <E>(e)...); }
+	template <typename E>
+	INLINE constexpr index_trav_impl(E&& e) :
+		B(remove_type <V>(), fwd <E>(e)) { }
 };
 
 //-----------------------------------------------------------------------------
 
-class slice
+template <
+	typename Q, typename V, typename R, typename T, typename F,
+	typename D, typename TR
+>
+class index_trav_impl <Q, V, R, T, F, D, TR, true, false> :
+	public trav_trav_impl <Q, V, R, T, D, TR>
 {
-	using F = uref_of <slice_seq>;
+	using B = trav_trav_impl <Q, V, R, T, D, TR>;
 
 public:
-	template <typename B, typename U, typename... N>
-	INLINE constexpr auto
-	operator()(B&& b, U&& u, N&&... n) const
-	-> decltype(F()(fwd <B>(b), delta(fwd <U>(u)), fwd <N>(n)...))
-		{ return F()(fwd <B>(b), delta(fwd <U>(u)), fwd <N>(n)...); }
+	INLINE constexpr index_trav_impl() : B(remove_type <V>()) { }
+
+	template <typename E>
+	INLINE constexpr index_trav_impl(E&& e) : B(fwd <E>(e)) { }
+};
+
+//-----------------------------------------------------------------------------
+
+// edge traversor can only be finite
+template <
+	typename Q, typename V, typename R, typename T,
+	typename D, typename TR, bool ITER
+>
+struct index_trav_impl <Q, V, R, T, _false, D, TR, ITER, true> :  // TODO: undefine
+	index_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
+{
+	using index_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
+		::index_trav_impl;
+};
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename Q, typename V, typename R, typename T,
+	typename D, typename TR
+>
+class index_trav_impl <Q, V, R, T, _false, D, TR, false, false> :
+	public trav_trav_impl <Q, V, R, T, D, TR>
+{
+	using B = trav_trav_impl <Q, V, R, T, D, TR>;
+
+	using B::_swap;  // disable
+
+public:
+	INLINE constexpr index_trav_impl() : B(remove_type <V>()) { }
+
+	static constexpr bool finite = false;
+
+	INLINE constexpr operator bool() const { return true; }
+};
+
+//-----------------------------------------------------------------------------
+
+template <typename Q, typename V, typename R, typename T, typename F>
+struct traversor <tag::index, Q, V, R, T, F> :
+	index_trav_impl <Q, V, R, T, F>
+{
+	using B = index_trav_impl <Q, V, R, T, F>;
+	using d = seq_diff <B>;
+
+public:
+	using B::B;
+
+	INLINE R operator*()     const { return B::v(); }
+	INLINE R operator[](d n) const { return B::v() + n; }
 };
 
 //-----------------------------------------------------------------------------
@@ -90,13 +134,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-using details::index;
-using details::range;
-using details::slice;
-
-//-----------------------------------------------------------------------------
-
-}  // namespace afun
+}  // namespace arrays
 
 //-----------------------------------------------------------------------------
 
@@ -104,4 +142,4 @@ using details::slice;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_FUN_RANGE_HPP
+#endif  // IVL_CORE_ARRAY_ITER_INDEX_HPP

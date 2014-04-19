@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_VIEW_RANGE_HPP
-#define IVL_CORE_ARRAY_VIEW_RANGE_HPP
+#ifndef IVL_CORE_ARRAY_VIEW_SLICE_HPP
+#define IVL_CORE_ARRAY_VIEW_SLICE_HPP
 
 #include <ivl/ivl>
 
@@ -42,50 +42,31 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename O, typename U, bool F>
-using range_traits = seq_traits <
-	id_t <T>, O, _type <T>,
-	range_trav, id, size_t, U, expr <F>
+template <typename T, typename O, typename B, typename U, typename... N>
+using slice_traits = seq_traits <
+	id_t <T>, O, pack <range_seq <B, U>, index_seq <N...> >,
+	slice_trav, id, size_t
 >;
 
 //-----------------------------------------------------------------------------
 
-template <typename A, typename... B>
-struct int_common_t : common_t <A, B...> { };
+template <typename B, typename U, typename... N> class slice;
 
-template <typename T, T N, typename... B>
-struct int_common_t <integral <T, N>, B...> : common_t <B...> { };
+template <typename S> struct slice_attr;
 
-template <typename A, typename... B>
-using int_common = type_of <int_common_t <A, B...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename B, typename U, typename... E> class range;
-
-template <typename R> struct range_attr;
-
-template <typename B, typename U>
-struct range_attr <range <B, U> >
+template <typename B, typename U, typename... N>
+struct slice_attr <slice <B, U, N...> >
 {
 	using type = copy <int_type <B> >;
-	using derived_type = range_seq <B, U>;
-	using traits = range_traits <type, none, U, false>;
-};
-
-template <typename B, typename U, typename E>
-struct range_attr <range <B, U, E> >
-{
-	using type = copy <int_common <B, E> >;
-	using derived_type = range_seq <B, U, E>;
-	using traits = range_traits <type, none, U, true>;
-	// TODO: find order_type when B, U, E are compile-time constants
+	using derived_type = slice_seq <B, U, N...>;
+	using traits = slice_traits <type, none, B, U, N...>;
+	// TODO: find order_type when B, U, N are compile-time constants
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename B, typename U>
-class unbounded_range : raw_tuple <B, U>
+class unbounded_slice : raw_tuple <B, U>
 {
 	using T = raw_tuple <B, U>;
 
@@ -105,36 +86,26 @@ protected:
 	INLINE           l_ref <U> u() &      { return delta::get(); }
 	INLINE constexpr c_ref <U> u() const& { return delta::get(); }
 
-	template <typename V, typename R>
-	INLINE constexpr V t(R&& r) const&
-		{ return V(fwd <R>(r).u(), fwd <R>(r).b()); }
+	template <typename V, typename S>
+	INLINE constexpr V t(S&& s) const&
+		{ return V(fwd <S>(s).u(), fwd <S>(s).b()); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	using T::T;
-
-	template <typename E, typename R = range_seq <B, U, E> >
-	INLINE R bound(E&& e) && { return R(b_f(), u_f(), fwd <E>(e)); }
-
-	template <typename E, typename R = range_seq <B, U, E> >
-	INLINE R bound(E&& e) & { return R(b(), u(), fwd <E>(e)); }
-
-	template <typename E, typename R = range_seq <B, U, E> >
-	INLINE constexpr R bound(E&& e) const& { return R(b(), u(), fwd <E>(e)); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename B, typename U, typename E,
-	typename A = range_attr <range <B, U, E> >,
-	typename I = type_of <A>,
+	typename B, typename U, typename N,
+	typename A = slice_attr <slice <B, U, N> >,
 	typename TR = traits_of <A>
 >
-class bounded_range : raw_tuple <B, U, I>
+class bounded_slice : raw_tuple <B, U, N>
 {
-	using T = raw_tuple <B, U, I>;
+	using T = raw_tuple <B, U, N>;
 	using S = seq_size <TR>;
 	using d = seq_diff <TR>;
 
@@ -142,7 +113,7 @@ class bounded_range : raw_tuple <B, U, I>
 
 	using begin = elem <0, B>;
 	using delta = elem <1, U>;
-	using end   = elem <2, I>;
+	using count = elem <2, N>;
 
 protected:
 	INLINE           r_ref <B> b_f()      { return begin::fwd(); }
@@ -155,60 +126,57 @@ protected:
 	INLINE           l_ref <U> u() &      { return delta::get(); }
 	INLINE constexpr c_ref <U> u() const& { return delta::get(); }
 
-	INLINE           r_ref <I> e_f()      { return end::fwd(); }
-	INLINE           r_ref <I> e() &&     { return end::fwd(); }
-	INLINE           l_ref <I> e() &      { return end::get(); }
-	INLINE constexpr c_ref <I> e() const& { return end::get(); }
+	INLINE           r_ref <N> n_f()      { return count::fwd(); }
+	INLINE           r_ref <N> n() &&     { return count::fwd(); }
+	INLINE           l_ref <N> n() &      { return count::get(); }
+	INLINE constexpr c_ref <N> n() const& { return count::get(); }
 
-	template <typename V, typename R>
+	template <typename V, typename S>
 	INLINE constexpr V
-	t(R&& r) const&
-		{ return V(fwd <R>(r).u(), fwd <R>(r).b(), fwd <R>(r).e()); }
+	t(S&& s) const&
+		{ return V(fwd <S>(s).u(), fwd <S>(s).b(), fwd <S>(s).n()); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	template <typename _B, typename _U, typename _E>
-	INLINE bounded_range(_B&& _b, _U&& _u, _E&& _e) :
-		T(fwd <_B>(_b), fwd <_U>(_u), fwd <_E>(_e))
-			{ u().template trunc <d>(b(), e()); }
+	using T::T;
 
-	INLINE constexpr S size() const { return u().template diff <S>(e(), b()); }
+	INLINE constexpr S size() const { return n(); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename B, typename U>
-struct range <B, U> : unbounded_range <B, U>
+struct slice <B, U> : unbounded_slice <B, U>
 {
-	using unbounded_range <B, U>::unbounded_range;
+	using unbounded_slice <B, U>::unbounded_slice;
 };
 
-template <typename B, typename U, typename E>
-struct range <B, U, E> : bounded_range <B, U, E>
+template <typename B, typename U, typename N>
+struct slice <B, U, N> : bounded_slice <B, U, N>
 {
-	using bounded_range <B, U, E>::bounded_range;
+	using bounded_slice <B, U, N>::bounded_slice;
 };
 
 //-----------------------------------------------------------------------------
 
 // extending definition @array/type/sequence
-template <typename B, typename U, typename... E>
-struct seq_data_t <range_seq <B, U, E...> > : pack <range <B, U, E...> > { };
+template <typename B, typename U, typename... N>
+struct seq_data_t <slice_seq <B, U, N...> > : pack <slice <B, U, N...> > { };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename R,
-	typename A = range_attr <R>,
+	typename S,
+	typename A = slice_attr <S>,
 	typename D = derived_type_of <A>,
 	typename TR = traits_of <A>
 >
-class range_seq_impl :
-	public based <R>,
+class slice_seq_impl :
+	public based <S>,
 	public seq_base <D, TR>
 {
-	using C = based <R>;
+	using C = based <S>;
 	using B = seq_base <D, TR>;
 	friend B;
 
@@ -226,14 +194,14 @@ class range_seq_impl :
 //-----------------------------------------------------------------------------
 
 	template <typename Q>
-	INLINE VR <Q> _trav() && { return R::template t <VR <Q> >(base_f()); }
+	INLINE VR <Q> _trav() && { return S::template t <VR <Q> >(base_f()); }
 
 	template <typename Q>
-	INLINE VL <Q> _trav() & { return R::template t <VL <Q> >(base()); }
+	INLINE VL <Q> _trav() & { return S::template t <VL <Q> >(base()); }
 
 	template <typename Q>
 	INLINE constexpr VC <Q>
-	_trav() const& { return R::template t <VC <Q> >(base()); }
+	_trav() const& { return S::template t <VC <Q> >(base()); }
 
 //-----------------------------------------------------------------------------
 
@@ -245,22 +213,22 @@ protected:
 public:
 	using C::C;
 
-	INLINE           IR begin() &&     { return IR(R::u_f(), R::b_f()); }
-	INLINE           IL begin() &      { return IL(R::u(),   R::b()); }
-	INLINE constexpr IC begin() const& { return IC(R::u(),   R::b()); }
+	INLINE           IR begin() &&     { return IR(S::u_f(), S::b_f()); }
+	INLINE           IL begin() &      { return IL(S::u(),   S::b()); }
+	INLINE constexpr IC begin() const& { return IC(S::u(),   S::b()); }
 
-	INLINE           IR end() &&     { return IR(R::u_f(), R::e_f()); }
-	INLINE           IL end() &      { return IL(R::u(),   R::e()); }
-	INLINE constexpr IC end() const& { return IC(R::u(),   R::e()); }
+	INLINE           IR end() &&     { return IR(S::u_f(), S::b_f(), S::n_f()); }
+	INLINE           IL end() &      { return IL(S::u(),   S::b(),   S::n()); }
+	INLINE constexpr IC end() const& { return IC(S::u(),   S::b(),   S::n()); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename _B, typename U, typename... E>
-class sequence <tag::range, _B, U, E...> :
-	public range_seq_impl <range <_B, U, E...> >
+template <typename _B, typename U, typename... N>
+class sequence <tag::slice, _B, U, N...> :
+	public slice_seq_impl <slice <_B, U, N...> >
 {
-	using B = range_seq_impl <range <_B, U, E...> >;
+	using B = slice_seq_impl <slice <_B, U, N...> >;
 
 public:
 	using B::B;
@@ -281,4 +249,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_VIEW_RANGE_HPP
+#endif  // IVL_CORE_ARRAY_VIEW_SLICE_HPP

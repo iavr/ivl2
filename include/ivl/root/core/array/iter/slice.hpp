@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_ITER_HPP
-#define IVL_CORE_ARRAY_ITER_ITER_HPP
+#ifndef IVL_CORE_ARRAY_ITER_SLICE_HPP
+#define IVL_CORE_ARRAY_ITER_SLICE_HPP
 
 #include <ivl/ivl>
 
@@ -43,82 +43,131 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class edge_trav_base : public derived <D, edge_path <> >
+class slice_trav_base : public derived <D, tag::slice>
 {
-	using derived <D, edge_path <> >::der;
+	using derived <D, tag::slice>::der;
+
+	using R = seq_iref <TR>;
+	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
 protected:
-	INLINE void shift_l(key::iter) {               der().v() = der().f(); }
-	INLINE void shift_r(key::iter) { if (!empty()) der().v() = der().l(); }
-	INLINE void shift_l(key::edge) { if (!empty()) der().l() = der().v(); }
-	INLINE void shift_r(key::edge) {               der().f() = der().v(); }
+	INLINE void inc() { ++der().u(); ++der().v(); }
+	INLINE void dec() { --der().u(); --der().v(); }
 
-	INLINE void _swap()
-	{
-		if (!empty())
-			der().v() = der().v() == der().f() ? der().l() : der().f();
-	}
+	INLINE void add(d n) { der().u() += n; der().v() += n; }
+	INLINE void sub(d n) { der().u() -= n; der().v() -= n; }
 
-	INLINE constexpr bool empty() const { return der().f() == der().end(); }
+	template <typename F, typename O>
+	INLINE constexpr bool
+	comp(F f, O&& o) const { return f(der().v(), o.v()); }
+
+	template <typename O>
+	INLINE constexpr d
+	comp(afun::op::sub, O&& o) const { return der().v() - o.v(); }
 
 //-----------------------------------------------------------------------------
 
 public:
-	INLINE constexpr operator bool() const { return der().v() != der().end(); }
-
-	INLINE bool operator+() const { return der().v() != der().l(); }
-	INLINE bool operator-() const { return der().v() != der().f(); }
+	INLINE constexpr R operator*()     const { return *der().u(); }
+	INLINE constexpr R operator[](d n) const { return  der().u()[n]; }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
 	typename Q, typename V, typename R, typename T,
-	typename D = iter_trav <Q, V, R, T>,
+	typename D = slice_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>,
-	bool = path_iter <Q>(), bool = path_edge <Q>()  // true, false
+	bool = path_iter <Q>()
 >
-struct iter_trav_impl : trav_trav_impl <Q, V, R, T, D, TR>
-{
-	using trav_trav_impl <Q, V, R, T, D, TR>::trav_trav_impl;
-};
+class slice_trav_impl;
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename Q, typename V, typename R, typename T,
+	typename Q, typename U, typename V, typename R, typename T,
 	typename D, typename TR
 >
-class iter_trav_impl <Q, V, R, T, D, TR, false, false> :
-	public trav_trav_base <D, TR>,
-	public trav_base <D, TR, Q, V, V>
+class slice_trav_impl <Q, pack <U, V>, R, T, D, TR, true> :
+	public slice_trav_base <D, TR>,
+	public iter_base <D, TR, U, V>
 {
-	using S = trav_trav_base <D, TR>;
-	using B = trav_base <D, TR, Q, V, V>;
+	using S = slice_trav_base <D, TR>;
+	using B = iter_base <D, TR, U, V>;
+
+	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class slice_trav_base;
+
+//-----------------------------------------------------------------------------
+
+	using range = iter_elem <0, U>;
+	using iter  = iter_elem <1, V>;
+
+	INLINE           l_iter_ref <U> u()       { return range::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return range::get(); }
+
+	INLINE           l_iter_ref <V> v()       { return iter::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
+
+//-----------------------------------------------------------------------------
+
+	using S::inc;
+	using S::dec;
+	using S::add;
+	using S::sub;
+	using S::comp;
+
+//-----------------------------------------------------------------------------
+
+public:
+	template <typename _U, typename _V, typename... N>
+	slice_trav_impl(_U&& _u, _V&& _v, N&&... n) :
+		B(U(fwd <_U>(_u), fwd <_V>(_v)), V(fwd <N>(n)...)) { }
+
+	using S::operator*;
+	using S::operator[];
+};
+
+//-----------------------------------------------------------------------------
+
+template <
+	typename Q, typename U, typename V, typename R, typename T,
+	typename D, typename TR
+>
+class slice_trav_impl <Q, pack <U, V>, R, T, D, TR, false> :
+	public slice_trav_base <D, TR>,
+	public trav_base <D, TR, Q, U, V>
+{
+	using S = slice_trav_base <D, TR>;
+	using B = trav_base <D, TR, Q, U, V>;
 
 	friend B;
 	friend base_type_of <B>;
 
 	template <typename, typename>
-	friend class trav_trav_base;
+	friend class slice_trav_base;
 
 //-----------------------------------------------------------------------------
 
-protected:
-	using iter = iter_elem <0, V>;
-	using end  = iter_elem <1, V>;
+	using range = iter_elem <0, U>;
+	using trav  = iter_elem <1, V>;
 
-	INLINE           l_iter_ref <V> v()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
+	INLINE           l_iter_ref <U> u()       { return range::get(); }
+	INLINE constexpr c_iter_ref <U> u() const { return range::get(); }
 
-	INLINE           l_iter_ref <V> e()       { return end::get(); }
-	INLINE constexpr c_iter_ref <V> e() const { return end::get(); }
+	INLINE           l_iter_ref <V> v()       { return trav::get(); }
+	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
 
 //-----------------------------------------------------------------------------
 
-	INLINE void _swap() { ivl::swap(v(), e()); }
+	template <typename P> INLINE void shift_l(P) { v() <<= P(); }
+	template <typename P> INLINE void shift_r(P) { v() >>= P(); }
+
+	INLINE void _swap() { v().swap(); }
 
 //-----------------------------------------------------------------------------
 
@@ -131,88 +180,28 @@ protected:
 //-----------------------------------------------------------------------------
 
 public:
-	using B::B;
 	using S::operator*;
 	using S::operator[];
 
-	static constexpr bool finite = true;
+	template <typename _U, typename _V, typename... N>
+	slice_trav_impl(_U&& _u, _V&& _v, N&&... n) :
+		B(U(fwd <_U>(_u), fwd <_V>(_v)), V(fwd <N>(n)...)) { }
 
-	INLINE constexpr operator bool() const { return v() != e(); }
-};
+	static constexpr bool finite = trav_finite <V>{}();  // TODO: () needed by GCC
 
-//-----------------------------------------------------------------------------
+	INLINE constexpr operator bool() const { return v(); }
 
-template <
-	typename Q, typename V, typename R, typename T,
-	typename D, typename TR, bool ITER
->
-class iter_trav_impl <Q, V, R, T, D, TR, ITER, true> :
-	public edge_trav_base <D, TR>,
-	public trav_trav_base <D, TR>,
-	public trav_base <D, TR, Q, V, V, V>
-{
-	using E = edge_trav_base <D, TR>;
-	using S = trav_trav_base <D, TR>;
-	using B = trav_base <D, TR, Q, V, V, V>;
-
-	friend B;
-	friend base_type_of <B>;
-
-	template <typename, typename> friend class edge_trav_base;
-	template <typename, typename> friend class trav_trav_base;
-
-//-----------------------------------------------------------------------------
-
-protected:
-	using first = iter_elem <0, V>;
-	using iter  = iter_elem <1, V>;
-	using last  = iter_elem <2, V>;
-
-	INLINE           l_iter_ref <V> f()       { return first::get(); }
-	INLINE constexpr c_iter_ref <V> f() const { return first::get(); }
-
-	INLINE           l_iter_ref <V> v()       { return iter::get(); }
-	INLINE constexpr c_iter_ref <V> v() const { return iter::get(); }
-
-	INLINE           l_iter_ref <V> l()       { return last::get(); }
-	INLINE constexpr c_iter_ref <V> l() const { return last::get(); }
-
-	INLINE constexpr iter_val <V> end() const { return l() + 1; }
-
-//-----------------------------------------------------------------------------
-
-	using S::inc;
-	using S::dec;
-	using S::add;
-	using S::sub;
-	using S::comp;
-	using E::shift_l;
-	using E::shift_r;
-	using E::_swap;
-
-//-----------------------------------------------------------------------------
-
-public:
-	using S::operator*;
-	using S::operator[];
-	using E::operator bool;
-	using E::operator+;
-	using E::operator-;
-
-	template <typename _V, typename E>
-	INLINE iter_trav_impl(_V&& v, E&& e) :
-		B(v, fwd <_V>(v), fwd <E>(e)) { --l(); }
-
-	static constexpr bool finite = true;
+	INLINE bool operator+() const { return +v(); }
+	INLINE bool operator-() const { return -v(); }
 };
 
 //-----------------------------------------------------------------------------
 
 template <typename Q, typename V, typename R, typename T>
-struct traversor <tag::iter, Q, V, R, T> :
-	iter_trav_impl <Q, V, R, T>
+struct traversor <tag::slice, Q, V, R, T> :
+	slice_trav_impl <Q, V, R, T>
 {
-	using iter_trav_impl <Q, V, R, T>::iter_trav_impl;
+	using slice_trav_impl <Q, V, R, T>::slice_trav_impl;
 };
 
 //-----------------------------------------------------------------------------
@@ -229,4 +218,4 @@ struct traversor <tag::iter, Q, V, R, T> :
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_ITER_HPP
+#endif  // IVL_CORE_ARRAY_ITER_SLICE_HPP

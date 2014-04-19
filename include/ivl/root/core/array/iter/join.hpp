@@ -47,9 +47,9 @@ class join_trav_base;
 
 template <typename D, typename TR, size_t... N>
 class join_trav_base <D, TR, sizes <N...> > :
-	public derived <D, _false>
+	public derived <D, tag::join>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::join>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
@@ -164,7 +164,7 @@ template <
 	typename D = join_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>,
 	typename N = sz_rng_of_p <V>,
-	bool = path_iter <Q>(), bool = path_edge <Q>()
+	bool = path_iter <Q>(), bool = path_edge <Q>()  // true, false
 >
 struct join_trav_impl;
 
@@ -229,8 +229,8 @@ protected:
 	using S = join_trav_base <D, TR, sizes <N...> >;
 	using B = trav_base <D, TR, Q, V...>;
 
+	friend B;
 	friend base_type_of <B>;
-	friend base_trav_of <B>;
 
 	template <typename, typename, typename>
 	friend class join_trav_base;
@@ -326,8 +326,8 @@ class join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, ITER, true> :
 {
 	using B = join_trav_impl <Q, pack <V...>, R, T, D, TR, sizes <N...>, false, false>;
 
-	friend base_type_of <B>;
 	friend base_trav_of <B>;
+	friend base_type_of <B>;
 
 	template <typename, typename, typename>
 	friend class join_trav_base;

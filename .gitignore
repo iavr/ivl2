@@ -8,6 +8,7 @@ test/array/expr
 test/array/join
 test/array/member
 test/array/range
+test/array/slice
 test/array/test
 test/array/vec
 test/array/vec_op

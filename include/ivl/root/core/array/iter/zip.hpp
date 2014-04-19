@@ -47,9 +47,9 @@ class zip_trav_base;
 
 template <typename D, typename TR, size_t... N, typename G>
 class zip_trav_base <D, TR, sizes <N...>, G> :
-	public derived <D, _false>
+	public derived <D, tag::zip>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::zip>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;

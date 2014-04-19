@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class trav_trav_base : public derived <D, _false>
+class trav_trav_base : public derived <D, tag::trav>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::trav>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
@@ -83,7 +83,7 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D = trav_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>,
-	bool = path_iter <Q>()
+	bool = path_iter <Q>(), bool = path_edge <Q>()  // true, false
 >
 class trav_trav_impl :
 	public trav_trav_base <D, TR>,
@@ -99,6 +99,7 @@ class trav_trav_impl :
 
 //-----------------------------------------------------------------------------
 
+protected:
 	using iter = iter_elem <0, V>;
 
 	INLINE           l_iter_ref <V> v()       { return iter::get(); }
@@ -126,7 +127,7 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D, typename TR
 >
-class trav_trav_impl <Q, V, R, T, D, TR, false> :
+class trav_trav_impl <Q, V, R, T, D, TR, false, false> :
 	public trav_trav_base <D, TR>,
 	public trav_base <D, TR, Q, V>
 {
@@ -141,15 +142,13 @@ class trav_trav_impl <Q, V, R, T, D, TR, false> :
 
 //-----------------------------------------------------------------------------
 
+protected:
 	using trav = iter_elem <0, V>;
 
 	INLINE           l_iter_ref <V> v()       { return trav::get(); }
 	INLINE constexpr c_iter_ref <V> v() const { return trav::get(); }
 
 //-----------------------------------------------------------------------------
-
-	template <typename P> INLINE void shift_l(P) { v() <<= P(); }
-	template <typename P> INLINE void shift_r(P) { v() >>= P(); }
 
 	INLINE void _swap() { v().swap(); }
 
@@ -171,9 +170,38 @@ public:
 	static constexpr bool finite = trav_finite <V>{}();  // TODO: () needed by GCC
 
 	INLINE constexpr operator bool() const { return v(); }
+};
 
-	INLINE bool operator+() const { return +v(); }
-	INLINE bool operator-() const { return -v(); }
+//-----------------------------------------------------------------------------
+
+template <
+	typename Q, typename V, typename R, typename T,
+	typename D, typename TR, bool ITER
+>
+class trav_trav_impl <Q, V, R, T, D, TR, ITER, true> :
+	public trav_trav_impl <Q, V, R, T, D, TR, false, false>
+{
+	using B = trav_trav_impl <Q, V, R, T, D, TR, false, false>;
+
+	friend base_trav_of <B>;
+	friend base_type_of <B>;
+
+	template <typename, typename>
+	friend class trav_trav_base;
+
+//-----------------------------------------------------------------------------
+
+protected:
+	template <typename P> INLINE void shift_l(P) { B::v() <<= P(); }
+	template <typename P> INLINE void shift_r(P) { B::v() >>= P(); }
+
+//-----------------------------------------------------------------------------
+
+public:
+	using B::B;
+
+	INLINE bool operator+() const { return +B::v(); }
+	INLINE bool operator-() const { return -B::v(); }
 };
 
 //-----------------------------------------------------------------------------

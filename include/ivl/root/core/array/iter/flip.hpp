@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class flip_trav_base : public derived <D, _false>
+class flip_trav_base : public derived <D, tag::flip>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::flip>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
@@ -80,7 +80,7 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D = flip_trav <Q, V, R, T>,
 	typename TR = iter_traits <V, R, T>,
-	bool = path_iter <Q>()
+	bool = path_iter <Q>()  // true
 >
 class flip_trav_impl :
 	public flip_trav_base <D, TR>,

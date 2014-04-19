@@ -43,9 +43,9 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename D, typename TR>
-class indirect_trav_base : public derived <D, _false>
+class indirect_trav_base : public derived <D, tag::indirect>
 {
-	using derived <D, _false>::der;
+	using derived <D, tag::indirect>::der;
 
 	using R = seq_iref <TR>;
 	using d = seq_diff <TR>;
@@ -80,7 +80,7 @@ template <
 	typename Q, typename V, typename R, typename T, typename U,
 	typename D = indirect_trav <Q, V, R, T, U>,
 	typename TR = iter_traits <V, R, T>,
-	bool = path_iter <Q>()
+	bool = path_iter <Q>()  // true
 >
 class indirect_trav_impl :
 	public indirect_trav_base <D, TR>,

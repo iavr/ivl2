@@ -57,8 +57,11 @@
 #include "iter/trav.hpp"
 #include "iter/iter.hpp"
 #include "iter/atom.hpp"
+
 #include "iter/delta.hpp"
+#include "iter/index.hpp"
 #include "iter/range.hpp"
+#include "iter/slice.hpp"
 
 #include "iter/flip.hpp"
 #include "iter/indirect.hpp"
@@ -70,7 +73,9 @@
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
 
+#include "view/index.hpp"
 #include "view/range.hpp"
+#include "view/slice.hpp"
 
 #include "view/each.hpp"
 #include "view/tail.hpp"
