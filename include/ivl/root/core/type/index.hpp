@@ -43,6 +43,7 @@
 #include "core/cond.hpp"
 #include "core/numeric.hpp"
 #include "core/meta.hpp"
+#include "core/id.hpp"
 
 #include "pack/pack.hpp"
 #include "pack/list.hpp"

@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_BASE_ITER_STORE_HPP
-#define IVL_CORE_ARRAY_BASE_ITER_STORE_HPP
+#ifndef IVL_CORE_TYPE_CORE_ID_HPP
+#define IVL_CORE_TYPE_CORE_ID_HPP
 
 #include <ivl/ivl>
 
@@ -34,63 +34,42 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace arrays {
+namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace details {
-
-//-----------------------------------------------------------------------------
-
-template <typename D, typename... E>
-struct iter_tuple : der_tuple <D, iter_opt <E>...>
+class type_id_t
 {
-	using der_tuple <D, iter_opt <E>...>::der_tuple;
+	using S = type_id_t();
+
+	S* id;
+	INLINE type_id_t(S* id) : id{id} {}
+
+public:
+	template <typename T>
+	friend type_id_t type_id();
+
+	INLINE bool operator==(type_id_t o) const { return id == o.id; }
+	INLINE bool operator!=(type_id_t o) const { return id != o.id; }
+	INLINE bool operator< (type_id_t o) const { return id <  o.id; }
+	INLINE bool operator> (type_id_t o) const { return id >  o.id; }
+	INLINE bool operator<=(type_id_t o) const { return id <= o.id; }
+	INLINE bool operator>=(type_id_t o) const { return id >= o.id; }
+
+	INLINE size_t hash() { return std::hash <S*>()(id); }
 };
 
-template <typename D>
-struct iter_tuple <D> { };
+template <typename T>
+type_id_t type_id() { return &type_id <T>; }
 
 //-----------------------------------------------------------------------------
 
-template <typename D, typename TR, typename... E> struct iter_store;
-
-template <
-	typename I, typename R = seq_iref <I>, typename T = seq_val <I>,
-	typename d = seq_diff <I>, typename P = remove_ref <R>*
->
-struct iter_traits : iter_store <nat, iter_traits <I, R, T, d, P> >
-{
-	using traits = iter_traits;
-};
+}  // namespace types
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename D,
-	typename I, typename R, typename T, typename d, typename P,
-	typename... E
->
-struct iter_store <D, iter_traits <I, R, T, d, P>, E...> :
-	protected iter_tuple <D, E...>
-{
-	using iterator_category = std::random_access_iterator_tag; // TODO
-	using iterator_type = I;
-	using reference = R;
-	using value_type = T;
-	using difference_type = d;
-	using pointer = P;
-
-	using iter_tuple <D, E...>::iter_tuple;
-};
-
-//-----------------------------------------------------------------------------
-
-}  // namespace details
-
-//-----------------------------------------------------------------------------
-
-}  // namespace arrays
+using types::type_id_t;
+using types::type_id;
 
 //-----------------------------------------------------------------------------
 
@@ -98,4 +77,20 @@ struct iter_store <D, iter_traits <I, R, T, d, P>, E...> :
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_BASE_ITER_STORE_HPP
+namespace std {
+
+//-----------------------------------------------------------------------------
+
+template <>
+struct hash <ivl::type_id_t>
+{
+	size_t operator()(ivl::type_id_t x) const { return x.hash(); }
+};
+
+//-----------------------------------------------------------------------------
+
+}  // namespace std
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_TYPE_CORE_ID_HPP

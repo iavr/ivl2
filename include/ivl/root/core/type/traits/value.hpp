@@ -55,7 +55,7 @@ template <typename... T> void _do(T&&...) { };
 //-----------------------------------------------------------------------------
 
 template <typename A>
-INLINE remove_ref <A>&&
+INLINE constexpr remove_ref <A>&&
 mv(A&& a) { return static_cast <remove_ref <A>&&>(a); }
 
 template <typename T, only_if <!is_lref <T>()> = 0>
@@ -117,6 +117,8 @@ auto tmp_ret(F&& f, types::tmp <P...>, A&&... a)
 //-----------------------------------------------------------------------------
 
 }  // namespace types
+
+//-----------------------------------------------------------------------------
 
 using types::traits::mv;
 using types::traits::fwd;

@@ -23,23 +23,14 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_SYSTEM_INCLUDE_STD_HPP
-#define IVL_CORE_SYSTEM_INCLUDE_STD_HPP
+#ifndef IVL_CORE_STRUCT_INDEX_HPP
+#define IVL_CORE_STRUCT_INDEX_HPP
 
 //-----------------------------------------------------------------------------
 
-#include <cstdlib>
-#include <cstddef>
-#include <utility>
-#include <new>
-#include <limits>
-#include <complex>
-#include <cmath>
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <iomanip>
+#include "begin.hpp"
+#include "some.hpp"
 
 //-----------------------------------------------------------------------------
 
-#endif // IVL_CORE_SYSTEM_INCLUDE_STD_HPP
+#endif  // IVL_CORE_STRUCT_INDEX_HPP

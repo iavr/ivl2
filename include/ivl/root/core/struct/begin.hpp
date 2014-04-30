@@ -23,23 +23,29 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_SYSTEM_INCLUDE_STD_HPP
-#define IVL_CORE_SYSTEM_INCLUDE_STD_HPP
+#ifndef IVL_CORE_STRUCT_BEGIN_HPP
+#define IVL_CORE_STRUCT_BEGIN_HPP
+
+#include <ivl/ivl>
 
 //-----------------------------------------------------------------------------
 
-#include <cstdlib>
-#include <cstddef>
-#include <utility>
-#include <new>
-#include <limits>
-#include <complex>
-#include <cmath>
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <iomanip>
+namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-#endif // IVL_CORE_SYSTEM_INCLUDE_STD_HPP
+namespace structs {
+namespace details {
+
+using namespace types;
+
+}  // namespace details
+}  // namespace structs
+
+//-----------------------------------------------------------------------------
+
+}  // namespace ivl
+
+//-----------------------------------------------------------------------------
+
+#endif  // IVL_CORE_STRUCT_BEGIN_HPP

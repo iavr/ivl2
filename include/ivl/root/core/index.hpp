@@ -40,6 +40,7 @@
 #include "atom/index.hpp"
 #include "fun/index.hpp"
 #include "atom/extend.hpp"
+#include "struct/index.hpp"
 #include "tools/index.hpp"
 
 //-----------------------------------------------------------------------------
