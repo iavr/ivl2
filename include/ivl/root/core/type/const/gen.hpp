@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TYPE_CONST_FUN_HPP
-#define IVL_CORE_TYPE_CONST_FUN_HPP
+#ifndef IVL_CORE_TYPE_CONST_GEN_HPP
+#define IVL_CORE_TYPE_CONST_GEN_HPP
 
 #include <ivl/ivl>
 
@@ -42,14 +42,23 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, T (*F)()>
-struct c_gen : c_sig <T()>::template call <F> { };
+namespace details {
 
-template <typename T, T (*F)(T), typename A1>
-struct c_gen1 : c_sig <T(T)>::template call <F, A1> { };
+template <size_t N, typename T>
+using gen_fun = fun_of <T, rep <N, T> >;
 
-template <typename T, T (*F)(T, T), typename A1, typename A2>
-struct c_gen2 : c_sig <T(T, T)>::template call <F, A1, A2> { }	;
+template <size_t N, typename S, gen_fun <N, fun_ret <S> > &F>
+struct c_gen_;
+
+template <size_t N, typename S, gen_fun <N, fun_ret <S> > &F>
+using c_gen = type_of <c_gen_<N, S, F> >;
+
+template <size_t N, typename T, typename... A, gen_fun <N, T> &F>
+struct c_gen_<N, T(A...), F> : id_t <c_call <gen_fun <N, T>&(A...), F> > { };
+
+}  // namespace details
+
+using details::c_gen;
 
 //-----------------------------------------------------------------------------
 
@@ -75,16 +84,16 @@ using details::c_nan;
 //-----------------------------------------------------------------------------
 
 template <typename T = double>
-using c_e  = c_gen1 <T, std::exp, c_one>;
+using c_e  = c_call <afun::exp(c_one)>;
 
 template <typename T = double>
-using c_pi = c_mul <c_gen1 <T, std::atan, c_one>, c_int <4> >;
+using c_pi = c_mul <c_call <afun::atan(c_one)>, c_int <4> >;
 
 template <typename T = double>
-using c_i  = c_cons <std::complex <T>(c_zero, c_one)>;
+using c_i = c_cons <std::complex <T>(c_zero, c_one)>;
 
 template <typename T = double>
-using c_j  = c_i <T>;
+using c_j = c_i <T>;
 
 //-----------------------------------------------------------------------------
 
@@ -100,4 +109,4 @@ using c_j  = c_i <T>;
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TYPE_CONST_FUN_HPP
+#endif  // IVL_CORE_TYPE_CONST_GEN_HPP

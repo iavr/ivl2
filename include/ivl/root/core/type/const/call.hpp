@@ -46,72 +46,63 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T> using arg_c = _if <is_tmp <T>{}, c_type <T>, T>;
-
-template <typename S> struct ret_ct;
-template <typename S> using  ret_c = type_of <ret_ct <S> >;
+template <typename S> struct c_ret_;
+template <typename S> using  c_ret = type_of <c_ret_<S> >;
 
 template <typename F, typename... A>
-struct ret_ct <F(A...)> : ret_t <value_type_of <F>(value_type_of <A>...)> { };
+struct c_ret_<F(A...)> :
+	remove_rref_t <ret <const_value <F>(const_value <A>...)> >{ };
 
 //-----------------------------------------------------------------------------
 
-template <typename S, typename D, typename R = ret_c <S>, bool = is_void <R>()>
+template <typename D, typename S, typename R = c_ret <S>, bool = is_void <R>()>
 struct c_call_;
 
-template <typename F, typename... A, typename D, typename R>
-struct c_call_<F(A...), D, R, false> : constant <R, D>
+template <typename D, typename F, typename... A, typename R>
+struct c_call_<D, F(A...), R, false> : const_base <R, D>
 {
 	INLINE constexpr
-	operator R() const { return afun::tmp_call()(F()(), A()()...); }
+	operator R() const
+		{ return afun::tmp_call()(c_val._<F>(), c_val._<A>()...); }
 };
 
-template <typename F, typename... A, typename D, typename R>
-struct c_call_<F(A...), D, R, true> : constant <void, D>
+template <typename D, typename F, typename... A, typename R>
+struct c_call_<D, F(A...), R, true> : const_base <void, D>
 {
 	INLINE void
-	operator()() const { afun::tmp_call()(F()(), A()()...); }
+	operator()() const { afun::tmp_call()(c_val._<F>(), c_val._<A>()...); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-struct c_call : c_call <F(A...)> { };
+template <typename S> struct tmp_arg_;
+template <typename S> using  tmp_arg = type_of <tmp_arg_<S> >;
 
 template <typename F, typename... A>
-struct c_call <F(A...)> : c_call_<F(arg_c <A>...), c_call <F(A...)> > { };
+struct tmp_arg_<F(A...)> : id_t <F(tmp <A...>)> { };
 
 //-----------------------------------------------------------------------------
 
 }  // namespace details
 
-using details::c_call;
-
 //-----------------------------------------------------------------------------
 
-template <typename C, typename... A>
-struct c_fun_call : c_fun_call <C(A...)> { };
+template <typename S, fun_ret <S> &...R>
+using c_call = constant <tag::call, S, non_type <fun_ret <S>&, R>...>;
 
-template <typename C, typename... A>
-struct c_fun_call <C(A...)> : c_call <c_cons <C>(A...)> { };
+template <typename F, typename... A>
+struct constant <tag::call, F(A...)> :
+	details::c_call_<c_call <F(A...)> , F(A...)> { };
 
-template <typename C, typename... A>
-struct c_tmp_call : c_tmp_call <C(A...)> { };
+template <typename C, typename... A, C &R>
+struct constant <tag::call, C(A...), non_type <raw_type <C>&, R> > :
+	c_call <c_lref <C, R>(A...)> { };
 
-template <typename C, typename... A>
-struct c_tmp_call <C(A...)> : c_fun_call <C(c_cons <tmp <A...> >)> { };
+template <typename S>
+using c_tmp_call = c_call <details::tmp_arg <S> >;
 
-template <typename C, C &O, typename... A>
-struct c_ref_call : c_ref_call <C(A...), O> { };
-
-template <typename C, C &O, typename... A>
-struct c_ref_call <C(A...), O> : c_call <c_lref <C, O>(A...)> { };
-
-template <typename C, C const &O, typename... A>
-struct c_cref_call : c_cref_call <C(A...), O> { };
-
-template <typename C, C const &O, typename... A>
-struct c_cref_call <C(A...), O> : c_call <c_cref <C, O>(A...)> { };
+template<char const*(&F)(), typename S = char const*()>
+using c_string = c_call <S&(), F>;
 
 //-----------------------------------------------------------------------------
 

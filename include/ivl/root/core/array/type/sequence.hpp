@@ -61,7 +61,7 @@ using heap_array = sequence <tag::heap, T>;
 //-----------------------------------------------------------------------------
 
 template <typename... N>
-using index_seq = sequence <tag::index, N...>;
+using iota_seq = sequence <tag::iota, N...>;
 
 template <typename B, typename U, typename... E>
 using range_seq = sequence <tag::range, B, U, E...>;
@@ -135,7 +135,7 @@ using details::pre_fixed_array;
 using details::fixed_array;
 using details::heap_array;
 
-using details::index_seq;
+using details::iota_seq;
 using details::range_seq;
 using details::slice_seq;
 

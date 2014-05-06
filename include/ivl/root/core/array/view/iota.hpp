@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_VIEW_INDEX_HPP
-#define IVL_CORE_ARRAY_VIEW_INDEX_HPP
+#ifndef IVL_CORE_ARRAY_VIEW_IOTA_HPP
+#define IVL_CORE_ARRAY_VIEW_IOTA_HPP
 
 #include <ivl/ivl>
 
@@ -43,53 +43,42 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename T, typename O, bool F>
-using index_traits =
-	seq_traits <id_t <T>, O, _type <T>, index_trav, id, size_t, expr <F> >;
+using iota_traits_base = id_t <seq_traits <
+	id_t <T>, O, _type <T>, iota_trav, id, size_t, expr <F>
+> >;
 
-//-----------------------------------------------------------------------------
-
-template <typename... N> struct index;
-
-template <typename I> struct index_attr;
+template <typename... N> struct iota_traits_t;
+template <typename... N> using  iota_traits = type_of <iota_traits_t <N...> >;
 
 template <>
-struct index_attr <index <> >
-{
-	using type = size_t;
-	using derived_type = index_seq <>;
-	using traits = index_traits <type, none, false>;
-};
+struct iota_traits_t <> : iota_traits_base <size_t, none, false> { };
 
+// TODO: find order_type when N is compile-time constant
 template <typename N>
-struct index_attr <index <N> >
-{
-	using type = copy <int_type <N> >;
-	using derived_type = index_seq <N>;
-	using traits = index_traits <type, none, true>;
-	// TODO: find order_type when B, U, E are compile-time constants
-};
+struct iota_traits_t <N> :
+	iota_traits_base <copy <int_type <N> >, none, true> { };
 
 //-----------------------------------------------------------------------------
 
-struct unbounded_index
+template <typename... N>
+struct iota_store;
+
+template <>
+struct iota_store <>
 {
 protected:
-	template <typename V, typename S>
-	INLINE constexpr V t(S&& s) const& { return V(); }
+	template <typename V, typename I>
+	INLINE constexpr V t(I&& i) const& { return V(); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename N,
-	typename A = index_attr <index <N> >,
-	typename TR = traits_of <A>
->
-class bounded_index : raw_tuple <N>
+template <typename N>
+struct iota_store <N> : raw_tuple <N>
 {
+	using TR = iota_traits <N>;
 	using T = raw_tuple <N>;
 	using S = seq_size <TR>;
-	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
@@ -101,9 +90,9 @@ protected:
 	INLINE           l_ref <N> n() &      { return count::get(); }
 	INLINE constexpr c_ref <N> n() const& { return count::get(); }
 
-	template <typename V, typename S>
+	template <typename V, typename I>
 	INLINE constexpr V
-	t(S&& s) const& { return V(fwd <S>(s).n()); }
+	t(I&& i) const& { return V(fwd <I>(i).n()); }
 
 //-----------------------------------------------------------------------------
 
@@ -115,30 +104,19 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <>
-struct index <> : unbounded_index { };
-
-template <typename N>
-struct index <N> : bounded_index <N>
-{
-	using bounded_index <N>::bounded_index;
-};
-
-//-----------------------------------------------------------------------------
-
 // extending definition @array/type/sequence
 template <typename... N>
-struct seq_data_t <index_seq <N...> > : pack <index <N...> > { };
+struct seq_data_t <iota_seq <N...> > : pack <iota_store <N...> > { };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename I,
-	typename A = index_attr <I>,
-	typename D = derived_type_of <A>,
-	typename TR = traits_of <A>
+	typename P,
+	typename I = embed <iota_store, P>,
+	typename D = embed <iota_seq, P>,
+	typename TR = embed <iota_traits, P>
 >
-class index_seq_impl :
+class iota_seq_impl :
 	public based <I>,
 	public seq_base <D, TR>
 {
@@ -191,10 +169,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename... N>
-class sequence <tag::index, N...> :
-	public index_seq_impl <index <N...> >
+class sequence <tag::iota, N...> :
+	public iota_seq_impl <pack <N...> >
 {
-	using B = index_seq_impl <index <N...> >;
+	using B = iota_seq_impl <pack <N...> >;
 
 public:
 	using B::B;
@@ -215,4 +193,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_VIEW_INDEX_HPP
+#endif  // IVL_CORE_ARRAY_VIEW_IOTA_HPP

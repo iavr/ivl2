@@ -23,8 +23,8 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_ARRAY_ITER_INDEX_HPP
-#define IVL_CORE_ARRAY_ITER_INDEX_HPP
+#ifndef IVL_CORE_ARRAY_ITER_IOTA_HPP
+#define IVL_CORE_ARRAY_ITER_IOTA_HPP
 
 #include <ivl/ivl>
 
@@ -44,18 +44,18 @@ namespace details {
 
 template <
 	typename Q, typename V, typename R, typename T, typename F,
-	typename D = index_trav <Q, V, R, T, F>,
+	typename D = iota_trav <Q, V, R, T, F>,
 	typename TR = iter_traits <V, R, T, ptrdiff_t>,
 	bool = path_iter <Q>(), bool = path_edge <Q>()
 >
-class index_trav_impl :
+class iota_trav_impl :
 	public iter_trav_impl <Q, V, R, T, D, TR>
 {
 	using B = iter_trav_impl <Q, V, R, T, D, TR>;
 
 public:
 	template <typename E>
-	INLINE constexpr index_trav_impl(E&& e) :
+	INLINE constexpr iota_trav_impl(E&& e) :
 		B(remove_type <V>(), fwd <E>(e)) { }
 };
 
@@ -65,16 +65,16 @@ template <
 	typename Q, typename V, typename R, typename T, typename F,
 	typename D, typename TR
 >
-class index_trav_impl <Q, V, R, T, F, D, TR, true, false> :
+class iota_trav_impl <Q, V, R, T, F, D, TR, true, false> :
 	public trav_trav_impl <Q, V, R, T, D, TR>
 {
 	using B = trav_trav_impl <Q, V, R, T, D, TR>;
 
 public:
-	INLINE constexpr index_trav_impl() : B(remove_type <V>()) { }
+	INLINE constexpr iota_trav_impl() : B(remove_type <V>()) { }
 
 	template <typename E>
-	INLINE constexpr index_trav_impl(E&& e) : B(fwd <E>(e)) { }
+	INLINE constexpr iota_trav_impl(E&& e) : B(fwd <E>(e)) { }
 };
 
 //-----------------------------------------------------------------------------
@@ -84,11 +84,11 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D, typename TR, bool ITER
 >
-struct index_trav_impl <Q, V, R, T, _false, D, TR, ITER, true> :  // TODO: undefine
-	index_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
+struct iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, true> :  // TODO: undefine
+	iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
 {
-	using index_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
-		::index_trav_impl;
+	using iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
+		::iota_trav_impl;
 };
 
 //-----------------------------------------------------------------------------
@@ -97,15 +97,15 @@ template <
 	typename Q, typename V, typename R, typename T,
 	typename D, typename TR
 >
-class index_trav_impl <Q, V, R, T, _false, D, TR, false, false> :
+class iota_trav_impl <Q, V, R, T, _false, D, TR, false, false> :
 	public trav_trav_impl <Q, V, R, T, D, TR>
 {
 	using B = trav_trav_impl <Q, V, R, T, D, TR>;
 
-	using B::_swap;  // disable
+	void _swap() = delete;
 
 public:
-	INLINE constexpr index_trav_impl() : B(remove_type <V>()) { }
+	INLINE constexpr iota_trav_impl() : B(remove_type <V>()) { }
 
 	static constexpr bool finite = false;
 
@@ -115,10 +115,10 @@ public:
 //-----------------------------------------------------------------------------
 
 template <typename Q, typename V, typename R, typename T, typename F>
-struct traversor <tag::index, Q, V, R, T, F> :
-	index_trav_impl <Q, V, R, T, F>
+struct traversor <tag::iota, Q, V, R, T, F> :
+	iota_trav_impl <Q, V, R, T, F>
 {
-	using B = index_trav_impl <Q, V, R, T, F>;
+	using B = iota_trav_impl <Q, V, R, T, F>;
 	using d = seq_diff <B>;
 
 public:
@@ -142,4 +142,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_ARRAY_ITER_INDEX_HPP
+#endif  // IVL_CORE_ARRAY_ITER_IOTA_HPP

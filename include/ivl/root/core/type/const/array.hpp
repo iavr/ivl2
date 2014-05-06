@@ -43,10 +43,11 @@ namespace constants {
 //-----------------------------------------------------------------------------
 
 template <typename T, T... N>
-class c_int_array : public seq <sizeof...(N)>,
-	public constant <const T(&)[sizeof...(N)], c_int_array <T, N...> >
+class constant <tag::int_array, non_type <T, N...> > :
+	public seq <sizeof...(N)>,
+	public details::const_base <const T(&)[sizeof...(N)], c_int_array <T, N...> >
 {
-	using V = value_type_of <c_int_array>;
+	using V = value_type_of <constant>;
 
 	class store
 	{
@@ -64,9 +65,12 @@ public:
 
 namespace details {
 
+//-----------------------------------------------------------------------------
+
 template <template <typename...> class C, typename T, typename... A>
-class c_array_cons : public seq <sizeof...(A)>,
-	public constant <const T(&)[sizeof...(A)], c_array_cons <C, T, A...> >
+class c_array_cons :
+	public seq <sizeof...(A)>,
+	public const_base <const T(&)[sizeof...(A)], c_array_cons <C, T, A...> >
 {
 	using V = value_type_of <c_array_cons>;
 
@@ -82,23 +86,19 @@ public:
 	INLINE constexpr operator V() const { return store::data(); }
 };
 
+//-----------------------------------------------------------------------------
+
 }  // namespace details
 
 //-----------------------------------------------------------------------------
 
 template <typename T, typename... A>
-using c_array = details::c_array_cons <c_cons, T, A...>;
+struct constant <tag::array, T, A...> :
+	details::c_array_cons <c_cons, T, A...> { };
 
 template <typename T, typename... A>
-using c_array_list = details::c_array_cons <c_cons_list, T, A...>;
-
-//-----------------------------------------------------------------------------
-
-template<const char* F(void)>
-struct c_string : constant <const char*, c_string <F> >
-{
-	INLINE constexpr operator const char*() const { return F(); }
-};
+struct constant <tag::array_list, T, A...> :
+	details::c_array_cons <c_cons_list, T, A...> { };
 
 //-----------------------------------------------------------------------------
 

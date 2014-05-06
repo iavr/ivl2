@@ -10,7 +10,6 @@ using ivl::flip;
 using ivl::join;
 using ivl::seq;
 using ivl::range;
-using ivl::index;
 
 //-----------------------------------------------------------------------------
 
@@ -18,14 +17,14 @@ void run()
 {
 
 	{
-		cout << "bounded index" << endl;
-		cout << index(6) << endl;
+		cout << "bounded iota" << endl;
+		cout << iota(6) << endl;
 		cout << endl;
 
-		cout << "unbounded index" << endl;
+		cout << "unbounded iota" << endl;
 		auto a = seq(2, 2, 2, 0, 2, 2);
 		cout << a << endl;
-		cout << a + index() << endl;
+		cout << a + iota() << endl;
 		cout << endl;
 	}
 

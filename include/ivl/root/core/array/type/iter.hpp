@@ -70,7 +70,7 @@ using inf_trav = atom_trav <path, I, R, T>;
 //-----------------------------------------------------------------------------
 
 template <typename Q, typename I, typename R, typename T, typename F>
-using index_trav = traversor <tag::index, Q, I, R, T, F>;
+using iota_trav = traversor <tag::iota, Q, I, R, T, F>;
 
 template <typename Q, typename I, typename R, typename T, typename U, typename F>
 using range_trav = traversor <tag::range, Q, I, R, T, U, F>;
@@ -118,7 +118,7 @@ using details::trav_trav;
 using details::atom_trav;
 using details::inf_trav;
 
-using details::index_trav;
+using details::iota_trav;
 using details::range_trav;
 using details::slice_trav;
 

@@ -38,10 +38,6 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace constants {
-
-//-----------------------------------------------------------------------------
-
 template <typename T>
 struct value { using value_type = T; };
 
@@ -50,35 +46,49 @@ using value_type_of = typename T::value_type;
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename D>
-struct constant : value <T>, id_t <D>, derived <D>
-{
-	INLINE constexpr T operator()() const { return this->der(); }
-};
-
-template <typename D>
-struct constant <void, D> : value <void>, id_t <D>, derived <D>
-{
-	INLINE void operator()() const { this->der()(); }
-};
-
-template <typename D>
-struct constant <const void, D> : constant <void, D> { };
-
-template <typename D>
-struct constant <const volatile void, D> : constant <void, D> { };
+namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename F>
-struct fun_constant : constant <T, F> { };
+template <typename T, T... V>
+struct non_type;
 
-template <typename S, typename T, typename D>
-INLINE S& operator<<(S& s, const constant <T, D>& c) { return s << c(); }
+template <typename C, typename... A>
+struct constant;
+
+//-----------------------------------------------------------------------------
+
+template <typename T, T V>
+using c_integral = constant <tag::_int, non_type <T, V> >;
+
+template <typename T, typename M, typename E>
+using c_floating = constant <tag::_float, T, M, E>;
+
+template <typename T, typename M, typename E>
+using c_norm = constant <tag::norm, T, M, E>;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename... A>
+using c_cons = constant <tag::cons, C, A...>;
+
+template <typename C, typename... A>
+using c_cons_list = constant <tag::cons_list, C, A...>;
+
+template <typename T, T... N>
+using c_int_array = constant <tag::int_array, non_type <T, N...> >;
+
+template <typename T, typename... A>
+using c_array = constant <tag::array, T, A...>;
+
+template <typename T, typename... A>
+using c_array_list = constant <tag::array_list, T, A...>;
 
 //-----------------------------------------------------------------------------
 
 }  // namespace constants
+
+//-----------------------------------------------------------------------------
 
 using namespace constants;
 

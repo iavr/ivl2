@@ -46,6 +46,7 @@
 #include "fold/fold.hpp"
 
 #include "stream/traits.hpp"
+#include "stream/type.hpp"
 #include "stream/tuple.hpp"
 #include "stream/atom.hpp"
 #include "stream/array.hpp"

@@ -1,10 +1,13 @@
+#include <assert.h>
 #include <type_traits>
 #include <utility>
 #include <memory>
 #include <iterator>
+#include <tuple>
 #include <list>
 #include <vector>
 #include <array>
+#include <map>
 #include <string>
 #include <algorithm>
 #include <numeric>
@@ -15,7 +18,7 @@
 
 using namespace std;
 
-int main ()
+int main()
 {
 	cout << "Hello, world!" << endl;
 }

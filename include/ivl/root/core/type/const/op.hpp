@@ -46,8 +46,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename F, typename... A>
-using c_op = c_fun_call <F, A...>;
+template <typename S>
+using c_op = c_call <S>;
 
 namespace op = afun::op;
 
@@ -96,10 +96,10 @@ using c_cond = c_op <op::cond(A, B, C)>;
 //-----------------------------------------------------------------------------
 
 template <typename T>
-using c_sizeof = c_op <op::_sizeof, tmp <T> >;
+using c_sizeof = c_op <op::_sizeof(tmp <T>)>;
 
 template <typename T>
-using c_alignof = c_op <op::_alignof, tmp <T> >;
+using c_alignof = c_op <op::_alignof(tmp <T>)>;
 
 //-----------------------------------------------------------------------------
 

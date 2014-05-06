@@ -41,6 +41,8 @@ namespace arrays {
 namespace details {
 
 //-----------------------------------------------------------------------------
+// #define IVL_CPP14
+//-----------------------------------------------------------------------------
 
 template <typename D>
 struct delta_base : derived <D>
@@ -54,19 +56,53 @@ protected:
 	inv(bool c, F f, I&& i, O&& o) const { return c ? f(i, o) : f(o, i); }
 
 public:
-	template <typename I> INLINE I next(I i) const { der().inc(i); return i; }
-	template <typename I> INLINE I prev(I i) const { der().dec(i); return i; }
+	template <typename d, typename B, typename E>
+	INLINE constexpr d
+	size(B&& b, E&& e) const
+	{
+		return der().template diff <d>(next(fwd <E>(e)), fwd<B>(b));
+	}
+
+#ifdef IVL_CPP14
+
+	template <typename I>
+	INLINE constexpr copy <I> next(I&& i) const { der().inc(i); return i; }
+
+	template <typename I>
+	INLINE constexpr copy <I> prev(I&& i) const { der().dec(i); return i; }
 
 	template <typename I, typename d>
-	INLINE I rel(I i, d n) const { der().add(i, n); return i; }
+	INLINE constexpr copy <I> rel(I&& i, d n) const { der().add(i, n); return i; }
 
 	template <typename d, typename B, typename E>
-	INLINE void
+	INLINE constexpr copy <E>
 	trunc(B&& b, E&& e) const
 	{
-		d s = der().template diff <d>((der().inc(e), fwd <E>(e)), b);
-		e = s <= 0 ? b : rel <copy <E> >(b, s);
+		d s = size <d>(b, fwd <E>(e));
+		return s <= 0 ? fwd <B>(b) : rel(fwd <B>(b), s);
 	}
+
+#else  // IVL_CPP14
+
+	template <typename I>
+	INLINE constexpr I next(I i) const { return der().next(i); }
+
+	template <typename I>
+	INLINE constexpr I prev(I i) const { return der().prev(i); }
+
+	template <typename I, typename d>
+	INLINE constexpr I rel(I i, d n) const { return der().rel(i, n); }
+
+	template <typename d, typename B, typename E>
+	INLINE constexpr copy <E>
+	trunc(B&& b, E&& e) const
+	{
+		return size <d>(b, e) <= 0 ?
+			fwd <B>(b) : rel(b, size <d>(b, fwd <E>(e)));
+	}
+
+#endif  // IVL_CPP14
+
 };
 
 //-----------------------------------------------------------------------------
@@ -85,15 +121,36 @@ struct delta <afun::op::inc_> : delta_base <inc_delta>
 
 	template <typename F, typename I, typename O>
 	INLINE constexpr bool
-	comp(F f, I&& i, O&& o) const { return f(i, o); }
+	comp(F f, I&& i, O&& o) const { return f(fwd <I>(i), fwd <O>(o)); }
 
 	template <typename d, typename I, typename O>
 	INLINE constexpr d
-	diff(I&& i, O&& o) const { return static_cast <d>(i - o); }
+	diff(I&& i, O&& o) const
+		{ return static_cast <d>(fwd <I>(i) - fwd <O>(o)); }
+
+#ifdef IVL_CPP14
 
 	template <typename d, typename B, typename E>
-	INLINE void
-	trunc(B&& b, E&& e) const { if (++e < b) e = b; }
+	INLINE constexpr copy <E>
+	trunc(B&& b, E&& e) const { return val_max(fwd<B>(b), ++e); }
+
+#else  // IVL_CPP14
+
+	template <typename I>
+	INLINE constexpr I next(I i) const { return i + I{1}; }
+
+	template <typename I>
+	INLINE constexpr I prev(I i) const { return i - I{1}; }
+
+	template <typename I, typename d>
+	INLINE constexpr I rel(I i, d n) const { return i + n; }
+
+	template <typename d, typename B, typename E>
+	INLINE constexpr copy <E>
+	trunc(B&& b, E&& e) const { return val_max(fwd <B>(b), next(fwd <E>(e))); }
+
+#endif  // IVL_CPP14
+
 };
 
 //-----------------------------------------------------------------------------
@@ -112,15 +169,36 @@ struct delta <afun::op::dec_> : delta_base <dec_delta>
 
 	template <typename F, typename I, typename O>
 	INLINE constexpr bool
-	comp(F f, I&& i, O&& o) const { return f(o, i); }
+	comp(F f, I&& i, O&& o) const { return f(fwd <O>(o), fwd <I>(i)); }
 
 	template <typename d, typename I, typename O>
 	INLINE constexpr d
-	diff(I&& i, O&& o) const { return static_cast <d>(o - i); }
+	diff(I&& i, O&& o) const
+		{ return static_cast <d>(fwd <O>(o) - fwd <I>(i)); }
+
+#ifdef IVL_CPP14
 
 	template <typename d, typename B, typename E>
-	INLINE void
-	trunc(B&& b, E&& e) const { if (--e > b) e = b; }
+	INLINE constexpr copy <E>
+	trunc(B&& b, E&& e) const { return val_min(fwd <B>(b), --e); }
+
+#else  // IVL_CPP14
+
+	template <typename I>
+	INLINE constexpr I next(I i) const { return i - I{1}; }
+
+	template <typename I>
+	INLINE constexpr I prev(I i) const { return i + I{1}; }
+
+	template <typename I, typename d>
+	INLINE constexpr I rel(I i, d n) const { return i - n; }
+
+	template <typename d, typename B, typename E>
+	INLINE constexpr copy <E>
+	trunc(B&& b, E&& e) const { return val_min(fwd <B>(b), prev(fwd <E>(e))); }
+
+#endif  // IVL_CPP14
+
 };
 
 //-----------------------------------------------------------------------------
@@ -137,7 +215,6 @@ class delta <afun::op::add, U> :
 
 public:
 	using B::B;
-	using S::rel;
 
 	template <typename I> INLINE void inc(I&& i) const { i += val(); }
 	template <typename I> INLINE void dec(I&& i) const { i -= val(); }
@@ -150,11 +227,27 @@ public:
 
 	template <typename F, typename I, typename O>
 	INLINE constexpr bool
-	comp(F f, I&& i, O&& o) const { return inv(val() > 0, f, i, o); }
+	comp(F f, I&& i, O&& o) const
+		{ return inv(val() > 0, f, fwd <I>(i), fwd <O>(o)); }
 
 	template <typename d, typename I, typename O>
 	INLINE constexpr d
-	diff(I&& i, O&& o) const { return static_cast <d>(i - o) / val(); }
+	diff(I&& i, O&& o) const
+		{ return static_cast <d>(fwd <I>(i) - fwd <O>(o)) / val(); }
+
+#ifndef IVL_CPP14
+
+	template <typename I>
+	INLINE constexpr I next(I i) const { return i + val(); }
+
+	template <typename I>
+	INLINE constexpr I prev(I i) const { return i - val(); }
+
+	template <typename I, typename d>
+	INLINE constexpr I rel(I i, d n) const { return i + n * val(); }
+
+#endif  // IVL_CPP14
+
 };
 
 //-----------------------------------------------------------------------------
@@ -171,7 +264,6 @@ class delta <afun::op::sub, U> :
 
 public:
 	using B::B;
-	using S::rel;
 
 	template <typename I> INLINE void inc(I&& i) const { i -= val(); }
 	template <typename I> INLINE void dec(I&& i) const { i += val(); }
@@ -184,11 +276,27 @@ public:
 
 	template <typename F, typename I, typename O>
 	INLINE constexpr bool
-	comp(F f, I&& i, O&& o) const { return inv(val() > 0, f, o, i); }
+	comp(F f, I&& i, O&& o) const
+		{ return inv(val() > 0, f, fwd <O>(o), fwd <I>(i)); }
 
 	template <typename d, typename I, typename O>
 	INLINE constexpr d
-	diff(I&& i, O&& o) const { return static_cast <d>(o - i) / val(); }
+	diff(I&& i, O&& o) const
+		{ return static_cast <d>(fwd <O>(o) - fwd <I>(i)) / val(); }
+
+#ifndef IVL_CPP14
+
+	template <typename I>
+	INLINE constexpr I next(I i) const { return i - val(); }
+
+	template <typename I>
+	INLINE constexpr I prev(I i) const { return i + val(); }
+
+	template <typename I, typename d>
+	INLINE constexpr I rel(I i, d n) const { return i - n * val(); }
+
+#endif  // IVL_CPP14
+
 };
 
 //-----------------------------------------------------------------------------

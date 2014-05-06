@@ -7,6 +7,7 @@ namespace constant {
 using namespace ivl;
 using namespace ivl::types;
 namespace op = afun::op;
+using ivl::seq;
 
 //-----------------------------------------------------------------------------
 
@@ -26,20 +27,23 @@ B bb;
 
 int a[6] = {4, 9, -2, 0, 1, 7};
 
-// struct C { array <int> operator()(size_t n) { return array <int>(n, 2); } };  // TODO: ARRAY
-struct D { int x; };
+struct C { array <int, 3> operator()(int n) { return seq(n, n+1, n+2); } };
+struct D { int x; D(int x = 14) : x{x} {}};
 struct E
 {
-	void f(int x)       { cout << "call "  << x << endl; }
-	void f(int x) const { cout << "ccall " << x << endl; }
+	int i;
+	E(int i = 8) : i(i) { }
+	void f(int x)       { cout << "non-const-call "  << x << " " << i << endl; }
+	void f(int x) const { cout << "const-call " << x << " " << i << endl; }
 };
 
 struct F
 {
-	void f(int x) &       { cout << "lcall "  << x << endl; }
-	void f(int x) &&      { cout << "rcall "  << x << endl; }
-	void f(int x) const&  { cout << "clcall " << x << endl; }
-	void f(int x) const&& { cout << "crcall " << x << endl; }
+	int i;
+	F(int i = 14) : i(i) { }
+	void f(int x) &&      { cout << "rref-call "  << x << " " << i << endl; }
+	void f(int x) &       { cout << "lref-call "  << x << " " << i << endl; }
+	void f(int x) const&  { cout << "cref-call " << x << " " << i << endl; }
 };
 
 struct G { int x; G() : x(4) { } };
@@ -48,12 +52,14 @@ D dd{8};
 E ee{};
 F ff{};
 
-// "extern" required by gcc (only for const ?)
+// TODO: remove; const have internal linkage; "extern" required by gcc
 extern const D cdd{9};
 extern const E cee{};
 extern const F cff{};
 
-// array <int> f(size_t n) { return array <int>(n, 2); };  // TODO: ARRAY
+int f(int i) { return i + 3; }
+
+array <int, 3> g(size_t n) { return seq(n, n+1, n+2); };
 
 //-----------------------------------------------------------------------------
 
@@ -75,18 +81,19 @@ void run()
 {
 	{
 		cout << "floating:" << endl;
-		cout << c_float <359, 1>() << endl;
-		cout << c_float <-359, 7>() << endl;
-		cout << c_float <359, -7>() << endl;
+		cout << c_float <359, 1>{} << endl;
+		cout << c_float <-359, 7>{} << endl;
+		cout << c_float <359, -7>{} << endl;
 		cout << endl;
 
-		cout << c_norm_double <359, 1>() << endl;
-		cout << c_norm_double <-359, 7>() << endl;
-		cout << c_norm_double <359, -7>() << endl;
+		cout << "normalized floating:" << endl;
+		cout << c_norm_double <359, 1>{} << endl;
+		cout << c_norm_double <-359, 7>{} << endl;
+		cout << c_norm_double <359, -7>{} << endl;
 		cout << endl;
 
-		cout << c_norm_float  <359, -50>() << endl;
-		cout << c_norm_double <359, -50>() << endl;
+		cout << c_norm_float  <359, -50>{} << endl;
+		cout << c_norm_double <359, -50>{} << endl;
 		cout << endl;
 	}
 
@@ -94,41 +101,40 @@ void run()
 
 	{
 		cout << "int array:" << endl;
-		typedef c_int_array <int, 5, 3, -2, 0, 1, 8, -6, 9> A;
-		print_array(A()());
+		using A = c_int_array <int, 5, 3, -2, 0, 1, 8, -6, 9>;
+		print_array(A{}());
 		cout << endl;
 
 		cout << "bracket:" << endl;
-		cout << c_bracket <A, c_int <0> >() << " ";
-		cout << c_bracket <A, c_int <1> >() << " ";
-		cout << c_bracket <A, c_int <2> >() << " ";
-		cout << c_bracket <A, c_int <3> >() << " ";
-		cout << c_bracket <A, c_int <4> >() << " ";
-		cout << c_bracket <A, c_int <5> >() << " ";
-		cout << c_bracket <A, c_int <6> >() << " ";
-		cout << c_bracket <A, c_int <7> >() << " ";
+		cout << c_bracket <A, c_int <0> >{} << " ";
+		cout << c_bracket <A, c_int <1> >{} << " ";
+		cout << c_bracket <A, c_int <2> >{} << " ";
+		cout << c_bracket <A, c_int <3> >{} << " ";
+		cout << c_bracket <A, c_int <4> >{} << " ";
+		cout << c_bracket <A, c_int <5> >{} << " ";
+		cout << c_bracket <A, c_int <6> >{} << " ";
+		cout << c_bracket <A, c_int <7> >{} << " ";
 		cout << endl;
 		cout << endl;
 
 		cout << "cons:" << endl;
-		cout << c_cons <G>()().x << endl;
-// 		cout << c_cons <array <int>(c_unsigned <12>, c_int <-4>)>() << endl;  // TODO: ARRAY
-// 		cout << c_cons <array <int> >() << endl;  // TODO: array bug: array <int>() also not working
+		cout << c_cons <G>{}().x << endl;
+		cout << c_cons <array <int, 2>(c_unsigned <12>, c_int <-4>)>{} << endl;
 		cout << endl;
 
 		cout << "cons_list:" << endl;
-		cout << c_cons_list <D (c_int <7>)>()().x << endl;
+		cout << c_cons_list <D (c_int <7>)>{}().x << endl;
 		cout << endl;
 
 		cout << "array_list:" << endl;
 		using L = c_array_list <D, pack <c_int <-4> >, pack <c_int <13> > >;
-		print_array(L()());
+		print_array(L{}());
 		cout << endl;
 
 		cout << "string:" << endl;
 		cout
-			<< c_string <lit::hello>() << ", "
-			<< c_string <lit::world>() << "!" << endl;
+			<< c_string <lit::hello>{} << ", "
+			<< c_string <lit::world>{} << "!" << endl;
 		cout << endl;
 	}
 
@@ -136,112 +142,93 @@ void run()
 
 	{
 		cout << "ref_member:" << endl;
-		cout << c_ref_member  <int, D, dd,  &D::x>() << endl;
-		cout << c_cref_member <int, D, cdd, &D::x>() << endl;
-		cout << endl;
-
-		cout << "ptr_member:" << endl;
-		cout << c_ptr_member  <int, D, &dd,  &D::x>() << endl;
-		cout << c_cptr_member <int, D, &cdd, &D::x>() << endl;
+		cout << c_ref_member <D(c_int <3>), int, &D::x>{} << endl;
+		cout << c_ref_member <D,            int, &D::x>{} << endl;
+		cout << c_ref_member <D,            int, &D::x, dd>{} << endl;
+		cout << c_ref_member <D const,      int, &D::x, cdd>{} << endl;
 		cout << endl;
 	}
 
 	{
 		cout << "call:" << endl;
-		c_call <c_cons <A>()>()();
+		cout << c_call <decltype(f)&(c_int <2>), f>{}() << endl;
+		c_call <A()>{}();
 		cout << endl;
+		cout << c_call <C(c_int <2>)>{} << endl;
 
-// 		// TODO: ARRAY
-// 		cout << c_call <c_cons <C>(c_int <2>)>() << endl;
-// 		cout << endl;
-
-// 		// TODO: ARRAY
-// 		cout << "sig:" << endl;
-// 		typedef c_sig <array <int> (size_t)> S;
-// 		typedef S::function <f> F;
-// 		cout << F()(4) << endl;
-// 		cout << c_call <F(c_int <6>)>() << endl;
-// 		cout << S::call <f, c_int <8> >() << endl;
-// 		cout << endl;
+		using S = array <int, 3>(size_t);
+		using R = c_lref <decltype(g), g>;
+		cout << R{}(4) << endl;
+		cout << c_call <R(c_int <6>)>{} << endl;
+		cout << c_call <S&(c_int <8>), g>{} << endl;
+		cout << endl;
 	}
 
 	{
 		cout << "debug:" << endl;
-		typedef void S(int);
-		typedef void (E::*SC)(int) const;
-		c_fun_call <op::ref_call(c_cons <E>, c_sig <S>::method <E, &E::f>, c_int <8>)>()();
-		c_fun_call <op::ref_call(c_cons <E>, c_sig <S>::cmethod <E, &E::f>, c_int <8>)>()();
-		SC s = c_sig <S>::cmethod <E, &E::f>()();
-		op::ref_call()(E(), s, 8);
-		op::ref_call()(E(), (SC)&E::f, 8);
+		using S = void(int);
+		using SC = void(E::*)(int) const;
+		c_call <op::ref_call(E, c_member <E,       S, &E::f>, c_int <8>)>{}();
+		c_call <op::ref_call(E, c_member <E const, S, &E::f>, c_int <9>)>{}();
+		op::ref_call{}(E{}, c_member <E, S, &E::f>{}(), 8);
+		op::ref_call{}(E{}, SC(&E::f), 9);
 		cout << endl;
 	}
 
 	{
-		typedef void S(int);
-		cout << "fun_call:" << endl;
-		c_sig <S>::fun_call <E, &E::f, c_int <1> >()();
-		c_sig <S>::cfun_call <E, &E::f, c_int <4> >()();
-#if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
-		c_sig <S>::rfun_call <F, &F::f, c_int <3> >()();
-		c_sig <S>::crfun_call <F, &F::f, c_int <6> >()();
-#endif
+		using S = void(int);
+		cout << "member call:" << endl;
+		c_ref_call <E(c_int <6>), S&(c_int <1>), &E::f>{}();
+		c_ref_call <E,            S&(c_int <1>), &E::f>{}();
+		c_ref_call <E,            S&(c_int <6>), &E::f, ee>{}();
+		c_ref_call <E const,      S&(c_int <4>), &E::f, cee>{}();
 		cout << endl;
 
-		cout << "ref_call:" << endl;
-		c_sig <S>::ref_call <E, ee, &E::f, c_int <1> >()();
-		c_sig <S>::cref_call <E, cee, &E::f, c_int <4> >()();
 #if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
-		c_sig <S>::lref_call <F, ff, &F::f, c_int <2> >()();
-		c_sig <S>::clref_call <F, cff, &F::f, c_int <5> >()();
-#endif
+		cout << "member ref_call:" << endl;
+		c_ref_call <F&&(c_int <2>), S&(c_int <3>), &F::f>{}();
+		c_ref_call <F&&,            S&(c_int <3>), &F::f>{}();
+		c_ref_call <F&,             S&(c_int <2>), &F::f, ff>{}();
+		c_ref_call <F const&,       S&(c_int <5>), &F::f, cff>{}();
 		cout << endl;
-
-		cout << "ptr_call:" << endl;
-		c_sig <S>::ptr_call <E, &ee, &E::f, c_int <1> >()();
-		c_sig <S>::cptr_call <E, &cee, &E::f, c_int <4> >()();
-#if IVL_HAS_FEATURE(cxx_reference_qualified_functions)
-		c_sig <S>::lptr_call <F, &ff, &F::f, c_int <2> >()();
-		c_sig <S>::clptr_call <F, &cff, &F::f, c_int <5> >()();
 #endif
-		cout << endl;
 	}
 
 //-----------------------------------------------------------------------------
 
 	{
 		cout << "op:" << endl;
-		cout << c_add <c_int <3>, c_norm_double <314> >() << endl;
+		cout << c_add <c_int <3>, c_norm_double <314> >{} << endl;
 		cout << endl;
 
 		cout << "fun:" << endl;
-		cout << "min(size_t) = " << c_min <size_t>() << endl;
-		cout << "min(int) = " << c_min <int>() << endl;
-		cout << "inf = " << c_inf <>() << endl;
-		cout << "-inf = " << c_minus <c_inf <> >() << endl;
-		cout << "nan = " << c_nan <>() << endl;
-		cout << "e = " << c_e <>() << endl;
-		cout << "pi = " << c_pi <>() << endl;
-		cout << "i = " << c_i <>() << endl;
-		cout << "j = " << c_j <>() << endl;
+		cout << "min(size_t) = " << c_min <size_t>{} << endl;
+		cout << "min(int) = " << c_min <int>{} << endl;
+		cout << "inf = " << c_inf <>{} << endl;
+		cout << "-inf = " << c_minus <c_inf <> >{} << endl;
+		cout << "nan = " << c_nan <>{} << endl;
+		using E = c_gen <1, double(c_one), std::exp>;
+		using P = c_mul <c_gen <1, double(c_one), std::atan>, c_int <4> >;
+		cout << "e = " << E{} << endl;
+		cout << "e = " << c_e <>{} << endl;
+		cout << "pi = " << P{} << endl;
+		cout << "pi = " << c_pi <>{} << endl;
+		cout << "i = " << c_i <>{} << endl;
+		cout << "j = " << c_j <>{} << endl;
 		cout << endl;
 	}
 
 //-----------------------------------------------------------------------------
 
 	{
-// 		cout << "sizeof : " << c_sizeof <array <double> >() << endl;  // TODO: ARRAY
+		cout << "sizeof : " << c_sizeof <array <double, 4> >{} << endl;
+		cout << "sizeof : " << c_sizeof <tuple <int, double> >{} << endl;
 
 		cout << "static_cast : ";
 		aa(); bb();
-		c_static_cast <A, c_lref <B, bb> >()()();
+		c_static_cast <A, c_lref <B, bb> >{}()();
 		cout << endl;
 		cout << endl;
-	}
-
-//-----------------------------------------------------------------------------
-
-	{
 	}
 
 }

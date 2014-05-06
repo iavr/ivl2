@@ -42,41 +42,60 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename R, typename C, R C::*M>
-struct c_member : constant <R C::*, c_member <R, C, M> >
-{
-	INLINE constexpr operator R C::*() const { return M; }
-};
-
-template <typename R, typename C, R const C::*M>
-struct c_cmember : constant <R const C::*, c_cmember <R, C, M> >
-{
-	INLINE constexpr operator R const C::*() const { return M; }
-};
-
-//-----------------------------------------------------------------------------
-
 namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename R, typename C, C &O, R C::*M>
-using c_ref_member =
-	c_op <op::ref_member(c_lref <C, O>, c_member <R, C, M>)>;
+template <typename T> struct f_ret_ : id_t <T> { };
+template <typename T> using  f_ret = type_of <f_ret_<T> >;
 
-template <typename R, typename C, C const &O, R const C::*M>
-using c_cref_member =
-	c_op <op::ref_member(c_cref <C, O>, c_cmember <R, C, M>)>;
+template <typename R, typename... A>
+struct f_ret_<R(A...)> : id_t <R> { };
 
 //-----------------------------------------------------------------------------
 
-template <typename R, typename C, C *O, R C::*M>
-using c_ptr_member =
-	c_op <op::ptr_member(c_ptr <C, O>, c_member <R, C, M>)>;
+template <typename C, typename S>
+using mem_ptr = member_ptr <f_ret <C>, S>;
 
-template <typename R, typename C, C const *O, R const C::*M>
-using c_cptr_member =
-	c_op <op::ptr_member(c_cptr <C, O>, c_cmember <R, C, M>)>;
+template <typename C, typename S>
+using mem_sig_ptr = mem_ptr <C, raw_type <fun_ret <S> > >;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename T, mem_ptr <C, T> M>
+using c_member = c_integral <mem_ptr <C, T>, M>;
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename T, mem_ptr <C, T> M, C &...R>
+struct c_ref_member_;
+
+template <typename C, typename T, mem_ptr <C, T> M, C &...R>
+using c_ref_member = type_of <c_ref_member_<C, T, M, R...> >;
+
+template <typename C, typename T, mem_ptr <C, T> M>
+struct c_ref_member_<C, T, M> :
+	id_t <c_call <op::ref_member(c_cons <C>, c_member <C, T, M>)> > { };
+
+template <typename C, typename T, mem_ptr <C, T> M, C &R>
+struct c_ref_member_<C, T, M, R> :
+	id_t <c_call <op::ref_member(c_lref <C, R>, c_member <C, T, M>)> > { };
+
+//-----------------------------------------------------------------------------
+
+template <typename C, typename S, mem_sig_ptr <C, S> M, f_ret <C> &...R>
+struct c_ref_call_;
+
+template <typename C, typename S, mem_sig_ptr <C, S> M, f_ret <C> &...R>
+using c_ref_call = type_of <c_ref_call_<C, S, M, R...> >;
+
+template <typename C, typename F, typename... A, mem_ptr <C, F> M>
+struct c_ref_call_<C, F&(A...), M> :
+	id_t <c_call <op::ref_call(c_cons <C>, c_member <C, F, M>, A...)> > { };
+
+template <typename C, typename F, typename... A, mem_ptr <C, F> M, C &R>
+struct c_ref_call_<C, F&(A...), M, R> :
+	id_t <c_call <op::ref_call(c_lref <C, R>, c_member <C, F, M>, A...)> > { };
 
 //-----------------------------------------------------------------------------
 
@@ -84,10 +103,9 @@ using c_cptr_member =
 
 //-----------------------------------------------------------------------------
 
+using details::c_member;
 using details::c_ref_member;
-using details::c_cref_member;
-using details::c_ptr_member;
-using details::c_cptr_member;
+using details::c_ref_call;
 
 //-----------------------------------------------------------------------------
 

@@ -23,37 +23,10 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
-#define IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
+#ifndef IVL_CORE_FUN_STREAM_TYPE_HPP
+#define IVL_CORE_FUN_STREAM_TYPE_HPP
 
 #include <ivl/ivl>
-
-//-----------------------------------------------------------------------------
-
-// keep built-in features disabled for testing by default;
-// manually enable for speed by externally defining USE_FEATURES
-// TODO: default-enable features eventually
-
-//-----------------------------------------------------------------------------
-
-#if defined(__clang__)
-
-	#define IVL_HAS_FEATURE(X)        \
-		defined(USE_FEATURES) &&       \
-		__has_feature(X)               \
-
-#else  // defined(__clang__)
-
-	#define IVL_GCC_NO_is_convertible_to
-	#define IVL_GCC_NO_is_literal
-	#define IVL_GCC_NO_is_std_layout
-	#define IVL_GCC_NO_cxx_reference_qualified_functions
-
-	#define IVL_HAS_FEATURE(X)        \
-		defined(USE_FEATURES) &&       \
-		!defined(IVL_GCC_NO_##X)       \
-
-#endif  // defined(__clang__)
 
 //-----------------------------------------------------------------------------
 
@@ -65,15 +38,12 @@ namespace types {
 
 //-----------------------------------------------------------------------------
 
-namespace traits {
-
-// no aliases: built-in traits not allowed in function sugnatures
-template <typename T> struct is_union     : expr <__is_union(T)> { };
-template <typename T> struct is_trivial   : expr <__is_trivial(T)> { };
-template <typename T> struct is_final     : expr <__is_final(T)> { };
-template <typename T> struct alignment_of : size <__alignof__(T)> { };
-
-}  // namespace traits
+template <
+	typename S, typename C,
+	only_if <is_stream <S>() && is_constant <C>()>
+= 0>
+INLINE S&&
+operator<<(S&& s, C c) { return fwd <S>(s) << c(); }
 
 //-----------------------------------------------------------------------------
 
@@ -85,4 +55,4 @@ template <typename T> struct alignment_of : size <__alignof__(T)> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
+#endif  // IVL_CORE_FUN_STREAM_TYPE_HPP

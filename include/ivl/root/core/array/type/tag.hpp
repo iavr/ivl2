@@ -47,7 +47,7 @@ template <typename... D> struct fixed_ { };
 template <typename... D> struct heap_  { };
 
 template <typename... D> struct each_  { };
-template <typename... D> struct index_ { };
+template <typename... D> struct iota_ { };
 template <typename... D> struct range_ { };
 template <typename... D> struct slice_ { };
 
@@ -64,7 +64,7 @@ using fixed = fixed_<>;
 using heap  = heap_<>;
 
 using each  = each_<>;
-using index = index_<>;
+using iota  = iota_<>;
 using range = range_<>;
 using slice = slice_<>;
 

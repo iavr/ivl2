@@ -71,11 +71,11 @@ template <typename T> using check   = type_of <check_t <T> >;
 
 }  // namespace logic
 
-using namespace logic;
-
 //-----------------------------------------------------------------------------
 
 }  // namespace types
+
+//-----------------------------------------------------------------------------
 
 using types::only_if;
 

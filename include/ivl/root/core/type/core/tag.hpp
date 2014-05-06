@@ -38,10 +38,20 @@ namespace tag {
 
 //-----------------------------------------------------------------------------
 
-template <typename... D> struct val_ { };
+template <typename... D> struct val_  { };
 template <typename... D> struct rref_ { };
 template <typename... D> struct lref_ { };
 template <typename... D> struct cref_ { };
+template <typename... D> struct ptr_  { };
+
+template <typename... D> struct _int_   { };
+template <typename... D> struct _float_ { };
+template <typename... D> struct norm_   { };
+
+template <typename... D> struct cons_  { };
+template <typename... D> struct list_  { };
+template <typename... D> struct array_ { };
+template <typename... D> struct call_  { };
 
 //-----------------------------------------------------------------------------
 
@@ -49,6 +59,20 @@ using val  = val_<>;
 using rref = rref_<>;
 using lref = lref_<>;
 using cref = cref_<>;
+using ptr  = ptr_<>;
+
+using _int   = _int_<>;
+using _float = _float_<>;
+using norm   = norm_<>;
+
+using cons  = cons_<>;
+using list  = list_<>;
+using array = array_<>;
+using call  = call_<>;
+
+using cons_list  = cons_<list>;
+using int_array  = _int_<array>;
+using array_list = array_<list>;
 
 //-----------------------------------------------------------------------------
 

@@ -59,7 +59,7 @@
 #include "iter/atom.hpp"
 
 #include "iter/delta.hpp"
-#include "iter/index.hpp"
+#include "iter/iota.hpp"
 #include "iter/range.hpp"
 #include "iter/slice.hpp"
 
@@ -73,7 +73,7 @@
 #include "store/pre_fixed.hpp"
 #include "store/fixed.hpp"
 
-#include "view/index.hpp"
+#include "view/iota.hpp"
 #include "view/range.hpp"
 #include "view/slice.hpp"
 

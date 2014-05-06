@@ -42,14 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename O, typename U, bool F>
-using range_traits = seq_traits <
-	id_t <T>, O, _type <T>,
-	range_trav, id, size_t, U, expr <F>
->;
-
-//-----------------------------------------------------------------------------
-
 template <typename A, typename... B>
 struct int_common_t : common_t <A, B...> { };
 
@@ -61,31 +53,48 @@ using int_common = type_of <int_common_t <A, B...> >;
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U, typename... E> class range;
+template <typename B, typename U, typename... E>
+struct range_type_t;
 
-template <typename R> struct range_attr;
+template <typename B, typename U, typename... E>
+using range_type = type_of <range_type_t <B, U, E...> >;
 
 template <typename B, typename U>
-struct range_attr <range <B, U> >
-{
-	using type = copy <int_type <B> >;
-	using derived_type = range_seq <B, U>;
-	using traits = range_traits <type, none, U, false>;
-};
+struct range_type_t <B, U> : copy_t <int_type <B> > { };
 
 template <typename B, typename U, typename E>
-struct range_attr <range <B, U, E> >
-{
-	using type = copy <int_common <B, E> >;
-	using derived_type = range_seq <B, U, E>;
-	using traits = range_traits <type, none, U, true>;
-	// TODO: find order_type when B, U, E are compile-time constants
-};
+struct range_type_t <B, U, E> : copy_t <int_common <B, E> > { };
 
 //-----------------------------------------------------------------------------
 
+template <typename T, typename O, typename U, bool F>
+using range_traits_base = id_t <seq_traits <
+	id_t <T>, O, _type <T>,
+	range_trav, id, size_t, U, expr <F>
+> >;
+
+template <typename B, typename U, typename... E>
+struct range_traits_t;
+
+template <typename B, typename U, typename... E>
+using range_traits = type_of <range_traits_t <B, U, E...> >;
+
 template <typename B, typename U>
-class unbounded_range : raw_tuple <B, U>
+struct range_traits_t <B, U> :
+	range_traits_base <range_type <B, U>, none, U, false> { };
+
+// TODO: find order_type when B, U, E are compile-time constants
+template <typename B, typename U, typename E>
+struct range_traits_t <B, U, E> :
+	range_traits_base <range_type <B, U, E>, none, U, true> { };
+
+//-----------------------------------------------------------------------------
+
+template <typename B, typename U, typename... E>
+class range_store;
+
+template <typename B, typename U>
+struct range_store <B, U> : raw_tuple <B, U>
 {
 	using T = raw_tuple <B, U>;
 
@@ -126,15 +135,12 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename B, typename U, typename E,
-	typename A = range_attr <range <B, U, E> >,
-	typename I = type_of <A>,
-	typename TR = traits_of <A>
->
-class bounded_range : raw_tuple <B, U, I>
+template <typename B, typename U, typename E>
+struct range_store <B, U, E> : raw_tuple <B, U, E>
 {
-	using T = raw_tuple <B, U, I>;
+	using TR = range_traits <B, U, E>;
+	using I = range_type <B, U, E>;
+	using T = raw_tuple <B, U, E>;
 	using S = seq_size <TR>;
 	using d = seq_diff <TR>;
 
@@ -142,7 +148,7 @@ class bounded_range : raw_tuple <B, U, I>
 
 	using begin = elem <0, B>;
 	using delta = elem <1, U>;
-	using end   = elem <2, I>;
+	using end   = elem <2, E>;
 
 protected:
 	INLINE           r_ref <B> b_f()      { return begin::fwd(); }
@@ -155,54 +161,45 @@ protected:
 	INLINE           l_ref <U> u() &      { return delta::get(); }
 	INLINE constexpr c_ref <U> u() const& { return delta::get(); }
 
-	INLINE           r_ref <I> e_f()      { return end::fwd(); }
-	INLINE           r_ref <I> e() &&     { return end::fwd(); }
-	INLINE           l_ref <I> e() &      { return end::get(); }
-	INLINE constexpr c_ref <I> e() const& { return end::get(); }
+	INLINE           r_ref <E> e_f()      { return end::fwd(); }
+	INLINE           r_ref <E> e() &&     { return end::fwd(); }
+	INLINE           l_ref <E> e() &      { return end::get(); }
+	INLINE constexpr c_ref <E> e() const& { return end::get(); }
 
 	template <typename V, typename R>
 	INLINE constexpr V
 	t(R&& r) const&
-		{ return V(fwd <R>(r).u(), fwd <R>(r).b(), fwd <R>(r).e()); }
+		{ return V(fwd <R>(r).u(), fwd <R>(r).b(), fwd <R>(r).trunc()); }
+
+//-----------------------------------------------------------------------------
+
+private:
+	INLINE I trunc() const { return u().template trunc <d>(I(b()), e()); }
 
 //-----------------------------------------------------------------------------
 
 public:
 	template <typename _B, typename _U, typename _E>
-	INLINE bounded_range(_B&& _b, _U&& _u, _E&& _e) :
-		T(fwd <_B>(_b), fwd <_U>(_u), fwd <_E>(_e))
-			{ u().template trunc <d>(b(), e()); }
+	INLINE constexpr range_store(_B&& _b, _U&& _u, _E&& _e) :
+		T(fwd <_B>(_b), fwd <_U>(_u), fwd <_E>(_e)) { }
 
-	INLINE constexpr S size() const { return u().template diff <S>(e(), b()); }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename B, typename U>
-struct range <B, U> : unbounded_range <B, U>
-{
-	using unbounded_range <B, U>::unbounded_range;
-};
-
-template <typename B, typename U, typename E>
-struct range <B, U, E> : bounded_range <B, U, E>
-{
-	using bounded_range <B, U, E>::bounded_range;
+	INLINE constexpr S size() const { return u().template size <S>(b(), e()); }
 };
 
 //-----------------------------------------------------------------------------
 
 // extending definition @array/type/sequence
 template <typename B, typename U, typename... E>
-struct seq_data_t <range_seq <B, U, E...> > : pack <range <B, U, E...> > { };
+struct seq_data_t <range_seq <B, U, E...> > :
+	pack <range_store <B, U, E...> > { };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename R,
-	typename A = range_attr <R>,
-	typename D = derived_type_of <A>,
-	typename TR = traits_of <A>
+	typename P,
+	typename R = embed <range_store, P>,
+	typename D = embed <range_seq, P>,
+	typename TR = embed <range_traits, P>
 >
 class range_seq_impl :
 	public based <R>,
@@ -258,9 +255,9 @@ public:
 
 template <typename _B, typename U, typename... E>
 class sequence <tag::range, _B, U, E...> :
-	public range_seq_impl <range <_B, U, E...> >
+	public range_seq_impl <pack <_B, U, E...> >
 {
-	using B = range_seq_impl <range <_B, U, E...> >;
+	using B = range_seq_impl <pack <_B, U, E...> >;
 
 public:
 	using B::B;

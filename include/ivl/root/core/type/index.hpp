@@ -35,8 +35,8 @@
 #include "core/derive.hpp"
 
 #include "const/const.hpp"
+#include "const/base.hpp"
 #include "const/scalar.hpp"
-#include "const/class.hpp"
 
 #include "core/logic.hpp"
 #include "core/nat.hpp"
@@ -53,6 +53,7 @@
 
 #include "traits/begin.hpp"
 #include "traits/builtin.hpp"
+#include "traits/const.hpp"
 #include "traits/array.hpp"
 #include "traits/fun.hpp"
 #include "traits/traits.hpp"
@@ -72,14 +73,16 @@
 #include "fun/begin.hpp"
 #include "fun/op.hpp"
 #include "fun/fun.hpp"
+#include "fun/meta.hpp"
+#include "fun/const.hpp"
 #include "fun/call.hpp"
 #include "fun/limits.hpp"
 
+#include "const/class.hpp"
 #include "const/array.hpp"
 #include "const/call.hpp"
 #include "const/op.hpp"
 #include "const/member.hpp"
-#include "const/sig.hpp"
 #include "const/gen.hpp"
 
 //-----------------------------------------------------------------------------

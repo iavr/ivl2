@@ -42,23 +42,6 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-struct nop_fun
-{
-	template <typename... A>
-	INLINE void operator()(A&&... a) const { }
-};
-
-//-----------------------------------------------------------------------------
-
-struct id_fun
-{
-	template <typename A>
-	INLINE constexpr A&&
-	operator()(A&& a) const { return fwd <A>(a); }
-};
-
-//-----------------------------------------------------------------------------
-
 template <typename F, typename... E>
 struct bind_fun
 {
@@ -67,20 +50,6 @@ struct bind_fun
 	-> decltype(F()(E()..., fwd <A>(a)...))
 		{ return F()(E()..., fwd <A>(a)...); }
 };
-
-//-----------------------------------------------------------------------------
-
-template <template <typename...> class C>
-struct switch_fun
-{
-	template <typename... A>
-	INLINE constexpr auto operator()(A&&... a) const
-	-> decltype(subs <C, A...>()(fwd <A>(a)...))
-		{ return subs <C, A...>()(fwd <A>(a)...); }
-};
-
-template <typename C>
-using switch_fun_of = switch_fun <C::template map>;
 
 //-----------------------------------------------------------------------------
 
@@ -115,10 +84,7 @@ struct mut_fun
 
 //-----------------------------------------------------------------------------
 
-using details::id_fun;
 using details::bind_fun;
-using details::switch_fun;
-using details::switch_fun_of;
 using details::try_fun;
 
 //-----------------------------------------------------------------------------

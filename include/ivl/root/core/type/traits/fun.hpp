@@ -104,6 +104,12 @@ struct fun_ret_<R(A...)> : id_t <R> { };
 template <typename R, typename... A>
 struct fun_arg_<R(A...)> : pack <A...> { };
 
+template <typename R, typename A>
+struct fun_of_;
+
+template <typename R, typename... A>
+struct fun_of_<R, pack <A...> > : id_t <R(A...)> { };
+
 }  // namespace details {
 
 template <typename T> using is_fun = details::is_fun_<raw_fun <T> >;
@@ -113,6 +119,9 @@ template <typename S> using fun_arg_t = details::fun_arg_<raw_fun <S> >;
 
 template <typename S> using fun_ret = type_of <fun_ret_t <S> >;
 template <typename S> using fun_arg = type_of <fun_arg_t <S> >;
+
+template <typename R, typename A> using fun_of_t = details::fun_of_<R, A>;
+template <typename R, typename A> using fun_of   = type_of <fun_of_t <R, A> >;
 
 //-----------------------------------------------------------------------------
 

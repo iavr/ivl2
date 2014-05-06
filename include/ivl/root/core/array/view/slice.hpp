@@ -42,31 +42,21 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename T, typename O, typename B, typename U, typename... N>
+// TODO: find order_type when B, U, N are compile-time constants
+template <typename B, typename U, typename... N>
 using slice_traits = seq_traits <
-	id_t <T>, O, pack <range_seq <B, U>, index_seq <N...> >,
+	id_t <copy <int_type <B> > >, none,
+	pack <range_seq <B, U>, iota_seq <N...> >,
 	slice_trav, id, size_t
 >;
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U, typename... N> class slice;
-
-template <typename S> struct slice_attr;
-
 template <typename B, typename U, typename... N>
-struct slice_attr <slice <B, U, N...> >
-{
-	using type = copy <int_type <B> >;
-	using derived_type = slice_seq <B, U, N...>;
-	using traits = slice_traits <type, none, B, U, N...>;
-	// TODO: find order_type when B, U, N are compile-time constants
-};
-
-//-----------------------------------------------------------------------------
+struct slice_store;
 
 template <typename B, typename U>
-class unbounded_slice : raw_tuple <B, U>
+struct slice_store <B, U> : raw_tuple <B, U>
 {
 	using T = raw_tuple <B, U>;
 
@@ -98,16 +88,12 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <
-	typename B, typename U, typename N,
-	typename A = slice_attr <slice <B, U, N> >,
-	typename TR = traits_of <A>
->
-class bounded_slice : raw_tuple <B, U, N>
+template <typename B, typename U, typename N>
+struct slice_store <B, U, N> : raw_tuple <B, U, N>
 {
+	using TR = slice_traits <B, U, N>;
 	using T = raw_tuple <B, U, N>;
 	using S = seq_size <TR>;
-	using d = seq_diff <TR>;
 
 //-----------------------------------------------------------------------------
 
@@ -146,31 +132,18 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template <typename B, typename U>
-struct slice <B, U> : unbounded_slice <B, U>
-{
-	using unbounded_slice <B, U>::unbounded_slice;
-};
-
-template <typename B, typename U, typename N>
-struct slice <B, U, N> : bounded_slice <B, U, N>
-{
-	using bounded_slice <B, U, N>::bounded_slice;
-};
-
-//-----------------------------------------------------------------------------
-
 // extending definition @array/type/sequence
 template <typename B, typename U, typename... N>
-struct seq_data_t <slice_seq <B, U, N...> > : pack <slice <B, U, N...> > { };
+struct seq_data_t <slice_seq <B, U, N...> > :
+	pack <slice_store <B, U, N...> > { };
 
 //-----------------------------------------------------------------------------
 
 template <
-	typename S,
-	typename A = slice_attr <S>,
-	typename D = derived_type_of <A>,
-	typename TR = traits_of <A>
+	typename P,
+	typename S = embed <slice_store, P>,
+	typename D = embed <slice_seq, P>,
+	typename TR = embed <slice_traits, P>
 >
 class slice_seq_impl :
 	public based <S>,
@@ -226,9 +199,9 @@ public:
 
 template <typename _B, typename U, typename... N>
 class sequence <tag::slice, _B, U, N...> :
-	public slice_seq_impl <slice <_B, U, N...> >
+	public slice_seq_impl <pack <_B, U, N...> >
 {
-	using B = slice_seq_impl <slice <_B, U, N...> >;
+	using B = slice_seq_impl <pack <_B, U, N...> >;
 
 public:
 	using B::B;

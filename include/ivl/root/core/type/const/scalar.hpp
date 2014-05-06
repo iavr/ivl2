@@ -42,22 +42,17 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename T>
-struct c_type : constant <T, c_type <T> >
-{
-	INLINE constexpr operator T() const { return T(); }
-};
-
-using c_null = c_type <nullptr_t>;
-
 template <typename T, T V>
-struct c_integral : constant <T, c_integral <T, V> >
+struct constant <tag::_int, non_type <T, V> > :
+	details::const_base <T, c_integral <T, V> >
 {
 	static constexpr T value = V;
-	INLINE constexpr operator T() const { return value; }
+	INLINE constexpr operator T() const { return V; }
 };
 
-template <typename T, T N> using c_enum = c_integral <T, N>;
+template <typename T, T N>  using c_enum = c_integral <T, N>;
+template <typename T, T &R> using c_lref = c_integral <T&, R>;
+template <typename T, T *P> using c_ptr  = c_integral <T*, P>;
 
 //-----------------------------------------------------------------------------
 
@@ -127,73 +122,45 @@ struct floating
 //-----------------------------------------------------------------------------
 
 template <typename T, typename M, typename E>
-struct c_scientific : floating <M, E>,
-	constant <T, c_scientific <T, M, E> >
+struct constant <tag::_float, T, M, E> : floating <M, E>,
+	details::const_base <T, c_floating <T, M, E> >
 {
 	INLINE constexpr operator T() const { return M() * std::pow(T(10), E()); }
 };
 
 template <int M = 0, char E = '\0'>
-using c_float = c_scientific <float, c_int <M>, c_char <E> >;
+using c_float = c_floating <float, c_int <M>, c_char <E> >;
 
 template <long M = 0, short E = '\0'>
-using c_double = c_scientific <double, c_long <M>, c_short <E> >;
+using c_double = c_floating <double, c_long <M>, c_short <E> >;
 
 template <long long M = 0, short E = '\0'>
 using c_long_double =
-	c_scientific <long double, c_long_long <M>, c_short <E> >;
+	c_floating <long double, c_long_long <M>, c_short <E> >;
 
 //-----------------------------------------------------------------------------
 
 template <typename T, typename M, typename E>
-struct c_norm_scientific : floating <M, E>,
-	constant <T, c_norm_scientific <T, M, E> >
+struct constant <tag::norm, T, M, E> : floating <M, E>,
+	details::const_base <T, c_norm <T, M, E> >
 {
 	INLINE constexpr operator T() const
 	{
 		using namespace std;
-		return c_scientific <T, M, E>() /
+		return c_floating <T, M, E>() /
 			(M() ? pow(T(10), floor(log10(abs(M())))) : T(1));
 	}
 };
 
 template <int M = 0, char E = '\0'>
-using c_norm_float = c_norm_scientific <float, c_int <M>, c_char <E> >;
+using c_norm_float = c_norm <float, c_int <M>, c_char <E> >;
 
 template <long M = 0, short E = '\0'>
-using c_norm_double = c_norm_scientific <double, c_long <M>, c_short <E> >;
+using c_norm_double = c_norm <double, c_long <M>, c_short <E> >;
 
 template <long long M = 0, short E = '\0'>
 using c_norm_long_double =
-	c_norm_scientific <long double, c_long_long <M>, c_short <E> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename T, T &R>
-struct c_lref : constant <T&, c_lref <T, R> >
-{
-	INLINE constexpr operator T&() const { return R; }
-};
-
-template <typename T, T const &R>
-struct c_cref : constant <T const&, c_cref <T, R> >
-{
-	INLINE constexpr operator T const&() const { return R; }
-};
-
-//-----------------------------------------------------------------------------
-
-template <typename T, T *P>
-struct c_ptr : constant <T*, c_ptr <T, P> >
-{
-	INLINE constexpr operator T*() const { return P; }
-};
-
-template <typename T, T const *P>
-struct c_cptr : constant <T const*, c_cptr <T, P> >
-{
-	INLINE constexpr operator T const*() const { return P; }
-};
+	c_norm <long double, c_long_long <M>, c_short <E> >;
 
 //-----------------------------------------------------------------------------
 

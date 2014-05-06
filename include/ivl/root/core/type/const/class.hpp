@@ -42,29 +42,33 @@ namespace constants {
 
 //-----------------------------------------------------------------------------
 
-template <typename...> struct c_cons;
+template <typename C, typename... A>
+struct constant <tag::cons, C, A...> : c_cons <C(A...)> { };
 
 template <typename C, typename... A>
-struct c_cons <C, A...> : c_cons <C(A...)> { };
-
-template <typename C, typename... A>
-struct c_cons <C(A...)> : constant <C, c_cons <C(A...)> >
+struct constant <tag::cons, C(A...)> :
+	details::const_base <raw_type <C>, c_cons <C(A...)> >
 {
-	INLINE constexpr operator C() const { return C(A()()...); }
+	INLINE constexpr
+	operator raw_type <C>() const { return raw_type <C>(A()()...); }
 };
 
 //-----------------------------------------------------------------------------
 
-template <typename...> struct c_cons_list;
+template <typename C, typename... A>
+struct constant <tag::cons_list, C, A...> : c_cons_list <C(A...)> { };
 
 template <typename C, typename... A>
-struct c_cons_list <C, A...> : c_cons_list <C(A...)> { };
-
-template <typename C, typename... A>
-struct c_cons_list <C(A...)> : constant <C, c_cons_list <C(A...)> >
+struct constant <tag::cons_list, C(A...)> :
+	details::const_base <raw_type <C>, c_cons_list <C(A...)> >
 {
-	INLINE constexpr operator C() const { return C{A()()...}; }
+	INLINE constexpr
+	operator raw_type <C>() const { return raw_type <C>{A()()...}; }
 };
+
+//-----------------------------------------------------------------------------
+
+using c_null = c_cons_list <nullptr_t>;
 
 //-----------------------------------------------------------------------------
 

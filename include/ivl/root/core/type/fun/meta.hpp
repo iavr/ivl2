@@ -23,37 +23,10 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
-#define IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
+#ifndef IVL_CORE_TYPE_FUN_META_HPP
+#define IVL_CORE_TYPE_FUN_META_HPP
 
 #include <ivl/ivl>
-
-//-----------------------------------------------------------------------------
-
-// keep built-in features disabled for testing by default;
-// manually enable for speed by externally defining USE_FEATURES
-// TODO: default-enable features eventually
-
-//-----------------------------------------------------------------------------
-
-#if defined(__clang__)
-
-	#define IVL_HAS_FEATURE(X)        \
-		defined(USE_FEATURES) &&       \
-		__has_feature(X)               \
-
-#else  // defined(__clang__)
-
-	#define IVL_GCC_NO_is_convertible_to
-	#define IVL_GCC_NO_is_literal
-	#define IVL_GCC_NO_is_std_layout
-	#define IVL_GCC_NO_cxx_reference_qualified_functions
-
-	#define IVL_HAS_FEATURE(X)        \
-		defined(USE_FEATURES) &&       \
-		!defined(IVL_GCC_NO_##X)       \
-
-#endif  // defined(__clang__)
 
 //-----------------------------------------------------------------------------
 
@@ -61,23 +34,57 @@ namespace ivl {
 
 //-----------------------------------------------------------------------------
 
-namespace types {
+namespace afun {
 
 //-----------------------------------------------------------------------------
 
-namespace traits {
-
-// no aliases: built-in traits not allowed in function sugnatures
-template <typename T> struct is_union     : expr <__is_union(T)> { };
-template <typename T> struct is_trivial   : expr <__is_trivial(T)> { };
-template <typename T> struct is_final     : expr <__is_final(T)> { };
-template <typename T> struct alignment_of : size <__alignof__(T)> { };
-
-}  // namespace traits
+namespace details {
 
 //-----------------------------------------------------------------------------
 
-}  // namespace types
+struct nop_fun
+{
+	template <typename... A>
+	INLINE void operator()(A&&... a) const { }
+};
+
+//-----------------------------------------------------------------------------
+
+struct id_fun
+{
+	template <typename A>
+	INLINE constexpr A&&
+	operator()(A&& a) const { return fwd <A>(a); }
+};
+
+//-----------------------------------------------------------------------------
+
+template <template <typename...> class C>
+struct switch_fun
+{
+	template <typename... A>
+	INLINE constexpr auto operator()(A&&... a) const
+	-> decltype(subs <C, A...>()(fwd <A>(a)...))
+		{ return subs <C, A...>()(fwd <A>(a)...); }
+};
+
+template <typename C>
+using switch_fun_of = switch_fun <C::template map>;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace details
+
+//-----------------------------------------------------------------------------
+
+using details::nop_fun;
+using details::id_fun;
+using details::switch_fun;
+using details::switch_fun_of;
+
+//-----------------------------------------------------------------------------
+
+}  // namespace afun
 
 //-----------------------------------------------------------------------------
 
@@ -85,4 +92,4 @@ template <typename T> struct alignment_of : size <__alignof__(T)> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
+#endif  // IVL_CORE_TYPE_FUN_META_HPP

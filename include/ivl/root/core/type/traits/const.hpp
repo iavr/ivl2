@@ -23,37 +23,10 @@
 
 //-----------------------------------------------------------------------------
 
-#ifndef IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
-#define IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
+#ifndef IVL_CORE_TYPE_TRAITS_CONST_HPP
+#define IVL_CORE_TYPE_TRAITS_CONST_HPP
 
 #include <ivl/ivl>
-
-//-----------------------------------------------------------------------------
-
-// keep built-in features disabled for testing by default;
-// manually enable for speed by externally defining USE_FEATURES
-// TODO: default-enable features eventually
-
-//-----------------------------------------------------------------------------
-
-#if defined(__clang__)
-
-	#define IVL_HAS_FEATURE(X)        \
-		defined(USE_FEATURES) &&       \
-		__has_feature(X)               \
-
-#else  // defined(__clang__)
-
-	#define IVL_GCC_NO_is_convertible_to
-	#define IVL_GCC_NO_is_literal
-	#define IVL_GCC_NO_is_std_layout
-	#define IVL_GCC_NO_cxx_reference_qualified_functions
-
-	#define IVL_HAS_FEATURE(X)        \
-		defined(USE_FEATURES) &&       \
-		!defined(IVL_GCC_NO_##X)       \
-
-#endif  // defined(__clang__)
 
 //-----------------------------------------------------------------------------
 
@@ -67,11 +40,30 @@ namespace types {
 
 namespace traits {
 
-// no aliases: built-in traits not allowed in function sugnatures
-template <typename T> struct is_union     : expr <__is_union(T)> { };
-template <typename T> struct is_trivial   : expr <__is_trivial(T)> { };
-template <typename T> struct is_final     : expr <__is_final(T)> { };
-template <typename T> struct alignment_of : size <__alignof__(T)> { };
+//-----------------------------------------------------------------------------
+
+template <typename T>
+struct is_constant : _false { };
+
+template <typename C, typename... A>
+struct is_constant <constant <C, A...> > : _true { };
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <typename T, bool = is_constant <T>()>
+struct const_value_ : id_t <T> { };
+
+template <typename T>
+struct const_value_<T, true> : id_t <value_type_of <T> > { };
+
+}  // namespace details
+
+template <typename T> using const_value_t = details::const_value_<T>;
+template <typename T> using const_value   = type_of <const_value_t <T> >;
+
+//-----------------------------------------------------------------------------
 
 }  // namespace traits
 
@@ -85,4 +77,4 @@ template <typename T> struct alignment_of : size <__alignof__(T)> { };
 
 //-----------------------------------------------------------------------------
 
-#endif  // IVL_CORE_TYPE_TRAITS_BUILTIN_HPP
+#endif  // IVL_CORE_TYPE_TRAITS_CONST_HPP

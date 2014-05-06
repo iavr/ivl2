@@ -42,25 +42,28 @@ class type_id_t
 {
 	using S = type_id_t();
 
-	S* id;
-	INLINE type_id_t(S* id) : id{id} {}
-
-public:
 	template <typename T>
 	friend type_id_t type_id();
+	friend std::hash <type_id_t>;
 
+//-----------------------------------------------------------------------------
+
+	S* id;
+	INLINE type_id_t(S* id) : id{id} { }
+
+	INLINE size_t hash() { return std::hash <S*>()(id); }
+
+public:
 	INLINE bool operator==(type_id_t o) const { return id == o.id; }
 	INLINE bool operator!=(type_id_t o) const { return id != o.id; }
 	INLINE bool operator< (type_id_t o) const { return id <  o.id; }
 	INLINE bool operator> (type_id_t o) const { return id >  o.id; }
 	INLINE bool operator<=(type_id_t o) const { return id <= o.id; }
 	INLINE bool operator>=(type_id_t o) const { return id >= o.id; }
-
-	INLINE size_t hash() { return std::hash <S*>()(id); }
 };
 
 template <typename T>
-type_id_t type_id() { return &type_id <T>; }
+type_id_t type_id() { return type_id <T>; }
 
 //-----------------------------------------------------------------------------
 
