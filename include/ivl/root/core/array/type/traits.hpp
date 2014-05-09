@@ -105,6 +105,12 @@ template <typename... E> using any_seq = any_seq_p <pack <E...> >;
 
 //-----------------------------------------------------------------------------
 
+// extending definition @type/traits/const
+template <typename F, typename... A>
+struct as_constant <arrays::delta <F, A...> > : _and <as_constant <A>...> { };
+
+//-----------------------------------------------------------------------------
+
 template <bool F, typename S>
 struct fixed_order_t : none { };
 
@@ -126,7 +132,7 @@ template <typename T, bool = is_trav <T>{}> struct trav_finite_ : _false { };
 template <typename T> struct seq_finite_<T, true>  : is_finite_<T> { };
 template <typename T> struct trav_finite_<T, true> : is_finite_<T> { };
 
-template <typename T, bool = seq_finite_<T>{}>
+template <typename T, bool = is_finite_<T>{}>
 struct seq_order_ : none { };
 
 template <typename T>

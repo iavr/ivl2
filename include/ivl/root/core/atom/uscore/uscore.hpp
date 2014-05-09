@@ -62,7 +62,7 @@ using details::uscore;
 
 //-----------------------------------------------------------------------------
 
-static __attribute__ ((unused)) atoms::uscore _;
+static constexpr __attribute__ ((unused)) atoms::uscore _{};
 
 //-----------------------------------------------------------------------------
 

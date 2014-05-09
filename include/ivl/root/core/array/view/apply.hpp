@@ -129,7 +129,7 @@ class apply_seq_impl <M, F, pack <A...>, sizes <N...>, TR> :
 public:
 	using B::B;
 
-	INLINE constexpr S size() const { return G()(a<N>()...).size; }
+	INLINE constexpr S size() const { return G()(a<N>()...).size(); }
 
 	INLINE           IR begin() &&     { return IR(f_f(), a_f<N>().begin()...); }
 	INLINE           IL begin() &      { return IL(f(), a<N>().begin()...); }

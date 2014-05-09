@@ -43,7 +43,7 @@ namespace details {
 //-----------------------------------------------------------------------------
 
 template <typename F, typename B = none>
-struct val_gen : B { F val() const { return F(); } };
+struct val_gen : B { INLINE constexpr F val() const { return F(); } };
 
 template <typename F> struct atom_gen : F { using F::F; };
 

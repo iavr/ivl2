@@ -42,6 +42,9 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
+template <typename N>
+using iota_ord = size <N{}>;
+
 template <typename T, typename O, bool F>
 using iota_traits_base = id_t <seq_traits <
 	id_t <T>, O, _type <T>, iota_trav, id, size_t, expr <F>
@@ -53,10 +56,10 @@ template <typename... N> using  iota_traits = type_of <iota_traits_t <N...> >;
 template <>
 struct iota_traits_t <> : iota_traits_base <size_t, none, false> { };
 
-// TODO: find order_type when N is compile-time constant
 template <typename N>
-struct iota_traits_t <N> :
-	iota_traits_base <copy <int_type <N> >, none, true> { };
+struct iota_traits_t <N> : iota_traits_base <
+	copy <const_value <N> >, const_map <iota_ord, N>, true
+> { };
 
 //-----------------------------------------------------------------------------
 

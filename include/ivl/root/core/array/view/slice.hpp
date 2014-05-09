@@ -42,10 +42,9 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-// TODO: find order_type when B, U, N are compile-time constants
 template <typename B, typename U, typename... N>
 using slice_traits = seq_traits <
-	id_t <copy <int_type <B> > >, none,
+	id_t <copy <const_value <B> > >, seq_order <iota_traits <N...> >,
 	pack <range_seq <B, U>, iota_seq <N...> >,
 	slice_trav, id, size_t
 >;

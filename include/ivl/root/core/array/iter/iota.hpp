@@ -46,6 +46,7 @@ template <
 	typename Q, typename V, typename R, typename T, typename F,
 	typename D = iota_trav <Q, V, R, T, F>,
 	typename TR = iter_traits <V, R, T, ptrdiff_t>,
+	typename W = remove_type <V>,
 	bool = path_iter <Q>(), bool = path_edge <Q>()
 >
 class iota_trav_impl :
@@ -55,23 +56,22 @@ class iota_trav_impl :
 
 public:
 	template <typename E>
-	INLINE constexpr iota_trav_impl(E&& e) :
-		B(remove_type <V>(), fwd <E>(e)) { }
+	INLINE constexpr iota_trav_impl(E&& e) : B(W(), fwd <E>(e)) { }
 };
 
 //-----------------------------------------------------------------------------
 
 template <
 	typename Q, typename V, typename R, typename T, typename F,
-	typename D, typename TR
+	typename D, typename TR, typename W
 >
-class iota_trav_impl <Q, V, R, T, F, D, TR, true, false> :
+class iota_trav_impl <Q, V, R, T, F, D, TR, W, true, false> :
 	public trav_trav_impl <Q, V, R, T, D, TR>
 {
 	using B = trav_trav_impl <Q, V, R, T, D, TR>;
 
 public:
-	INLINE constexpr iota_trav_impl() : B(remove_type <V>()) { }
+	INLINE constexpr iota_trav_impl() : B(W()) { }
 
 	template <typename E>
 	INLINE constexpr iota_trav_impl(E&& e) : B(fwd <E>(e)) { }
@@ -82,12 +82,12 @@ public:
 // edge traversor can only be finite
 template <
 	typename Q, typename V, typename R, typename T,
-	typename D, typename TR, bool ITER
+	typename D, typename TR, typename W, bool ITER
 >
-struct iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, true> :  // TODO: undefine
-	iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
+struct iota_trav_impl <Q, V, R, T, _false, D, TR, W, ITER, true> :  // TODO: undefine
+	iota_trav_impl <Q, V, R, T, _false, D, TR, W, ITER, false>
 {
-	using iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, false>
+	using iota_trav_impl <Q, V, R, T, _false, D, TR, W, ITER, false>
 		::iota_trav_impl;
 };
 
@@ -95,9 +95,9 @@ struct iota_trav_impl <Q, V, R, T, _false, D, TR, ITER, true> :  // TODO: undefi
 
 template <
 	typename Q, typename V, typename R, typename T,
-	typename D, typename TR
+	typename D, typename TR, typename W
 >
-class iota_trav_impl <Q, V, R, T, _false, D, TR, false, false> :
+class iota_trav_impl <Q, V, R, T, _false, D, TR, W, false, false> :
 	public trav_trav_impl <Q, V, R, T, D, TR>
 {
 	using B = trav_trav_impl <Q, V, R, T, D, TR>;
@@ -105,7 +105,7 @@ class iota_trav_impl <Q, V, R, T, _false, D, TR, false, false> :
 	void _swap() = delete;
 
 public:
-	INLINE constexpr iota_trav_impl() : B(remove_type <V>()) { }
+	INLINE constexpr iota_trav_impl() : B(W()) { }
 
 	static constexpr bool finite = false;
 

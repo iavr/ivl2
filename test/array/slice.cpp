@@ -26,6 +26,15 @@ void run()
 		cout << a << endl;
 		cout << a + iota() << endl;
 		cout << endl;
+
+		cout << "tiny iota" << endl;
+		size <6> _6;
+		cout << iota( 6) << endl;
+		cout << iota(_6) << endl;
+		cout << sizeof(iota( 6)) << endl;
+		cout << sizeof(iota(_6)) << endl;
+		cout << decltype(iota(_6))::order_type{} << endl;
+		cout << endl;
 	}
 
 	{
@@ -66,37 +75,34 @@ void run()
 		cout << x << endl;
 		cout << endl;
 
-// 		using T = size_t;
-// 		cout << "step-range" << endl;
-// 		cout << (2,_+=3,19) << endl;
-// 		cout << (19,_+=3,2) << endl;
-// 		cout << (2,_-=3,19) << endl;
-// 		cout << (19,_-=3,2) << endl;
-// 		auto l = (T(2),_,T(14));
-// 		cout << zip(l, range(T(4),_+=3,l)) << endl;
-// 		cout << zip(l, range(T(4),_-=-3,l)) << endl;
-// 		cout << zip(l, range(T(12),_+=-3,l)) << endl;
-// 		cout << zip(l, range(T(12),_-=3,l)) << endl;
-// 		cout << endl;
-//
-// 		cout << "tiny range" << endl;
-// 		size <2> _2;
-// 		size <3> _3;
-// 		cout << (_2,_+=_3,19) << endl;
-// 		cout << ( 2,_+= 3,19) << endl;
-// 		cout << sizeof(_2,_+=_3) << endl;
-// 		cout << sizeof( 2,_+= 3) << endl;
-// 		cout << sizeof(_2,_+=_3,19) << endl;
-// 		cout << sizeof( 2,_+= 3,19) << endl;
-// 		cout << endl;
-//
-// 		cout << "iterator range" << endl;
-// 		auto z = seq(6, 1, -3, 8, -7, 9, 0, 1, 2, 6, 4, 3);
-// 		auto i = (z.begin(), _+=2, z.end()-1);
-// 		cout << *i << endl;
-// 		*i = 0;
-// 		cout << z << endl;
-// 		cout << endl;
+		using T = size_t;
+		cout << "step-slice" << endl;
+		cout << slice( 2,_+= 3,6) << endl;
+		cout << slice( 2,_-=-3,6) << endl;
+		cout << slice(19,_+=-3,6) << endl;
+		cout << slice(19,_-= 3,6) << endl;
+		cout << endl;
+
+		cout << "tiny slice" << endl;
+		size <2> _2;
+		size <3> _3;
+		size <6> _6;
+		cout << slice( 2,_+= 3, 6) << endl;
+		cout << slice(_2,_+=_3,_6) << endl;
+		cout << sizeof(slice( 2,_+= 3)) << endl;
+		cout << sizeof(slice(_2,_+=_3)) << endl;
+		cout << sizeof(slice( 2,_+= 3, 6)) << endl;
+		cout << sizeof(slice(_2,_+=_3,_6)) << endl;
+		cout << decltype(slice(_2,_+=_3,_6))::order_type{} << endl;
+		cout << endl;
+
+		cout << "iterator slice" << endl;
+		auto z = seq(6, 1, -3, 8, -7, 9, 0, 1, 2, 6, 4, 3);
+		auto i = slice(z.begin(), _+=2, 6);
+		cout << *i << endl;
+		*i = 0;
+		cout << z << endl;
+		cout << endl;
 	}
 
 }

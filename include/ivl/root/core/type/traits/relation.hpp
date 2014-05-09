@@ -205,6 +205,25 @@ struct common_pt <C <E, F, G...> > :
 
 //-----------------------------------------------------------------------------
 
+namespace details {
+
+template <typename P, bool = all_p <is_constant, P>()>
+struct const_common_ : common_pt <map <value_type_of, P> > { };
+
+template <typename P>
+struct const_common_<P, false> :
+	common_pt <select_p <neg <is_constant>::template map, P> > { };
+
+}  // namespace details
+
+template <typename P> using const_common_pt = details::const_common_<P>;
+template <typename P> using const_common_p  = type_of <const_common_pt <P> >;
+
+template <typename... T> using const_common_t = const_common_pt <pack <T...> >;
+template <typename... T> using const_common = type_of <const_common_t <T...> >;
+
+//-----------------------------------------------------------------------------
+
 template <typename D, typename P>
 struct common_or_pt : common_pt <P> { };
 
@@ -222,15 +241,15 @@ using common_or = type_of <common_or_t <D, T...> >;
 
 //-----------------------------------------------------------------------------
 
-using details::static_casts;
-using details::dynamic_casts;
-using details::const_casts;
-using details::reinterpret_casts;
-
 using details::is_base_eq;
 using details::is_base;
 using details::is_related;
 using details::is_conv;
+
+using details::static_casts;
+using details::dynamic_casts;
+using details::const_casts;
+using details::reinterpret_casts;
 
 //-----------------------------------------------------------------------------
 

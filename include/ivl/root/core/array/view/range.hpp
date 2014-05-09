@@ -42,30 +42,8 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename A, typename... B>
-struct int_common_t : common_t <A, B...> { };
-
-template <typename T, T N, typename... B>
-struct int_common_t <integral <T, N>, B...> : common_t <B...> { };
-
-template <typename A, typename... B>
-using int_common = type_of <int_common_t <A, B...> >;
-
-//-----------------------------------------------------------------------------
-
-template <typename B, typename U, typename... E>
-struct range_type_t;
-
-template <typename B, typename U, typename... E>
-using range_type = type_of <range_type_t <B, U, E...> >;
-
-template <typename B, typename U>
-struct range_type_t <B, U> : copy_t <int_type <B> > { };
-
 template <typename B, typename U, typename E>
-struct range_type_t <B, U, E> : copy_t <int_common <B, E> > { };
-
-//-----------------------------------------------------------------------------
+using range_ord = size <U{}.U::template size <ptrdiff_t>(B{}(), E{}())>;  // TODO: `U::` needed by gcc
 
 template <typename T, typename O, typename U, bool F>
 using range_traits_base = id_t <seq_traits <
@@ -81,12 +59,12 @@ using range_traits = type_of <range_traits_t <B, U, E...> >;
 
 template <typename B, typename U>
 struct range_traits_t <B, U> :
-	range_traits_base <range_type <B, U>, none, U, false> { };
+	range_traits_base <copy <const_value <B> >, none, U, false> { };
 
-// TODO: find order_type when B, U, E are compile-time constants
 template <typename B, typename U, typename E>
-struct range_traits_t <B, U, E> :
-	range_traits_base <range_type <B, U, E>, none, U, true> { };
+struct range_traits_t <B, U, E> : range_traits_base <
+	copy <const_common <B, E> >, const_map <range_ord, B, U, E>, U, true
+> { };
 
 //-----------------------------------------------------------------------------
 
@@ -115,21 +93,27 @@ protected:
 	INLINE constexpr c_ref <U> u() const& { return delta::get(); }
 
 	template <typename V, typename R>
-	INLINE constexpr V t(R&& r) const&
-		{ return V(fwd <R>(r).u(), fwd <R>(r).b()); }
+	static INLINE constexpr V
+	t(R&& r) { return V(fwd <R>(r).u(), fwd <R>(r).b()); }
+
+//-----------------------------------------------------------------------------
+
+private:
+	template <typename E>
+	using bound_type = range_seq <B, U, uref_opt <E> >;
 
 //-----------------------------------------------------------------------------
 
 public:
 	using T::T;
 
-	template <typename E, typename R = range_seq <B, U, E> >
+	template <typename E, typename R = bound_type <E> >
 	INLINE R bound(E&& e) && { return R(b_f(), u_f(), fwd <E>(e)); }
 
-	template <typename E, typename R = range_seq <B, U, E> >
+	template <typename E, typename R = bound_type <E> >
 	INLINE R bound(E&& e) & { return R(b(), u(), fwd <E>(e)); }
 
-	template <typename E, typename R = range_seq <B, U, E> >
+	template <typename E, typename R = bound_type <E> >
 	INLINE constexpr R bound(E&& e) const& { return R(b(), u(), fwd <E>(e)); }
 };
 
@@ -139,8 +123,8 @@ template <typename B, typename U, typename E>
 struct range_store <B, U, E> : raw_tuple <B, U, E>
 {
 	using TR = range_traits <B, U, E>;
-	using I = range_type <B, U, E>;
 	using T = raw_tuple <B, U, E>;
+	using O = seq_order <TR>;
 	using S = seq_size <TR>;
 	using d = seq_diff <TR>;
 
@@ -166,15 +150,22 @@ protected:
 	INLINE           l_ref <E> e() &      { return end::get(); }
 	INLINE constexpr c_ref <E> e() const& { return end::get(); }
 
+//-----------------------------------------------------------------------------
+
 	template <typename V, typename R>
-	INLINE constexpr V
-	t(R&& r) const&
-		{ return V(fwd <R>(r).u(), fwd <R>(r).b(), fwd <R>(r).trunc()); }
+	static INLINE constexpr V
+	t(R&& r) { return V(fwd <R>(r).u(), fwd <R>(r).b(), trunc(fwd <R>(r))); }
+
+	template <typename R>
+	static INLINE constexpr copy <const_value <B> >
+	trunc(R&& r)
+	{
+		return r.u().template trunc <d>(c_val(r.b()), c_val(fwd <R>(r).e()));
+	}
 
 //-----------------------------------------------------------------------------
 
 private:
-	INLINE I trunc() const { return u().template trunc <d>(I(b()), e()); }
 
 //-----------------------------------------------------------------------------
 
@@ -183,7 +174,8 @@ public:
 	INLINE constexpr range_store(_B&& _b, _U&& _u, _E&& _e) :
 		T(fwd <_B>(_b), fwd <_U>(_u), fwd <_E>(_e)) { }
 
-	INLINE constexpr S size() const { return u().template size <S>(b(), e()); }
+	INLINE constexpr S size() const
+		{ return u().template size <d>(c_val(b()), c_val(e())); }
 };
 
 //-----------------------------------------------------------------------------
@@ -246,9 +238,9 @@ public:
 	INLINE           IL begin() &      { return IL(R::u(),   R::b()); }
 	INLINE constexpr IC begin() const& { return IC(R::u(),   R::b()); }
 
-	INLINE           IR end() &&     { return IR(R::u_f(), R::e_f()); }
-	INLINE           IL end() &      { return IL(R::u(),   R::e()); }
-	INLINE constexpr IC end() const& { return IC(R::u(),   R::e()); }
+	INLINE           IR end() &&     { return IR(R::u_f(), R::trunc(base_f())); }
+	INLINE           IL end() &      { return IL(R::u(),   R::trunc(base())); }
+	INLINE constexpr IC end() const& { return IC(R::u(),   R::trunc(base())); }
 };
 
 //-----------------------------------------------------------------------------

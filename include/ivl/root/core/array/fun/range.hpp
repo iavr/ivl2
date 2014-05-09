@@ -42,15 +42,10 @@ namespace details {
 
 //-----------------------------------------------------------------------------
 
-template <typename U, only_if <!is_uscore <U>{}> = 0>
-INLINE constexpr U&&
-delta(U&& u) { return fwd <U>(u); }
+template <typename U>
+using delta_sw = _if <is_uscore <U>{}, op::inc_, id_fun>;
 
-template <typename U, only_if <is_uscore <U>{}> = 0>
-INLINE constexpr auto
-delta(U&& u)
--> decltype(++u)
-	{ return ++u; }
+using delta = switch_fun <delta_sw>;
 
 //-----------------------------------------------------------------------------
 
@@ -66,8 +61,8 @@ public:
 	template <typename B, typename U, typename... E>
 	INLINE constexpr auto
 	operator()(B&& b, U&& u, E&&... e) const
-	-> decltype(F()(fwd <B>(b), delta(fwd <U>(u)), fwd <E>(e)...))
-		{ return F()(fwd <B>(b), delta(fwd <U>(u)), fwd <E>(e)...); }
+	-> decltype(F()(fwd <B>(b), delta{}(fwd <U>(u)), fwd <E>(e)...))
+		{ return F()(fwd <B>(b), delta{}(fwd <U>(u)), fwd <E>(e)...); }
 };
 
 //-----------------------------------------------------------------------------
@@ -80,8 +75,8 @@ public:
 	template <typename B, typename U, typename... N>
 	INLINE constexpr auto
 	operator()(B&& b, U&& u, N&&... n) const
-	-> decltype(F()(fwd <B>(b), delta(fwd <U>(u)), fwd <N>(n)...))
-		{ return F()(fwd <B>(b), delta(fwd <U>(u)), fwd <N>(n)...); }
+	-> decltype(F()(fwd <B>(b), delta{}(fwd <U>(u)), fwd <N>(n)...))
+		{ return F()(fwd <B>(b), delta{}(fwd <U>(u)), fwd <N>(n)...); }
 };
 
 //-----------------------------------------------------------------------------

@@ -48,6 +48,10 @@ struct is_constant : _false { };
 template <typename C, typename... A>
 struct is_constant <constant <C, A...> > : _true { };
 
+// extended elsewhere
+template <typename T>
+struct as_constant : is_constant <T> { };
+
 //-----------------------------------------------------------------------------
 
 namespace details {
@@ -62,6 +66,27 @@ struct const_value_<T, true> : id_t <value_type_of <T> > { };
 
 template <typename T> using const_value_t = details::const_value_<T>;
 template <typename T> using const_value   = type_of <const_value_t <T> >;
+
+//-----------------------------------------------------------------------------
+
+namespace details {
+
+template <
+	template <typename...> class F, typename P,
+	bool = all_p <as_constant, P>()
+>
+struct const_map_ : embed_t <F, P> { };
+
+template <template <typename...> class F, typename P>
+struct const_map_<F, P, false> : id_t <none> { };
+
+}  //namespace details
+
+template <template <typename...> class F, typename... T>
+using const_map_t = details::const_map_<F, pack <T...> >;
+
+template <template <typename...> class F, typename... T>
+using const_map = type_of <const_map_t <F, T...> >;
 
 //-----------------------------------------------------------------------------
 
