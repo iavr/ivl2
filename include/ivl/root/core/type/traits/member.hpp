@@ -1,7 +1,7 @@
 /* This file is part of the ivl C++ library <http://image.ntua.gr/ivl>.
    A C++ template library extending syntax towards mathematical notation.
 
-   Copyright	C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
+   Copyright (C) 2012 Yannis Avrithis <iavr@image.ntua.gr>
    Copyright (C) 2012 Kimon Kontosis <kimonas@image.ntua.gr>
 
    ivl is free software; you can redistribute it and/or modify
